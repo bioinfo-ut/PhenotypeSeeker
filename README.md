@@ -26,11 +26,11 @@ You also need to install prerequisites.
 
 ### Prerequisites
 You need to install yourself:
-Genometester4, from
+Genometester4
 ```
 https://github.com/bioinfo-ut/GenomeTester4
 ```
-mash, from
+mash
 ```
 https://github.com/marbl/Mash
 ```
