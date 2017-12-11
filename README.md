@@ -2,6 +2,7 @@
 Identify phenotype-specific k-mers and predict phenotype using sequenced bacterial strains
 ## Introduction
 ## Installation
+PhenotypeSeeker currently supports Linux operating systems.
 The easiest way to install PhenotypeSeeker is to type
 ```
 pip2.7 install PhenotypeSeeker
