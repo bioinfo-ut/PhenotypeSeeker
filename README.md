@@ -16,12 +16,14 @@ Then, in the PhenotypeSeeker main directory, run the installer (may also need su
 ```
 pip2.7 install .
 ```
-This will install PhenotypeSeeker and the other required Python packages. PhenotypeSeeker executable is added to $PATH.
+This will install PhenotypeSeeker and the required Python packages. PhenotypeSeeker executable is added to $PATH.
 Test the installation, by typing:
 ```
 phenotypeseeker --version
 ```
+That's it with PhenotypeSeeker. You also need to install prerequisites.
 
 ### Prerequisites
+
 ## Example
 ## Contact
