@@ -21,9 +21,18 @@ Test the installation, by typing:
 ```
 phenotypeseeker --version
 ```
-That's it with PhenotypeSeeker. You also need to install prerequisites.
+That's it with PhenotypeSeeker! 
+You also need to install prerequisites.
 
 ### Prerequisites
-
+You need to install yourself:
+Genometester4, from
+```
+https://github.com/bioinfo-ut/GenomeTester4
+```
+mash, from
+```
+https://github.com/marbl/Mash
+```
 ## Example
 ## Contact
