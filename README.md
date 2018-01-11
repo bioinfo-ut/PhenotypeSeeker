@@ -39,4 +39,40 @@ mash
 https://github.com/marbl/Mash
 ```
 ## Example
+
+To create the phenotype prediction model with PhenotypeSeeker, open the command-line and type in:
+```
+phenotypeseeker modeling data.pheno 
+```
+Where "data.pheno" is an input text file containing tab separated lists of sampleID's, sample FastA/FastQ file addresses and sample phenotype values (one or more column).
+
+Example of "data.pheno" inputfile with binary resistance phenotypes for 5 antibiotics:
+```
+
+SampleID        Address Ciprofloxacin   Imipenem        Meropenem       Tobramycin Colistin         
+PA2_D4  /storage8/erkia/data/pseudomonas_genomes/PA2_D4.fasta   0       NA	0 	NA	0
+PA2_F7  /storage8/erkia/pseudomonas_genomes/PA2_F7.fasta 	1	1	1	0	1
+1D4     /storage8/erkia/pseudomonas_genomes/1D4.fasta           1	1 	1 	NA	1
+6G2     /storage8/erkia/pseudomonas_genomes/6G2.fasta           1	1	1       1       1
+PA4_A1  /storage8/erkia/pseudomonas_genomes/PA4_A1.fasta 	0	0	0       0       0
+6F4     /storage8/erkia/pseudomonas_genomes/6F4.fasta           0       NA	0 	NA	0
+5H2     /storage8/erkia/pseudomonas_genomes/5H2.fasta           1	1 	1 	NA	1
+PA2_C6  /storage8/erkia/pseudomonas_genomes/PA2_C6.fasta 	1	0	1	1	0
+PA3_A4  /storage8/erkia/pseudomonas_genomes/PA3_A4.fasta 	0	0	0	0       0
+PA3_A10 /storage8/erkia/pseudomonas_genomes/PA3_A10.fasta       0	1	0	NA	0
+```
+Example of "data.pheno" inputfile with continuous resistance phenotypes for 5 antibiotics:
+```
+SampleID	Address	Ciprofloxacin	Imipenem	Meropenem	Tobramycin Colistin
+PA2_D4	/storage8/erkia/data/pseudomonas_genomes/PA2_D4.fasta	0.1250	2.0000	3.0000	1024.0000	2.0000
+PA2_F7	/storage8/erkia/pseudomonas_genomes/PA2_F7.fasta	2.0000	1.5000	3.0000	1024.0000	0.5000
+1D4	/storage8/erkia/pseudomonas_genomes/1D4.fasta	      0.0940	1.5000	4.0000	256.0000	1.5000
+6G2	/storage8/erkia/pseudomonas_genomes/6G2.fasta	      0.0940	32.0000	3.0000	0.5000	2.0000
+PA4_A1	/storage8/erkia/pseudomonas_genomes/PA4_A1.fasta	0.1250	3.0000	1.0000	1.0000	256.0000
+6F4	/storage8/erkia/pseudomonas_genomes/6F4.fasta	      0.1250	6.0000	0.0940	0.5000	1.0000
+5H2	/storage8/erkia/pseudomonas_genomes/5H2.fasta	      32.0000	32.0000	0.1250	0.2500	2.0000
+PA2_C6	/storage8/erkia/pseudomonas_genomes/PA2_C6.fasta	16.0000	2.0000	0.0640	0.2500	1.0000
+PA3_A4	/storage8/erkia/pseudomonas_genomes/PA3_A4.fasta	32.0000	2.0000	6.0000	0.5000	2.0000
+PA3_A10	/storage8/erkia/pseudomonas_genomes/PA3_A10.fasta	32.0000	8.0000	32.0000	2.0000	1.0000
+```
 ## Contact
