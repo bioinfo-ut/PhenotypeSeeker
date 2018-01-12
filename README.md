@@ -10,7 +10,7 @@ pip2.7 install PhenotypeSeeker
 ```
 on the command-line (may need sudo command).
 ### Install from source
-Download the latest version of PhenotypeSeeker from the GitHub repository:
+Download the PhenotypeSeeker from the GitHub repository:
 ```
 git clone https://github.com/bioinfo-ut/PhenotypeSeeker.git
 ```
@@ -19,8 +19,7 @@ Then, change to PhenotypeSeeker main directory and run the installer (may also n
 cd PhenotypeSeeker
 pip2.7 install .
 ```
-
-
+### Test the installation
 This will install PhenotypeSeeker and the required Python packages. PhenotypeSeeker executable is added to $PATH.
 
 Test the installation, by typing:
@@ -32,8 +31,9 @@ You also need to install prerequisites.
 
 ### Prerequisites
 
-To install and run PhenotypeSeeker, python2.7 and pip2.7 need to be installed on your system.
+To install and run PhenotypeSeeker, python2.7, pip2.7, Genometester4 and mash need to be installed on your system.
 
+### Pip2.7
 To install pip2.7 with python2.7 and curl installed, open the command-line and type in:
 ```
 curl https://bootstrap.pypa.io/ez_setup.py -o - | sudo python2.7
@@ -42,13 +42,13 @@ sudo easy_install pip2.7
 
 You also need to install yourself:
 
-Genometester4
+### Genometester4
 ```
 git clone https://github.com/bioinfo-ut/GenomeTester4.git
 cd src
 make
 ```
-mash
+### mash
 
 You can download the pre-compiled mash binary from 
 ```
