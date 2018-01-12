@@ -108,7 +108,7 @@ To limit the analysis on a selection of phenotypes present in "data.pheno", spec
 phenotypeseeker modeling data.pheno --mpheno 1 3
 ```
 ### Outputfiles of PhenotypeSeeker
-After launcing the PhenotypeSeeker, it starts counting the k-mers from input samples. 
+After launcing the PhenotypeSeeker it starts counting the k-mers from input samples. 
 
 To save the temporary k-mer lists, the temporary repository **"K-mer_lists"** is created.
 
