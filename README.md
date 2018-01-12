@@ -118,6 +118,7 @@ Then, if "-w" (weights) option is choosed it estimates the distances of samples 
 
 Those distances are used to calculate GSC (Gerstein, Sonnhammer and Chothia) weights, which are considered in forthcoming analysis to correct for clonal population structure.
 
+Then the **"chi-squared_test_results*.txt"** or **"t-test_results*.txt"** file is created depending on which type of phenotype (binary or continuous accordingly) were used. 
 
 
 
