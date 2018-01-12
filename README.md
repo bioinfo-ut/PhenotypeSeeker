@@ -60,7 +60,7 @@ Or you can clone the source repository from Github
 ```
 git clone https://github.com/marbl/Mash.git
 ```
-And install it following the instructions specified in
+and install it following the instructions specified in
 ```
 https://github.com/marbl/Mash/blob/master/INSTALL.txt
 ```
@@ -105,4 +105,11 @@ To limit the analysis on a selection of phenotypes present in "data.pheno", spec
 ```
 phenotypeseeker modeling data.pheno --mpheno 1 3
 ```
+After launcing the PhenotypeSeeker, it starts counting the k-mers from input samples. 
+To save the temporary k-mer lists, the temporary repository "K-mer_lists" is created.
+The process of k-mer counting results in the "k-mer_matrix.txt" file, where the number of each counted k-mer (rows) in each sample (columns) is recorded.
+
+
+
+
 ## Contact
