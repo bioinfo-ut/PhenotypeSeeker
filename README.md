@@ -42,11 +42,25 @@ You also need to install yourself:
 
 Genometester4
 ```
-https://github.com/bioinfo-ut/GenomeTester4
+git clone https://github.com/bioinfo-ut/GenomeTester4.git
+cd src
+make
 ```
 mash
+
+You can download the pre-compiled mash binary from 
 ```
-https://github.com/marbl/Mash
+https://github.com/marbl/Mash/releases/download/v2.0/mash-Linux64-v2.0.tar
+```
+and then put it directory specified in $PATH variable (e.g. /usr/bin).
+
+Or you can clone the source repository from Github
+```
+git clone https://github.com/marbl/Mash.git
+```
+And install it following the instructions specified in
+```
+https://github.com/marbl/Mash/blob/master/INSTALL.txt
 ```
 ## Example
 
