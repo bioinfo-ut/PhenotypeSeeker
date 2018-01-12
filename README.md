@@ -4,7 +4,15 @@ Identify phenotype-specific k-mers and predict phenotype using sequenced bacteri
 ## Installation
 PhenotypeSeeker currently supports Linux operating systems.
 
-The easiest way to install PhenotypeSeeker is to type
+To install and run PhenotypeSeeker, python2.7 and pip2.7 need to be installed on your system.
+
+To install pip2.7 with python2.7 and curl installed, type:
+```
+curl https://bootstrap.pypa.io/ez_setup.py -o - | sudo python2.7
+sudo easy_install pip2.7
+```
+
+With python2.7 and pip2.7 installed, easiest way to install PhenotypeSeeker is to type
 ```
 pip2.7 install PhenotypeSeeker
 ```
@@ -14,8 +22,9 @@ Or download the latest version of PhenotypeSeeker from the GitHub repository:
 ```
 git clone https://github.com/bioinfo-ut/PhenotypeSeeker.git
 ```
-Then, in the PhenotypeSeeker main directory, run the installer (may also need sudo command):
+Then, change to PhenotypeSeeker main directory and run the installer (may also need sudo command):
 ```
+cd PhenotypeSeeker
 pip2.7 install .
 ```
 This will install PhenotypeSeeker and the required Python packages. PhenotypeSeeker executable is added to $PATH.
