@@ -66,13 +66,13 @@ Example of "data.pheno" inputfile with continuous resistance phenotypes for 5 an
 SampleID        Address Ciprofloxacin   Imipenem        Meropenem	Tobramycin Colistin
 PA3_E8  /storage8/erkia/data/pseudomonas_genomes/PA3_E8.fasta   0.1250  2.0000  3.0000  4.0000  2.0000
 7D2     /storage8/erkia/pseudomonas_genomes/7D2.fasta           2.0000  1.5000  3.0000  12.0000 0.5000
-PA3_H11 /storage8/erkia/pseudomonas_genomes/PA3_H11.fasta       0.0940  NA  4.0000  8.0000  1.5000
+PA3_H11 /storage8/erkia/pseudomonas_genomes/PA3_H11.fasta       0.0940  4.0000 4.0000  8.0000  1.5000
 PA2_H12 /storage8/erkia/pseudomonas_genomes/PA2_H12.fasta       0.0940  32.0000 3.0000  0.5000  2.0000
-5E7     /storage8/erkia/pseudomonas_genomes/5E7.fasta           0.1250  3.0000  NA  1.0000  256.0000
-PA3_H4  /storage8/erkia/pseudomonas_genomes/PA3_H4.fasta        0.1250  6.0000  0.0940  NA  1.0000
+5E7     /storage8/erkia/pseudomonas_genomes/5E7.fasta           0.1250  3.0000  3.0000  1.0000  256.0000
+PA3_H4  /storage8/erkia/pseudomonas_genomes/PA3_H4.fasta        0.1250  6.0000  0.0940  1.0000  1.0000
 PA2_C4  /storage8/erkia/pseudomonas_genomes/PA2_C4.fasta        32.0000 32.0000 0.1250  0.2500  2.0000
-PA2_A3  /storage8/erkia/pseudomonas_genomes/PA2_A3.fasta        16.0000 2.0000  NA  0.2500  1.0000
-PA3_A9  /storage8/erkia/pseudomonas_genomes/PA3_A9.fasta        32.0000 NA  6.0000  0.5000  2.0000
+PA2_A3  /storage8/erkia/pseudomonas_genomes/PA2_A3.fasta        16.0000 2.0000  0.2500  0.2500  NA
+PA3_A9  /storage8/erkia/pseudomonas_genomes/PA3_A9.fasta        32.0000 4.0000  6.0000  0.5000  NA
 6F7     /storage8/erkia/pseudomonas_genomes/6F7.fasta           32.0000 8.0000  32.0000 2.0000  1.0000
 ```
 ## Contact
