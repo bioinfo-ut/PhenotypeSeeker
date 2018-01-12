@@ -6,7 +6,7 @@ PhenotypeSeeker currently supports Linux operating systems.
 
 To install and run PhenotypeSeeker, python2.7 and pip2.7 need to be installed on your system.
 
-To install pip2.7 with python2.7 and curl installed, type:
+To install pip2.7 with python2.7 and curl installed, open the command-line and type in:
 ```
 curl https://bootstrap.pypa.io/ez_setup.py -o - | sudo python2.7
 sudo easy_install pip2.7
