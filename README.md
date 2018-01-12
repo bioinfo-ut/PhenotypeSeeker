@@ -120,9 +120,10 @@ Those distances are used to calculate GSC (Gerstein, Sonnhammer and Chothia) wei
 
 Then the **"chi-squared_test_results.txt"** or **"t-test_results.txt"** file is created depending on which type of phenotype (binary or continuous accordingly) were used. 
 
-Example of **"chi-squared_test_results.txt"** file:
+The columns in "chi-squared_test_results.txt" represent the tested k-mer sequence, chi-sqared statistic value, the pvalue of chi-squared statistic, number of samples with the specific k-mer and the names of the samples with the specific k-mer.
+
+Example of "chi-squared_test_results.txt" file:
 ```
-**K-mer**	Chi-square_statistic	p-value	No._of_samples_with_k-mer	Samples_with_k-mer
 ACCTCTGGGTGGCGAA	0.18	9.13E-01	3	| PA2_F7 PA2_G7 PA3_F7
 AGCGCTACTCTTGATC	0.07	9.67E-01	8	| PA4_H4 PA3_G6 PA3_G4 PA3_A5 PA4_D2 PA3_G3 PA3_G9 PA3_G8
 AAACTTTCGACACAGC	0.18	9.13E-01	3	| PA2_A2 PA2_A1 PA3_D6
