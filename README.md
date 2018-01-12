@@ -106,8 +106,11 @@ To limit the analysis on a selection of phenotypes present in "data.pheno", spec
 phenotypeseeker modeling data.pheno --mpheno 1 3
 ```
 After launcing the PhenotypeSeeker, it starts counting the k-mers from input samples. 
+
 To save the temporary k-mer lists, the temporary repository **"K-mer_lists"** is created.
+
 The process of k-mer counting results in the **"k-mer_matrix.txt"** file, where the number of each counted k-mer (rows) in each sample (columns) is recorded.
+
 Then, if "-w" (weights) option is choosed it estimates the distances of samples with program mash, which output is saved in **"mash_distances.mat"**. 
 
 Those distances are used to calculate GSC (Gerstein, Sonnhammer and Chothia) weights, which are considered in forthcoming analysis to correct for clonal population structure.
