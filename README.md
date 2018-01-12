@@ -54,7 +54,7 @@ You can download the pre-compiled mash binary from
 ```
 https://github.com/marbl/Mash/releases/download/v2.0/mash-Linux64-v2.0.tar
 ```
-and then put it directory specified in $PATH variable (e.g. /usr/bin).
+and then put it into the directory specified in $PATH variable (e.g. /usr/bin).
 
 Or you can clone the source repository from Github
 ```
