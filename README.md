@@ -141,12 +141,13 @@ The regression model is outputted in **"log_reg_model.pkl"** or **"lin_reg_model
 
 The **"summary_of_(log\lin)_reg_analysis.txt"** contains the information about conducted regression analysis. For example the regularisation parameter choosen, the actual vs predicted phenotypes of test set samples and the model-evaluation metrics.
 
-The last regression analysis related file is named **"k-mers_and_coefficients_in_(log/lin)_reg_model.txt"**.
+Follows the file **"k-mers_and_coefficients_in_(log/lin)_reg_model.txt"**, which contains the the coefficents of k-mers used in regression model as parameters.
 
-The columns in the last file **"k-mers_and_coefficients_in_log_reg_model.txt"** represent (1) the k-mers used in regression model as parameter, (2) the regression model coefficients of k-mers, (3) the numbers of samples with the specific k-mers and (4) the names of the samples with the specific k-mers.
+The columns in the  **"k-mers_and_coefficients_in_(log/lin)_reg_model.txt"** represent (1) the k-mers used in regression model as parameter, (2) the regression model coefficients of k-mers, (3) the numbers of samples with the specific k-mers and (4) the names of the samples with the specific k-mers.
 
-Example of **"k-mers_and_coefficients_in_log_reg_model.txt"** file:
+Example of **"k-mers_and_coefficients_in_(log/lin)_reg_model.txt"** file:
 ```
+K-mer	coef._in_lin_reg_model	No._of_samples_with_k-mer	Samples_with_k-mer
 CAAGGCACTTTCC	-2.68E-01	143	| PA2_F7 1D4 6G2 PA4_A1 6F4 5H2 PA2_C6 PA3_A4 PA3_A10 1P3 PA4_F2 PA4_F4 PA4_B2 PA2_C3 PA2_B4 6F2 6B5 PA3_B10 PA3_H10 PA2_E4 PA2_G7 PA4_A4 7P3 PA2_C8 PA3_C8 PA3_E1 PA2_D9 PA2_C2 PA2_B2 PA2_A2 PA2_D1 PA4_D4 PA2_B1 PA3_D10 PA3_F1 PA2_G8 PA2_A4 6G5 PA2_H12 PA2_H1 PA2_C9 PA4_G2 PA2_F8 PA4_A5 PA4_E2 PA4_F1 PA2_G12 PA3_G2 PA3_F6 PA3_E5 PA3_E10 PA3_B6 PA2_F6 PA2_B10 PA2_A10 PA2_A3 6G1 PA2_H6 PA3_F4 PA4_E4 PA4_B3 PA4_H4 PA4_H1 PA3_H11 PA4_E1 PA2_E1 PA2_A9 1D3b 6E9 6F3 PA3_H2 PA3_G6 PA3_G4 5C6 PA2_A1 PA2_A7 PA2_B3 PA2_D3 PA4_D1 PA2_F1 PA4_C1 PA2_G4 PA3_B3 PA2_E6 PA2_F3 1P4 6F7 PA3_F3 PA2_E8 PA3_C2 PA3_A6 PA3_A5 PA2_H4 PA2_C7 PA4_D2 PA3_F10 PA3_B8 PA4_H2 5D7 PA3_B4 PA2_D6 PA3_E8 PA3_E7 PA3_H9 PA2_D7 PA3_C9 PA2_B8 5F7 PA3_G10 5D4 PA4_C2 PA3_H5 PA3_D6 PA2_E7 5H6 PA3_A8 PA3_A11 PA3_A7 6E7 PA3_F8 6B9 PA3_H4 PA3_H3 PA3_G1 PA3_E4 PA3_G8 6A1 PA3_B1 PA3_A1 7D2 7D1 1D3a 1D6 5E7 PA2_C10 PA3_D5 PA2_B7 PA3_F7 PA2_F12 PA3_C7 PA3_A2 PA2_F4 PA4_G4
 CTGCCGGGAACGA	0.00E+00	24	| PA2_B2 PA3_D8 5D4 6F9 PA3_D1 PA3_C3 PA3_D7 PA3_H7 6E7 PA3_G9 6B1 PA3_D3 PA2_G6 PA3_G8 PA3_C1 6A1 PA3_D2 PA3_C5 PA2_H3 PA2_F9 PA3_F7 PA2_F12 PA3_C7 PA3_A2
 AACGCTTTCGGAC	0.00E+00	36	| 5B8 PA2_G3 7P1 PA2_F3 PA2_A8 PA2_E3 PA3_D8 PA3_B2 5C3 PA3_A8 6B7 6F9 PA3_D1 PA3_C10 PA3_C3 PA3_D7 PA3_B7 PA3_H7 6E7 6B9 PA3_G9 6B1 PA3_D3 PA2_G6 6A1 PA3_F9 PA3_D2 PA2_E9 PA3_G7 PA3_C5 PA2_H3 PA3_D5 PA3_F7 PA2_F12 PA3_C7 PA3_A2
@@ -155,5 +156,6 @@ GCCTGTAGGTCGC	0.00E+00	69	| 1D4 6F4 PA3_A4 1P3 PA4_F4 PA4_B2 PA2_E4 PA2_B9 7P3 P
 TCGCGGTCTACGA	0.00E+00	42	| PA2_C9 6E5 PA3_B4 5D4 5I6 PA2_D10 6B7 PA3_D1 PA3_C10 PA3_C4 PA3_A11 PA3_C3 PA3_A7 PA3_D7 PA3_H7 6E7 PA3_F8 6B9 PA3_G9 6B1 PA3_D3 PA3_F5 PA2_F2 PA2_E2 PA2_G6 PA3_H3 PA3_G1 PA3_G8 PA3_C1 6A1 PA3_F9 PA3_D2 PA2_E9 PA3_C5 PA2_H3 5I3 PA2_B7 PA3_F7 PA3_C7 PA3_A2 PA2_F4 PA2_G1
 CCTTGACCGAACG	7.17E-01	35	| 1D4 PA2_B9 PA2_B2 PA4_A5 1C9 PA4_C3 PA4_G3 PA4_D3 PA4_E3 PA4_F3 5D4 5I6 PA3_D1 PA3_C3 PA3_D7 PA3_H7 PA3_G9 6B1 PA3_D3 PA3_H4 PA2_G6 PA3_G8 6A1 PA3_D2 PA3_C5 PA2_H3 PA3_B1 PA3_A1 7D2 7D1 5I3 PA2_F9 PA3_F7 PA3_C7 PA3_A2
 ```
+
 
 ## Contact
