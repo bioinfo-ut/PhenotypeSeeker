@@ -141,9 +141,7 @@ The regression model is outputted in **"log_reg_model.pkl"** or **"lin_reg_model
 
 The **"summary_of_(log\lin)_reg_analysis.txt"** contains the information about conducted regression analysis. For example the regularisation parameter choosen, the actual vs predicted phenotypes of test set samples and the model-evaluation metrics.
 
-Follows the file **"k-mers_and_coefficients_in_(log/lin)_reg_model.txt"**, which contains the the coefficents of k-mers used in regression model as parameters.
-
-The columns in the  **"k-mers_and_coefficients_in_(log/lin)_reg_model.txt"** represent (1) the k-mers used in regression model as parameter, (2) the regression model coefficients of k-mers, (3) the numbers of samples with the specific k-mers and (4) the names of the samples with the specific k-mers.
+The columns in the following file **"k-mers_and_coefficients_in_(log/lin)_reg_model.txt"** represent (1) the k-mers used in regression model as parameter, (2) the regression model coefficients of k-mers, (3) the numbers of samples with the specific k-mers and (4) the names of the samples with the specific k-mers.
 
 Example of **"k-mers_and_coefficients_in_(log/lin)_reg_model.txt"** file:
 ```
