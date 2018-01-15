@@ -137,15 +137,18 @@ AGCGCTGCTGCGCGAT	0.02	9.92E-01	2	| PA4_B3 PA4_H2
 The columns in "t-test_results.txt" represent (1) the tested k-mer sequences, (2) the Welch's t-test statistic values, (3) the pvalues of t-test statistics, (4) the mean phenotype values of samples missing the specific k-mers, (5) the mean phenotype values of samples having the specific k-mers, (6) the numbers of samples with the specific k-mers and (7) the names of the samples with the specific k-mers.
 
 Example of "chi-squared_test_results.txt" file:
-
-ACCTCTGGGTGGCGAA	0.18	9.13E-01	3	| PA2_F7 PA2_G7 PA3_F7
-AGCGCTACTCTTGATC	0.07	9.67E-01	8	| PA4_H4 PA3_G6 PA3_G4 PA3_A5 PA4_D2 PA3_G3 PA3_G9 PA3_G8
-AAACTTTCGACACAGC	0.18	9.13E-01	3	| PA2_A2 PA2_A1 PA3_D6
-GACCTGTCCCTCTCCA	0.18	9.13E-01	3	| PA2_B10 PA2_H6 PA2_C10
-GCTCAATCGCTAAAGA	2.42	2.98E-01	2	| PA3_F10 PA3_C1
-AAGTCGCTGGATTTCG	4.73	9.39E-02	7	| 1C9 PA3_A8 6E7 PA3_F7 PA2_F12 PA3_C7 PA3_A2
-GGCACCCCGTTGGCCA	3.96	1.38E-01	9	| 6E5 1P4 PA3_B8 PA3_C9 PA2_B8 5I6 PA3_C4 PA2_F9 PA2_F4
-AGCGCTGCTGCGCGAT	0.02	9.92E-01	2	| PA4_B3 PA4_H2
+```
+CGAGCTCCCGGCA	24.86	3.14E-62	5.0	-0.54	4	| PA3_F5 PA2_F2 PA2_E2 PA2_G1
+ATTGTCAAGGCGC	-10.89	4.06E-11	-3.27	-0.38	3	| PA4_F4 PA4_B2 PA2_H6
+TTGCGAAGATAAA	24.47	1.71E-61	5.0	-0.48	2	| PA2_G6 5I3
+AGCAAGGTGAGTC	-11.48	1.20E-23	-3.0	-0.39	3	| PA2_C8 PA3_C8 PA3_E1
+CCATTTTTGTTAC	-9.02	5.81E-10	-2.85	-0.38	4	| PA2_C2 PA2_A2 PA3_B5 PA2_A1
+CGAACTATAACCC	24.47	1.69E-61	5.0	-0.48	2	| PA3_G8 PA3_G7
+GTCGCCCTCTGGA	-8.2	3.86E-06	-3.03	-0.37	4	| PA4_F4 PA3_H10 PA4_F1 PA3_H11
+AATGCCTACGAAG	-11.46	1.30E-23	-3.0	-0.4	2	| PA4_A4 PA4_A5
+CTGTTGGATCCCA	6.88	2.79E-06	3.24	-0.68	13	| PA3_E8 PA2_D10 PA3_D1 PA3_C10 PA3_C3 PA3_D7 PA3_H7 PA3_D3 PA3_F9 PA2_E9 PA3_C5 PA2_H3 PA4_G1
+CACAACCCCAACA	-11.48	1.20E-23	-3.0	-0.39	3	| PA2_C8 PA2_C9 PA2_C4
+```
 
 The following file **"k-mers_filtered_by_pvalue.txt"** contains the subset of k-mers having the p-value lower than the p-value cut-off specified by "--pvalue" (with -B or -FDR) option(s).
 
