@@ -122,7 +122,7 @@ Then the **"chi-squared_test_results.txt"** or **"t-test_results.txt"** file is 
 
 The columns in "chi-squared_test_results.txt" represent (1) the tested k-mer sequence, (2) chi-sqared statistic value, (3) the pvalue of chi-squared statistic, (4) number of samples with the specific k-mer and (5) the names of the samples with the specific k-mer.
 
-Example of "chi-squared_test_results.txt" file:
+Example of **"chi-squared_test_results.txt"** file:
 ```
 ACCTCTGGGTGGCGAA	0.18	9.13E-01	3	| PA2_F7 PA2_G7 PA3_F7
 AGCGCTACTCTTGATC	0.07	9.67E-01	8	| PA4_H4 PA3_G6 PA3_G4 PA3_A5 PA4_D2 PA3_G3 PA3_G9 PA3_G8
@@ -133,6 +133,13 @@ AAGTCGCTGGATTTCG	4.73	9.39E-02	7	| 1C9 PA3_A8 6E7 PA3_F7 PA2_F12 PA3_C7 PA3_A2
 GGCACCCCGTTGGCCA	3.96	1.38E-01	9	| 6E5 1P4 PA3_B8 PA3_C9 PA2_B8 5I6 PA3_C4 PA2_F9 PA2_F4
 AGCGCTGCTGCGCGAT	0.02	9.92E-01	2	| PA4_B3 PA4_H2
 ```
+The following file **"k-mers_filtered_by_pvalue.txt"** contains the subset of k-mers having the p-value lower than the p-value cut-off specified by "--pvalue" (with -B or -FDR) option(s).
+
+Follows the regression analysis with top "--n_kmers" lowest p-valued k-mers from **"k-mers_filtered_by_pvalue.txt"** file.
+
+The regression model is outputted in **"log_reg_model.pkl"** or **"lin_reg_model.pkl"** file depending on which type of phenotype (binary or continuous accordingly) were used. 
+
+The **"summary_of_(log\lin)_reg_analysis_invinf.txt"**
 
 
 ## Contact
