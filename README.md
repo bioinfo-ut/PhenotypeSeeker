@@ -136,7 +136,7 @@ AGCGCTGCTGCGCGAT	0.02	9.92E-01	2	| PA4_B3 PA4_H2
 
 The columns in "t-test_results.txt" represent (1) the tested k-mer sequences, (2) the Welch's t-test statistic values, (3) the pvalues of t-test statistics, (4) the mean phenotype values of samples missing the specific k-mers, (5) the mean phenotype values of samples having the specific k-mers, (6) the numbers of samples with the specific k-mers and (7) the names of the samples with the specific k-mers.
 
-Example of "chi-squared_test_results.txt" file:
+Example of "t-test_results.txt" file:
 ```
 CGAGCTCCCGGCA	24.86	3.14E-62	5.0	-0.54	4	| PA3_F5 PA2_F2 PA2_E2 PA2_G1
 ATTGTCAAGGCGC	-10.89	4.06E-11	-3.27	-0.38	3	| PA4_F4 PA4_B2 PA2_H6
