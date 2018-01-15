@@ -120,7 +120,7 @@ Those distances are used to calculate GSC (Gerstein, Sonnhammer and Chothia) wei
 
 Then the **"chi-squared_test_results.txt"** or **"t-test_results.txt"** file is created depending on which type of phenotype (binary or continuous accordingly) were used. 
 
-The columns in "chi-squared_test_results.txt" represent (1) the tested k-mer sequence, (2) chi-sqared statistic value, (3) the pvalue of chi-squared statistic, (4) number of samples with the specific k-mer and (5) the names of the samples with the specific k-mer.
+The columns in "chi-squared_test_results.txt" represent (1) the tested k-mer sequences, (2) the chi-squared statistic values, (3) the pvalues of chi-squared statistics, (4) the numbers of samples with the specific k-mers and (5) the names of the samples with the specific k-mers.
 
 Example of **"chi-squared_test_results.txt"** file:
 ```
@@ -139,7 +139,9 @@ Follows the regression analysis with top "--n_kmers" lowest p-valued k-mers from
 
 The regression model is outputted in **"log_reg_model.pkl"** or **"lin_reg_model.pkl"** file depending on which type of phenotype (binary or continuous accordingly) were used. 
 
-The **"summary_of_(log\lin)_reg_analysis_invinf.txt"**
+The **"summary_of_(log\lin)_reg_analysis.txt"** contains the information about conducted regression analysis. For example the regularisation parameter choosen, the actual vs predicted phenotypes of test set samples and the model-evaluation metrics.
+
+The columns in the last file **"k-mers_and_coefficients_in_(log/lin)_reg_model.txt"** represent (1) the k-mers used in regression model as parameter, (2) the regression model coefficients of k-mers, (3) the numbers of samples with the specific k-mers and (4) the names of the samples with the specific k-mers.
 
 
 ## Contact
