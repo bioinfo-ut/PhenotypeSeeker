@@ -182,7 +182,31 @@ CCTTGACCGAACG	7.17E-01	35	| 1D4 PA2_B9 PA2_B2 PA4_A5 1C9 PA4_C3 PA4_G3 PA4_D3 PA
 Therefore the "PhenotypeSeeker modeling" outputfiles "(lin/log)_reg_model.pkl" and "k-mers_and_coefficients_in_(log/lin)_reg_model.txt" are first needed to run the "PhenotypeSeeker prediction".
 
 
-To create the phenotype prediction model with PhenotypeSeeker, open the command-line and type in:
+To predict the phenotypes of samples under study, open the command-line and type in:
+```
+phenotypeseeker prediction inputfile1 inputfile2
+```
+Where: 
+	"inputfile1" is a text file containing tab separated lists of (1) sampleID's and (2) sample FastA/FastQ file addresses;
+	"inputfile2" is a text file containing tab separated lists of (1) the names of the phenotypes to predict, (2) corresponding model ("(lin/log)_reg_model.pkl") addresses and (3) corresponding k-mer list ("k-mers_and_coefficients_in_*_reg_model.txt") addresses.
 
+Example of "inputfile1":
+```
+PA3_H5  /storage8/erkia/data/pseudomonas_genomes/PA3_H5.fasta
+PA3_D10     /storage8/erkia/pseudomonas_genomes/PA3_D10.fasta
+PA3_A8 /storage8/erkia/pseudomonas_genomes/PA3_A8.fasta
+PA4_F4 /storage8/erkia/pseudomonas_genomes/PA4_F4.fasta
+PA4_B2     /storage8/erkia/pseudomonas_genomes/PA4_B2.fasta
+PA4_A2  /storage8/erkia/pseudomonas_genomes/PA4_A2.fasta
+5B8  /storage8/erkia/pseudomonas_genomes/5B8.fasta
+PA3_F9  /storage8/erkia/pseudomonas_genomes/PA3_F9.fasta
+PA3_G9  /storage8/erkia/pseudomonas_genomes/PA3_G9.fasta
+PA3_D2   /storage8/erkia/pseudomonas_genomes/PA3_D2.fasta
+```
+Example of "inputfile2":
+```
+Ciprofloxacin	/storage8/erkia/PhenotypeSeeker/log_reg_model_Ciprofloxacin.pkl 	/storage8/erkia/k-mers_and_coefficients_in_log_reg_model_Ciprofloxacin.txt
+Imipenem	/storage8/erkia/log_reg_model_Imipenem.pkl 	/storage8/erkia/k-mers_and_coefficients_in_log_reg_model_Imipenem.txt
+```
 
 ## Contact
