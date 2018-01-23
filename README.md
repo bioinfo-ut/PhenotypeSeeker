@@ -187,7 +187,9 @@ To predict the phenotypes of samples under study, open the command-line and type
 phenotypeseeker prediction inputfile1 inputfile2
 ```
 Where: 
+
 	"inputfile1" is a text file containing tab separated lists of (1) sampleID's and (2) sample FastA/FastQ file addresses;
+	
 	"inputfile2" is a text file containing tab separated lists of (1) the names of the phenotypes to predict, (2) corresponding model ("(lin/log)_reg_model.pkl") addresses and (3) corresponding k-mer list ("k-mers_and_coefficients_in_*_reg_model.txt") addresses.
 
 Example of "inputfile1":
