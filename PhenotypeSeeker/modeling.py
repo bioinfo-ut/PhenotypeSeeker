@@ -7,6 +7,7 @@ __email__ = "erki.aun@ut.ee"
 
 from subprocess import call, Popen, PIPE
 import math
+import sys
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 
