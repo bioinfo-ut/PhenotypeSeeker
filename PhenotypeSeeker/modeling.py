@@ -198,7 +198,6 @@ def mash_caller(samples_info):
     for line in iter(process.stderr.readline, ''):
         Printer(line.strip())
     Printer("")
-    call(mash_args)
     with open("mash_distances.mat", "w+") as f1:
         call(["mash", "dist", "reference.msh", "reference.msh"], stdout=f1)
 
@@ -1257,7 +1256,8 @@ def modeling(args):
     kmers_passed_all_phenotypes = kmer_filtering_by_pvalue(
         test_result_files, args.pvalue, n_o_p, phenotype, 
         nr_of_kmers_tested_all_phenotypes, pvalues_all_phenotypes, phenotypes,
-        args.n_kmers, args.mpheno, args.FDR, args.Bonferroni, headerline
+        args.n_kmers, kmers_to_analyse, args.mpheno, args.FDR, args.Bonferroni, 
+        headerline
         )
     
     if phenotype == "continuous":
