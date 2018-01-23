@@ -33,7 +33,7 @@ class Printer():
 def write_to_stderr_if(previousPercent, currentKmerNum, totalKmers, text, phenotype=""):
     currentPercent = currentKmerNum/totalKmers*100    
     if int(currentPercent) > previousPercent:
-        output = "\t" + phenotype + "%d%% of %d " + text % (currentPercent,totalKmers)
+        output = "\t" + phenotype + "%d%% of %d " % (currentPercent,totalKmers) + text
         Printer(output)
         previousPercent = currentPercent
     currentKmerNum += 1
