@@ -33,7 +33,7 @@ class Printer():
 def write_to_stderr_if(previousPercent, currentKmerNum, totalKmers, text, phenotype=""):
     currentPercent = currentKmerNum/totalKmers*100    
     if int(currentPercent) > previousPercent:
-        output = "\t" + phenotype + "%d%% of %d tests conducted." % (currentPercent,totalKmers)
+        output = "\t" + phenotype + "%d%% of %d " + text % (currentPercent,totalKmers)
         Printer(output)
         previousPercent = currentPercent
     currentKmerNum += 1
@@ -796,7 +796,6 @@ def linear_regression(
     # presence/absence (0/1) in samples are used as independent
     # parameters, resistance value (continuous) is used as dependent
     # parameter.
-    sys.stderr.write("\nConducting the linear regression analysis...\n")
     if not phenotypes_to_analyze:
         phenotypes_to_analyze = range(1,number_of_phenotypes+1)
     if len(phenotypes_to_analyze) > 1:
@@ -989,7 +988,6 @@ def logistic_regression(
 	    phenotypes, use_of_weights=False, phenotypes_to_analyze=False, 
 	    headerline=False
 	    ):
-    sys.stderr.write("\nConducting the logistic regression analysis...\n")
     # Applies logistic regression with Lasso regularization on k-mers
     # that passed the filtering by p-value of statistical test. K-mers
     # presence/absence (0/1) in samples are used as independent

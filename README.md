@@ -66,7 +66,7 @@ https://github.com/marbl/Mash/blob/master/INSTALL.txt
 ```
 ## Examples
 
-### Launching the PhenotypeSeeker
+### Launching the "PhenotypeSeeker modeling"
 
 To create the phenotype prediction model with PhenotypeSeeker, open the command-line and type in:
 ```
@@ -107,7 +107,8 @@ To limit the analysis on a selection of phenotypes present in "data.pheno", spec
 ```
 phenotypeseeker modeling data.pheno --mpheno 1 3
 ```
-### Outputfiles of PhenotypeSeeker
+### Outputfiles of PhenotypeSeeker modeling
+
 After launcing the PhenotypeSeeker it starts counting the k-mers from input samples. 
 
 To save the temporary k-mer lists, the temporary repository **"K-mer_lists"** is created.
@@ -171,6 +172,15 @@ GCCTGTAGGTCGC	0.00E+00	69	| 1D4 6F4 PA3_A4 1P3 PA4_F4 PA4_B2 PA2_E4 PA2_B9 7P3 P
 TCGCGGTCTACGA	0.00E+00	42	| PA2_C9 6E5 PA3_B4 5D4 5I6 PA2_D10 6B7 PA3_D1 PA3_C10 PA3_C4 PA3_A11 PA3_C3 PA3_A7 PA3_D7 PA3_H7 6E7 PA3_F8 6B9 PA3_G9 6B1 PA3_D3 PA3_F5 PA2_F2 PA2_E2 PA2_G6 PA3_H3 PA3_G1 PA3_G8 PA3_C1 6A1 PA3_F9 PA3_D2 PA2_E9 PA3_C5 PA2_H3 5I3 PA2_B7 PA3_F7 PA3_C7 PA3_A2 PA2_F4 PA2_G1
 CCTTGACCGAACG	7.17E-01	35	| 1D4 PA2_B9 PA2_B2 PA4_A5 1C9 PA4_C3 PA4_G3 PA4_D3 PA4_E3 PA4_F3 5D4 5I6 PA3_D1 PA3_C3 PA3_D7 PA3_H7 PA3_G9 6B1 PA3_D3 PA3_H4 PA2_G6 PA3_G8 6A1 PA3_D2 PA3_C5 PA2_H3 PA3_B1 PA3_A1 7D2 7D1 5I3 PA2_F9 PA3_F7 PA3_C7 PA3_A2
 ```
+
+
+
+### Launching the "PhenotypeSeeker prediction
+
+"PhenotypeSeeker prediction" is intended to predict the phenotypes of input samples using the model previously created with "PhenotypeSeeker modeling". 
+
+Therefore the "PhenotypeSeeker modeling" outputfiles "(lin/log)_reg_model.pkl" and "k-mers_and_coefficients_in_(log/lin)_reg_model.txt" are first needed to run the "PhenotypeSeeker prediction".
+
 
 
 ## Contact
