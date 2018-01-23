@@ -704,7 +704,7 @@ def kmer_filtering_by_pvalue(
         if headerline:
             f2 = open(
             	"k-mers_filtered_by_pvalue_" + phenotypes[k-1] + ".txt", "w+")
-                phenotype = phenotypes[k-1] + ": "
+            phenotype = phenotypes[k-1] + ": "
         elif number_of_phenotypes > 1:
             f2 = open("k-mers_filtered_by_pvalue_" + str(k) + ".txt", "w+")
             phenotype = "phenotype " + str(k) + ": "
