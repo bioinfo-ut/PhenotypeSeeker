@@ -72,7 +72,7 @@ To create the phenotype prediction model with PhenotypeSeeker, open the command-
 ```
 phenotypeseeker modeling data.pheno 
 ```
-Where "data.pheno" is an input text file containing tab separated lists of sampleID's, sample FastA/FastQ file addresses and sample phenotype values (one or more column).
+Where "data.pheno" is an input text file containing tab separated lists of (1) sampleID's, (2) sample FastA/FastQ file addresses and (3) sample phenotype values (one or more column).
 
 Example of "data.pheno" inputfile with binary resistance phenotypes for 5 antibiotics:
 ```
@@ -107,9 +107,9 @@ To limit the analysis on a selection of phenotypes present in "data.pheno", spec
 ```
 phenotypeseeker modeling data.pheno --mpheno 1 3
 ```
-### Outputfiles of PhenotypeSeeker modeling
+#### Outputfiles of PhenotypeSeeker modeling
 
-After launcing the PhenotypeSeeker it starts counting the k-mers from input samples. 
+After launcing the PhenotypeSeeker modeling it starts counting the k-mers from input samples. 
 
 To save the temporary k-mer lists, the temporary repository **"K-mer_lists"** is created.
 
@@ -190,7 +190,7 @@ Where:
 
 "inputfile1" is a text file containing tab separated lists of (1) sampleID's and (2) sample FastA/FastQ file addresses;
 
-"inputfile2" is a text file containing tab separated lists of (1) the names of the phenotypes to predict, (2) corresponding model ("(lin/log)_reg_model.pkl") addresses and (3) corresponding k-mer list ("k-mers_and_coefficients_in_*_reg_model.txt") addresses.
+"inputfile2" is a text file containing tab separated lists of (1) the names of the phenotypes to predict, (2) corresponding model ("(lin/log)_reg_model.pkl") addresses and (3) corresponding k-mer list ("k-mers_and_coefficients_in_(log/lin)_reg_model.txt") addresses.
 
 Example of "inputfile1":
 ```
@@ -209,6 +209,35 @@ Example of "inputfile2":
 ```
 Ciprofloxacin	/storage8/erkia/PhenotypeSeeker/log_reg_model_Ciprofloxacin.pkl 	/storage8/erkia/PhenotypeSeeker/k-mers_and_coefficients_in_log_reg_model_Ciprofloxacin.txt
 Imipenem	/storage8/erkia/PhenotypeSeeker/log_reg_model_Imipenem.pkl 	/storage8/erkia/PhenotypeSeeker/k-mers_and_coefficients_in_log_reg_model_Imipenem.txt
+```
+#### Outputfiles of PhenotypeSeeker prediction
+
+After launcing the "PhenotypeSeeker prediction" it starts counting the k-mers from input samples, followed by the detection of presence or absence of the model specific k-mers in each sample.
+
+To save the temporary k-mer lists, the temporary repository "K-mer_lists" is created.
+
+The data of model specific k-mers presence or absence in each sample is used to predict the phenotypes for samples.
+
+The results of predictions are saved to **"predictions_(phenotype_name).txt"**.
+
+Example of **"predictions_(phenotype_name).txt"**:
+```
+Sample_ID	predicted_phenotype
+PA3_F11	1
+PA3_C4	0	
+PA2_G8	0
+PA4_C1	1
+5H6	1
+PA3_E7	1
+1D4	0
+PA3_B1	0
+PA3_A1	0
+7D2	0
+7D1	0
+5B7	1
+6D7	0
+PA4_H1	1
+PA3_E6	0
 ```
 
 ## Contact
