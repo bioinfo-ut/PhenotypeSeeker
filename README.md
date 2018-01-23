@@ -205,8 +205,8 @@ PA3_D2   /storage8/erkia/pseudomonas_genomes/PA3_D2.fasta
 ```
 Example of "inputfile2":
 ```
-Ciprofloxacin	/storage8/erkia/PhenotypeSeeker/log_reg_model_Ciprofloxacin.pkl 	/storage8/erkia/k-mers_and_coefficients_in_log_reg_model_Ciprofloxacin.txt
-Imipenem	/storage8/erkia/log_reg_model_Imipenem.pkl 	/storage8/erkia/k-mers_and_coefficients_in_log_reg_model_Imipenem.txt
+Ciprofloxacin	/storage8/erkia/PhenotypeSeeker/log_reg_model_Ciprofloxacin.pkl 	/storage8/erkia/PhenotypeSeeker/k-mers_and_coefficients_in_log_reg_model_Ciprofloxacin.txt
+Imipenem	/storage8/erkia/PhenotypeSeeker/log_reg_model_Imipenem.pkl 	/storage8/erkia/PhenotypeSeeker/k-mers_and_coefficients_in_log_reg_model_Imipenem.txt
 ```
 
 ## Contact
