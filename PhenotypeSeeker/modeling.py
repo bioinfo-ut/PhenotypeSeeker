@@ -124,8 +124,8 @@ def kmer_frequencies(samples):
 def kmer_filtering_by_frequency(dict_of_frequencies, min_freq, max_freq):
     #Filters k-mers by their frequency in samples.
     sys.stderr.write(
-        "\nFiltering the k-mers based on their \
-        presence frequencies in samples:\n"
+        "\nFiltering the k-mers based on their " \
+        "presence frequencies in samples:\n"
         )
     kmers_passed = 0
     totalKmers = len(dict_of_frequencies)
@@ -249,8 +249,8 @@ def newick_to_GSC_weights(newick_tree):
     # Calculating Gerstein Sonnhammer Coathia weights from Newick 
     # string. Returns dictionary where sample names are keys and GSC 
     # weights are values.
-    sys.stderr.write("Calculating the Gerstein Sonnhammer Coathia \
-        weights from mash distance matrix...")
+    sys.stderr.write("Calculating the Gerstein Sonnhammer Coathia " \
+        "weights from mash distance matrix...")
     tree=LoadTree(newick_tree)
     weights=GSC(tree)
     for item in weights:
