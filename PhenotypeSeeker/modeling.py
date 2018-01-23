@@ -30,7 +30,7 @@ class Printer():
         sys.stderr.flush()
 
 
-def write_to_stderr_if(previousPercent, currentKmerNum, totalKmers, text):
+def write_to_stderr_if(previousPercent, currentKmerNum, totalKmers, text, phenotype=""):
     currentPercent = currentKmerNum/totalKmers*100    
     if int(currentPercent) > previousPercent:
         output = "\t" + phenotype + "%d%% of %d tests conducted." % (currentPercent,totalKmers)
@@ -361,7 +361,7 @@ def weighted_t_test(
                 	)
                 previousPercent, currentKmerNum = write_to_stderr_if(
                     previousPercent, currentKmerNum, 
-                    kmers_to_analyse, "tests conducted."
+                    kmers_to_analyse, "tests conducted.", phenotype
                     )
         pvalues_all_phenotypes.append(pvalues)
         nr_of_kmers_tested_all_phenotypes.append(counter)
@@ -445,7 +445,7 @@ def t_test(
                 	)
                 previousPercent, currentKmerNum = write_to_stderr_if(
                     previousPercent, currentKmerNum, 
-                    kmers_to_analyse, "tests conducted."
+                    kmers_to_analyse, "tests conducted.", phenotype
                     )
         pvalues_all_phenotypes.append(pvalues)
         nr_of_kmers_tested_all_phenotypes.append(counter)
@@ -571,7 +571,7 @@ def weighted_chi_squared(
                 	)
                 previousPercent, currentKmerNum = write_to_stderr_if(
                     previousPercent, currentKmerNum, 
-                    kmers_to_analyse, "tests conducted."
+                    kmers_to_analyse, "tests conducted.", phenotype
                     )
         pvalues_all_phenotypes.append(pvalues)
         nr_of_kmers_tested_all_phenotypes.append(counter)
@@ -676,7 +676,7 @@ def chi_squared(
                 	)
                 previousPercent, currentKmerNum = write_to_stderr_if(
                     previousPercent, currentKmerNum, 
-                    kmers_to_analyse, "tests conducted."
+                    kmers_to_analyse, "tests conducted.", phenotype
                     )
         pvalues_all_phenotypes.append(pvalues)
         nr_of_kmers_tested_all_phenotypes.append(counter)
@@ -740,7 +740,7 @@ def kmer_filtering_by_pvalue(
                         number_of_kmers += 1
                 previousPercent, currentKmerNum = write_to_stderr_if(
                     previousPercent, currentKmerNum, 
-                    kmers_to_analyse, "k-mers filtered."
+                    kmers_to_analyse, "k-mers filtered.", phenotype
                     )
         elif FDR:
             max_pvalue_by_FDR = 0
@@ -762,7 +762,7 @@ def kmer_filtering_by_pvalue(
                         number_of_kmers += 1
                 previousPercent, currentKmerNum = write_to_stderr_if(
                     previousPercent, currentKmerNum, 
-                    kmers_to_analyse, "k-mers filtered."
+                    kmers_to_analyse, "k-mers filtered.", phenotype
                     )
         else:
             for line in f1:
@@ -775,7 +775,7 @@ def kmer_filtering_by_pvalue(
                         number_of_kmers += 1
                 previousPercent, currentKmerNum = write_to_stderr_if(
                     previousPercent, currentKmerNum, 
-                    kmers_to_analyse, "k-mers filtered."
+                    kmers_to_analyse, "k-mers filtered.", phenotype
                     )
         if len(phenotypes_to_analyze) > 1 and k != phenotypes_to_analyze[-1]:
             sys.stderr.write("\n")
