@@ -218,7 +218,7 @@ To save the temporary k-mer lists, the temporary repository "K-mer_lists" is cre
 
 The data of model specific k-mers presence or absence in each sample is used to predict the phenotypes for samples.
 
-The results of predictions are saved to **"predictions_(phenotype_name).txt"**.
+The results of predictions are saved into **"predictions_(phenotype_name).txt"**.
 
 Example of **"predictions_(phenotype_name).txt"**:
 ```
