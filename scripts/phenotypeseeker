@@ -108,9 +108,9 @@ def Main():
     	help="Apply False Discovery Rate (FDR) correction in k-mer filtering"
     	)
     kmer_selection_by_pval.add_argument(
-        '--n_kmers', metavar='', type=int, default=10000, 
+        '--n_kmers', metavar='', type=int, default=1000, 
         help='The maximum number of (lowest p-valued) k-mers selected for \
-        regression model (default = 10,000).'
+        regression model (default = 1000).'
         )
 
     regression_models.add_argument(

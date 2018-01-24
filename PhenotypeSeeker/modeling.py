@@ -1279,11 +1279,11 @@ def assembling(kmers_passed_all_phenotypes, phenotypes, number_of_phenotypes, ph
         phenotypes_to_analyze = range(1,number_of_phenotypes+1)
 
     if len(phenotypes_to_analyze) > 1:
-        sys.stderr.write("\nAssembling k-mers:\n")
+        sys.stderr.write("Assembling k-mers:\n")
     elif headerline:
-        sys.stderr.write("\nAssembling k-mers of " +  phenotypes[k-1] + "...\n")
+        sys.stderr.write("Assembling k-mers of " +  phenotypes[k-1] + "...\n")
     else:
-        sys.stderr.write("\nAssembling k-mers...\n")
+        sys.stderr.write("Assembling k-mers...\n")
 
     for j, k in enumerate(phenotypes_to_analyze):
         #Open files to write the results of k-mer assembling
