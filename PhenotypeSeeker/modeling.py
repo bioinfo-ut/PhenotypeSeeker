@@ -1193,10 +1193,6 @@ def logistic_regression(
         f1.close()
         f2.close()
 
-with open("1000kmeeri") as kmers:
-    for line in kmers:
-        reads.append(line.strip())
-
 def ReverseComplement(kmer):
     # Returns the reverse complement of kmer
     seq_dict = {'A':'T','T':'A','G':'C','C':'G'}
