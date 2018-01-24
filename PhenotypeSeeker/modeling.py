@@ -492,10 +492,7 @@ def weighted_chi_squared(
                 phenotype = ""
             outputfiles.append(outputfile)
             for line in f1:
-                samples_x = []                
-                counter += 1
-                if counter == 300000:
-                    break
+                samples_x = []
 
                 line=line.strip()
                 kmer=line.split()[0]
