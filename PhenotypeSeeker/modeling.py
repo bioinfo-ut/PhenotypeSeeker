@@ -5,6 +5,7 @@ __version__ = "1.0"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
+from itertools import permutations
 from subprocess import call, Popen, PIPE
 import math
 import sys
@@ -493,6 +494,8 @@ def weighted_chi_squared(
             for line in f1:
                 samples_x = []                
                 counter += 1
+                if counter == 300000:
+                    break
 
                 line=line.strip()
                 kmer=line.split()[0]
@@ -796,12 +799,17 @@ def linear_regression(
     # presence/absence (0/1) in samples are used as independent
     # parameters, resistance value (continuous) is used as dependent
     # parameter.
+
     if not phenotypes_to_analyze:
         phenotypes_to_analyze = range(1,number_of_phenotypes+1)
+
     if len(phenotypes_to_analyze) > 1:
         sys.stderr.write("\nConducting the linear regression analysis:\n")
+    elif headerline:
+        sys.stderr.write("\nConducting the linear regression analysis of " +  phenotypes[k-1] + "...\n")
     else:
         sys.stderr.write("\nConducting the linear regression analysis...\n")
+
     for j, k in enumerate(phenotypes_to_analyze):
         #Open files to write results of	linear regression
         if headerline:
@@ -810,7 +818,8 @@ def linear_regression(
             f2 = open("k-mers_and_coefficients_in_lin_reg_model_" 
             	     + phenotypes[k-1] + ".txt", "w+")
             model_filename = "lin_reg_model_" + phenotypes[k-1] + ".pkl"
-            sys.stderr.write("\tregression analysis of " +  phenotypes[k-1] + "...\n")
+            len(phenotypes_to_analyze) > 1:
+                sys.stderr.write("\tregression analysis of " +  phenotypes[k-1] + "...\n")
         elif number_of_phenotypes > 1:
             f1 = open("summary_of_lin_reg_analysis" + str(k) + ".txt", "w+")
             f2 = open("k-mers_and_coefficients_in_lin_reg_model_" 
@@ -995,10 +1004,14 @@ def logistic_regression(
     # parameter.
     if not phenotypes_to_analyze:
         phenotypes_to_analyze = range(1,number_of_phenotypes+1)
+    
     if len(phenotypes_to_analyze) > 1:
         sys.stderr.write("\nConducting the logistic regression analysis:\n")
+    elif headerline:
+        sys.stderr.write("\nConducting the logistic regression analysis of " +  phenotypes[k-1] + "...\n")
     else:
         sys.stderr.write("\nConducting the logistic regression analysis...\n")
+
     for j, k in enumerate(phenotypes_to_analyze):
         #Open files to write results of	logistic regression
         if headerline:
@@ -1008,7 +1021,8 @@ def logistic_regression(
             f2 = open("k-mers_and_coefficients_in_log_reg_model_" 
             	     + phenotypes[k-1] + ".txt", "w+")
             model_filename = "log_reg_model_" + phenotypes[k-1] + ".pkl"
-            sys.stderr.write("\tregression analysis of " +  phenotypes[k-1] + "...\n")
+            if len(phenotypes_to_analyze) > 1:
+                sys.stderr.write("\tregression analysis of " +  phenotypes[k-1] + "...\n")
         elif number_of_phenotypes > 1:
             f1 = open("summary_of_log_reg_analysis_" + str(k) + ".txt", "w+")
             f2 = open("k-mers_and_coefficients_in_log_reg_model_" 
@@ -1179,6 +1193,120 @@ def logistic_regression(
         f1.close()
         f2.close()
 
+with open("1000kmeeri") as kmers:
+    for line in kmers:
+        reads.append(line.strip())
+
+def ReverseComplement(kmer):
+    # Returns the reverse complement of kmer
+    seq_dict = {'A':'T','T':'A','G':'C','C':'G'}
+    return("".join([seq_dict[base] for base in reversed(kmer)]))
+
+def string_set(string_list):
+    # Removes subsequences from kmer_list
+    return set(i for i in string_list
+               if not any(i in s for s in string_list if i != s))
+
+def overlap(a, b, min_length=3):
+    # Returns the overlap of kmer_a and kmer_b if overlap equals or exceeds
+    # the min_length. Otherwise returns 0.
+    start = 0
+    while True:
+        start = a.find(b[:min_length], start)
+        if start == -1:
+            return 0
+        if b.startswith(a[start:]):
+            return len(a) - start
+        start += 1
+
+def pick_overlaps(reads, min_olap):
+    # Takes kmer_list as an input. Generates pairwise permutations of the kmers in
+    # kmer list. Finds the overlap of each pair. Returns the lists of kmers and overlap
+    # lengths of the pairs which overlap by min_olap or more nucleotides.
+    reada, readb, olap_lens = [], [], []
+    for a, b in permutations(reads, 2):
+        olap_len = overlap(a, b, min_length=min_olap)
+        if olap_len > 0:
+            reada.append(a)
+            readb.append(b)
+            olap_lens.append(olap_len)
+    return reada, readb, olap_lens
+
+def kmer_assembler(kmer_list, min_olap=None):
+    # Assembles the k-mers in kmer_list which overlap by at least min_olap nucleotides.
+
+    kmer_length = len(kmer_list[0])
+    if min_olap == None:
+        min_olap = kmer_length-1
+    assembled_kmers = []
+
+    # Adding the reverse-complement of each k-mer
+    kmer_list = kmer_list + map(ReverseComplement, kmer_list)
+
+    # Find the overlaping k-mers
+    kmers_a, kmers_b, olap_lens = pick_overlaps(kmer_list, min_olap)
+
+    while olap_lens != []:
+        set_a = set(kmers_a)
+        set_b = set(kmers_b)
+
+        # Picking out the assembled k-mers which have no sufficient
+        # overlaps anymore.
+        for item in kmer_list:
+            if (item not in set_a and item not in set_b
+                    and ReverseComplement(item) not in assembled_kmers):
+                assembled_kmers.append(item)
+
+        # Generating new kmer_list, where overlaping elements from previous
+        # kmer_list are assembled.
+        kmer_list = []
+        for i, olap in enumerate(olap_lens):
+            kmer_list.append(kmers_a[i] + kmers_b[i][olap:])
+
+        # Removing substrings of other elements from kmer_list.
+        kmer_list = list(string_set(kmer_list))
+
+        # Find the overlaping elements in new generated kmer_list.
+        kmers_a, kmers_b, olap_lens = pick_overlaps(kmer_list, min_olap)
+
+    for item in kmer_list:
+        # Picking out the assembled k-mers to assembled_kmers set.
+        if (ReverseComplement(item) not in assembled_kmers):
+            assembled_kmers.append(item)
+    return(assembled_kmers)
+
+def assembling(kmers_passed_all_phenotypes, phenotypes, number_of_phenotypes, phenotypes_to_analyze=False, headerline=False):
+    # Assembles the input k-mers and writes assembled sequences
+    # into "assembled_kmers.txt" file in FastA format.
+
+    if not phenotypes_to_analyze:
+        phenotypes_to_analyze = range(1,number_of_phenotypes+1)
+
+    if len(phenotypes_to_analyze) > 1:
+        sys.stderr.write("\nAssembling k-mers:\n")
+    elif headerline:
+        sys.stderr.write("\nAssembling k-mers of " +  phenotypes[k-1] + "...\n")
+    else:
+        sys.stderr.write("\nAssembling k-mers...\n")
+
+    for j, k in enumerate(phenotypes_to_analyze):
+        #Open files to write the results of k-mer assembling
+        if headerline:
+            f1 = open("assembled_kmers_" + phenotypes[k-1] + ".txt", "w+")
+            if len(phenotypes_to_analyze) > 1:
+                sys.stderr.write("\tassembling k-mers of " +  phenotypes[k-1] + "...\n")
+        elif number_of_phenotypes > 1:
+            f1 = open("assembled_kmers_" + str(k) + ".txt", "w+")
+            sys.stderr.write("\tassembling k-mers of " +  str(k) + "...\n")
+        else:
+            f1 = open("assembled_kmers.txt", "w+")
+        
+        kmers_to_assemble = kmers_passed_all_phenotypes[j]
+        assembled_kmers = sorted(kmer_assembler(kmers_to_assemble), key = len)[::-1]
+        for i, item in enumerate(assembled_kmers):
+            f1.write(">seq_" + str(i+1) + "_length_" + str(len(item)) + "\n" + item + "\n")
+    f1.close()
+
 def modeling(args):
 
     if args.alphas == None:
@@ -1271,3 +1399,5 @@ def modeling(args):
             weights, args.testset_size, phenotypes, args.weights,
             args.mpheno, headerline
             )
+
+    assembling(kmers_passed_all_phenotypes, phenotypes, n_o_p, args.mpheno, headerline)
