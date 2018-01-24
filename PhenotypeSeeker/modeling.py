@@ -1283,7 +1283,7 @@ def assembling(kmers_passed_all_phenotypes, phenotypes, number_of_phenotypes, ph
     elif headerline:
         sys.stderr.write("Assembling the k-mers used in regression model of " +  phenotypes[k-1] + " data...\n")
     else:
-        sys.stderr.write("Assembling the k-mers used in regression model ...\n")
+        sys.stderr.write("Assembling the k-mers used in regression model...\n")
 
     for j, k in enumerate(phenotypes_to_analyze):
         #Open files to write the results of k-mer assembling
