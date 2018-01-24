@@ -702,7 +702,7 @@ def kmer_filtering_by_pvalue(
     for j, k in enumerate(phenotypes_to_analyze):
         currentKmerNum = 1.0
         previousPercent = 0.0
-        kmers_passed = set()
+        kmers_passed = []
         f1 = open(test_results[j])
         if headerline:
             f2 = open(
@@ -738,7 +738,7 @@ def kmer_filtering_by_pvalue(
                     f2.write(line)
                     if (number_of_kmers < kmer_limit 
                             and float(list1[2]) <= max_pvalue_by_limit):
-                        kmers_passed.add(list1[0])
+                        kmers_passed.append(list1[0])
                         number_of_kmers += 1
                 previousPercent, currentKmerNum = write_to_stderr_if(
                     previousPercent, currentKmerNum, 
@@ -760,7 +760,7 @@ def kmer_filtering_by_pvalue(
                     f2.write(line)
                     if (number_of_kmers < kmer_limit 
                             and float(list1[2]) <= max_pvalue_by_limit):
-                        kmers_passed.add(list1[0])
+                        kmers_passed.append(list1[0])
                         number_of_kmers += 1
                 previousPercent, currentKmerNum = write_to_stderr_if(
                     previousPercent, currentKmerNum, 
@@ -773,7 +773,7 @@ def kmer_filtering_by_pvalue(
                     f2.write(line)
                     if (number_of_kmers < kmer_limit 
                             and float(list1[2]) <= max_pvalue_by_limit):
-                        kmers_passed.add(list1[0])
+                        kmers_passed.append(list1[0])
                         number_of_kmers += 1
                 previousPercent, currentKmerNum = write_to_stderr_if(
                     previousPercent, currentKmerNum, 
