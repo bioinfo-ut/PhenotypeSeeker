@@ -806,7 +806,7 @@ def linear_regression(
     if len(phenotypes_to_analyze) > 1:
         sys.stderr.write("\nConducting the linear regression analysis:\n")
     elif headerline:
-        sys.stderr.write("\nConducting the linear regression analysis of " +  phenotypes[k-1] + "...\n")
+        sys.stderr.write("\nConducting the linear regression analysis of " +  phenotypes[k-1] + " data...\n")
     else:
         sys.stderr.write("\nConducting the linear regression analysis...\n")
 
@@ -819,13 +819,13 @@ def linear_regression(
             	     + phenotypes[k-1] + ".txt", "w+")
             model_filename = "lin_reg_model_" + phenotypes[k-1] + ".pkl"
             if len(phenotypes_to_analyze) > 1:
-                sys.stderr.write("\tregression analysis of " +  phenotypes[k-1] + "...\n")
+                sys.stderr.write("\tregression analysis of " +  phenotypes[k-1] + " data...\n")
         elif number_of_phenotypes > 1:
             f1 = open("summary_of_lin_reg_analysis" + str(k) + ".txt", "w+")
             f2 = open("k-mers_and_coefficients_in_lin_reg_model_" 
             	     + str(k) + ".txt", "w+")
             model_filename = "lin_reg_model_" +	phenotypes[k-1] + ".pkl"
-            sys.stderr.write("\tregression analysis of phenotype " +  str(k) + "...\n")
+            sys.stderr.write("\tregression analysis of phenotype " +  str(k) + " data...\n")
         else:
             f1 = open("summary_of_lin_reg_analysis.txt", "w+")
        	    f2 = open("k-mers_and_coefficients_in_lin_reg_model.txt", "w+")
@@ -1008,7 +1008,7 @@ def logistic_regression(
     if len(phenotypes_to_analyze) > 1:
         sys.stderr.write("\nConducting the logistic regression analysis:\n")
     elif headerline:
-        sys.stderr.write("\nConducting the logistic regression analysis of " +  phenotypes[k-1] + "...\n")
+        sys.stderr.write("\nConducting the logistic regression analysis of " +  phenotypes[k-1] + " data...\n")
     else:
         sys.stderr.write("\nConducting the logistic regression analysis...\n")
 
@@ -1022,13 +1022,13 @@ def logistic_regression(
             	     + phenotypes[k-1] + ".txt", "w+")
             model_filename = "log_reg_model_" + phenotypes[k-1] + ".pkl"
             if len(phenotypes_to_analyze) > 1:
-                sys.stderr.write("\tregression analysis of " +  phenotypes[k-1] + "...\n")
+                sys.stderr.write("\tregression analysis of " +  phenotypes[k-1] + " data...\n")
         elif number_of_phenotypes > 1:
             f1 = open("summary_of_log_reg_analysis_" + str(k) + ".txt", "w+")
             f2 = open("k-mers_and_coefficients_in_log_reg_model_" 
             	     + str(k) + ".txt", "w+")
             model_filename = "log_reg_model_" +	str(k) + ".pkl"
-            sys.stderr.write("\tregression analysis of phenotype " +  str(k) + "...\n")
+            sys.stderr.write("\tregression analysis of phenotype " +  str(k) + " data...\n")
         else:
             f1 = open("summary_of_log_reg_analysis.txt", "w+")
        	    f2 = open("k-mers_and_coefficients_in_log_reg_model.txt", "w+")
@@ -1279,21 +1279,21 @@ def assembling(kmers_passed_all_phenotypes, phenotypes, number_of_phenotypes, ph
         phenotypes_to_analyze = range(1,number_of_phenotypes+1)
 
     if len(phenotypes_to_analyze) > 1:
-        sys.stderr.write("Assembling k-mers:\n")
+        sys.stderr.write("Assembling the k-mers used in regression model of:\n")
     elif headerline:
-        sys.stderr.write("Assembling k-mers of " +  phenotypes[k-1] + "...\n")
+        sys.stderr.write("Assembling the k-mers used in regression model of " +  phenotypes[k-1] + " data...\n")
     else:
-        sys.stderr.write("Assembling k-mers...\n")
+        sys.stderr.write("Assembling the k-mers used in regression model ...\n")
 
     for j, k in enumerate(phenotypes_to_analyze):
         #Open files to write the results of k-mer assembling
         if headerline:
             f1 = open("assembled_kmers_" + phenotypes[k-1] + ".txt", "w+")
             if len(phenotypes_to_analyze) > 1:
-                sys.stderr.write("\tassembling k-mers of " +  phenotypes[k-1] + "...\n")
+                sys.stderr.write("\t" + phenotypes[k-1] + "...\n")
         elif number_of_phenotypes > 1:
             f1 = open("assembled_kmers_" + str(k) + ".txt", "w+")
-            sys.stderr.write("\tassembling k-mers of " +  str(k) + "...\n")
+            sys.stderr.write("\tphenotype " + str(k) + "...\n")
         else:
             f1 = open("assembled_kmers.txt", "w+")
         
