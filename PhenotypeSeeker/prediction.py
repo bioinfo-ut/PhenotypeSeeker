@@ -10,6 +10,8 @@ import math
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 
+import numpy as np
+
 def allocate_kmers(phenotypes_to_predict):
     call(["mkdir", "-p", "K-mer_lists"])
     for phenotype in phenotypes_to_predict:
