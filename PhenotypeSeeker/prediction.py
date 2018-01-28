@@ -11,6 +11,7 @@ import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 
 import numpy as np
+from sklearn.externals import joblib
 
 def allocate_kmers(phenotypes_to_predict):
     call(["mkdir", "-p", "K-mer_lists"])
