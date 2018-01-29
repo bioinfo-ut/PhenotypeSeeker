@@ -120,7 +120,7 @@ def predict(samples_order, phenotypes_to_predict):
         with open("predictions_" + phenotype + ".txt", "w+") as f1:
             f1.write("Sample_ID\tpredicted_phenotype\n")
             for ID, prediction, proba in zip(samples_order, predictions, predict_proba): 
-                f1.write(ID + "\t" + str(prediction) + "\t" + str(proba)  + "\n")
+                f1.write(ID + "\t" + str(prediction) + "\t" + str(max(proba))  + "\n")
 
 def prediction(args):
     samples, samples_order, n_o_s = parse_prediction_input_file1(
