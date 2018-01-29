@@ -118,9 +118,9 @@ def predict(samples_order, phenotypes_to_predict):
         predict_proba = model.predict_proba(kmers_presence_matrix)
         
         with open("predictions_" + phenotype + ".txt", "w+") as f1:
-            f1.write("Sample_ID\tpredicted_phenotype\n")
+            f1.write("Sample_ID\tpredicted_phenotype\tprobability_for_predicted_class\n")
             for ID, prediction, proba in zip(samples_order, predictions, predict_proba): 
-                f1.write(ID + "\t" + str(prediction) + "\t" + str(max(proba))  + "\n")
+                f1.write(ID + "\t" + str(prediction) + "\t" + str(round(max(proba), 2))  + "\n")
 
 def prediction(args):
     samples, samples_order, n_o_s = parse_prediction_input_file1(
