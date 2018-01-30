@@ -803,7 +803,7 @@ def linear_regression(
     if len(phenotypes_to_analyze) > 1:
         sys.stderr.write("\nConducting the linear regression analysis:\n")
     elif headerline:
-        sys.stderr.write("\nConducting the linear regression analysis of " +  phenotypes[k-1] + " data...\n")
+        sys.stderr.write("\nConducting the linear regression analysis of " +  phenotypes[0] + " data...\n")
     else:
         sys.stderr.write("\nConducting the linear regression analysis...\n")
 
@@ -1005,7 +1005,7 @@ def logistic_regression(
     if len(phenotypes_to_analyze) > 1:
         sys.stderr.write("\nConducting the logistic regression analysis:\n")
     elif headerline:
-        sys.stderr.write("\nConducting the logistic regression analysis of " +  phenotypes[k-1] + " data...\n")
+        sys.stderr.write("\nConducting the logistic regression analysis of " +  phenotypes[0] + " data...\n")
     else:
         sys.stderr.write("\nConducting the logistic regression analysis...\n")
 
