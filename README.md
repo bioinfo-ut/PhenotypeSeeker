@@ -64,7 +64,7 @@ and install it following the instructions specified in
 ```
 https://github.com/marbl/Mash/blob/master/INSTALL.txt
 ```
-## Examples
+## Usage
 
 ### Launching the "PhenotypeSeeker modeling"
 
