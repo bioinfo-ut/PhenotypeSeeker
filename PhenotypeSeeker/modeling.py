@@ -31,10 +31,14 @@ class Printer():
         sys.stderr.flush()
 
 
-def write_to_stderr_if(previousPercent, currentKmerNum, totalKmers, text, phenotype=""):
+def write_to_stderr_if(
+        previousPercent, currentKmerNum, totalKmers, text, phenotype=""
+        ):
     currentPercent = currentKmerNum/totalKmers*100    
     if int(currentPercent) > previousPercent:
-        output = "\t" + phenotype + "%d%% of %d " % (currentPercent,totalKmers) + text
+        output = "\t" + phenotype + "%d%% of %d " % (
+            currentPercent,totalKmers
+            ) + text
         Printer(output)
         previousPercent = currentPercent
     currentKmerNum += 1
@@ -686,8 +690,9 @@ def chi_squared(
 
 def kmer_filtering_by_pvalue(
 	    test_results, pvalue, number_of_phenotypes, phenotype,
-	    nr_of_kmers_tested_all_phenotypes, pvalues_all_phenotypes, phenotypes, kmer_limit, 
-	    kmers_to_analyse, phenotypes_to_analyze=False, FDR=False, B=False, headerline=False
+	    nr_of_kmers_tested_all_phenotypes, pvalues_all_phenotypes, phenotypes, 
+        kmer_limit, kmers_to_analyse, phenotypes_to_analyze=False, FDR=False, 
+        B=False, headerline=False
 	    ):
     # Filters the k-mers by their p-value achieved in statistical 
     # testing.
@@ -803,7 +808,8 @@ def linear_regression(
     if len(phenotypes_to_analyze) > 1:
         sys.stderr.write("\nConducting the linear regression analysis:\n")
     elif headerline:
-        sys.stderr.write("\nConducting the linear regression analysis of " +  phenotypes[0] + " data...\n")
+        sys.stderr.write("\nConducting the linear regression analysis of " 
+            +  phenotypes[0] + " data...\n")
     else:
         sys.stderr.write("\nConducting the linear regression analysis...\n")
 
@@ -816,23 +822,23 @@ def linear_regression(
             	     + phenotypes[k-1] + ".txt", "w+")
             model_filename = "lin_reg_model_" + phenotypes[k-1] + ".pkl"
             if len(phenotypes_to_analyze) > 1:
-                sys.stderr.write("\tregression analysis of " +  phenotypes[k-1] + " data...\n")
+                sys.stderr.write("\tregression analysis of " 
+                    +  phenotypes[k-1] + " data...\n")
         elif number_of_phenotypes > 1:
             f1 = open("summary_of_lin_reg_analysis" + str(k) + ".txt", "w+")
             f2 = open("k-mers_and_coefficients_in_lin_reg_model_" 
             	     + str(k) + ".txt", "w+")
             model_filename = "lin_reg_model_" +	phenotypes[k-1] + ".pkl"
-            sys.stderr.write("\tregression analysis of phenotype " +  str(k) + " data...\n")
+            sys.stderr.write("\tregression analysis of phenotype " 
+                +  str(k) + " data...\n")
         else:
             f1 = open("summary_of_lin_reg_analysis.txt", "w+")
        	    f2 = open("k-mers_and_coefficients_in_lin_reg_model.txt", "w+")
             model_filename = "lin_reg_model.txt"
 
         if len(kmers_passed_all_phenotypes[j]) == 0:
-       	    f1.write(
-       	    	"No k-mers passed the step of k-mer selection for \
-       	    	regression analysis.\n"
-       	    	)
+       	    f1.write("No k-mers passed the step of k-mer selection for " \
+       	    	"regression analysis.\n")
        	    continue
 
         # Generating a binary k-mer presence/absence matrix and a list
@@ -928,8 +934,8 @@ def linear_regression(
             f1.write("\nBest parameters found on development set: \n")
             for key, value in clf.best_params_.iteritems():
                 f1.write(key + " : " + str(value) + "\n")      
-            f1.write("\nModel predictions on test set:\nSample_ID \
-            	    Acutal_phenotype Predicted_phenotype\n")
+            f1.write("\nModel predictions on test set:\nSample_ID " \
+            	    "Acutal_phenotype Predicted_phenotype\n")
             for u in range(len(samples_test)):
                 f1.write('%s %s %s\n' % (
                 	samples_test[u], y_test[u], clf.predict(X_test)[u]
@@ -937,13 +943,17 @@ def linear_regression(
             train_y_prediction = clf.predict(X_train)
             f1.write('\nMean squared error on the training subset: %s\n' % \
             	     mean_squared_error(y_train, train_y_prediction))
-            f1.write("The coefficient of determination of the training subset:\
-                     %s\n\n" % clf.score(X_train, y_train))
+            f1.write("The coefficient of determination of the training subset:"
+                + " %s\n\n" % clf.score(X_train, y_train))
+            f1.write("\nThe Spearman correlation coefficient of the test" \
+                " subset: %s\n" % stats.spearmanr(y_train, train_y_prediction))
             test_y_prediction = clf.predict(X_test)
-            f1.write('Mean squared error on the test subset: \
-            	    %s\n' % mean_squared_error(y_test, test_y_prediction))
-            f1.write('Coefficient of determination of the test subset: %s\n' \
-            	    % clf.score(X_test, y_test)) 
+            f1.write('Mean squared error on the test subset: %s\n' 
+                % mean_squared_error(y_test, test_y_prediction))
+            f1.write('The coefficient of determination of the test subset:'
+                + ' %s\n' clf.score(X_test, y_test)) 
+            f1.write('\nThe Spearman correlation coefficient of the test' \
+                ' subset: %s\n' % stats.spearmanr(y_test, test_y_prediction))
         else:
             if penalty == 'L2' and use_of_weights:
                 array_weights = np.array(
@@ -970,8 +980,10 @@ def linear_regression(
             y_prediction = clf.predict(dataset.data) 
             f1.write('\nMean squared error on the dataset: %s\n' % \
             	    mean_squared_error(dataset.target, y_prediction))
-            f1.write("\nThe coefficient of determination of the dataset: \
-            	    %s\n\n" % clf.score(X_train, y_train))
+            f1.write("\nThe coefficient of determination of the dataset: " \
+            	    "%s\n\n" % clf.score(X_train, y_train))
+            f1.write('\nThe Spearman correlation coefficient of the dataset:' \
+                ' %s\n' % stats.spearmanr(dataset.target, y_prediction))
 
         joblib.dump(model, model_filename)
         kmers_presence_matrix = np.array(kmers_presence_matrix).transpose()
@@ -1005,7 +1017,8 @@ def logistic_regression(
     if len(phenotypes_to_analyze) > 1:
         sys.stderr.write("\nConducting the logistic regression analysis:\n")
     elif headerline:
-        sys.stderr.write("\nConducting the logistic regression analysis of " +  phenotypes[0] + " data...\n")
+        sys.stderr.write("\nConducting the logistic regression analysis of " 
+            +  phenotypes[0] + " data...\n")
     else:
         sys.stderr.write("\nConducting the logistic regression analysis...\n")
 
@@ -1019,13 +1032,15 @@ def logistic_regression(
             	     + phenotypes[k-1] + ".txt", "w+")
             model_filename = "log_reg_model_" + phenotypes[k-1] + ".pkl"
             if len(phenotypes_to_analyze) > 1:
-                sys.stderr.write("\tregression analysis of " +  phenotypes[k-1] + " data...\n")
+                sys.stderr.write("\tregression analysis of " 
+                    +  phenotypes[k-1] + " data...\n")
         elif number_of_phenotypes > 1:
             f1 = open("summary_of_log_reg_analysis_" + str(k) + ".txt", "w+")
             f2 = open("k-mers_and_coefficients_in_log_reg_model_" 
             	     + str(k) + ".txt", "w+")
             model_filename = "log_reg_model_" +	str(k) + ".pkl"
-            sys.stderr.write("\tregression analysis of phenotype " +  str(k) + " data...\n")
+            sys.stderr.write("\tregression analysis of phenotype " 
+                +  str(k) + " data...\n")
         else:
             f1 = open("summary_of_log_reg_analysis.txt", "w+")
        	    f2 = open("k-mers_and_coefficients_in_log_reg_model.txt", "w+")
@@ -1201,8 +1216,8 @@ def string_set(string_list):
                if not any(i in s for s in string_list if i != s))
 
 def overlap(a, b, min_length=3):
-    # Returns the overlap of kmer_a and kmer_b if overlap equals or exceeds
-    # the min_length. Otherwise returns 0.
+    # Returns the overlap of kmer_a and kmer_b if overlap equals or 
+    # exceeds the min_length. Otherwise returns 0.
     start = 0
     while True:
         start = a.find(b[:min_length], start)
@@ -1213,9 +1228,10 @@ def overlap(a, b, min_length=3):
         start += 1
 
 def pick_overlaps(reads, min_olap):
-    # Takes kmer_list as an input. Generates pairwise permutations of the kmers in
-    # kmer list. Finds the overlap of each pair. Returns the lists of kmers and overlap
-    # lengths of the pairs which overlap by min_olap or more nucleotides.
+    # Takes kmer_list as an input. Generates pairwise permutations of 
+    # the kmers in kmer list. Finds the overlap of each pair. Returns 
+    # the lists of kmers and overlap lengths of the pairs which overlap
+    # by min_olap or more nucleotides.
     reada, readb, olap_lens = [], [], []
     for a, b in permutations(reads, 2):
         olap_len = overlap(a, b, min_length=min_olap)
@@ -1226,7 +1242,8 @@ def pick_overlaps(reads, min_olap):
     return reada, readb, olap_lens
 
 def kmer_assembler(kmer_list, min_olap=None):
-    # Assembles the k-mers in kmer_list which overlap by at least min_olap nucleotides.
+    # Assembles the k-mers in kmer_list which overlap by at least 
+    # min_olap nucleotides.
 
     kmer_length = len(kmer_list[0])
     if min_olap == None:
@@ -1268,7 +1285,10 @@ def kmer_assembler(kmer_list, min_olap=None):
             assembled_kmers.append(item)
     return(assembled_kmers)
 
-def assembling(kmers_passed_all_phenotypes, phenotypes, number_of_phenotypes, phenotypes_to_analyze=False, headerline=False):
+def assembling(
+        kmers_passed_all_phenotypes, phenotypes, number_of_phenotypes, 
+        phenotypes_to_analyze=False, headerline=False
+        ):
     # Assembles the input k-mers and writes assembled sequences
     # into "assembled_kmers.txt" file in FastA format.
 
@@ -1276,28 +1296,34 @@ def assembling(kmers_passed_all_phenotypes, phenotypes, number_of_phenotypes, ph
         phenotypes_to_analyze = range(1,number_of_phenotypes+1)
 
     if len(phenotypes_to_analyze) > 1:
-        sys.stderr.write("Assembling the k-mers used in regression model of:\n")
+        sys.stderr.write(
+            "Assembling the k-mers used in regression model of:\n"
+            )
     elif headerline:
-        sys.stderr.write("Assembling the k-mers used in regression model of " +  phenotypes[0] + " data...\n")
+        sys.stderr.write("Assembling the k-mers used in regression model of " 
+            +  phenotypes[0] + " data...\n")
     else:
         sys.stderr.write("Assembling the k-mers used in regression model...\n")
 
     for j, k in enumerate(phenotypes_to_analyze):
         #Open files to write the results of k-mer assembling
         if headerline:
-            f1 = open("assembled_kmers_" + phenotypes[k-1] + ".txt", "w+")
+            f1 = open("assembled_kmers_" + phenotypes[k-1] + ".fasta", "w+")
             if len(phenotypes_to_analyze) > 1:
                 sys.stderr.write("\t" + phenotypes[k-1] + "...\n")
         elif number_of_phenotypes > 1:
-            f1 = open("assembled_kmers_" + str(k) + ".txt", "w+")
+            f1 = open("assembled_kmers_" + str(k) + ".fasta", "w+")
             sys.stderr.write("\tphenotype " + str(k) + "...\n")
         else:
-            f1 = open("assembled_kmers.txt", "w+")
+            f1 = open("assembled_kmers.fasta", "w+")
         
         kmers_to_assemble = kmers_passed_all_phenotypes[j]
-        assembled_kmers = sorted(kmer_assembler(kmers_to_assemble), key = len)[::-1]
+        assembled_kmers = sorted(
+            kmer_assembler(kmers_to_assemble), key = len
+            )[::-1]
         for i, item in enumerate(assembled_kmers):
-            f1.write(">seq_" + str(i+1) + "_length_" + str(len(item)) + "\n" + item + "\n")
+            f1.write(">seq_" + str(i+1) + "_length_" 
+                + str(len(item)) + "\n" + item + "\n")
     f1.close()
 
 def modeling(args):
@@ -1393,4 +1419,6 @@ def modeling(args):
             args.mpheno, headerline
             )
 
-    assembling(kmers_passed_all_phenotypes, phenotypes, n_o_p, args.mpheno, headerline)
+    assembling(
+        kmers_passed_all_phenotypes, phenotypes, n_o_p, args.mpheno, headerline
+        )

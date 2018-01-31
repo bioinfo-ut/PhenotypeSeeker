@@ -222,22 +222,20 @@ The results of predictions are saved into **"predictions_(phenotype_name).txt"**
 
 Example of **"predictions_(phenotype_name).txt"**:
 ```
-Sample_ID	predicted_phenotype
-PA3_F11	1
-PA3_C4	0	
-PA2_G8	0
-PA4_C1	1
-5H6	1
-PA3_E7	1
-1D4	0
-PA3_B1	0
-PA3_A1	0
-7D2	0
-7D1	0
-5B7	1
-6D7	0
-PA4_H1	1
-PA3_E6	0
+Sample_ID	predicted_phenotype	probability_for_predicted_class
+PA3_D8	1	0.82
+PA3_E7	0	0.59
+PA3_H9	0	0.92
+PA2_D7	0	0.95
+PA3_C9	0	0.93
+PA2_B8	0	0.89
+PA4_C3	1	0.88
+PA4_G3	1	0.91
+5F7	0	0.85
 ```
+
+## Usage
+
+After the successful installation of PhenotypeSeeker
 
 ## Contact
