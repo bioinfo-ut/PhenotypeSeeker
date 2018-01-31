@@ -988,7 +988,7 @@ def linear_regression(
             	    mean_squared_error(dataset.target, y_prediction))
             f1.write("The coefficient of determination of the dataset: " \
             	    "%s\n" % clf.score(X_train, y_train))
-            f1.write('The Spearman correlation coefficient and p-value of ' \ 
+            f1.write('The Spearman correlation coefficient and p-value of ' \
                 'the dataset: %s, %s \n' % stats.spearmanr(
                     dataset.target, y_prediction
                     )
