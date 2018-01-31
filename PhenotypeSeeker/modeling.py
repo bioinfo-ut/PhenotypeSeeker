@@ -951,7 +951,7 @@ def linear_regression(
             f1.write('Mean squared error on the test subset: %s\n' 
                 % mean_squared_error(y_test, test_y_prediction))
             f1.write('The coefficient of determination of the test subset:'
-                + ' %s\n' clf.score(X_test, y_test)) 
+                + ' %s\n' % clf.score(X_test, y_test)) 
             f1.write('\nThe Spearman correlation coefficient of the test' \
                 ' subset: %s\n' % stats.spearmanr(y_test, test_y_prediction))
         else:
