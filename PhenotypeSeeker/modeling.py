@@ -944,16 +944,22 @@ def linear_regression(
             f1.write('\nMean squared error on the training subset: %s\n' % \
             	     mean_squared_error(y_train, train_y_prediction))
             f1.write("The coefficient of determination of the training subset:"
-                + " %s\n\n" % clf.score(X_train, y_train))
-            f1.write("\nThe Spearman correlation coefficient of the test" \
-                " subset: %s\n" % stats.spearmanr(y_train, train_y_prediction))
+                + " %s\n" % clf.score(X_train, y_train))
+            f1.write("The Spearman correlation coefficient and p-value of " \
+                "the test subset: %s, %s \n\n" % stats.spearmanr(
+                    y_train, train_y_prediction
+                    )
+                )
             test_y_prediction = clf.predict(X_test)
             f1.write('Mean squared error on the test subset: %s\n' 
                 % mean_squared_error(y_test, test_y_prediction))
             f1.write('The coefficient of determination of the test subset:'
                 + ' %s\n' % clf.score(X_test, y_test)) 
-            f1.write('\nThe Spearman correlation coefficient of the test' \
-                ' subset: %s\n' % stats.spearmanr(y_test, test_y_prediction))
+            f1.write("The Spearman correlation coefficient and p-value of " \
+                "the test subset: %s, %s \n" % stats.spearmanr(
+                    y_test, test_y_prediction
+                    )
+                )
         else:
             if penalty == 'L2' and use_of_weights:
                 array_weights = np.array(
@@ -980,10 +986,13 @@ def linear_regression(
             y_prediction = clf.predict(dataset.data) 
             f1.write('\nMean squared error on the dataset: %s\n' % \
             	    mean_squared_error(dataset.target, y_prediction))
-            f1.write("\nThe coefficient of determination of the dataset: " \
-            	    "%s\n\n" % clf.score(X_train, y_train))
-            f1.write('\nThe Spearman correlation coefficient of the dataset:' \
-                ' %s\n' % stats.spearmanr(dataset.target, y_prediction))
+            f1.write("The coefficient of determination of the dataset: " \
+            	    "%s\n" % clf.score(X_train, y_train))
+            f1.write('The Spearman correlation coefficient and p-value of ' \ 
+                'the dataset: %s, %s \n' % stats.spearmanr(
+                    dataset.target, y_prediction
+                    )
+                )
 
         joblib.dump(model, model_filename)
         kmers_presence_matrix = np.array(kmers_presence_matrix).transpose()
