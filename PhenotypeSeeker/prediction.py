@@ -115,12 +115,21 @@ def predict(samples_order, phenotypes_to_predict):
         #Loading regression model
         model = joblib.load(phenotypes_to_predict[phenotype][0])
         predictions = model.predict(kmers_presence_matrix)
-        predict_proba = model.predict_proba(kmers_presence_matrix)
         
         with open("predictions_" + phenotype + ".txt", "w+") as f1:
-            f1.write("Sample_ID\tpredicted_phenotype\tprobability_for_predicted_class\n")
-            for ID, prediction, proba in zip(samples_order, predictions, predict_proba): 
-                f1.write(ID + "\t" + str(prediction) + "\t" + str(round(max(proba), 2))  + "\n")
+            if "lin" in phenotypes_to_predict[phenotype][0]:
+                f1.write("Sample_ID\tpredicted_phenotype\n")
+                for ID, prediction in zip(samples_order, predictions):
+                    f1.write(ID + "\t" + str(prediction) + "\n")
+            elif "log" in phenotypes_to_predict[phenotype][0]:
+                predict_proba = model.predict_proba(kmers_presence_matrix)
+                f1.write("Sample_ID\tpredicted_phenotype\t" \
+                    "probability_for_predicted_class\n")
+                for ID, prediction, proba in zip(
+                        samples_order, predictions, predict_proba
+                        ): 
+                    f1.write(ID + "\t" + str(prediction) 
+                        + "\t" + str(round(max(proba), 2))  + "\n")
 
 def prediction(args):
     samples, samples_order, n_o_s = parse_prediction_input_file1(
