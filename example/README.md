@@ -1,6 +1,6 @@
 # An example of "PhenotypeSeeker modeling"
  
-After the successful installation of PhenotypeSeeker you can launch the example script to aquire better intuition about program's workflow.
+After the successful installation of the PhenotypeSeeker you can launch the example script to aquire better intuition about the program's workflow.
 
 In order to do so, open the command-line, change to the "PhenotypeSeeker/example" directory and type in:
 ```
