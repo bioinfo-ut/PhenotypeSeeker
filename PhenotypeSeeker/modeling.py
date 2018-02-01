@@ -941,25 +941,21 @@ def linear_regression(
                 	samples_test[u], y_test[u], clf.predict(X_test)[u]
                 	))
             train_y_prediction = clf.predict(X_train)
-            f1.write('\nMean squared error on the training subset: %s\n' % \
+            f1.write('\nTraining set:\n')
+            f1.write('Mean squared error: %s\n' % \
             	     mean_squared_error(y_train, train_y_prediction))
-            f1.write("The coefficient of determination of the training subset:"
+            f1.write("The coefficient of determination:"
                 + " %s\n" % clf.score(X_train, y_train))
-            f1.write("The Spearman correlation coefficient and p-value of " \
-                "the test subset: %s, %s \n\n" % stats.spearmanr(
-                    y_train, train_y_prediction
-                    )
-                )
+            f1.write("The Spearman correlation coefficient and p-value:" \
+                " %s, %s \n\n" % stats.spearmanr(y_train, train_y_prediction))
             test_y_prediction = clf.predict(X_test)
-            f1.write('Mean squared error on the test subset: %s\n' 
+            f1.write('Test set:\n')
+            f1.write('Mean squared error: %s\n' 
                 % mean_squared_error(y_test, test_y_prediction))
-            f1.write('The coefficient of determination of the test subset:'
+            f1.write('The coefficient of determination:'
                 + ' %s\n' % clf.score(X_test, y_test)) 
-            f1.write("The Spearman correlation coefficient and p-value of " \
-                "the test subset: %s, %s \n" % stats.spearmanr(
-                    y_test, test_y_prediction
-                    )
-                )
+            f1.write("The Spearman correlation coefficient and p-value:" \
+                + " %s, %s \n" % stats.spearmanr(y_test, test_y_prediction))
         else:
             if penalty == 'L2' and use_of_weights:
                 array_weights = np.array(
@@ -1159,11 +1155,11 @@ def logistic_regression(
                 f1.write('%s %s %s\n' % (
                 	samples_test[u], y_test[u], clf.predict(X_test)[u]
                 	))
-            f1.write("\nMean accuracy on the training subset: %s\n" % \
+            f1.write("\nTraining set: \n")
+            f1.write("Mean accuracy: %s\n" % \
             	    clf.score(X_train, y_train))
-            f1.write('\nMean accuracy on the test subset: %s\n\n' % clf.score(
-            	X_test, y_test
-            	))
+            f1.write("\nTest set: \n")
+            f1.write('Mean accuracy: %s\n\n' % clf.score(X_test, y_test))
             f1.write('Classification report:\n %s\n\n' % classification_report(
             	y_test, clf.predict(X_test), 
             	target_names=["sensitive", "resistant"]
