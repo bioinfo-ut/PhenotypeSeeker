@@ -1,8 +1,8 @@
 # An example of "PhenotypeSeeker modeling"
  
-To run the example script, the PhenotypeSeeker has to be installed first.
+After the successful installation of PhenotypeSeeker you can launch the example script to aquire better intuition about program's workflow.
 
-If the PhenotypeSeeker is installed, open the command-line, change to the "PhenotypeSeeker/example" directory and type in:
+In order to do so, open the command-line, change to the "PhenotypeSeeker/example" directory and type in:
 ```
 ./test_PS_modeling.sh
 ```
