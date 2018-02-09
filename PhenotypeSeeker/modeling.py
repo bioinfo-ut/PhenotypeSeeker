@@ -53,7 +53,7 @@ def parse_modeling_input_file(inputfilename):
     samples_order = []
     n_o_s = 0
     headerline = False
-    phenotype = "binary"
+    phenotype_scale = "binary"
     phenotypes = []
     with open(inputfilename) as f1:
         for line in f1:
@@ -67,14 +67,14 @@ def parse_modeling_input_file(inputfilename):
             else:
                 for item in list1[2:]:
                     if item != "1" and item != "0" and item != "NA":
-                        phenotype = "continuous"
+                        phenotype_scale = "continuous"
                 samples[list1[0]] = list1[1:]
                 samples_order.append(list1[0])
                 n_o_s += 1
     n_o_p = len(list1[2:])
     return(
     	samples, samples_order, n_o_s, n_o_p, 
-    	phenotype, headerline, phenotypes
+    	phenotype_scale, headerline, phenotypes
     	)
 
 def kmer_list_generator(samples_info, kmer_length, freq, input_samples):
@@ -689,7 +689,7 @@ def chi_squared(
     	pvalues_all_phenotypes, nr_of_kmers_tested_all_phenotypes, outputfiles)
 
 def kmer_filtering_by_pvalue(
-	    test_results, pvalue, number_of_phenotypes, phenotype,
+	    test_results, pvalue, number_of_phenotypes, phenotype_scale,
 	    nr_of_kmers_tested_all_phenotypes, pvalues_all_phenotypes, phenotypes, 
         kmer_limit, kmers_to_analyse, phenotypes_to_analyze=False, FDR=False, 
         B=False, headerline=False
@@ -716,7 +716,7 @@ def kmer_filtering_by_pvalue(
         else:
             f2 = open("k-mers_filtered_by_pvalue.txt", "w+")
             phenotype = ""
-        if phenotype == "continuous":
+        if phenotype_scale == "continuous":
             f2.write(
             	"K-mer\tWelch's_t-statistic\tp-value\t+_group_mean\
             	\t-_group_mean\tNo._of_samples_with_k-mer\
@@ -1368,7 +1368,7 @@ def modeling(args):
         phyloxml_to_newick("tree_xml.txt")
         weights = newick_to_GSC_weights("tree_newick.txt")
    
-    if phenotype == "continuous":
+    if phenotype_scale == "continuous":
         if args.weights:
             (
                 pvalues_all_phenotypes, nr_of_kmers_tested_all_phenotypes,
@@ -1385,7 +1385,7 @@ def modeling(args):
             "k-mer_matrix.txt", samples, samples_order, n_o_p, phenotypes,
             kmers_to_analyse, args.mpheno, args.FDR, headerline
             )
-    elif phenotype == "binary":
+    elif phenotype_scale == "binary":
         if args.weights:
             (
             pvalues_all_phenotypes, nr_of_kmers_tested_all_phenotypes,
@@ -1410,13 +1410,13 @@ def modeling(args):
         headerline
         )
     
-    if phenotype == "continuous":
+    if phenotype_scale == "continuous":
         linear_regression(
             "k-mer_matrix.txt", samples, samples_order, alphas, n_o_p,
             kmers_passed_all_phenotypes, args.regularization, args.n_splits,
             weights, args.testset_size, phenotypes, args.mpheno, headerline
             )
-    elif phenotype == "binary":
+    elif phenotype_scale == "binary":
         logistic_regression(
             "k-mer_matrix.txt", samples, samples_order, alphas, n_o_p,
             kmers_passed_all_phenotypes, args.regularization, args.n_splits,

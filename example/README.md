@@ -28,7 +28,7 @@ To launch the example analysis script of "PhenotypeSeeker prediction", open the 
 ```
 The process starts with downloading the folder containing 10 *C.difficile* genomes (42 MB) originating from European Nucleotide Archive [EMBL:PRJEB11776 ((http://www.ebi.ac.uk/ena/data/view/PRJEB11776)] and inputfiles for "PhenotypeSeeker prediction". The folder will be unpacked and after that the "PhenotypeSeeker prediction" with the default parameters is launched automatically:
 ```
-phenotypeseeker prediction 
+phenotypeseeker prediction PS_prediction_example_files/inputfile1 PS_prediction_example_files/inputfile2
 ```
 The "PhenotypeSeeker prediction" detects the presence or absence of the model specific k-mers in every input sample and uses this data to predict the phenotypes for samples.
 
