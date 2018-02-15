@@ -1341,9 +1341,11 @@ def modeling(args):
         alphas = np.array(args.alphas)
 
     (
-        samples, samples_order, n_o_s, n_o_p, phenotype, headerline, phenotypes
+        samples, samples_order, n_o_s, n_o_p, phenotype_scale, headerline, phenotypes
         ) = parse_modeling_input_file(args.inputfile)
     
+    print(phenotype_scale)
+
     if args.min == "0":
         args.min = 2
     if args.max == "0":
