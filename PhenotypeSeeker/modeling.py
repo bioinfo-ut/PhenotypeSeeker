@@ -199,7 +199,7 @@ def mash_caller(samples_info, freq):
     mash_args = ["mash", "sketch", "-o", "reference", "-m", freq]
     for item in samples_info:
         mash_args.append(samples_info[item][0])
-    process = Popen(mash_args, shell=True, stderr=PIPE)
+    process = Popen(mash_args, stderr=PIPE)
     for line in iter(process.stderr.readline, ''):
         Printer(line.strip())
     Printer("")
@@ -1343,8 +1343,6 @@ def modeling(args):
     (
         samples, samples_order, n_o_s, n_o_p, phenotype_scale, headerline, phenotypes
         ) = parse_modeling_input_file(args.inputfile)
-    
-    print(phenotype_scale)
 
     if args.min == "0":
         args.min = 2
