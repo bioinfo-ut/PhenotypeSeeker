@@ -199,7 +199,7 @@ def mash_caller(samples_info):
     mash_args = ["mash", "sketch", "-o", "reference"]
     for item in samples_info:
         mash_args.append(samples_info[item][0])
-    process = Popen(mash_args, stderr=PIPE)
+    process = Popen(mash_args, shell=True, stderr=PIPE)
     for line in iter(process.stderr.readline, ''):
         Printer(line.strip())
     Printer("")
