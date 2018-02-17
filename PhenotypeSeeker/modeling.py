@@ -793,8 +793,9 @@ def kmer_filtering_by_pvalue(
 
 def linear_regression(
 	    kmer_matrix, samples, samples_order, alphas, number_of_phenotypes,
-	    kmers_passed_all_phenotypes, penalty, n_splits,weights, testset_size,
-	    phenotypes, phenotypes_to_analyze=False, headerline=False
+	    kmers_passed_all_phenotypes, penalty, n_splits, weights, testset_size,
+	    phenotypes, use_of_weights, phenotypes_to_analyze=False, 
+        headerline=False
 	    ):
     # Applies linear regression with Lasso regularization on k-mers
     # that passed the filtering by p-value of statistical test. K-mers
@@ -897,7 +898,7 @@ def linear_regression(
         # (with or without considering the weights). Writing results
         # into corresponding files.
         if testset_size != 0.0:
-            if penalty == 'L2' and use_of_weights:
+            if penalty == 'L2' and use_of_weights == "+":
                 array_weights = np.array(
                 	[weights[item] for item in samples_in_analyze]
                 	)
@@ -957,7 +958,7 @@ def linear_regression(
             f1.write("The Spearman correlation coefficient and p-value:" \
                 + " %s, %s \n" % stats.spearmanr(y_test, test_y_prediction))
         else:
-            if penalty == 'L2' and use_of_weights:
+            if penalty == 'L2' and use_of_weights == "+":
                 array_weights = np.array(
                 	[weights[item] for item in samples_in_analyze]
                 	)
@@ -1007,8 +1008,8 @@ def linear_regression(
 
 def logistic_regression(
 	    kmer_matrix, samples, samples_order, alphas, number_of_phenotypes, 
-	    kmers_passed_all_phenotypes, penalty, n_splits,  weights, testset_size,
-	    phenotypes, use_of_weights=False, phenotypes_to_analyze=False, 
+	    kmers_passed_all_phenotypes, penalty, n_splits, weights, testset_size,
+	    phenotypes, use_of_weights, phenotypes_to_analyze=False, 
 	    headerline=False
 	    ):
     # Applies logistic regression with Lasso regularization on k-mers
@@ -1111,7 +1112,7 @@ def logistic_regression(
         # (with or without considering the weights). Writing logistic
         # regression results into corresponding files.
         if testset_size != 0.0:
-            if use_of_weights:
+            if use_of_weights == "+":
                 array_weights = np.array(
                 	[weights[item] for item in samples_in_analyze]
                 	)
@@ -1165,7 +1166,7 @@ def logistic_regression(
             	target_names=["sensitive", "resistant"]
             	))  
         else:
-            if use_of_weights:
+            if use_of_weights == "+":
                 array_weights = np.array(
                 	[weights[item] for item in samples_in_analyze])
                 model = clf.fit(
@@ -1360,7 +1361,7 @@ def modeling(args):
     call(["rm -r K-mer_lists/"], shell = True)
     
     weights = []
-    if args.weights:   
+    if args.weights == "+":   
         mash_caller(samples, args.cutoff)
         mash_output_to_distance_matrix(samples_order, "mash_distances.mat")
         dist_mat = distance_matrix_modifier("distances.mat")
@@ -1369,7 +1370,7 @@ def modeling(args):
         weights = newick_to_GSC_weights("tree_newick.txt")
    
     if phenotype_scale == "continuous":
-        if args.weights:
+        if args.weights == "+":
             (
                 pvalues_all_phenotypes, nr_of_kmers_tested_all_phenotypes,
                 test_result_files
@@ -1386,7 +1387,7 @@ def modeling(args):
             kmers_to_analyse, args.mpheno, args.FDR, headerline
             )
     elif phenotype_scale == "binary":
-        if args.weights:
+        if args.weights == "+":
             (
             pvalues_all_phenotypes, nr_of_kmers_tested_all_phenotypes,
             test_result_files
@@ -1404,7 +1405,7 @@ def modeling(args):
             )   
 
     kmers_passed_all_phenotypes = kmer_filtering_by_pvalue(
-        test_result_files, args.pvalue, n_o_p, phenotype, 
+        test_result_files, args.pvalue, n_o_p, phenotype_scale, 
         nr_of_kmers_tested_all_phenotypes, pvalues_all_phenotypes, phenotypes,
         args.n_kmers, kmers_to_analyse, args.mpheno, args.FDR, args.Bonferroni, 
         headerline
@@ -1414,7 +1415,8 @@ def modeling(args):
         linear_regression(
             "k-mer_matrix.txt", samples, samples_order, alphas, n_o_p,
             kmers_passed_all_phenotypes, args.regularization, args.n_splits,
-            weights, args.testset_size, phenotypes, args.mpheno, headerline
+            weights, args.testset_size, phenotypes, args.weights,
+            args.mpheno, headerline
             )
     elif phenotype_scale == "binary":
         logistic_regression(
@@ -1423,7 +1425,8 @@ def modeling(args):
             weights, args.testset_size, phenotypes, args.weights,
             args.mpheno, headerline
             )
-
-    assembling(
-        kmers_passed_all_phenotypes, phenotypes, n_o_p, args.mpheno, headerline
-        )
+    if args.assembly == "+":
+        assembling(
+            kmers_passed_all_phenotypes, phenotypes, n_o_p, args.mpheno, 
+            headerline
+            )
