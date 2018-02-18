@@ -1163,43 +1163,43 @@ def logistic_regression(
                 	))
             f1.write("\nTraining set: \n")
             f1.write("Mean accuracy: %s\n" % clf.score(X_train, y_train))
-            print("Sensitivity: %s\n" % \
+            f1.write("Sensitivity: %s\n" % \
                     recall_score(y_train, y_train_pred))
-            print("Specificity: %s\n" % \
+            f1.write("Specificity: %s\n" % \
                     recall_score(
                         list(map(lambda x: 1 if x == 0 else 0, y_train)), 
                         list(map(lambda x: 1 if x == 0 else 0, y_train_pred
                         ))))
-            print("AUC-ROC: %s\n" % \
+            f1.write("AUC-ROC: %s\n" % \
                 roc_auc_score(y_train, y_train_pred, average="micro"))
-            print("Average precision: %s\n" % \
+            f1.write("Average precision: %s\n" % \
                 average_precision_score(
                     y_train, 
                     clf.predict_proba(X_train)[:,1])
                     )
-            print("MCC: %s\n" % \
+            f1.write("MCC: %s\n" % \
                 matthews_corrcoef(y_train, y_train_pred))
-            print("Cohen kappa: %s\n" %\
+            f1.write("Cohen kappa: %s\n" %\
                 cohen_kappa_score(y_train, y_train_pred))
             f1.write("\nTest set: \n")
             f1.write('Mean accuracy: %s\n\n' % clf.score(X_test, y_test))
-            print("Sensitivity: %s\n" % \
+            f1.write("Sensitivity: %s\n" % \
                     recall_score(y_test, y_test_pred))
-            print("Specificity: %s\n" % \
+            f1.write("Specificity: %s\n" % \
                     recall_score(
                         list(map(lambda x: 1 if x == 0 else 0, y_test)), 
                         list(map(lambda x: 1 if x == 0 else 0, y_test_pred
                         ))))
-            print("AUC-ROC: %s\n" % \
+            f1.write("AUC-ROC: %s\n" % \
                 roc_auc_score(y_test, y_test_pred, average="micro"))
-            print("Average precision: %s\n" % \
+            f1.write("Average precision: %s\n" % \
                 average_precision_score(
                     y_test, 
                     clf.predict_proba(X_test)[:,1])
                     )
-            print("MCC: %s\n" %\
+            f1.write("MCC: %s\n" %\
                 matthews_corrcoef(y_test, y_test_pred))
-            print("Cohen kappa: %s\n" %\
+            f1.write("Cohen kappa: %s\n" %\
                 cohen_kappa_score(y_test, y_test_pred))
             f1.write('Classification report:\n %s\n\n' % classification_report(
             	y_test, y_test_pred, 
@@ -1232,25 +1232,25 @@ def logistic_regression(
             f1.write("\nMean accuracy on the dataset: %s\n" % clf.score(
             	dataset.data, dataset.target
             	))
-            print("Sensitivity: %s\n" % \
+            f1.write("Sensitivity: %s\n" % \
                     recall_score(dataset.target, y_pred))
-            print("Specificity: %s\n" % \
+            f1.write("Specificity: %s\n" % \
                     recall_score(
                         list(map(
                             lambda x: 1 if x == 0 else 0, dataset.target
                             )),
                         list(map(lambda x: 1 if x == 0 else 0, y_pred
                         ))))
-            print("AUC-ROC: %s\n" % \
+            f1.write("AUC-ROC: %s\n" % \
                 roc_auc_score(dataset.target, y_pred, average="micro"))
-            print("Average precision: %s\n" % \
+            f1.write("Average precision: %s\n" % \
                 average_precision_score(
                     dataset.target, 
                     clf.predict_proba(dataset.data)[:,1])
                     )
-            print("MCC: %s\n" %\
+            f1.write("MCC: %s\n" %\
                 matthews_corrcoef(dataset.target, y_pred))
-            print("Cohen kappa: %s\n" %\
+            f1.write("Cohen kappa: %s\n" %\
                 cohen_kappa_score(dataset.target, y_pred))
             f1.write('Classification report:\n %s\n\n' % classification_report(
             	dataset.target, y_pred, 
