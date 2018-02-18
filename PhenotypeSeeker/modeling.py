@@ -18,9 +18,10 @@ from cogent.align.weights.methods import GSC
 from scipy import stats
 from sklearn.externals import joblib
 from sklearn.linear_model import Lasso, LogisticRegression, Ridge
-from sklearn.metrics import classification_report, r2_score, mean_squared_error
-    recall_score, roc_auc_score, average_precision_score, 
-    matthews_corrcoef, cohen_kappa_score 
+from sklearn.metrics import (
+    classification_report, r2_score, mean_squared_error, recall_score,
+    roc_auc_score, average_precision_score, matthews_corrcoef, cohen_kappa_score
+    )
 from sklearn.model_selection import GridSearchCV, train_test_split
 import Bio
 import sklearn.datasets
