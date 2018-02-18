@@ -1177,9 +1177,9 @@ def logistic_regression(
                     y_train, 
                     clf.predict_proba(X_train)[:,1])
                     )
-            print("MCC: %s\n" \
+            print("MCC: %s\n" % \
                 matthews_corrcoef(y_train, y_train_pred))
-            print("Cohen kappa: %s\n" \
+            print("Cohen kappa: %s\n" %\
                 cohen_kappa_score(y_train, y_train_pred))
             f1.write("\nTest set: \n")
             f1.write('Mean accuracy: %s\n\n' % clf.score(X_test, y_test))
@@ -1197,9 +1197,9 @@ def logistic_regression(
                     y_test, 
                     clf.predict_proba(X_test)[:,1])
                     )
-            print("MCC: %s\n" \
+            print("MCC: %s\n" %\
                 matthews_corrcoef(y_test, y_test_pred))
-            print("Cohen kappa: %s\n" \
+            print("Cohen kappa: %s\n" %\
                 cohen_kappa_score(y_test, y_test_pred))
             f1.write('Classification report:\n %s\n\n' % classification_report(
             	y_test, y_test_pred, 
@@ -1248,9 +1248,9 @@ def logistic_regression(
                     dataset.target, 
                     clf.predict_proba(dataset.data)[:,1])
                     )
-            print("MCC: %s\n" \
+            print("MCC: %s\n" %\
                 matthews_corrcoef(dataset.target, y_pred))
-            print("Cohen kappa: %s\n" \
+            print("Cohen kappa: %s\n" %\
                 cohen_kappa_score(dataset.target, y_pred))
             f1.write('Classification report:\n %s\n\n' % classification_report(
             	dataset.target, y_pred, 
