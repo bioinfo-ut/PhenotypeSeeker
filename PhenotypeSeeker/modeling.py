@@ -1182,7 +1182,7 @@ def logistic_regression(
             f1.write("Cohen kappa: %s\n" %\
                 cohen_kappa_score(y_train, y_train_pred))
             f1.write("\nTest set: \n")
-            f1.write('Mean accuracy: %s\n\n' % clf.score(X_test, y_test))
+            f1.write('Mean accuracy: %s\n' % clf.score(X_test, y_test))
             f1.write("Sensitivity: %s\n" % \
                     recall_score(y_test, y_test_pred))
             f1.write("Specificity: %s\n" % \
@@ -1199,7 +1199,7 @@ def logistic_regression(
                     )
             f1.write("MCC: %s\n" %\
                 matthews_corrcoef(y_test, y_test_pred))
-            f1.write("Cohen kappa: %s\n" %\
+            f1.write("Cohen kappa: %s\n\n" %\
                 cohen_kappa_score(y_test, y_test_pred))
             f1.write('Classification report:\n %s\n\n' % classification_report(
             	y_test, y_test_pred, 

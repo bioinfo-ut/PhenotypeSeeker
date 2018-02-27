@@ -8,7 +8,7 @@ To launch the example analysis script of "PhenotypeSeeker modeling", open the co
 ```
 ./test_PS_modeling.sh
 ```
-The process starts with downloading the folder containing 30 *C.difficile* genomes (174 MB) originating from European Nucleotide Archive [EMBL:PRJEB11776 ((http://www.ebi.ac.uk/ena/data/view/PRJEB11776)] and inputfile for "PhenotypeSeeker modeling" containing the binary phenotypes of azithromycin resistance for these genomes, adapted from Lees et al. (2016. Sequence element enrichment analysis to determine the genetic basis of bacterial phenotypes. Nature Communications, 7, 12797. https://doi.org/10.1038/ncomms12797). The folder will be unpacked and after that the "PhenotypeSeeker modeling" with the default parameters is launched automatically:
+The process starts with downloading the folder containing 30 *C.difficile* genomes (174 MB) originating from European Nucleotide Archive [EMBL:PRJEB11776 ((http://www.ebi.ac.uk/ena/data/view/PRJEB11776)] and inputfile for "PhenotypeSeeker modeling" containing the binary phenotypes of azithromycin resistance for these genomes, adapted from Drouin et al. (2016. Predictive computational phenotyping and biomarker discovery using reference-free genome comparisons. BMC Genomics [Internet]. 17(1):754. Available from: http://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-016-2889-6). The folder will be unpacked and after that the "PhenotypeSeeker modeling" with the default parameters is launched automatically:
 ```
 phenotypeseeker modeling PS_modeling_example_files/data.pheno
 ```
