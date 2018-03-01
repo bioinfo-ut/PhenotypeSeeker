@@ -9,6 +9,11 @@ Easiest way to install PhenotypeSeeker is to type
 pip2.7 install PhenotypeSeeker
 ```
 on the command-line (may need sudo command).
+
+Without sudo privileges, install PhenotypeSeeker to user local directory with command
+```
+pip2.7 install --user PhenotypeSeeker
+```
 #### Install from source
 Download the PhenotypeSeeker from the GitHub repository:
 ```
