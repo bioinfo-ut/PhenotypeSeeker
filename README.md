@@ -36,7 +36,7 @@ You also need to install prerequisites.
 
 ### Prerequisites
 
-To install and run PhenotypeSeeker, python2.7, pip2.7, Genometester4 and mash need to be installed on your system.
+To install PhenotypeSeeker, python2.7 and pip2.7 must be installed on your system.
 
 #### Pip2.7
 To install pip2.7 with python2.7 and curl installed, open the command-line and type in:
@@ -45,7 +45,13 @@ curl https://bootstrap.pypa.io/ez_setup.py -o - | sudo python2.7
 sudo easy_install pip2.7
 ```
 
-You also need to install yourself:
+To run PhenotypeSeeker, you also need Genometester4 and mash on your system.
+
+We provide appropriate 64-bit Linux binaries for Genometester4 and mash programs in PhenotypeSeeker/bin directory. 
+
+Therefore, the easiest solution could be to just move the PhenotypeSeeker/bin directory into directory specified in $PATH variable (e.g. /usr/bin).
+
+You can also install Genometester4 and mash from source.
 
 #### Genometester4
 ```
@@ -54,18 +60,10 @@ cd src
 make
 ```
 #### mash
-
-You can download the pre-compiled mash binary from 
-```
-https://github.com/marbl/Mash/releases/download/v2.0/mash-Linux64-v2.0.tar
-```
-and then put it into the directory specified in $PATH variable (e.g. /usr/bin).
-
-Or you can clone the source repository from Github
 ```
 git clone https://github.com/marbl/Mash.git
 ```
-and install it following the instructions specified in
+Installation instructions are specified in
 ```
 https://github.com/marbl/Mash/blob/master/INSTALL.txt
 ```
