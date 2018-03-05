@@ -2,27 +2,25 @@
 Identify phenotype-specific k-mers and predict phenotype using sequenced bacterial strains
 ## Introduction
 ## Installation
-PhenotypeSeeker currently supports Linux operating systems and needs python2.7 and pip2.7 to be installed, 
-#### Install with pip
-The easiest way to install PhenotypeSeeker is to type
-```
-pip2.7 install PhenotypeSeeker
-```
-on the command-line (may need sudo command).
-
-Without sudo privileges, install PhenotypeSeeker to user local directory with command
-```
-pip2.7 install --user PhenotypeSeeker
-```
-#### Install from source
+PhenotypeSeeker currently supports Linux operating systems and needs python2.7 and pip2.7 to be installed.
+#### Install from source with pip2.7
 Download the PhenotypeSeeker from the GitHub repository:
 ```
 git clone https://github.com/bioinfo-ut/PhenotypeSeeker.git
 ```
-Then, change to PhenotypeSeeker main directory and run the installer (may also need sudo command):
+Then, change to PhenotypeSeeker main directory and run the installer:
 ```
 cd PhenotypeSeeker
-pip2.7 install .
+sudo pip2.7 install .
+```
+
+Without sudo privileges, install PhenotypeSeeker to user local directory with command
+```
+pip2.7 install --user .
+```
+If some of the dependency python packages do not cooperate properly, try:
+```
+pip2.7 install --user --ignore-install .
 ```
 #### Test the installation
 This will install PhenotypeSeeker and the required Python packages. PhenotypeSeeker executable is added to $PATH.
@@ -32,18 +30,10 @@ Test the installation, by typing:
 phenotypeseeker --version
 ```
 That's it with PhenotypeSeeker! 
-You also need to install prerequisites.
 
-### Prerequisites
+Next, you should set up PhenotypeSeeker dependencies!
 
-To install PhenotypeSeeker, python2.7 and pip2.7 must be installed on your system.
-
-#### Pip2.7
-To install pip2.7 with python2.7 and curl installed, open the command-line and type in:
-```
-curl https://bootstrap.pypa.io/ez_setup.py -o - | sudo python2.7
-sudo easy_install pip2.7
-```
+### Dependencies
 
 To run PhenotypeSeeker, you also need Genometester4 and mash on your system.
 
