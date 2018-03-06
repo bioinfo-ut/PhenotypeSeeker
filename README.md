@@ -1,6 +1,14 @@
 # PhenotypeSeeker
 Identify phenotype-specific k-mers and predict phenotype using sequenced bacterial strains
 ## Introduction
+PhenotypeSeeker identifies phenotype-specific k-mers, generates phenotype prediction model and predicts the phenotype from sequencing data. 
+
+PhenotypeSeeker consist of two subprograms: 'PhenotypeSeeker modeling' and 'PhenotypeSeeker prediction', which both take either assembled contigs or raw-read data as an input. 
+
+
+PhenotypeSeeker uses statistical model that can be trained automatically on isolates with known phenotype. The prediction of phenotypes takes less than a second per isolate if assembled genomes are used and less than a minute per isolate if raw sequencing data are used. Therefore, PhenotypeSeeker is well suited for predicting phenotypes from large sequencing datasets.
+
+The method is implemented in Python programming language and can be run on low-end Linux server and/or on laptop computers.
 ## Installation
 PhenotypeSeeker currently supports only Linux operating systems.
 
@@ -25,7 +33,11 @@ sudo pip install .
 phenotypeseeker --version
 ```
 
-If you already have python-pip, python-dev and git installed on your system, and would like to install PhenotypeSeeker locally without sudo rights, then just add "--user" to all pip commands and copy binaries to $HOME/.local/bin.
+### Installation without sudo privileges
+
+You must have python-pip, python-dev and git installed on your system to install with out sudo rights!
+
+To install PhenotypeSeeker locally without sudo rights, then just add "--user" to all pip commands and copy binaries to $HOME/.local/bin.
 ```
 pip install --user setuptools
 pip install --user numpy
@@ -45,7 +57,7 @@ To run PhenotypeSeeker, you also need Genometester4 and mash on your system.
 
 We provide appropriate 64-bit Linux binaries for Genometester4 and mash programs in PhenotypeSeeker/bin directory. 
 
-Therefore, the easiest solution could be to just move the PhenotypeSeeker/bin directory into directory specified in $PATH variable (e.g. /usr/bin).
+Therefore, the easiest solution (integrated into our example installations) could be to just copy the files from PhenotypeSeeker/bin directory into directory specified in $PATH variable (e.g. /usr/bin).
 
 You can also install Genometester4 and mash from source.
 
