@@ -15,8 +15,9 @@ setup(name = 'PhenotypeSeeker',
           'PhenotypeSeeker/__init__'
           ],
       scripts = ['scripts/phenotypeseeker'],
+      setup_requires=['numpy'],
       install_requires = [
-          'numpy', 'scipy', 'Biopython', 'cogent', 'scikit-learn'
+          'scipy', 'Biopython', 'cogent', 'scikit-learn'
           ],
       )
 
