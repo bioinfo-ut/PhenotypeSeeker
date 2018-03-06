@@ -2,36 +2,42 @@
 Identify phenotype-specific k-mers and predict phenotype using sequenced bacterial strains
 ## Introduction
 ## Installation
-PhenotypeSeeker currently supports Linux operating systems and needs python2.7 and pip2.7 to be installed.
-#### Install from source with pip2.7
-Download the PhenotypeSeeker from the GitHub repository:
+PhenotypeSeeker currently supports only Linux operating systems.
+
+### Example installation on Linux Ubuntu
+
+### Example installation on Linux Debian
+
+### Example installation on Linux Mint 18.3 "Sylvia"
 ```
+sudo apt-get update && sudo apt-get -y upgrade
+sudo apt-get install python-pip
+sudo apt-get install python-dev
+sudo apt-get install git
+
+sudo pip install setuptools
+sudo pip install numpy
 git clone https://github.com/bioinfo-ut/PhenotypeSeeker.git
-```
-Then, change to PhenotypeSeeker main directory and run the installer:
-```
 cd PhenotypeSeeker
-sudo pip2.7 install .
-```
+sudo cp bin/* /usr/bin
+sudo pip install .
 
-Without sudo privileges, install PhenotypeSeeker to user local directory with command
-```
-pip2.7 install --user .
-```
-If some of the dependency python packages do not cooperate properly, try:
-```
-pip2.7 install --user --ignore-install .
-```
-#### Test the installation
-This will install PhenotypeSeeker and the required Python packages. PhenotypeSeeker executable is added to $PATH.
-
-Test the installation, by typing:
-```
 phenotypeseeker --version
 ```
-That's it with PhenotypeSeeker! 
 
-Next, you should set up PhenotypeSeeker dependencies!
+If you already have python-pip, python-dev and git installed on your system, and would like to install PhenotypeSeeker locally without sudo rights, then just add "--user" to all pip commands and copy binaries to $HOME/.local/bin.
+```
+pip install --user setuptools
+pip install --user numpy
+git clone https://github.com/bioinfo-ut/PhenotypeSeeker.git
+cd PhenotypeSeeker
+cp bin/* $HOME/.local/bin.
+pip install --user .
+
+phenotypeseeker --version
+```
+
+That's it with PhenotypeSeeker!
 
 ### Dependencies
 
