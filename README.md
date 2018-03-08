@@ -45,11 +45,11 @@ That's it with PhenotypeSeeker!
 
 The following examples and instructions for PhenotypeSeeker are based on the analysis of example dataset. For more detailed examples and instructions, please refer to the user_manual.md
 
-### Example analysis
+### Automated example analysis
 
 We provide the example analysis scripts for 'PhenotypeSeeker modeling' and 'PhenotypeSeeker prediction'. For detailed information about example analysis, please refer to the PhenotypeSeeker/example/README.md
 
-To run the example analysis of 'PhenotypeSeeker modeling' and 'PhenotypeSeeker prediction' execute the example scripts in PhenotypeSeeker/example directory:
+To run the automated example analysis of 'PhenotypeSeeker modeling' and 'PhenotypeSeeker prediction' execute the example scripts in PhenotypeSeeker/example directory:
 ```
 cd example
 ./test_PS_modeling.sh
@@ -58,9 +58,17 @@ cd example
 
 #### Launching the "PhenotypeSeeker modeling"
 
-To create the phenotype prediction model with PhenotypeSeeker, open the command-line and type in:
+First download and unpack the folder containing C. difficile FASTA files and inputfile for 'PhenotypeSeeker modeling':
+
 ```
-phenotypeseeker modeling data.pheno 
+wget http://bioinfo.ut.ee/PhenotypeSeeker/PS_modeling_example_files.tar.gz
+tar -zxvf PS_modeling_example_files.tar.gz
+```
+
+To create the phenotype prediction model with PhenotypeSeeker, type in:
+
+```
+phenotypeseeker modeling PS_modeling_example_files/data.pheno 
 ```
 Where "data.pheno" is an input text file containing tab separated lists of (1) sampleID's, (2) sample FastA/FastQ file addresses and (3) sample phenotype values (one or more column).
 
@@ -121,9 +129,15 @@ CAGTGTCTTAATAAAA	0.03509752161018058	15	| VL_0004 VL_0064 VL_0216 VL_0368 VL_037
 
 "PhenotypeSeeker prediction" predicts the phenotypes of input samples using the model previously created with "PhenotypeSeeker modeling". 
 
-Therefore the "PhenotypeSeeker modeling" outputfiles "log_reg_model_Azithromycin.pkl" and "k-mers_and_coefficients_in_log_reg_model_Azithromycin.txt" are needed to run the "PhenotypeSeeker prediction".
+Therefore the "PhenotypeSeeker modeling" outputfiles "log_reg_model_Azithromycin.pkl" and "k-mers_and_coefficients_in_log_reg_model_Azithromycin.txt" are essential to run the "PhenotypeSeeker prediction".
 
-To predict the phenotypes of samples under study, open the command-line and type in:
+Download and unpack the folder containing C. difficile FASTA files and inputfiles for 'PhenotypeSeeker prediction':
+```
+wget http://bioinfo.ut.ee/PhenotypeSeeker/PS_prediction_example_files.tar.gz
+tar -zxvf PS_prediction_example_files.tar.gz
+```
+
+To predict the phenotypes of samples under study, open type in:
 ```
 phenotypeseeker prediction inputfile1 inputfile2
 ```

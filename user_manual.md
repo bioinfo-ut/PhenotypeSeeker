@@ -113,7 +113,7 @@ CCTTGACCGAACG	7.17E-01	35	| 1D4 PA2_B9 PA2_B2 PA4_A5 1C9 PA4_C3 PA4_G3 PA4_D3 PA
 
 "PhenotypeSeeker prediction" predicts the phenotypes of input samples using the model previously created with "PhenotypeSeeker modeling". 
 
-Therefore the "PhenotypeSeeker modeling" outputfiles "(lin/log)_reg_model.pkl" and "k-mers_and_coefficients_in_(log/lin)_reg_model.txt" are first needed to run the "PhenotypeSeeker prediction".
+Therefore the "PhenotypeSeeker modeling" outputfiles "(lin/log)_reg_model.pkl" and "k-mers_and_coefficients_in_(log/lin)_reg_model.txt" are essential to run the "PhenotypeSeeker prediction".
 
 
 To predict the phenotypes of samples under study, open the command-line and type in:
