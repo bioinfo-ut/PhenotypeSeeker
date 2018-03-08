@@ -56,7 +56,7 @@ cd example
 ./test_PS_prediction.sh
 ```
 
-#### Launching the "PhenotypeSeeker modeling"
+### Launching the "PhenotypeSeeker modeling"
 
 First download and unpack the folder containing C. difficile FASTA files and inputfile for 'PhenotypeSeeker modeling':
 
@@ -86,7 +86,7 @@ VL_0368	PS_modeling_example_files/VL_0368.fasta	1
 VL_0346	PS_modeling_example_files/VL_0346.fasta	0
 ```
 
-##### Outputfiles of PhenotypeSeeker modeling
+#### Outputfiles of PhenotypeSeeker modeling
 
 The created **"chi-squared_test_results_Azithromycin.txt"** contains the statistical test results for every k-mer. More specifically, the columns in the file represent (1) the tested k-mer sequences, (2) the chi-squared statistic values, (3) the pvalues of chi-squared statistics, (4) the numbers of samples with the specific k-mers and (5) the names of the samples with the specific k-mers.
 
@@ -125,7 +125,7 @@ ACCAAATAATAAAACA	0.03509752161018058	15	| VL_0004 VL_0064 VL_0216 VL_0368 VL_037
 CAGTGTCTTAATAAAA	0.03509752161018058	15	| VL_0004 VL_0064 VL_0216 VL_0368 VL_0378 VL_0040 VL_0112 VL_0276 VL_0369 VL_0453 VL_0198 VL_0456 VL_0088 VL_0137 VL_0302
 ```
 
-#### Launching the "PhenotypeSeeker prediction
+### Launching the "PhenotypeSeeker prediction
 
 "PhenotypeSeeker prediction" predicts the phenotypes of input samples using the model previously created with "PhenotypeSeeker modeling". 
 
@@ -137,9 +137,9 @@ wget http://bioinfo.ut.ee/PhenotypeSeeker/PS_prediction_example_files.tar.gz
 tar -zxvf PS_prediction_example_files.tar.gz
 ```
 
-To predict the phenotypes of samples under study, open type in:
+To predict the phenotypes of samples under study, type in:
 ```
-phenotypeseeker prediction inputfile1 inputfile2
+phenotypeseeker prediction PS_prediction_example_files/inputfile1 PS_prediction_example_files/inputfile2
 ```
 Where: 
 
@@ -162,7 +162,7 @@ VL_0271	PS_prediction_example_files/VL_0271.fasta
 Azithromycin	PS_prediction_example_files/log_reg_model_Azithromycin.pkl	PS_prediction_example_files/k-mers_and_coefficients_in_log_reg_model_Azithromycin.txt
 ```
 
-##### Outputfiles of PhenotypeSeeker prediction
+#### Outputfiles of PhenotypeSeeker prediction
 
 After launcing the "PhenotypeSeeker prediction" it starts counting the k-mers from input samples, followed by the detection of presence or absence of the model specific k-mers in each sample.
 
