@@ -10,5 +10,3 @@ sudo pip install --upgrade numpy
 sudo cp bin/* /usr/bin
 sudo pip install .
 
-echo
-phenotypeseeker --version

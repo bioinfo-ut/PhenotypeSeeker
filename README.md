@@ -1,6 +1,8 @@
 # PhenotypeSeeker
 Identify phenotype-specific k-mers and predict phenotype using sequenced bacterial strains
+
 ## Introduction
+
 PhenotypeSeeker identifies phenotype-specific k-mers, generates phenotype prediction model and predicts the phenotype from sequencing data. 
 
 PhenotypeSeeker consist of two subprograms: 'PhenotypeSeeker modeling' and 'PhenotypeSeeker prediction', which both take either assembled contigs or raw-read data as an input. 
@@ -9,72 +11,34 @@ PhenotypeSeeker consist of two subprograms: 'PhenotypeSeeker modeling' and 'Phen
 PhenotypeSeeker uses statistical model that can be trained automatically on isolates with known phenotype. The prediction of phenotypes takes less than a second per isolate if assembled genomes are used and less than a minute per isolate if raw sequencing data are used. Therefore, PhenotypeSeeker is well suited for predicting phenotypes from large sequencing datasets.
 
 The method is implemented in Python programming language and can be run on low-end Linux server and/or on laptop computers.
+
 ## Installation
+
 PhenotypeSeeker currently supports only Linux operating systems.
 
-### Example installation on Linux Ubuntu
-
-### Example installation on Linux Debian
-
-### Example installation on Linux Mint 18.3 "Sylvia"
+To install PhenotypeSeeker, download the PhenotypeSeeker, change to PhenotypeSeeker directory and run install.sh
 ```
-sudo apt-get update && sudo apt-get -y upgrade
-sudo apt-get install python-pip
-sudo apt-get install python-dev
-sudo apt-get install git
-
-sudo pip install setuptools
-sudo pip install numpy
-git clone https://github.com/bioinfo-ut/PhenotypeSeeker.git
+wget -r -np -nH --cut-dirs=1 -R "index.html*" -R "*.gz" http://bioinfo.ut.ee/PhenotypeSeeker/PhenotypeSeeker
 cd PhenotypeSeeker
-sudo cp bin/* /usr/bin
-sudo pip install .
+sh install.sh
 
 phenotypeseeker --version
 ```
 
-### Installation without sudo privileges
+### Install locally without sudo privileges
 
-You must have python-pip, python-dev and git installed on your system to install with out sudo rights!
+You must have python, python-pip and python-dev installed on your system to successfully install PhenotypeSeeker locally without sudo rights!
 
-To install PhenotypeSeeker locally without sudo rights, then just add "--user" to all pip commands and copy binaries to $HOME/.local/bin.
 ```
-pip install --user setuptools
-pip install --user numpy
-git clone https://github.com/bioinfo-ut/PhenotypeSeeker.git
+wget -r -np -nH --cut-dirs=1 -R "index.html*" -R "*.gz" http://bioinfo.ut.ee/PhenotypeSeeker/PhenotypeSeeker
 cd PhenotypeSeeker
-cp bin/* $HOME/.local/bin.
-pip install --user .
+sh local_install.sh
 
-phenotypeseeker --version
+~/.local/bin/phenotypeseeker --version
 ```
 
 That's it with PhenotypeSeeker!
 
-### Dependencies
-
-To run PhenotypeSeeker, you also need Genometester4 and mash on your system.
-
-We provide appropriate 64-bit Linux binaries for Genometester4 and mash programs in PhenotypeSeeker/bin directory. 
-
-Therefore, the easiest solution (integrated into our example installations) could be to just copy the files from PhenotypeSeeker/bin directory into directory specified in $PATH variable (e.g. /usr/bin).
-
-You can also install Genometester4 and mash from source.
-
-#### Genometester4
-```
-git clone https://github.com/bioinfo-ut/GenomeTester4.git
-cd src
-make
-```
-#### mash
-```
-git clone https://github.com/marbl/Mash.git
-```
-Installation instructions are specified in
-```
-https://github.com/marbl/Mash/blob/master/INSTALL.txt
-```
 ## Usage
 
 ### Launching the "PhenotypeSeeker modeling"
