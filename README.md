@@ -45,9 +45,9 @@ That's it with PhenotypeSeeker!
 
 The following examples and instructions for PhenotypeSeeker are based on the analysis of example dataset. For more detailed examples and instructions, please refer to the user_manual.md
 
-### Automated example analysis
+### Automated example analysis scripts
 
-We provide the example analysis scripts for 'PhenotypeSeeker modeling' and 'PhenotypeSeeker prediction'. For detailed information about example analysis, please refer to the PhenotypeSeeker/example/README.md
+We provide the automated example analysis scripts for 'PhenotypeSeeker modeling' and 'PhenotypeSeeker prediction'. For detailed information about example analysis, please refer to the PhenotypeSeeker/example/README.md
 
 To run the automated example analysis of 'PhenotypeSeeker modeling' and 'PhenotypeSeeker prediction' execute the example scripts in PhenotypeSeeker/example directory:
 ```
@@ -111,7 +111,7 @@ The **"summary_of_log_reg_analysis_Azithromycin.txt"** contains the information 
 
 The columns in the file **"k-mers_filtered_by_pvalue_Azithromycin.txt"** represent (1) the k-mers used in regression model as parameter, (2) the regression model coefficients of k-mers, (3) the numbers of samples with the specific k-mers and (4) the names of the samples with the specific k-mers.
 
-Example of **"k-mers_and_coefficients_in_log_reg_model_Azithromycin.txt"** file:
+Head of **"k-mers_and_coefficients_in_log_reg_model_Azithromycin.txt"** file:
 ```
 K-mer	coef._in_lin_reg_model	No._of_samples_with_k-mer	Samples_with_k-mer
 CGTTAAATAATAGATA	0.03509752161018058	15	| VL_0004 VL_0064 VL_0216 VL_0368 VL_0378 VL_0040 VL_0112 VL_0276 VL_0369 VL_0453 VL_0198 VL_0456 VL_0088 VL_0137 VL_0302
