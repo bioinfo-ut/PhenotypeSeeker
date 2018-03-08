@@ -14,11 +14,12 @@ The method is implemented in Python programming language and can be run on low-e
 
 ## Installation
 
-PhenotypeSeeker currently supports only Linux operating systems.
+PhenotypeSeeker supports Linux operating systems.
 
-To install PhenotypeSeeker, download the PhenotypeSeeker, change to PhenotypeSeeker directory and run install.sh
+To install PhenotypeSeeker, open the command-line and type in the following commands:
 ```
-wget -r -np -nH --cut-dirs=1 -R "index.html*" -R "*.gz" http://bioinfo.ut.ee/PhenotypeSeeker/PhenotypeSeeker
+sudo apt-get install git
+git clone http://github.com/bioinfo-ut/PhenotypeSeeker.git
 cd PhenotypeSeeker
 sh install.sh
 
@@ -27,10 +28,11 @@ phenotypeseeker --version
 
 ### Install locally without sudo privileges
 
-You must have python, python-pip and python-dev installed on your system to successfully install PhenotypeSeeker locally without sudo rights!
+Python, python-pip, python-dev and git must be installed to install PhenotypeSeeker locally without sudo rights!
 
+To install PhenotypeSeeker locally, open the command-line and type in the following commands:
 ```
-wget -r -np -nH --cut-dirs=1 -R "index.html*" -R "*.gz" http://bioinfo.ut.ee/PhenotypeSeeker/PhenotypeSeeker
+git clone http://github.com/bioinfo-ut/PhenotypeSeeker.git
 cd PhenotypeSeeker
 sh local_install.sh
 
@@ -210,3 +212,4 @@ PA4_G3	1	0.91
 ```
 
 ## Contact
+erki.aun@ut.ee
