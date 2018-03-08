@@ -212,4 +212,5 @@ PA4_G3	1	0.91
 ```
 
 ## Contact
+If you require further assistance please contact us by sending email to
 erki.aun@ut.ee
