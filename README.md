@@ -56,9 +56,9 @@ cd example
 ./test_PS_prediction.sh
 ```
 
-### Launching the "PhenotypeSeeker modeling"
+### Launching the "PhenotypeSeeker modeling" (step by step guide)
 
-First download and unpack the folder containing C. difficile FASTA files and inputfile for 'PhenotypeSeeker modeling':
+First download and unpack the folder containing C. difficile FASTA files and inputfile for 'PhenotypeSeeker modeling' example analysis:
 
 ```
 wget http://bioinfo.ut.ee/PhenotypeSeeker/PS_modeling_example_files.tar.gz
@@ -125,13 +125,13 @@ ACCAAATAATAAAACA	0.03509752161018058	15	| VL_0004 VL_0064 VL_0216 VL_0368 VL_037
 CAGTGTCTTAATAAAA	0.03509752161018058	15	| VL_0004 VL_0064 VL_0216 VL_0368 VL_0378 VL_0040 VL_0112 VL_0276 VL_0369 VL_0453 VL_0198 VL_0456 VL_0088 VL_0137 VL_0302
 ```
 
-### Launching the "PhenotypeSeeker prediction
+### Launching the "PhenotypeSeeker prediction (step by step guide)
 
 "PhenotypeSeeker prediction" predicts the phenotypes of input samples using the model previously created with "PhenotypeSeeker modeling". 
 
 Therefore the "PhenotypeSeeker modeling" outputfiles "log_reg_model_Azithromycin.pkl" and "k-mers_and_coefficients_in_log_reg_model_Azithromycin.txt" are essential to run the "PhenotypeSeeker prediction".
 
-Download and unpack the folder containing C. difficile FASTA files and inputfiles for 'PhenotypeSeeker prediction':
+Download and unpack the folder containing C. difficile FASTA files and inputfiles for 'PhenotypeSeeker prediction' example analysis:
 ```
 wget http://bioinfo.ut.ee/PhenotypeSeeker/PS_prediction_example_files.tar.gz
 tar -zxvf PS_prediction_example_files.tar.gz
