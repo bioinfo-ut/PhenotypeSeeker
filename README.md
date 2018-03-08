@@ -30,7 +30,7 @@ phenotypeseeker --version
 
 Python, python-pip, python-dev and git must be installed to install PhenotypeSeeker locally without sudo rights!
 
-To install PhenotypeSeeker locally, open the command-line and type in the following commands:
+To install the PhenotypeSeeker locally, open the command-line and type in the following commands:
 ```
 git clone http://github.com/bioinfo-ut/PhenotypeSeeker.git
 cd PhenotypeSeeker
@@ -43,7 +43,7 @@ That's it with PhenotypeSeeker!
 
 ## Usage
 
-The following instructions for PhenotypeSeeker are based on the analysis of example dataset. For more detailed examples and instructions, please refer to the PhenotypeSeeker/user_manual.md
+The following examples and instructions for PhenotypeSeeker are based on the analysis of example dataset. For more detailed examples and instructions, please refer to the PhenotypeSeeker/user_manual.md
 
 ### Example analysis
 
