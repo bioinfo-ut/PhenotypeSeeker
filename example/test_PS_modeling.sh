@@ -3,6 +3,9 @@
 # the Clostridium difficie azithromycin resistance dataset as an
 # example.
 
+mkdir PS_modeling_example_analysis
+cd PS_modeling_example_analysis
+
 # Download C. difficile FASTA files and inputfile for PhenotypeSeeker
 echo Downloading the folder with example files ...
 echo
