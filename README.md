@@ -103,7 +103,7 @@ CACTTAAATGTTGTTC	10.98	4.13E-03	22	| VL_0064 VL_0216 VL_0368 VL_0378 VL_0112 VL_
 CAAGGTCCGGATTTTA	3.36	1.86E-01	27	| VL_0004 VL_0064 VL_0216 VL_0368 VL_0112 VL_0276 VL_0453 VL_0065 VL_0091 VL_0303 VL_0233 VL_0073 VL_0464 VL_0098 VL_0159 VL_0442 VL_0377 VL_0198 VL_0456 VL_0088 VL_0137 VL_0302 VL_0288 VL_0047 VL_0346 VL_0252 VL_0296
 ATTAAACTGGCAACTA	8.92	1.16E-02	7	| VL_0216 VL_0368 VL_0378 VL_0040 VL_0112 VL_0276 VL_0369
 ```
-The file **"k-mers_filtered_by_pvalue_Azithromycin.txt"** contains the subset of k-mers having the p-value lower than 0.05 (default of "--pvalue" option).
+The file **"k-mers_filtered_by_pvalue_Azithromycin.txt"** contains the subset of k-mers having the p-value of chi-squared test lower than 0.05 (default of "--pvalue" option).
 
 The regression model is outputted in **"log_reg_model_Azithromycin.pkl"**
 
@@ -125,7 +125,7 @@ ACCAAATAATAAAACA	0.03509752161018058	15	| VL_0004 VL_0064 VL_0216 VL_0368 VL_037
 CAGTGTCTTAATAAAA	0.03509752161018058	15	| VL_0004 VL_0064 VL_0216 VL_0368 VL_0378 VL_0040 VL_0112 VL_0276 VL_0369 VL_0453 VL_0198 VL_0456 VL_0088 VL_0137 VL_0302
 ```
 
-### Launching the "PhenotypeSeeker prediction (step by step guide)
+### Launching the "PhenotypeSeeker prediction" (step by step guide)
 
 "PhenotypeSeeker prediction" predicts the phenotypes of input samples using the model previously created with "PhenotypeSeeker modeling". 
 
