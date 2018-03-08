@@ -119,7 +119,6 @@ phenotypeseeker prediction PS_prediction_example_files/inputfile1 PS_prediction_
 Where: 
 
 "inputfile1" is a text file containing tab separated lists of (1) sampleID's and (2) sample FastA/FastQ file addresses.
-
 Head of "inputfile1":
 ```
 VL_0068	PS_prediction_example_files/VL_0068.fasta
@@ -140,7 +139,6 @@ After launcing the "PhenotypeSeeker prediction" it starts counting the k-mers fr
 The data of model specific k-mers presence or absence in each sample is used to predict the phenotypes for samples.
 
 The results of predictions are saved into **"predictions_Azithromycin.txt"**.
-
 Head of **"predictions_Azithromycin.txt"**
 ```
 Sample_ID	predicted_phenotype	probability_for_predicted_class
