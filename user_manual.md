@@ -49,7 +49,7 @@ To save the temporary k-mer lists, the temporary repository **"K-mer_lists"** is
 
 The process of k-mer counting results in the **"k-mer_matrix.txt"** file, where the number of each counted k-mer (rows) in each sample (columns) is recorded.
 
-Then, if "-w" (weights) option is choosed it estimates the distances of samples with program mash, which output is saved in **"mash_distances.mat"**. 
+Then, if "-w" (weights) option is chosen it estimates the distances of samples with program mash, which output is saved in **"mash_distances.mat"**. 
 
 Those distances are used to calculate GSC (Gerstein, Sonnhammer and Chothia) weights, which are considered in forthcoming analysis to correct for clonal population structure.
 
@@ -91,7 +91,7 @@ Follows the regression analysis with top "--n_kmers" lowest p-valued k-mers from
 
 The regression model is outputted in **"log_reg_model.pkl"** or **"lin_reg_model.pkl"** file depending on which type of phenotype (binary or continuous accordingly) were used. 
 
-The **"summary_of_(log\lin)_reg_analysis.txt"** contains the information about conducted regression analysis. For example the regularisation parameter choosen, the actual vs predicted phenotypes of test set samples and the model-evaluation metrics.
+The **"summary_of_(log\lin)_reg_analysis.txt"** contains the information about conducted regression analysis. For example the regularisation parameter chosen, the actual vs predicted phenotypes of test set samples and the model-evaluation metrics.
 
 The columns in the following file **"k-mers_and_coefficients_in_(log/lin)_reg_model.txt"** represent (1) the k-mers used in regression model as parameter, (2) the regression model coefficients of k-mers, (3) the numbers of samples with the specific k-mers and (4) the names of the samples with the specific k-mers.
 
