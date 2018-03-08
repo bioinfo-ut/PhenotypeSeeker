@@ -16,7 +16,7 @@ The method is implemented in Python programming language and can be run on low-e
 
 PhenotypeSeeker supports Linux operating systems.
 
-To install PhenotypeSeeker, open the command-line and type in the following commands:
+To install the PhenotypeSeeker, open the command-line and type in the following commands:
 ```
 sudo apt-get install git
 git clone http://github.com/bioinfo-ut/PhenotypeSeeker.git
@@ -43,7 +43,7 @@ That's it with PhenotypeSeeker!
 
 ## Usage
 
-The following examples and instructions for PhenotypeSeeker are based on the analysis of example dataset. For more detailed examples and instructions, please refer to the PhenotypeSeeker/user_manual.md
+The following examples and instructions for PhenotypeSeeker are based on the analysis of example dataset. For more detailed examples and instructions, please refer to the user_manual.md
 
 ### Example analysis
 
