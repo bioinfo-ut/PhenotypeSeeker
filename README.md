@@ -56,7 +56,7 @@ cd example
 ./test_PS_prediction.sh
 ```
 
-The C.difficile genomes used in example analysis originate from European Nucleotide Archive [EMBL:PRJEB11776 ((http://www.ebi.ac.uk/ena/data/view/PRJEB11776)] and the binary phenotypes of azithromycin resistance for these genomes are adapted from Drouin et al. (2016. Predictive computational phenotyping and biomarker discovery using reference-free genome comparisons. BMC Genomics [Internet]. 17(1):754. Available from: http://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-016-2889-6).
+The C.difficile genomes used in the example analysis originate from the European Nucleotide Archive [EMBL:PRJEB11776 ((http://www.ebi.ac.uk/ena/data/view/PRJEB11776)] and the binary phenotypes of azithromycin resistance for these genomes are adapted from Drouin et al. (2016. Predictive computational phenotyping and biomarker discovery using reference-free genome comparisons. BMC Genomics [Internet]. 17(1):754. Available from: http://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-016-2889-6).
 
 ### Launching the "PhenotypeSeeker modeling" (step by step guide)
 
