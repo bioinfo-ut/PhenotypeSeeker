@@ -167,6 +167,10 @@ def Main():
         "--assembly", type=str, metavar='"+ or -"', default="+",
         help='Assemble the k-mers used in regression model (default "+").'
         )
+    other.add_argument(
+        "--num_threads", type=int, metavar='INT', default=8,
+        help='Specify the number of threads the program is run on (default 8).'
+        )
     other.add_argument("-h", "--help", action="help",
     	help="Show this help message and exit."
     	)
@@ -186,7 +190,7 @@ def Main():
     	)
     parser_b.add_argument(
     	"-l", type=str, metavar="INT (1-32)", default="16",
-    	help="Specify k-mer length (default = 13). Must match with the \
+    	help="Specify the k-mer length (default = 13). Must match with the \
     	length used in models generation."
     	)
     parser_b.add_argument(

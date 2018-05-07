@@ -846,7 +846,7 @@ def linear_regression(
        	    continue
 
         # Generating a binary k-mer presence/absence matrix and a list
-        # of k-mer names based on information in k-mer_matrix.txt
+        # of k-mer names based on information in k-mer_matrix.txt 
         kmers_presence_matrix = []
         features = []
         Phenotypes = [samples[item][k] for item in samples_order]
@@ -854,12 +854,10 @@ def linear_regression(
             for line in f3:
                 if line.split()[0] in kmers_passed_all_phenotypes[j]:
                     features.append(line.split()[0])
-                    kmers_presence_matrix.append(
-                    	map(
-                    		lambda x: 0 if x == 0 else 1, 
-                    		map(int, line.split()[1:])
-                    		)
-                    	)
+                    kmers_presence_matrix.append(map(
+                        lambda x: 0 if x == 0 else 1,
+                        map(int, line.split()[1:])
+                        ))
         f3.close()
 
         # Converting data into Python array formats suitable to use in
