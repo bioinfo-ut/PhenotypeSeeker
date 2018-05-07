@@ -90,7 +90,6 @@ def kmer_list_generator(samples_info, kmer_length, freq, input_samples):
     # Generates k-mer lists for every sample in sample_names variable 
     # (list or dict).
     totalFiles = len(samples_info)
-    currentSampleNum = 1
     call(["mkdir", "-p", "K-mer_lists"])
     for item in input_samples:
         out_name = "K-mer_lists/" + item + "_output.txt"
