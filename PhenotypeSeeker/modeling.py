@@ -154,13 +154,12 @@ def kmer_filtering_by_frequency(dict_of_frequencies, min_freq, max_freq):
     f1.close()
     return(kmers_passed) 
 
-def map_samples_modeling(sample_names, kmer_length):
+def map_samples_modeling(samples_info, kmer_length, sample_names):
     # Takes k-mers, which passed frequency filtering as feature space 
     # and maps samples k-mer lists to that feature space. A vector of 
     # k-mers frequency information is created for every sample.
-    sys.stderr.write("Mapping samples to the feature vector space:\n")
-    totalFiles = len(sample_names)
-    currentSampleNum = 1
+    totalFiles = len(samples_info)
+    currentSampleNum.value = 0
     for item in sample_names:
         out_name = "K-mer_lists/"+ item + "_output2.txt"
         with open(out_name, "w+") as f1:
@@ -169,6 +168,7 @@ def map_samples_modeling(sample_names, kmer_length):
             	+ ".list", "-f", "K-mer_lists/k-mers_filtered_by_freq.txt"],
             	stdout=f1
             	)
+        currentSampleNum.value += 1
         output = "\t%d of %d samples mapped." % (currentSampleNum,totalFiles)
         Printer(output)
         currentSampleNum += 1
@@ -1424,7 +1424,8 @@ def modeling(args):
     kmers_to_analyse = kmer_filtering_by_frequency(
         dict_of_frequencies , args.min, args.max
         )
-    map_samples_modeling(samples, args.length)
+    sys.stderr.write("Mapping samples to the feature vector space:\n")
+    p.map(partial(map_samples_modeling, samples, args.length), mt_split)
     vectors_to_matrix_modeling(samples_order)
     
     call(["rm -r K-mer_lists/"], shell = True)
