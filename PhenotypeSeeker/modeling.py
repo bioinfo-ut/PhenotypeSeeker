@@ -15,6 +15,7 @@ warnings.filterwarnings("ignore", category=UserWarning)
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor, _DistanceMatrix
 from cogent import LoadTree
 from cogent.align.weights.methods import GSC
+from multiprocessing import Pool, Value
 from scipy import stats
 from sklearn.externals import joblib
 from sklearn.linear_model import Lasso, LogisticRegression, Ridge
@@ -23,9 +24,13 @@ from sklearn.metrics import (
     roc_auc_score, average_precision_score, matthews_corrcoef, cohen_kappa_score
     )
 from sklearn.model_selection import GridSearchCV, train_test_split
+from functools import partial
 import Bio
 import sklearn.datasets
 import numpy as np
+
+# Global variables
+currentSampleNum = Value("i", 0)
 
 class Printer():
     # Print things to stdout on one line dynamically.
@@ -84,8 +89,7 @@ def kmer_list_generator(samples_info, kmer_length, freq, input_samples):
     # Makes "K-mer_lists" directory where all lists are stored.
     # Generates k-mer lists for every sample in sample_names variable 
     # (list or dict).
-    sys.stderr.write("Generating the k-mer lists:\n")
-    totalFiles = len(input_samples)
+    totalFiles = len(samples_info)
     currentSampleNum = 1
     call(["mkdir", "-p", "K-mer_lists"])
     for item in input_samples:
@@ -101,9 +105,9 @@ def kmer_list_generator(samples_info, kmer_length, freq, input_samples):
             	+ kmer_length + ".list"], 
             	stdout=f2
             	)
-        output = "\t%d of %d lists generated." % (currentSampleNum,totalFiles)
+        currentSampleNum.value += 1
+        output = "\t%d of %d lists generated." % (currentSampleNum.value,totalFiles)
         Printer(output)
-        currentSampleNum += 1
 
 def kmer_frequencies(samples):
     # Counts the k-mers presence frequencies in samples
@@ -1409,7 +1413,14 @@ def modeling(args):
     if args.max == "0":
         args.max = n_o_s - 2
     
-    kmer_list_generator(samples, args.length, args.cutoff, samples_order)
+    # Splitting samples for multithreading
+    mt_split = []
+    for i in range(args.num_threads):
+        mt_split.append([samples_order[j] for j in xrange(i, len(samples_order), args.num_threads)])
+    p = Pool(args.num_threads)
+
+    sys.stderr.write("Generating the k-mer lists:\n")
+    p.map(partial(kmer_list_generator, samples, args.l, args.c), mt_split)
     dict_of_frequencies = kmer_frequencies(samples_order)
     kmers_to_analyse = kmer_filtering_by_frequency(
         dict_of_frequencies , args.min, args.max
