@@ -171,7 +171,6 @@ def map_samples_modeling(samples_info, kmer_length, sample_names):
         currentSampleNum.value += 1
         output = "\t%d of %d samples mapped." % (currentSampleNum,totalFiles)
         Printer(output)
-        currentSampleNum += 1
 
 def vectors_to_matrix_modeling(samples_order):
     # Takes all vectors with k-mer frequency information and inserts 
