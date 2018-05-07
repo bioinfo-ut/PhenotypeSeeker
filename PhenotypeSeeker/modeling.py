@@ -169,7 +169,7 @@ def map_samples_modeling(samples_info, kmer_length, sample_names):
             	stdout=f1
             	)
         currentSampleNum.value += 1
-        output = "\t%d of %d samples mapped." % (currentSampleNum,totalFiles)
+        output = "\t%d of %d samples mapped." % (currentSampleNum.value,totalFiles)
         Printer(output)
 
 def vectors_to_matrix_modeling(samples_order):
