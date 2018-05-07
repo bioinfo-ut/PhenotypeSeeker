@@ -1420,7 +1420,7 @@ def modeling(args):
     p = Pool(args.num_threads)
 
     sys.stderr.write("Generating the k-mer lists:\n")
-    p.map(partial(kmer_list_generator, samples, args.l, args.c), mt_split)
+    p.map(partial(kmer_list_generator, samples, args.length, args.cutoff), mt_split)
     dict_of_frequencies = kmer_frequencies(samples_order)
     kmers_to_analyse = kmer_filtering_by_frequency(
         dict_of_frequencies , args.min, args.max
