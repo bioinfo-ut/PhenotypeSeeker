@@ -77,7 +77,7 @@ def Main():
     	)
 
     kmer_lists.add_argument(
-    	"-l", '--length', type=str, metavar="", default="16", 
+    	"-l", '--length', type=str, metavar="", default="13", 
     	help="K-mer length. Must be an integer between (1-32, default = 16)"
     	)
     kmer_lists.add_argument(
@@ -137,14 +137,60 @@ def Main():
     	regularization path (default = 25)'
     	)
     regression_models.add_argument(
+        "--gammas", metavar='FLOAT', type=float, nargs='+',
+        help="List of gammas (rbf kernel coefficients) where to compute the \
+        models. Must be positive floats. If 'None' gammas are set automatically in a \
+        logarithmic scale along the regularization path (specified by \
+        parameters --gamma_min, --gamma_max and --n_gammas)."
+        )
+    regression_models.add_argument(
+        '--gamma_min', metavar='', type=float, default=1E-6,
+        help='Specify the start of the gamma path (gamma minimum). \
+        Must be a positive float (default = 1E-6).'
+        )
+    regression_models.add_argument(
+        '--gamma_max', metavar='', type=float, default=1E6,
+        help='Specify the end of the gammas path (gamma maximum). \
+        Must be a positive float (default = 1E6).'
+        )
+    regression_models.add_argument(
+        '--n_gammas', metavar='', type=int, default=25,
+        help='Specify the number of gammas along the \
+        regularization path (default = 25)'
+        )
+    regression_models.add_argument(
+        '--n_iter', metavar='', type=int, default=50,
+        help='The number of gamma&alpha combinations that are tried \
+        while tuning the RBF Kernel hyperparameters.'
+        )
+    regression_models.add_argument(
     	'--n_splits', metavar='', type=int, default=10,
     	help='Number of folds to split training set for cross-validation. \
     	Must be at least 2 (default 10).'
     	)
     regression_models.add_argument(
-    	'-r', '--regularization', metavar='', type=str, default='L1',
-    	help='The norm used in the penalization. Must be L1 (default) or L2.'
+    	'-r', '--regularization', metavar='', type=str, default='l1',
+    	help='The norm used in the penalization. Must be L1 (default), L2 \
+        or L1+L2 (elastic net)'
     	)
+    regression_models.add_argument(
+        '-bc', '--binary_classifier', metavar='', type=str, default='log',
+        help='The binary classifier to be used. Possible variants are \
+        "log" (logistic regression; default), "SVM" (support vector \
+        machine) and "RF" (random forest)'
+        )
+    regression_models.add_argument(
+        '--kernel', metavar='', type=str, default='linear',
+        help='The kernel type to be used with the "SVM" (support vector \
+        machine) classifier. Possible variants are "linear" (no kernel; \
+        default) and "rbf" (Gaussian kernel)'
+        )
+    regression_models.add_argument(
+        '--l1_ratio', metavar='', type=float, default=0.5,
+        help='The elastic net mixing parameter with. For l1_ratio = 0, it is \
+        an L2 penalty. For l1_ratio = 1, it is an L1 penalty. \
+        For 0 < l1_ratio < 1, the penalty is a combination of L1 and L2.'
+        )
     regression_models.add_argument(
     	'-s', "--testset_size", metavar="", type=float, default=0.25,
     	help='The size of the test set. Represents the proportion of the \
@@ -189,7 +235,7 @@ def Main():
     	(k-mers_and_coefficients_in_*_reg_model*.txt) file addresses.'
     	)
     parser_b.add_argument(
-    	"-l", type=str, metavar="INT (1-32)", default="16",
+    	"-l", type=str, metavar="INT (1-32)", default="13",
     	help="Specify the k-mer length (default = 13). Must match with the \
     	length used in models generation."
     	)
