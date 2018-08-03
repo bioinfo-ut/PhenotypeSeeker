@@ -5,15 +5,18 @@ __version__ = "1.0"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
+from itertools import izip_longest
 from subprocess import call
 import math
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
+warnings.filterwarnings("ignore", category=RuntimeWarning)
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 import numpy as np
 from sklearn.externals import joblib
 
-def allocate_kmers(phenotypes_to_predict):
+def get_kmers(phenotypes_to_predict):
     call(["mkdir", "-p", "K-mer_lists"])
     for phenotype in phenotypes_to_predict:
         k_mer_list_2_allocate_from = phenotypes_to_predict[phenotype][1]
@@ -51,6 +54,8 @@ def kmer_filtering_by_freq_cutoff_in_sample(
                         + phenotype + ".txt", "w+"
                         ) as f2:
                     for line in f1:
+                        if "#TextDatabase" in line:
+                            continue
                         list1 = line.strip().split()
                         if len(list1) == 2 or list1[2] >= min_freq:
                             f2.write(line)
@@ -108,7 +113,7 @@ def predict(samples_order, phenotypes_to_predict):
         with open("K-mer_lists/k-mer_matrix_" + phenotype  + ".txt") as f1:
             for line in f1:
                 kmers_presence_matrix.append(map(
-                    lambda x: 0 if x == 0 else 1, map(int, line.split()[1:])
+                    lambda x: 0 if x == 0 else 1, map(int, line.split())
                     ))
         kmers_presence_matrix = np.array(kmers_presence_matrix).transpose()
         
@@ -137,7 +142,7 @@ def prediction(args):
         )
     phenotypes_to_predict = parse_prediction_input_file2(args.inputfile2)
     
-    allocate_kmers(phenotypes_to_predict)
+    get_kmers(phenotypes_to_predict)
     format_kmer_db(phenotypes_to_predict)
     map_samples_prediction(samples, args.l, phenotypes_to_predict)
     kmer_filtering_by_freq_cutoff_in_sample(
@@ -151,27 +156,10 @@ def vectors_to_matrix_prediction(samples_order, phenotypes_to_predict):
     # them into matrix of dimensions "number of samples" x "number of 
     # k-mers (features).
     for phenotype in phenotypes_to_predict:
-        call(
-            ["mv", "K-mer_lists/k-mers_" + phenotype 
-            + ".txt", "K-mer_lists/k-mer_matrix_" + phenotype  + ".txt"]
-            )
-        for ID in samples_order:
-            with open("K-mer_lists/tmp1.txt", "w+") as f1:
-                with open("K-mer_lists/tmp2.txt", "w+") as f2:
-                    call(
-                        ["cut -f 3 K-mer_lists/" + ID 
-                        + "_k-mer_counts_filtered_" + phenotype 
-                        +  ".txt | tail -n +2"],
-                         shell=True, stdout=f2
-                         )
-                    call(
-                        ["paste", "K-mer_lists/k-mer_matrix_" + phenotype  
-                        + ".txt", "K-mer_lists/tmp2.txt"],
-                        stdout=f1
-                        )
-                    call(
-                        [
-                        "mv", "K-mer_lists/tmp1.txt", 
-                        "K-mer_lists/k-mer_matrix_" + phenotype  + ".txt"
-                        ]
-                        )
+        kmer_matrix = open("K-mer_lists/k-mer_matrix_" + phenotype  + ".txt", "w")
+        kmer_list_files = [
+            "K-mer_lists/" + item + "_k-mer_counts_filtered_" + phenotype
+            + ".txt" for item in samples_order
+            ]
+        for line in izip_longest(*[open(item) for item in kmer_list_files], fillvalue = ''):
+            kmer_matrix.write('\t'.join([j.split()[2].strip() for j in line]) + "\n")
