@@ -545,7 +545,7 @@ def weighted_chi_squared(
                 (weights_of_sens_samples*weights_of_samples_wo_kmer)
                 / float(weights_of_samples_total)
                 ) 
-            f2.write(" ".join([kmer, str(w_pheno_w_kmer), str(w_pheno_wo_kmer), str(wo_pheno_w_kmer), str(wo_pheno_wo_kmer), str(w_pheno_w_kmer_expected), str(w_pheno_wo_kmer_expected), str(wo_pheno_w_kmer_expected), str(wo_pheno_wo_kmer_expected), "\n"]))
+            f2.write(" ".join([kmer, str(weights_of_res_w_kmer), str(weights_of_res_wo_kmer), str(weights_of_sens_w_kmer), str(weights_of_sens_wo_kmer), str(weights_of_res_w_kmer_exp), str(weights_of_res_wo_kmer_exp), str(weights_of_sens_w_kmer_exp), str(weights_of_sens_wo_kmer_exp), "\n"]))
 
             chisquare_results = stats.chisquare(
                 [
