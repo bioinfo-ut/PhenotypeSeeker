@@ -544,8 +544,13 @@ def weighted_chi_squared(
             weights_of_sens_wo_kmer_exp = (
                 (weights_of_sens_samples*weights_of_samples_wo_kmer)
                 / float(weights_of_samples_total)
-                ) 
-            f2.write(" ".join([kmer, str(weights_of_res_w_kmer), str(weights_of_res_wo_kmer), str(weights_of_sens_w_kmer), str(weights_of_sens_wo_kmer), str(weights_of_res_w_kmer_exp), str(weights_of_res_wo_kmer_exp), str(weights_of_sens_w_kmer_exp), str(weights_of_sens_wo_kmer_exp), "\n"]))
+                )
+
+            if kmer == "CCTCGGGTAGATC":
+                print(weights)
+                print(samples_order)
+                print(map(samples[j][k] for j in samples_order))
+                print(" ".join([kmer, str(weights_of_res_w_kmer), str(weights_of_res_wo_kmer), str(weights_of_sens_w_kmer), str(weights_of_sens_wo_kmer), str(weights_of_res_w_kmer_exp), str(weights_of_res_wo_kmer_exp), str(weights_of_sens_w_kmer_exp), str(weights_of_sens_wo_kmer_exp), "\n"]))
 
             chisquare_results = stats.chisquare(
                 [
