@@ -1,7 +1,7 @@
 #!/usr/bin/python2.7
 
 __author__ = "Erki Aun"
-__version__ = "1.0"
+__version__ = "0.3.0"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
@@ -9,9 +9,7 @@ from itertools import izip_longest
 from subprocess import call
 import math
 import warnings
-warnings.filterwarnings("ignore", category=UserWarning)
-warnings.filterwarnings("ignore", category=RuntimeWarning)
-warnings.filterwarnings("ignore", category=DeprecationWarning)
+warnings.showwarning = lambda *args, **kwargs: None
 
 import numpy as np
 from sklearn.externals import joblib

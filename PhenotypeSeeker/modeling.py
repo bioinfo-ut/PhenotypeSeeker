@@ -545,6 +545,7 @@ def weighted_chi_squared(
                 (weights_of_sens_samples*weights_of_samples_wo_kmer)
                 / float(weights_of_samples_total)
                 ) 
+            test_results_file.write(" ".join([kmer, str(w_pheno_w_kmer), str(w_pheno_wo_kmer), str(wo_pheno_w_kmer), str(wo_pheno_wo_kmer), str(w_pheno_w_kmer_expected), str(w_pheno_wo_kmer_expected), str(wo_pheno_w_kmer_expected), str(wo_pheno_wo_kmer_expected), "\n"]))
 
             chisquare_results = stats.chisquare(
                 [
@@ -560,10 +561,10 @@ def weighted_chi_squared(
                 
             pvalues.append(chisquare_results[1])
 
-            f2.write(
-                kmer + "\t%.2f\t%.2E\t" % chisquare_results 
-                + str(len(samples_x)) +"\t| " + " ".join(samples_x) + "\n"
-                )
+            #f2.write(
+            #    kmer + "\t%.2f\t%.2E\t" % chisquare_results 
+            #    + str(len(samples_x)) +"\t| " + " ".join(samples_x) + "\n"
+            #    )
             if counter%checkpoint == 0:
                 l.acquire()
                 currentKmerNum.value += checkpoint
@@ -689,32 +690,22 @@ def chi_squared(
     return(pvalues)
 
 def concatenate_test_files(headerline, k, n_o_p, num_threads, phenotype_scale, phenotypes, phenotypes_2_analyse):
-    if phenotype_scale == "continuous": 
-        if headerline:
-            for k in phenotypes_2_analyse:
-                call(["cat t-test_results_" + phenotypes[k-1] + "_* > t-test_results_" + phenotypes[k-1] + ".txt"], shell=True)
-                for l in range(num_threads):
-                    call(["rm t-test_results_" + phenotypes[k-1] + "_%05d.txt" %l], shell=True)
-        elif n_o_p > 1:
-            for k in phenotypes_2_analyse:
-                call(["cat t-test_results_" + str(k) + "_* > t-test_results_" + str(k) + ".txt"], shell=True)
-                for l in range(num_threads):
-                    call(["rm t-test_results_" + str(k) + "_%05d.txt" %l], shell=True)     
-        else:
-            call(["cat t-test_results_* > t-test_results.txt && rm t-test_results_*"], shell=True)
-    elif phenotype_scale == "binary":
-        if headerline:
-            for k in phenotypes_2_analyse:
-                call(["cat chi-squared_test_results_" + phenotypes[k-1] + "_* > chi-squared_test_results_" + phenotypes[k-1] + ".txt"], shell=True)
-                for l in range(num_threads):
-                    call(["rm chi-squared_test_results_" + phenotypes[k-1] + "_%05d.txt" %l], shell=True)
-        elif n_o_p > 1:
-            for k in phenotypes_2_analyse:
-                call(["cat chi-squared_test_results_" + str(k) + "_* > chi-squared_test_results_" + str(k) + ".txt"], shell=True)
-                for l in range(num_threads):
-                    call(["rm chi-squared_test_results_" + str(k) + "_%05d.txt" %l], shell=True)
-        else:
-            call(["cat chi-squared_test_results_* > chi-squared_test_results.txt && rm chi-squared_test_results_*"], shell=True)
+    if phenotype_scale == "continuous":
+        test = "t-test"
+    else:
+        test = "chi-squared_test"
+    if headerline:
+        for k in phenotypes_2_analyse:
+            call(["cat " + test + "_results_" + phenotypes[k-1] + "_* > " + test + "_results_" + phenotypes[k-1] + ".txt"], shell=True)
+            for l in range(num_threads):
+                call(["rm " + test + "_results_" + phenotypes[k-1] + "_%05d.txt" %l], shell=True)
+    elif n_o_p > 1:
+        for k in phenotypes_2_analyse:
+            call(["cat " + test + "_results_" + str(k) + "_* > " + test + "_results_" + str(k) + ".txt"], shell=True)
+            for l in range(num_threads):
+                call(["rm " + test + "_results_" + str(k) + "_%05d.txt" %l], shell=True)     
+    else:
+        call(["cat " + test + "_results_* > " + test + "_results.txt && rm " + test +"_results_*"], shell=True)
 
 def kmer_filtering_by_pvalue(
         pvalue, number_of_phenotypes, phenotype_scale, pvalues_all_phenotypes,
