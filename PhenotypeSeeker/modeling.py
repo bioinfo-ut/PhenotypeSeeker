@@ -250,6 +250,7 @@ def mash_caller(samples_info, freq):
     for line in iter(process.stderr.readline, ''):
         Printer(line.strip())
     Printer("")
+    print(mash_args)
     with open("mash_distances.mat", "w+") as f1:
         call(["mash", "dist", "reference.msh", "reference.msh"], stdout=f1)
 
