@@ -546,12 +546,6 @@ def weighted_chi_squared(
                 / float(weights_of_samples_total)
                 )
 
-            if kmer == "CCTCGGGTAGATC":
-                print(weights)
-                print(samples_order)
-                print(map(samples[j][k] for j in samples_order))
-                print(" ".join([kmer, str(weights_of_res_w_kmer), str(weights_of_res_wo_kmer), str(weights_of_sens_w_kmer), str(weights_of_sens_wo_kmer), str(weights_of_res_w_kmer_exp), str(weights_of_res_wo_kmer_exp), str(weights_of_sens_w_kmer_exp), str(weights_of_sens_wo_kmer_exp), "\n"]))
-
             chisquare_results = stats.chisquare(
                 [
                 weights_of_res_w_kmer, weights_of_res_wo_kmer,
@@ -566,10 +560,10 @@ def weighted_chi_squared(
                 
             pvalues.append(chisquare_results[1])
 
-            #f2.write(
-            #    kmer + "\t%.2f\t%.2E\t" % chisquare_results 
-            #    + str(len(samples_x)) +"\t| " + " ".join(samples_x) + "\n"
-            #    )
+            f2.write(
+                kmer + "\t%.2f\t%.2E\t" % chisquare_results 
+                + str(len(samples_x)) +"\t| " + " ".join(samples_x) + "\n"
+                )
             if counter%checkpoint == 0:
                 l.acquire()
                 currentKmerNum.value += checkpoint
