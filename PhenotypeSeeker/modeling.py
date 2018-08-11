@@ -240,12 +240,12 @@ def vectors_to_matrix_modeling(samples_order, totalKmers):
     matrix.close()
 
 
-def mash_caller(samples_info, freq):
+def mash_caller(samples_info, samples, freq):
     #Estimating phylogenetic distances between samples using mash
     sys.stderr.write("\nEstimating the Mash distances between samples...\n")
     mash_args = ["mash", "sketch", "-o", "reference", "-m", freq]
     for item in samples_info:
-        mash_args.append(samples_info[item][0])
+        mash_args.append(samples[item][0])
     process = Popen(mash_args, stderr=PIPE)
     for line in iter(process.stderr.readline, ''):
         Printer(line.strip())
@@ -2145,7 +2145,7 @@ def modeling(args):
     
     weights = []
     if args.weights == "+":   
-        mash_caller(samples_order, args.cutoff)
+        mash_caller(samples_order, samples, args.cutoff)
         mash_output_to_distance_matrix(samples_order, "mash_distances.mat")
         dist_mat = distance_matrix_modifier("distances.mat")
         distance_matrix_to_phyloxml(samples_order, dist_mat)   
