@@ -250,7 +250,6 @@ def mash_caller(samples_info, freq):
     for line in iter(process.stderr.readline, ''):
         Printer(line.strip())
     Printer("")
-    print(mash_args)
     with open("mash_distances.mat", "w+") as f1:
         call(["mash", "dist", "reference.msh", "reference.msh"], stdout=f1)
 
@@ -2146,7 +2145,7 @@ def modeling(args):
     
     weights = []
     if args.weights == "+":   
-        mash_caller(samples, args.cutoff)
+        mash_caller(samples_order, args.cutoff)
         mash_output_to_distance_matrix(samples_order, "mash_distances.mat")
         dist_mat = distance_matrix_modifier("distances.mat")
         distance_matrix_to_phyloxml(samples_order, dist_mat)   
