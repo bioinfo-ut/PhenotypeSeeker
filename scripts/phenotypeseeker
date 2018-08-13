@@ -1,7 +1,7 @@
 #!/usr/bin/python2.7
 
 __author__ = "Erki Aun"
-__version__ = "1.0"
+__version__ = "0.3.0"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
@@ -198,6 +198,15 @@ def Main():
     	and 1.0 (default 0.25). Train set size is complement of the test set \
         size'
     	)
+    regression_models.add_argument(
+        "--max_iter", metavar="", type=float, default=1000,
+        help='Hard limit on iterations within solver, or -1 for no limit \
+        (default = 1000).'
+        )
+    regression_models.add_argument(
+        "--tol", metavar="", type=float, default=1e-4,
+        help='Tolerance for stopping criterion (default = 1e-4).'
+        )
 
     other.add_argument(
     	'--mpheno', metavar='INT', type=int, nargs='+',
@@ -212,6 +221,11 @@ def Main():
     other.add_argument(
         "--assembly", type=str, metavar='"+ or -"', default="+",
         help='Assemble the k-mers used in regression model (default "+").'
+        )
+    other.add_argument(
+        "--take_logs", action='store_true',
+        help='Take logarithms of the lognormally distributed phenotypes \
+        (eg. original antibiotic resistance measurements).'
         )
     other.add_argument(
         "--num_threads", type=int, metavar='INT', default=8,
