@@ -2187,9 +2187,6 @@ def modeling(args):
     weights = {}
     if args.weights == "+":
         weights = get_weights(samples, args.cutoff)
-    else:
-        for sample in samples.keys():
-            weights[sample] = 1
     (
     pvalues_all_phenotypes, vectors_as_multiple_input
     ) = test_kmers_association_with_phenotype(
