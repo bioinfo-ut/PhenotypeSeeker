@@ -504,12 +504,7 @@ def conduct_t_test(
             )
     else:
         t_statistic, pvalue, mean_x, mean_y = t_test(x, y)
-    if kmer == "AAAAAAAAAAAGA":
-        print(x)
-        print(y)
-        print(x_weights)
-        print(y_weights)
-        print(t_statistic, pvalue, mean_x, mean_y)
+
     test_results_file.write(
         kmer + "\t" + str(round(t_statistic, 2)) + "\t" + \
         "%.2E" % pvalue + "\t" + str(round(mean_x, 2)) + "\t" + \
