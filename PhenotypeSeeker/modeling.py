@@ -1,7 +1,5 @@
 #!/usr/bin/python2.7
 
-from __future__ import print_function
-
 __author__ = "Erki Aun"
 __version__ = "0.4.0"
 __maintainer__ = "Erki Aun"
@@ -184,7 +182,7 @@ class Input():
 class Samples():
 
     no_samples = 0
-    no_phenoypes = 0
+    no_phenotypes = 0
     phenotypes = []
     take_logs = None
     headerline = None
@@ -591,7 +589,7 @@ class phenotypes():
         if Samples.headerline:
             outputfile = beginning_text + \
                 self.name + "_" + code + ".txt"
-        elif len(Input.phenotypes_to_analyse) > 1:
+        elif Samples.no_phenotypes > 1:
             outputfile = beginning_text + \
                 self.name + "_" + code + ".txt"
         else:
