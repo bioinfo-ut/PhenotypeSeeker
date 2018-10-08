@@ -1,7 +1,9 @@
 #!/usr/bin/python2.7
 
+from __future__ import print_function
+
 __author__ = "Erki Aun"
-__version__ = "0.4.0"
+__version__ = "0.3.1"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
@@ -31,6 +33,7 @@ from sklearn.metrics import (
     )
 from sklearn.model_selection import RandomizedSearchCV, GridSearchCV, train_test_split
 from functools import partial
+import xgboost as xgb
 import Bio
 import numpy as np
 import pandas as pd
@@ -82,7 +85,7 @@ class Input():
             gammas, gamma_min, gamma_max, n_gammas, 
             min_samples, max_samples, mpheno, kmer_length,
             cutoff, num_threads, pvalue_cutoff, kmer_limit,
-            FDR, B, binary_classifier, penalty, max_iter,
+            FDR, B, binary_classifier, regressor, penalty, max_iter,
             tol, l1_ratio, testset_size, kernel, n_iter,
             n_splits
             ):
@@ -112,13 +115,17 @@ class Input():
         phenotypes.n_iter = n_iter
         phenotypes.n_splits = n_splits
 
-        cls.get_model_name(binary_classifier)
+        cls.get_model_name(regressor, binary_classifier)
 
     @staticmethod
-    def get_model_name(binary_classifier):
+    def get_model_name(regressor, binary_classifier):
         if phenotypes.scale == "continuous":
-            phenotypes.model_name_long = "linear regression"
-            phenotypes.model_name_short = "lin_reg"
+            if regressor == "lin":
+                phenotypes.model_name_long = "linear regression"
+                phenotypes.model_name_short = "lin_reg"
+            elif regressor == "XGBR":
+                phenotypes.model_name_long = "XGBRegressor"
+                phenotypes.model_name_short = "XGBR"
         elif phenotypes.scale == "binary":
             if binary_classifier == "log":
                 phenotypes.model_name_long = "logistic regression"
@@ -132,6 +139,9 @@ class Input():
             elif binary_classifier == "NB":
                 phenotypes.model_name_long = "Naive Bayes"
                 phenotypes.model_name_short = "NB"
+            elif binary_classifier == "XGBC":
+                phenotypes.model_name_long = "XGBClassifier"
+                phenotypes.model_name_short = "XGBC"
         
     @staticmethod
     def _get_alphas(alphas, alpha_min, alpha_max, n_alphas):       
@@ -182,7 +192,7 @@ class Input():
 class Samples():
 
     no_samples = 0
-    no_phenotypes = 0
+    no_phenoypes = 0
     phenotypes = []
     take_logs = None
     headerline = None
@@ -436,13 +446,13 @@ class phenotypes():
 
     # Machine learning parameters
     model = None
+    best_model = None
+    model_fitted = None
     clf = None
     penalty = None
     max_iter = None
     tol = None
     l1_ratio = None
-    classifier = None
-    best_classifier = None
     hyper_parameters = None
     alphas = None
     gammes = None
@@ -450,6 +460,8 @@ class phenotypes():
     kernel = None
     n_iter = None
     n_splits = None
+    xgb_train = None
+    xgb_test = None
 
     # ML output file holders
     summary_file = None
@@ -589,7 +601,7 @@ class phenotypes():
         if Samples.headerline:
             outputfile = beginning_text + \
                 self.name + "_" + code + ".txt"
-        elif Samples.no_phenotypes > 1:
+        elif len(Input.phenotypes_to_analyse) > 1:
             outputfile = beginning_text + \
                 self.name + "_" + code + ".txt"
         else:
@@ -921,56 +933,73 @@ class phenotypes():
                 +  Samples.phenotypes[0] + " data...\n")
         else:
             sys.stderr.write("Generating the " + cls.model_name_long + " model...\n")
-        cls.set_classifier()
+        cls.set_model()
         cls.set_hyperparameters()
-        cls.get_best_classifier()
+        cls.get_best_model()
 
 
     @classmethod
-    def set_classifier(cls):
+    def set_model(cls):
         if cls.scale == "continuous":
-            # Defining linear regression parameters    
-            if cls.penalty == 'l1':
-                cls.classifier = Lasso(max_iter=cls.max_iter, tol=cls.tol)        
-            if cls.penalty == 'l2':
-                cls.classifier = Ridge(max_iter=cls.max_iter, tol=cls.tol)
-            if cls.penalty == 'elasticnet' or "L1+L2":
-                cls.classifier = ElasticNet(
-                    l1_ratio=cls.l1_ratio, max_iter=cls.max_iter, tol=cls.tol
-                    )
+            if cls.model_name_short == "lin_reg":
+                # Defining linear regression parameters    
+                if cls.penalty == 'L1':
+                    cls.model = Lasso(max_iter=cls.max_iter, tol=cls.tol)        
+                if cls.penalty == 'L2':
+                    cls.model = Ridge(max_iter=cls.max_iter, tol=cls.tol)
+                if cls.penalty == 'elasticnet' or "L1+L2":
+                    cls.model = ElasticNet(
+                        l1_ratio=cls.l1_ratio, max_iter=cls.max_iter, tol=cls.tol
+                        )
+            elif cls.model_name_short == "XGBR":
+                cls.model = xgb.XGBRegressor()
         elif cls.scale == "binary":
             if cls.model_name_long == "logistic regression":
                 #Defining logistic regression parameters
                 if cls.penalty == "L1":
-                    cls.classifier = LogisticRegression(
+                    cls.model = LogisticRegression(
                         penalty='l1', solver='saga',
                         max_iter=cls.max_iter, tol=cls.tol
                         )        
                 elif cls.penalty == "L2":
-                    cls.classifier = LogisticRegression(
+                    cls.model = LogisticRegression(
                         penalty='l2', solver='saga',
                         max_iter=cls.max_iter, tol=cls.tol
                         )
                 elif cls.penalty == "elasticnet" or "L1+L2":
-                    cls.classifier = SGDClassifier(
+                    cls.model = SGDClassifier(
                         penalty='elasticnet', l1_ratio=cls.l1_ratio,
                         max_iter=cls.max_iter, tol=cls.tol, loss='log'
                         )
             elif cls.model_name_long == "support vector machine":
-                cls.classifier = SVC(
+                cls.model = SVC(
                     kernel=cls.kernel, probability=True,
                     max_iter=cls.max_iter, tol=cls.tol
                     ) 
             elif cls.model_name_long == "random forest":
-                cls.classifier = RandomForestClassifier(n_estimators=100)
+                cls.model = RandomForestClassifier(n_estimators=100)
             elif cls.model_name_long == "Naive Bayes":
-                cls.classifier = BernoulliNB()
+                cls.model = BernoulliNB()
+            elif cls.model_name_short == "XGBC":
+                cls.model = xgb.XGBClassifier()
 
     @classmethod
     def set_hyperparameters(cls):
         if cls.scale == "continuous":
-            # Defining linear regression parameters    
-            cls.hyper_parameters = {'alpha': cls.alphas}
+            if cls.model_name_short == "lin_reg":
+                # Defining linear regression parameters    
+                cls.hyper_parameters = {'alpha': cls.alphas}
+            if cls.model_name_short == "XGBR":
+                cls.hyper_parameters = {  
+                        "n_estimators": st.randint(3, 40),
+                        "max_depth": st.randint(3, 40),
+                        "learning_rate": st.uniform(0.05, 0.4),
+                        "colsample_bytree": one_to_left,
+                        "subsample": one_to_left,
+                        "gamma": st.uniform(0, 10),
+                        'reg_alpha': from_zero_positive,
+                        "min_child_weight": from_zero_positive,
+                    }
         elif cls.scale == "binary":
             if cls.model_name_long == "logistic regression":
                 #Defining logistic regression parameters
@@ -986,30 +1015,35 @@ class phenotypes():
                     cls.hyper_parameters = {'C':Cs}
                 if cls.kernel == "rbf":
                     cls.hyper_parameters = {'C':Cs, 'gamma':Gammas}
+            if cls.model_name_short == "XGBC":
+                pass
 
     @classmethod
-    def get_best_classifier(cls):
+    def get_best_model(cls):
         if cls.scale == "continuous":
-            cls.best_classifier = GridSearchCV(
-                cls.classifier, cls.hyper_parameters, cv=cls.n_splits
-                )
+            if cls.model_name_short == "lin_reg":
+                cls.best_model = GridSearchCV(
+                    cls.model, cls.hyper_parameters, cv=cls.n_splits
+                    )
+            elif cls.model_name_short == "XGBR":
+                cls.best_model = cls.model
         elif cls.scale == "binary":
             if cls.model_name_long == "logistic regression":
-                cls.best_classifier = GridSearchCV(
-                    cls.classifier, cls.hyper_parameters, cv=cls.n_splits
+                cls.best_model = GridSearchCV(
+                    cls.model, cls.hyper_parameters, cv=cls.n_splits
                     )
             elif cls.model_name_long == "support vector machine":
                 if cls.kernel == "linear":
-                    cls.best_classifier = GridSearchCV(
-                        cls.classifier, cls.hyper_parameters, cv=cls.n_splits
+                    cls.best_model = GridSearchCV(
+                        cls.model, cls.hyper_parameters, cv=cls.n_splits
                         )
                 if cls.kernel == "rbf":
-                    cls.best_classifier = RandomizedSearchCV(
-                        cls.classifier, cls.hyper_parameters,
+                    cls.best_model = RandomizedSearchCV(
+                        cls.model, cls.hyper_parameters,
                         n_iter=cls.n_iter, cv=cls.n_splits
                         )
-            elif cls.model_name_long in ("random forest", "Naive Bayes"):
-                cls.best_classifier = cls.classifier
+            elif cls.model_name_short in ("RF", "NB", "XGBC"):
+                cls.best_model = cls.model
 
     def machine_learning_modelling(self):
         if len(Input.phenotypes_to_analyse) > 1:
@@ -1090,7 +1124,7 @@ class phenotypes():
                 stratify = self.skl_dataset.target
             self.ML_df_train, self.ML_df_test = train_test_split(
                 self.ML_df, test_size=self.testset_size,
-                stratify=stratify, random_state=0
+                stratify=stratify, random_state=55
                 )
             self.X_train = self.ML_df_train.iloc[:,0:-2]
             self.y_train = self.ML_df_train.iloc[:,-2:-1]
@@ -1110,54 +1144,68 @@ class phenotypes():
         elif phenotypes.scale == "binary":
             self.y_train = self.y_train.astype(int)
             if self.testset_size != 0.0:
-                self.y_test = self.y_test.astype(int) 
+                self.y_test = self.y_test.astype(int)
+
         self.summary_file.write("Dataset:\n%s\n\n" % self.skl_dataset)  
 
 
     def fit_model(self):
-        if self.scale == "continuous" and self.penalty in ("L1", "elasticnet"):
-            self.model = self.best_classifier.fit(self.X_train, self.y_train)
-        else:
-            self.model = self.best_classifier.fit(
-                self.X_train, self.y_train,
-                sample_weight=self.weights_train.values.flatten()
-                )
+        if self.scale == "continuous":
+            if self.model_name_short == "lin_reg":
+                if self.penalty in ("L1", "elasticnet"):
+                    self.model_fitted = self.best_model.fit(self.X_train, self.y_train.values.flatten())
+                elif self.penalty == L2:
+                    self.model_fitted = self.best_model.fit(
+                        self.X_train, self.y_train.values.flatten(),
+                        sample_weight=self.weights_train.values.flatten()
+                        )
+            elif self.model_name_short == "XGBR":
+                self.model_fitted = self.best_model.fit(self.X_train.values, self.y_train.values.flatten())
+        elif self.scale == "binary":
+            if self.model_name_short == "XGBC":
+                self.model_fitted = self.best_model.fit(self.X_train.values, self.y_train.values.flatten())
+            else:
+                self.model_fitted = self.best_model.fit(
+                    self.X_train, self.y_train.values.flatten(),
+                    sample_weight=self.weights_train.values.flatten()
+                    )
+
 
     def cross_validation_results(self):
-        if self.model_name_long not in ("random forest", "Naive Bayes"):
+        if self.model_name_short not in ("RF", "NB", "XGBC", "XGBR"):
             self.summary_file.write('Parameters:\n%s\n\n' % self.model)
             self.summary_file.write("Grid scores (R2 score) on development set: \n")
-            means = self.best_classifier.cv_results_['mean_test_score']
-            stds = self.best_classifier.cv_results_['std_test_score']
+            means = self.best_model.cv_results_['mean_test_score']
+            stds = self.best_model.cv_results_['std_test_score']
             for mean, std, params in izip(
-                    means, stds, self.best_classifier.cv_results_['params']
+                    means, stds, self.best_model.cv_results_['params']
                     ):
                 self.summary_file.write(
                     "%0.3f (+/-%0.03f) for %r \n" % (mean, std * 2, params)
                     )
             self.summary_file.write("\nBest parameters found on development set: \n")
-            for key, value in self.best_classifier.best_params_.iteritems():
+            for key, value in self.best_model.best_params_.iteritems():
                 self.summary_file.write(key + " : " + str(value) + "\n")
 
     def predict(self, dataset, labels):
-        predictions = self.best_classifier.predict(dataset)
+        predictions = self.best_model.predict(dataset.values)
         self.summary_file.write("\nModel predictions on samples:\nSample_ID " \
             "Acutal_phenotype Predicted_phenotype\n")
         for index, row in dataset.iterrows():
-            self.summary_file.write('%s %s %s\n' % (
-                index, labels.loc[index].values[0],
-                self.best_classifier.predict(row.reshape(1, -1))[0]
-                ))
+                self.summary_file.write('%s %s %s\n' % (
+                    index, labels.loc[index].values[0],
+                    self.best_model.predict(row.reshape(1, -1))[0]
+                    ))
         if self.scale == "continuous":
-            self.model_performance_regression(dataset, labels.values.flatten(), predictions)
+            self.model_performance_regressor(dataset, labels.values.flatten(), predictions)
         elif self.scale == "binary":
             self.model_performance_classifier(dataset, labels.values.flatten(), predictions)
 
-    def model_performance_regression(self, dataset, labels, predictions):
+    def model_performance_regressor(self, dataset, labels, predictions):
         self.summary_file.write('\nMean squared error: %s\n' % \
                  mean_squared_error(labels, predictions))
         self.summary_file.write("The coefficient of determination:"
-            + " %s\n" % self.best_classifier.score(dataset, labels))
+            + " %s\n" % self.best_model.score(dataset.values, labels))
         self.summary_file.write("The Spearman correlation coefficient and p-value:" \
             " %s, %s \n" % stats.spearmanr(labels, predictions))
         r_value, pval_r = \
@@ -1171,7 +1219,7 @@ class phenotypes():
             )
 
     def model_performance_classifier(self, dataset, labels, predictions):
-            self.summary_file.write("Mean accuracy: %s\n" % self.best_classifier.score(dataset, labels))
+            self.summary_file.write("Mean accuracy: %s\n" % self.best_model.score(dataset, labels))
             self.summary_file.write("Sensitivity: %s\n" % \
                     recall_score(labels, predictions))
             self.summary_file.write("Specificity: %s\n" % \
@@ -1184,7 +1232,7 @@ class phenotypes():
             self.summary_file.write("Average precision: %s\n" % \
                 average_precision_score(
                     labels, 
-                    self.best_classifier.predict_proba(dataset)[:,1]
+                    self.best_model.predict_proba(dataset)[:,1]
                     )                        )
             self.summary_file.write("MCC: %s\n" % \
                 matthews_corrcoef(labels, predictions))
@@ -1212,14 +1260,17 @@ class phenotypes():
         df_for_coeffs = self.ML_df.iloc[:,0:-2]
         if self.model_name_short == "lin_reg":
             df_for_coeffs.loc['coefficient'] = \
-                self.best_classifier.best_estimator_.coef_
-        elif self.model_name_short == "RF":
+                self.best_model.best_estimator_.coef_
+        elif self.model_name_short in ("RF"):
             df_for_coeffs.loc['coefficient'] = \
-                self.best_classifier.feature_importances_
+                self.best_model.feature_importances_
+        elif self.model_name_short in ("XGBR", "XGBC"):
+            df_for_coeffs.loc['coefficient'] = \
+                self.best_model.feature_importances_
         elif self.model_name_short in ("SVM", "log_reg"):
             if self.kernel != "rbf":
                 df_for_coeffs.loc['coefficient'] = \
-                    self.best_classifier.best_estimator_.coef_[0]
+                    self.best_model.best_estimator_.coef_[0]
         for kmer in df_for_coeffs:
             if self.kernel == "rbf" or self.model_name_short == "NB":
                 kmer_coef = "NA"
@@ -1364,9 +1415,9 @@ def modeling(args):
         args.gammas, args.gamma_min, args.gamma_max, args.n_gammas,
         args.min, args.max, args.mpheno, args.length, args.cutoff,
         args.num_threads, args.pvalue, args.n_kmers, args.FDR, 
-        args.Bonferroni, args.binary_classifier, args.penalty,
-        args.max_iter, args.tol, args.l1_ratio, args.testset_size,
-        args.kernel, args.n_iter, args.n_splits
+        args.Bonferroni, args.binary_classifier, args.regressor, 
+        args.penalty, args.max_iter, args.tol, args.l1_ratio,
+        args.testset_size, args.kernel, args.n_iter, args.n_splits
         )
     Input.get_multithreading_parameters()
 
