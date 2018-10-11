@@ -1,7 +1,7 @@
 #!/usr/bin/python2.7
 
 __author__ = "Erki Aun"
-__version__ = "0.4.0"
+__version__ = "0.3.0"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
@@ -122,19 +122,19 @@ def Main():
     	parameters --alpha_min, --alpha_max and --n_alphas)."
     	)
     regression_models.add_argument(
-    	'--alpha_min', metavar='', type=float, default=1E-6,
+    	'--alpha_min', metavar='', type=float, default=1E-3,
     	help='Specify the start of the regularization path (alpha minimum). \
-    	Must be a positive float (default = 1E-6).'
+    	Must be a positive float (default = 1E-3).'
     	)
     regression_models.add_argument(
-    	'--alpha_max', metavar='', type=float, default=1E6,
+    	'--alpha_max', metavar='', type=float, default=1E3,
     	help='Specify the end of the regularization path (alpha maximum). \
-    	Must be a positive float (default = 1E6).'
+    	Must be a positive float (default = 1E3).'
     	)
     regression_models.add_argument(
-    	'--n_alphas', metavar='', type=int, default=25,
+    	'--n_alphas', metavar='', type=int, default=13,
     	help='Specify the number of alphas along the \
-    	regularization path (default = 25)'
+    	regularization path (default = 13)'
     	)
     regression_models.add_argument(
         "--gammas", metavar='FLOAT', type=float, nargs='+',
@@ -144,17 +144,17 @@ def Main():
         parameters --gamma_min, --gamma_max and --n_gammas)."
         )
     regression_models.add_argument(
-        '--gamma_min', metavar='', type=float, default=1E-6,
+        '--gamma_min', metavar='', type=float, default=1E-3,
         help='Specify the start of the gamma path (gamma minimum). \
         Must be a positive float (default = 1E-6).'
         )
     regression_models.add_argument(
-        '--gamma_max', metavar='', type=float, default=1E6,
+        '--gamma_max', metavar='', type=float, default=1E3,
         help='Specify the end of the gammas path (gamma maximum). \
         Must be a positive float (default = 1E6).'
         )
     regression_models.add_argument(
-        '--n_gammas', metavar='', type=int, default=25,
+        '--n_gammas', metavar='', type=int, default=13,
         help='Specify the number of gammas along the \
         regularization path (default = 25)'
         )
@@ -169,7 +169,7 @@ def Main():
     	Must be at least 2 (default 10).'
     	)
     regression_models.add_argument(
-    	'-r', '--regularization', metavar='', type=str, default='l1',
+    	'--penalty', metavar='', type=str, default='l1',
     	help='The norm used in the penalization. Must be L1 (default), L2 \
         or L1+L2 (elastic net)'
     	)
@@ -177,7 +177,14 @@ def Main():
         '-bc', '--binary_classifier', metavar='', type=str, default='log',
         help='The binary classifier to be used. Possible variants are \
         "log" (logistic regression; default), "SVM" (support vector \
-        machine) and "RF" (random forest)'
+        machine), "RF" (random forest), "NB" (naive bayes) and XGBC \
+        (extreme gradient boost classifier)'
+        )
+    regression_models.add_argument(
+        '-reg', '--regressor', metavar='', type=str, default='lin',
+        help='The regressor to be used. Possible variants are \
+        "lin" (linear regression; default), and XGBR (extreme gradient boost \
+        regressor)'
         )
     regression_models.add_argument(
         '--kernel', metavar='', type=str, default='linear',
