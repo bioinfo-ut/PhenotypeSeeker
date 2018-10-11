@@ -1126,9 +1126,9 @@ class phenotypes():
     def cross_validation_results(self):
         if self.model_name_short not in ("RF", "NB", "XGBC", "XGBR"):
             self.summary_file.write('Parameters:\n%s\n\n' % self.model)
-            if phenotype == "continuous":
+            if self.phenotype == "continuous":
                 self.summary_file.write("Grid scores (R2 score) on development set: \n")
-            elif phenotype == "binary":
+            elif self.phenotype == "binary":
                 self.summary_file.write("Grid scores (mean accuracy) on development set: \n")
             means = self.best_model.cv_results_['mean_test_score']
             stds = self.best_model.cv_results_['std_test_score']
