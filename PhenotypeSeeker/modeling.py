@@ -1137,7 +1137,7 @@ class phenotypes():
                     means, stds, params
                     ):
                 self.summary_file.write(
-                    "%0.3f (+/-%0.03f) for %r \n" % (mean, std * 2, params)
+                    "%0.3f (+/-%0.03f) for %r \n" % (mean, std * 2, param)
                     )
             self.summary_file.write("\nBest parameters found on development set: \n")
             for key, value in self.best_model.best_params_.iteritems():
