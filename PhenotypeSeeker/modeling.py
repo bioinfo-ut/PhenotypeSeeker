@@ -1373,7 +1373,6 @@ class phenotypes():
             sys.stderr.write("\tof " + self.name + " data...\n")
         else:
             f1 = open("assembled_kmers.fasta", "w+")
-
         if len(self.kmers_for_ML) == 0:
             f1.write("No k-mers passed the step of k-mer selection for \
                 assembling.\n")
