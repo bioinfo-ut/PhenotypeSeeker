@@ -1063,7 +1063,7 @@ class phenotypes():
             ]
         self.ML_df.index = Input.samples.keys()
         self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
-        self.ML_df = self.ML_df.T.drop_duplicates().T
+        #self.ML_df = self.ML_df.T.drop_duplicates().T
         self.skl_dataset = sklearn.datasets.base.Bunch(
             data=self.ML_df.iloc[:,0:-2].values, target=self.ML_df['phenotype'].values,
             target_names=np.array(["resistant", "sensitive"]),
@@ -1447,4 +1447,4 @@ def modeling(args):
         )
 
     if args.assembly == "+":
-        assembling(kmers_passed_all_phenotypes, args.mpheno)
+        assembling(phenotypes.kmers_for_ML, args.mpheno)
