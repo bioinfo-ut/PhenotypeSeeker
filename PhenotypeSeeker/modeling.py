@@ -1,7 +1,5 @@
 #!/usr/bin/python2.7
 
-from __future__ import print_function
-
 __author__ = "Erki Aun"
 __version__ = "0.3.1"
 __maintainer__ = "Erki Aun"
@@ -1324,7 +1322,7 @@ class phenotypes():
         # min_olap nucleotides.
 
         if min_olap == None:
-            min_olap = Samples.kmer_length-1
+            min_olap = int(Samples.kmer_length)-1
         assembled_kmers = []
 
         # Adding the reverse-complement of each k-mer
