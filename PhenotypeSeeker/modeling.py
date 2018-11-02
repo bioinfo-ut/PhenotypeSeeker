@@ -1331,7 +1331,6 @@ class phenotypes():
             )
 
         # Find the overlaping k-mers
-        print(min_olap)
         kmers_a, kmers_b, olap_lens = self.pick_overlaps(kmer_list, min_olap)
 
         while olap_lens != []:
