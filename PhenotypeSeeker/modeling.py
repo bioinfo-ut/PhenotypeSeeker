@@ -1272,127 +1272,111 @@ class phenotypes():
         accuracy = float(within_1_tier)/len(targets)
         return accuracy
 
-def ReverseComplement(kmer):
-    # Returns the reverse complement of kmer
-    seq_dict = {'A':'T','T':'A','G':'C','C':'G'}
-    return("".join([seq_dict[base] for base in reversed(kmer)]))
+    # Assembly methods
+    def ReverseComplement(self, kmer):
+        # Returns the reverse complement of kmer
+        seq_dict = {'A':'T','T':'A','G':'C','C':'G'}
+        return("".join([seq_dict[base] for base in reversed(kmer)]))
 
-def string_set(string_list):
-    # Removes subsequences from kmer_list
-    return set(i for i in string_list
-               if not any(i in s for s in string_list if i != s))
+    def string_set(self, string_list):
+        # Removes subsequences from kmer_list
+        return set(i for i in string_list
+                   if not any(i in s for s in string_list if i != s))
 
-def overlap(a, b, min_length=3):
-    # Returns the overlap of kmer_a and kmer_b if overlap equals or 
-    # exceeds the min_length. Otherwise returns 0.
-    start = 0
-    while True:
-        start = a.find(b[:min_length], start)
-        if start == -1:
-            return 0
-        if b.startswith(a[start:]):
-            return len(a) - start
-        start += 1
+    def overlap(self, a, b, min_length=3):
+        # Returns the overlap of kmer_a and kmer_b if overlap equals or 
+        # exceeds the min_length. Otherwise returns 0.
+        start = 0
+        while True:
+            start = a.find(b[:min_length], start)
+            if start == -1:
+                return 0
+            if b.startswith(a[start:]):
+                return len(a) - start
+            start += 1
 
-def pick_overlaps(reads, min_olap):
-    # Takes kmer_list as an Input. Generates pairwise permutations of 
-    # the kmers in kmer list. Finds the overlap of each pair. Returns 
-    # the lists of kmers and overlap lengths of the pairs which overlap
-    # by min_olap or more nucleotides.
-    reada, readb, olap_lens = [], [], []
-    for a, b in permutations(reads, 2):
-        olap_len = overlap(a, b, min_length=min_olap)
-        if olap_len > 0:
-            reada.append(a)
-            readb.append(b)
-            olap_lens.append(olap_len)
-    return reada, readb, olap_lens
+    def pick_overlaps(self, reads, min_olap):
+        # Takes kmer_list as an Input. Generates pairwise permutations of 
+        # the kmers in kmer list. Finds the overlap of each pair. Returns 
+        # the lists of kmers and overlap lengths of the pairs which overlap
+        # by min_olap or more nucleotides.
+        reada, readb, olap_lens = [], [], []
+        for a, b in permutations(reads, 2):
+            olap_len = self.overlap(a, b, min_length=min_olap)
+            if olap_len > 0:
+                reada.append(a)
+                readb.append(b)
+                olap_lens.append(olap_len)
+        return reada, readb, olap_lens
 
-def kmer_assembler(kmer_list, min_olap=None):
-    # Assembles the k-mers in kmer_list which overlap by at least 
-    # min_olap nucleotides.
+    def kmer_assembler(self, min_olap=None):
+        # Assembles the k-mers in kmer_list which overlap by at least 
+        # min_olap nucleotides.
 
-    kmer_length = len(kmer_list[0])
-    if min_olap == None:
-        min_olap = kmer_length-1
-    assembled_kmers = []
+        kmer_length = len(self.kmers_for_ML[0])
+        if min_olap == None:
+            min_olap = kmer_length-1
+        assembled_kmers = []
 
-    # Adding the reverse-complement of each k-mer
-    kmer_list = kmer_list + map(ReverseComplement, kmer_list)
+        # Adding the reverse-complement of each k-mer
+        kmer_list = kmer_list + map(self.ReverseComplement, kmer_list)
 
-    # Find the overlaping k-mers
-    kmers_a, kmers_b, olap_lens = pick_overlaps(kmer_list, min_olap)
+        # Find the overlaping k-mers
+        kmers_a, kmers_b, olap_lens = self.pick_overlaps(kmer_list, min_olap)
 
-    while olap_lens != []:
-        set_a = set(kmers_a)
-        set_b = set(kmers_b)
+        while olap_lens != []:
+            set_a = set(kmers_a)
+            set_b = set(kmers_b)
 
-        # Picking out the assembled k-mers which have no sufficient
-        # overlaps anymore.
+            # Picking out the assembled k-mers which have no sufficient
+            # overlaps anymore.
+            for item in kmer_list:
+                if (item not in set_a and item not in set_b
+                        and self.ReverseComplement(item) not in assembled_kmers):
+                    assembled_kmers.append(item)
+
+            # Generating new kmer_list, where overlaping elements from previous
+            # kmer_list are assembled.
+            kmer_list = []
+            for i, olap in enumerate(olap_lens):
+                kmer_list.append(kmers_a[i] + kmers_b[i][olap:])
+
+            # Removing substrings of other elements from kmer_list.
+            kmer_list = list(self.string_set(kmer_list))
+
+            # Find the overlaping elements in new generated kmer_list.
+            kmers_a, kmers_b, olap_lens = self.pick_overlaps(kmer_list, min_olap)
+
         for item in kmer_list:
-            if (item not in set_a and item not in set_b
-                    and ReverseComplement(item) not in assembled_kmers):
+            # Picking out the assembled k-mers to assembled_kmers set.
+            if (self.ReverseComplement(item) not in assembled_kmers):
                 assembled_kmers.append(item)
+        return(assembled_kmers)
 
-        # Generating new kmer_list, where overlaping elements from previous
-        # kmer_list are assembled.
-        kmer_list = []
-        for i, olap in enumerate(olap_lens):
-            kmer_list.append(kmers_a[i] + kmers_b[i][olap:])
+    def assembling(self):
+        # Assembles the input k-mers and writes assembled sequences
+        # into "assembled_kmers.txt" file in FastA format.
 
-        # Removing substrings of other elements from kmer_list.
-        kmer_list = list(string_set(kmer_list))
 
-        # Find the overlaping elements in new generated kmer_list.
-        kmers_a, kmers_b, olap_lens = pick_overlaps(kmer_list, min_olap)
-
-    for item in kmer_list:
-        # Picking out the assembled k-mers to assembled_kmers set.
-        if (ReverseComplement(item) not in assembled_kmers):
-            assembled_kmers.append(item)
-    return(assembled_kmers)
-
-def assembling(kmers_passed_all_phenotypes, phenotypes_to_analyze):
-    # Assembles the input k-mers and writes assembled sequences
-    # into "assembled_kmers.txt" file in FastA format.
-
-    if len(phenotypes_to_analyze) > 1:
-        sys.stderr.write(
-            "Assembling the k-mers used in regression modeling of:\n"
-            )
-    elif Samples.headerline:
-        sys.stderr.write("Assembling the k-mers used in modeling of " 
-            +  Samples.phenotypes[0] + " data...\n")
-    else:
-        sys.stderr.write(
-            "Assembling the k-mers used in modeling...\n"
-            )
-
-    for j, k in enumerate(phenotypes_to_analyze):
-        phenotype = Samples.phenotypes[k]
-        if len(kmers_passed_all_phenotypes[j]) == 0:
-            f1.write("No k-mers passed the step of k-mer selection for \
-                assembling.\n")
-            continue
         #Open files to write the results of k-mer assembling
-        if Samples.headerline:
-            f1 = open("assembled_kmers_" + phenotype + ".fasta", "w+")
-            if len(phenotypes_to_analyze) > 1:
-                sys.stderr.write("\t" + phenotype + "...\n")
-        elif Samples.no_phenotypes > 1:
-            f1 = open("assembled_kmers_" + phenotype + ".fasta", "w+")
-            sys.stderr.write("\tphenotype " + phenotype + "...\n")
+        if Samples.no_phenotypes > 1:
+            f1 = open("assembled_kmers_" + self.name + ".fasta", "w+")
+            sys.stderr.write("\tof " + self.name + "data...\n")
         else:
             f1 = open("assembled_kmers.fasta", "w+")
+
+        if len(self.kmers_for_ML) == 0:
+            f1.write("No k-mers passed the step of k-mer selection for \
+                assembling.\n")
+            return
         
-        kmers_to_assemble = kmers_passed_all_phenotypes[j]
         assembled_kmers = sorted(
-            kmer_assembler(kmers_to_assemble), key = len
+            self.kmer_assembler(self.kmers_for_ML), key = len
             )[::-1]
         for i, item in enumerate(assembled_kmers):
             f1.write(">seq_" + str(i+1) + "_length_" 
                 + str(len(item)) + "\n" + item + "\n")
-    f1.close()
+        f1.close()
 
 def modeling(args):
     # The main function of "phenotypeseeker modeling"
@@ -1447,4 +1431,11 @@ def modeling(args):
         )
 
     if args.assembly == "+":
-        assembling(phenotypes.kmers_for_ML, args.mpheno)
+        sys.stderr.write(
+                "Assembling the k-mers used in modeling\n"
+                )
+        #assembling(phenotypes.kmers_for_ML, args.mpheno)
+        map(
+            lambda x: x.assembling(),
+            Input.phenotypes_to_analyse.values()
+            )
