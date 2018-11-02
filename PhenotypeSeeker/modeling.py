@@ -1310,6 +1310,7 @@ class phenotypes():
         # by min_olap or more nucleotides.
         reada, readb, olap_lens = [], [], []
         for a, b in permutations(reads, 2):
+            print(a,b,min_olap)
             olap_len = self.overlap(a, b, min_length=min_olap)
             if olap_len > 0:
                 reada.append(a)
