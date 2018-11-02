@@ -1328,7 +1328,7 @@ class phenotypes():
         assembled_kmers = []
 
         # Adding the reverse-complement of each k-mer
-        kmer_list = self.kmers_for_ML + map(
+        kmer_list = list(self.kmers_for_ML) + map(
             self.ReverseComplement, self.kmers_for_ML
             )
 
