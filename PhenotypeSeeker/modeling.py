@@ -1272,7 +1272,7 @@ class phenotypes():
 
     @classmethod
     def preparations_for_assembling(cls):
-        if len(Input.phenotypes_to_analyse) > 1:
+        if Samples.no_phenotypes > 1:
             sys.stderr.write("Assembling the k-mers used in modeling:\n")
         elif Samples.headerline:
             sys.stderr.write("Assembling the k-mers used in modeling of " 
