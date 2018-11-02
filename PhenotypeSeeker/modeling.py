@@ -1313,9 +1313,8 @@ class phenotypes():
         # Assembles the k-mers in kmer_list which overlap by at least 
         # min_olap nucleotides.
 
-        kmer_length = len(self.kmers_for_ML[0])
         if min_olap == None:
-            min_olap = kmer_length-1
+            min_olap = Samples.kmer_length-1
         assembled_kmers = []
 
         # Adding the reverse-complement of each k-mer
