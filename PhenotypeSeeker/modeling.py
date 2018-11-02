@@ -1272,6 +1272,16 @@ class phenotypes():
         accuracy = float(within_1_tier)/len(targets)
         return accuracy
 
+    @classmethod
+    def preparations_for_assembling(cls):
+        if len(Input.phenotypes_to_analyse) > 1:
+            sys.stderr.write("Assembling the k-mers used in modeling:\n")
+        elif Samples.headerline:
+            sys.stderr.write("Assembling the k-mers used in modeling of " 
+                +  Samples.phenotypes[0] + " data...\n")
+        else:
+            sys.stderr.write("Assembling the k-mers used in modeling...")
+
     # Assembly methods
     def ReverseComplement(self, kmer):
         # Returns the reverse complement of kmer
@@ -1318,7 +1328,9 @@ class phenotypes():
         assembled_kmers = []
 
         # Adding the reverse-complement of each k-mer
-        kmer_list = kmer_list + map(self.ReverseComplement, kmer_list)
+        kmer_list = self.kmers_for_ML + map(
+            self.ReverseComplement, self.kmers_for_ML
+            )
 
         # Find the overlaping k-mers
         kmers_a, kmers_b, olap_lens = self.pick_overlaps(kmer_list, min_olap)
@@ -1430,10 +1442,7 @@ def modeling(args):
         )
 
     if args.assembly == "+":
-        sys.stderr.write(
-                "Assembling the k-mers used in modeling\n"
-                )
-        #assembling(phenotypes.kmers_for_ML, args.mpheno)
+        phenotypes.preparations_for_assembling()
         map(
             lambda x: x.assembling(),
             Input.phenotypes_to_analyse.values()
