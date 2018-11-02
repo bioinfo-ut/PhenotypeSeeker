@@ -1311,6 +1311,7 @@ class phenotypes():
         reada, readb, olap_lens = [], [], []
         for a, b in permutations(reads, 2):
             olap_len = self.overlap(a, b, min_length=min_olap)
+            print(min_olap)
             if olap_len > 0:
                 reada.append(a)
                 readb.append(b)
@@ -1320,9 +1321,10 @@ class phenotypes():
     def kmer_assembler(self, min_olap=None):
         # Assembles the k-mers in kmer_list which overlap by at least 
         # min_olap nucleotides.
-
+        print(min_olap)
         if min_olap == None:
             min_olap = int(Samples.kmer_length)-1
+            print(min_olap)
         assembled_kmers = []
 
         # Adding the reverse-complement of each k-mer
