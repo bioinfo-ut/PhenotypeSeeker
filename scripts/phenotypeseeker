@@ -226,7 +226,7 @@ def Main():
     	linear/logistic regression model (default "+").'
     	)
     other.add_argument(
-        "--assembly", type=str, metavar='"+ or -"', default="-",
+        "--assembly", type=str, metavar='"+ or -"', default="+",
         help='Assemble the k-mers used in regression model (default "+").'
         )
     other.add_argument(
