@@ -1360,7 +1360,7 @@ class phenotypes():
         #Open files to write the results of k-mer assembling
         if Samples.no_phenotypes > 1:
             f1 = open("assembled_kmers_" + self.name + ".fasta", "w+")
-            sys.stderr.write("\tof " + self.name + "data...\n")
+            sys.stderr.write("\tof " + self.name + " data...\n")
         else:
             f1 = open("assembled_kmers.fasta", "w+")
 
