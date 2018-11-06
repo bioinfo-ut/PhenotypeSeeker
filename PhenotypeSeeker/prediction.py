@@ -120,11 +120,8 @@ def predict(samples_order, phenotypes_to_predict):
         predictions = model.predict(kmers_presence_matrix)
         
         with open("predictions_" + phenotype + ".txt", "w+") as f1:
-            if "lin" in phenotypes_to_predict[phenotype][0]:
-                f1.write("Sample_ID\tpredicted_phenotype\n")
-                for ID, prediction in zip(samples_order, predictions):
-                    f1.write(ID + "\t" + str(prediction) + "\n")
-            elif "log" in phenotypes_to_predict[phenotype][0]:
+            model_name_short = phenotypes_to_predict[phenotype][1].split("_model")[0]
+            if model_name_short in ("log_reg", "NB", "RF", "SVM", "XGBC"):
                 predict_proba = model.predict_proba(kmers_presence_matrix)
                 f1.write("Sample_ID\tpredicted_phenotype\t" \
                     "probability_for_predicted_class\n")
@@ -133,6 +130,10 @@ def predict(samples_order, phenotypes_to_predict):
                         ): 
                     f1.write(ID + "\t" + str(prediction) 
                         + "\t" + str(round(max(proba), 2))  + "\n")
+            else:
+                f1.write("Sample_ID\tpredicted_phenotype\n")
+                for ID, prediction in zip(samples_order, predictions):
+                    f1.write(ID + "\t" + str(prediction) + "\n")
 
 def prediction(args):
     samples, samples_order, n_o_s = parse_prediction_input_file1(
