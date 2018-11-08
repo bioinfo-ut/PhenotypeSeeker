@@ -76,7 +76,7 @@ Where "data.pheno" is an input text file containing tab separated lists of (1) s
 
 Head of "data.pheno" inputfile with binary resistance phenotype for azithromycin:
 ```
-ID	Addresses	Azithromycin
+SampleID	Addresses	Azithromycin
 VL_0464	PS_modeling_example_files/VL_0464.fasta	0
 VL_0456	PS_modeling_example_files/VL_0456.fasta	1
 VL_0453	PS_modeling_example_files/VL_0453.fasta	1
