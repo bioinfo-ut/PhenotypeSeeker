@@ -72,11 +72,11 @@ To create the phenotype prediction model with PhenotypeSeeker, type in:
 ```
 phenotypeseeker modeling PS_modeling_example_files/data.pheno 
 ```
-Where "data.pheno" is an input text file containing tab separated lists of (1) sampleID's, (2) sample FastA/FastQ file addresses and (3) sample phenotype values (one or more column). The first line of the input file is header specifying the names of the columns. The names of the phenotype columns are used in the names of the output files of the corresponding phenotype analyses.
+Where "data.pheno" is an input text file containing tab separated lists of (1) sampleID's, (2) sample FastA/FastQ file addresses and (3) sample phenotype values (one or more column). The first line of the input file is header specifying the names of the columns (optional). The names of the phenotype columns are used in the names of the output files of the corresponding phenotype analyses.
 
 Head of "data.pheno" inputfile with binary resistance phenotype for azithromycin:
 ```
-SampleID	Addresses	Azithromycin
+ID	Addresses	Azithromycin
 VL_0464	PS_modeling_example_files/VL_0464.fasta	0
 VL_0456	PS_modeling_example_files/VL_0456.fasta	1
 VL_0453	PS_modeling_example_files/VL_0453.fasta	1
