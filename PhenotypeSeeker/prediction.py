@@ -120,7 +120,7 @@ def predict(samples_order, phenotypes_to_predict):
         predictions = model.predict(kmers_presence_matrix)
         
         with open("predictions_" + phenotype + ".txt", "w+") as f1:
-            model_name_short = phenotypes_to_predict[phenotype][1].split("_model")[0]
+            model_name_short = phenotypes_to_predict[phenotype][0].split("_model")[0]
             if model_name_short in ("log_reg", "NB", "RF", "SVM", "XGBC"):
                 predict_proba = model.predict_proba(kmers_presence_matrix)
                 f1.write("Sample_ID\tpredicted_phenotype\t" \
