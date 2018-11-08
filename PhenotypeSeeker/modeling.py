@@ -1025,21 +1025,21 @@ class phenotypes():
     def get_outputfile_names(self):
         if Samples.headerline:
             summary_file = "summary_of_" + self.model_name_short + "_analysis_" \
-                + self.name + ".txt"
+                + self.name + ".pkl"
             coeff_file = "k-mers_and_coefficients_in_" + self.model_name_short \
                 + "_model_" + self.name + ".txt"
             model_file = self.model_name_short + "_model_" + self.name + ".pkl"
         elif len(Input.phenotypes_to_analyse) > 1:
             summary_file = "summary_of_" + self.model_name_short + "_analysis_" \
-                + self.name + ".txt"
+                + self.name + ".pkl"
             coeff_file = "k-mers_and_coefficients_in_" + self.model_name_short \
-                + "_model_" + self.name + ".txt"
+                + "_model_" + self.name + ".pkl"
             model_file = self.model_name_short +"_model_" + self.name + ".pkl"
         else:
-            summary_file = "summary_of_" + self.model_name_short + "_analysis.txt"
+            summary_file = "summary_of_" + self.model_name_short + "_analysis.pkl"
             coeff_file = "k-mers_and_coefficients_in_" + self.model_name_short \
-                + "_model.txt"
-            model_file = self.model_name_short + "_model.txt"
+                + "_model.pkl"
+            model_file = self.model_name_short + "_model.pkl"
         
         self.summary_file = open(summary_file, "w")
         self.coeff_file = open(coeff_file, "w")
