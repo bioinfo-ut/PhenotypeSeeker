@@ -410,7 +410,6 @@ class phenotypes():
     # Machine learning parameters
     model = None
     best_model = None
-    model_fitted = None
     clf = None
     penalty = None
     max_iter = None
@@ -448,6 +447,7 @@ class phenotypes():
         self.X_dataset = None
         self.y_dataset = None
         self.weights_dataset = None
+        self.model_fitted = None
 
     # -------------------------------------------------------------------
     # Functions for calculating the association test results for kmers.
@@ -1014,7 +1014,7 @@ class phenotypes():
             self.summary_file.write('\nTest set:\n')
             self.predict(self.X_test, self.y_test)
 
-        joblib.dump(self.model, self.model_file)
+        joblib.dump(self.model_fitted, self.model_file)
         self.write_model_coefficients_to_file()
 
         self.summary_file.close()
@@ -1128,9 +1128,9 @@ class phenotypes():
                 self.summary_file.write("Grid scores (R2 score) on development set: \n")
             elif self.scale == "binary":
                 self.summary_file.write("Grid scores (mean accuracy) on development set: \n")
-            means = self.best_model.cv_results_['mean_test_score']
-            stds = self.best_model.cv_results_['std_test_score']
-            params = self.best_model.cv_results_['params']
+            means = self.model_fitted.cv_results_['mean_test_score']
+            stds = self.model_fitted.cv_results_['std_test_score']
+            params = self.model_fitted.cv_results_['params']
             for mean, std, param in izip(
                     means, stds, params
                     ):
@@ -1138,17 +1138,17 @@ class phenotypes():
                     "%0.3f (+/-%0.03f) for %r \n" % (mean, std * 2, param)
                     )
             self.summary_file.write("\nBest parameters found on development set: \n")
-            for key, value in self.best_model.best_params_.iteritems():
+            for key, value in self.model_fitted.best_params_.iteritems():
                 self.summary_file.write(key + " : " + str(value) + "\n")
 
     def predict(self, dataset, labels):
-        predictions = self.best_model.predict(dataset.values)
+        predictions = self.model_fitted.predict(dataset.values)
         self.summary_file.write("\nModel predictions on samples:\nSample_ID " \
             "Acutal_phenotype Predicted_phenotype\n")
         for index, row in dataset.iterrows():
                 self.summary_file.write('%s %s %s\n' % (
                     index, labels.loc[index].values[0],
-                    self.best_model.predict(row.reshape(1, -1))[0]
+                    self.model_fitted.predict(row.reshape(1, -1))[0]
                     ))
         if self.scale == "continuous":
             self.model_performance_regressor(dataset, labels.values.flatten(), predictions)
@@ -1159,7 +1159,7 @@ class phenotypes():
         self.summary_file.write('\nMean squared error: %s\n' % \
                  mean_squared_error(labels, predictions))
         self.summary_file.write("The coefficient of determination:"
-            + " %s\n" % self.best_model.score(dataset.values, labels))
+            + " %s\n" % self.model_fitted.score(dataset.values, labels))
         self.summary_file.write("The Spearman correlation coefficient and p-value:" \
             " %s, %s \n" % stats.spearmanr(labels, predictions))
         r_value, pval_r = \
@@ -1173,7 +1173,7 @@ class phenotypes():
             )
 
     def model_performance_classifier(self, dataset, labels, predictions):
-            self.summary_file.write("Mean accuracy: %s\n" % self.best_model.score(dataset, labels))
+            self.summary_file.write("Mean accuracy: %s\n" % self.model_fitted.score(dataset, labels))
             self.summary_file.write("Sensitivity: %s\n" % \
                     recall_score(labels, predictions))
             self.summary_file.write("Specificity: %s\n" % \
@@ -1186,7 +1186,7 @@ class phenotypes():
             self.summary_file.write("Average precision: %s\n" % \
                 average_precision_score(
                     labels, 
-                    self.best_model.predict_proba(dataset)[:,1]
+                    self.model_fitted.predict_proba(dataset)[:,1]
                     )                        )
             self.summary_file.write("MCC: %s\n" % \
                 matthews_corrcoef(labels, predictions))
@@ -1214,17 +1214,17 @@ class phenotypes():
         df_for_coeffs = self.ML_df.iloc[:,0:-2]
         if self.model_name_short == "lin_reg":
             df_for_coeffs.loc['coefficient'] = \
-                self.best_model.best_estimator_.coef_
+                self.model_fitted.best_estimator_.coef_
         elif self.model_name_short in ("RF"):
             df_for_coeffs.loc['coefficient'] = \
-                self.best_model.feature_importances_
+                self.model_fitted.feature_importances_
         elif self.model_name_short in ("XGBR", "XGBC"):
             df_for_coeffs.loc['coefficient'] = \
-                self.best_model.feature_importances_
+                self.model_fitted.feature_importances_
         elif self.model_name_short in ("SVM", "log_reg"):
             if self.kernel != "rbf":
                 df_for_coeffs.loc['coefficient'] = \
-                    self.best_model.best_estimator_.coef_[0]
+                    self.model_fitted.best_estimator_.coef_[0]
         for kmer in df_for_coeffs:
             if self.kernel == "rbf" or self.model_name_short == "NB":
                 kmer_coef = "NA"
