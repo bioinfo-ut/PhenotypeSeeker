@@ -54,7 +54,7 @@ class Input():
                 if i == 0:
                     firstline = line.split()
                     Samples.no_phenotypes = len(firstline)-2
-                    if firstline[0] == "ID":
+                    if "ID" in firstline[0]:
                         Samples.phenotypes = firstline[2:]
                         Samples.headerline = True
                         continue
