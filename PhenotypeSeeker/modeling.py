@@ -826,6 +826,7 @@ class phenotypes():
                 \tNo._of_samples_with_k-mer\tSamples_with_k-mer\n"
                 )
 
+    @classmethod
     def start_modeling(cls):
         sys.stderr.write("Generating the " + cls.model_name_long + " model for: \n")
         cls.set_model()
