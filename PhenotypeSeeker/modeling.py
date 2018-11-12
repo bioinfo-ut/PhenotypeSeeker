@@ -532,7 +532,7 @@ class phenotypes():
                 stderr_print.currentKmerNum.value += self.progress_checkpoint.value
                 Input.lock.release()
                 stderr_print.check_progress(
-                    self.no_kmers_to_analyse.value, "tests conducted.", self.name + " phenotype: "
+                    self.no_kmers_to_analyse.value, "tests conducted.", self.name + ": "
                 )
             kmer = line[0].split()[0]
             kmer_presence_vector = [j.split()[1].strip() for j in line]
@@ -553,7 +553,7 @@ class phenotypes():
         stderr_print.currentKmerNum.value += counter%self.progress_checkpoint.value
         Input.lock.release()
         stderr_print.check_progress(
-            self.no_kmers_to_analyse.value, "tests conducted.", self.name + " phenotype: "
+            self.no_kmers_to_analyse.value, "tests conducted.", self.name + ": "
         )
         test_results_file.close()
         return(pvalues)
@@ -784,12 +784,12 @@ class phenotypes():
             if counter%checkpoint == 0:
                 stderr_print.currentKmerNum.value += checkpoint
                 stderr_print.check_progress(
-                    nr_of_kmers_tested, "k-mers filtered.", self.name + " phenotype: "
+                    nr_of_kmers_tested, "k-mers filtered.", self.name + ": "
                 )
 
         stderr_print.currentKmerNum.value += counter%checkpoint
         stderr_print.check_progress(
-            nr_of_kmers_tested, "k-mers filtered.", self.name + " phenotype: "
+            nr_of_kmers_tested, "k-mers filtered.", self.name + ": "
             )
         sys.stderr.write("\n")
         if len(self.kmers_for_ML) == 0:
