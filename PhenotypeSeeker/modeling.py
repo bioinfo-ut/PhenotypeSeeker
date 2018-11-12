@@ -506,14 +506,14 @@ class phenotypes():
         pvalues = []
         counter = 0
 
-        multithreading_code = split_of_kmer_lists[0][-5:]
+        mt_code = split_of_kmer_lists[0][-5:]
         if phenotypes.scale == "continuous":
             test_results_file = open(
-                "t-test_results_" + self.name + "_" + code + ".txt", "w"
+                "t-test_results_" + self.name + "_" + mt_code + ".txt", "w"
                 )
         else:
             test_results_file = open(
-                "chi-squared_test_results_" + self.name + "_" + code + ".txt", "w"
+                "chi-squared_test_results_" + self.name + "_" + mt_code + ".txt", "w"
                 )
 
         for line in izip_longest(
