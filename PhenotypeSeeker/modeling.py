@@ -826,6 +826,12 @@ class phenotypes():
                 \tNo._of_samples_with_k-mer\tSamples_with_k-mer\n"
                 )
 
+    def start_modeling(cls):
+        sys.stderr.write("Generating the " + cls.model_name_long + " model for: \n")
+        cls.set_model()
+        cls.set_hyperparameters()
+        cls.get_best_model()
+
     @classmethod
     def set_model(cls):
         if cls.scale == "continuous":
@@ -921,8 +927,7 @@ class phenotypes():
                 cls.best_model = cls.model
 
     def machine_learning_modelling(self):
-        sys.stderr.write("Generating the " + self.model_name_long + " model for: \n" \
-            + self.name + " phenotype.\n")
+        sys.stderr.write("\t" + self.name + " phenotype\n")
         self.get_outputfile_names()
         if len(self.kmers_for_ML) == 0:
             self.summary_file.write("No k-mers passed the step of k-mer filtering for " \
@@ -1327,9 +1332,7 @@ def modeling(args):
         lambda x:  x.get_kmers_filtered(), 
         Input.phenotypes_to_analyse.values()
         )
-    phenotypes.set_model()
-    phenotypes.set_hyperparameters()
-    phenotypes.get_best_model()
+    phenotypes.start_modeling()
     map(
         lambda x: x.machine_learning_modelling(),
         Input.phenotypes_to_analyse.values()
