@@ -53,6 +53,13 @@ class Input():
             header = inputfile.readline().split()
             Samples.phenotypes = header[2:]
             Samples.no_phenotypes = len(header)-2
+            for pheno in Samples.phenotypes:
+                try:
+                    int(pheno)
+                    print("Warning! It seems that the input file is \
+                        missing the header row!")
+                except ValueError:
+                    pass
             for line in inputfile:
                 sample_name = line.split()[0]
                 cls.samples[sample_name] = (
@@ -952,11 +959,11 @@ class phenotypes():
 
 
     def get_outputfile_names(self):
-        self.summary_file = "summary_of_" + self.model_name_short + "_analysis_" \
-            + self.name + ".pkl"
-        self.coeff_file = "k-mers_and_coefficients_in_" + self.model_name_short \
-            + "_model_" + self.name + ".txt"
-        self.model_file = self.model_name_short + "_model_" + self.name + ".pkl"
+        self.summary_file = open("summary_of_" + self.model_name_short + "_analysis_" \
+            + self.name + ".pkl", "w")
+        self.coeff_file = open("k-mers_and_coefficients_in_" + self.model_name_short \
+            + "_model_" + self.name + ".txt", "w")
+        self.model_file = open(self.model_name_short + "_model_" + self.name + ".pkl", "w")
 
     def get_dataframe_for_machine_learning(self):
         kmer_lists = ["K-mer_lists/" + sample + "_mapped.txt" for sample in Input.samples]
