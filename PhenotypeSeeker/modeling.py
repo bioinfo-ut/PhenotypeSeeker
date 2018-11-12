@@ -57,7 +57,7 @@ class Input():
                 try:
                     int(pheno)
                     print("Warning! It seems that the input file is" \
-                        "missing the header row!")
+                        " missing the header row!")
                 except ValueError:
                     pass
             for line in inputfile:
