@@ -921,7 +921,7 @@ class phenotypes():
                 cls.best_model = cls.model
 
     def machine_learning_modelling(self):
-        sys.stderr.write("Generating the " + self.model_name_long + " model for: \n" /
+        sys.stderr.write("Generating the " + self.model_name_long + " model for: \n" \
             + self.name + " phenotype.\n")
         self.get_outputfile_names()
         if len(self.kmers_for_ML) == 0:
