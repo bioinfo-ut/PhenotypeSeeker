@@ -56,8 +56,8 @@ class Input():
             for pheno in Samples.phenotypes:
                 try:
                     int(pheno)
-                    print("Warning! It seems that the input file is \
-                        missing the header row!")
+                    print("Warning! It seems that the input file is" \
+                        "missing the header row!")
                 except ValueError:
                     pass
             for line in inputfile:
