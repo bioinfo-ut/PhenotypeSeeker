@@ -921,8 +921,8 @@ class phenotypes():
                 cls.best_model = cls.model
 
     def machine_learning_modelling(self):
-        sys.stderr.write("Generating the " + self.name + " phenotype predictive "
-            + self.model_name_long + " model.")
+        sys.stderr.write("Generating the " + self.model_name_long + " model for: \n" /
+            + self.name + " phenotype.\n")
         self.get_outputfile_names()
         if len(self.kmers_for_ML) == 0:
             self.summary_file.write("No k-mers passed the step of k-mer filtering for " \
