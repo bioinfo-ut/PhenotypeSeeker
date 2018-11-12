@@ -532,7 +532,7 @@ class phenotypes():
                 stderr_print.currentKmerNum.value += self.progress_checkpoint.value
                 Input.lock.release()
                 stderr_print.check_progress(
-                    self.no_kmers_to_analyse.value, "tests conducted.", self.name + ": "
+                    self.no_kmers_to_analyse.value, "tests conducted.", self.name + " phenotype: "
                 )
             kmer = line[0].split()[0]
             kmer_presence_vector = [j.split()[1].strip() for j in line]
@@ -553,7 +553,7 @@ class phenotypes():
         stderr_print.currentKmerNum.value += counter%self.progress_checkpoint.value
         Input.lock.release()
         stderr_print.check_progress(
-            self.no_kmers_to_analyse.value, "tests conducted.", self.name + ": "
+            self.no_kmers_to_analyse.value, "tests conducted.", self.name + " phenotype: "
         )
         test_results_file.close()
         return(pvalues)
@@ -784,12 +784,12 @@ class phenotypes():
             if counter%checkpoint == 0:
                 stderr_print.currentKmerNum.value += checkpoint
                 stderr_print.check_progress(
-                    nr_of_kmers_tested, "k-mers filtered.", self.name + ": "
+                    nr_of_kmers_tested, "k-mers filtered.", self.name + " phenotype: "
                 )
 
         stderr_print.currentKmerNum.value += counter%checkpoint
         stderr_print.check_progress(
-            nr_of_kmers_tested, "k-mers filtered.", self.name + ": "
+            nr_of_kmers_tested, "k-mers filtered.", self.name + " phenotype: "
             )
         sys.stderr.write("\n")
         if len(self.kmers_for_ML) == 0:
@@ -922,7 +922,7 @@ class phenotypes():
 
     def machine_learning_modelling(self):
         sys.stderr.write("Generating the " + self.name + " phenotype predictive "
-            + cls.model_name_long + " model.")
+            + self.model_name_long + " model.")
         self.get_outputfile_names()
         if len(self.kmers_for_ML) == 0:
             self.summary_file.write("No k-mers passed the step of k-mer filtering for " \
