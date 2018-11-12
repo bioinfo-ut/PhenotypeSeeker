@@ -828,7 +828,7 @@ class phenotypes():
 
     @classmethod
     def start_modeling(cls):
-        sys.stderr.write("Generating the " + cls.model_name_long + " model for: \n")
+        sys.stderr.write("Generating the " + cls.model_name_long + " model for phenotype: \n")
         cls.set_model()
         cls.set_hyperparameters()
         cls.get_best_model()
@@ -928,7 +928,7 @@ class phenotypes():
                 cls.best_model = cls.model
 
     def machine_learning_modelling(self):
-        sys.stderr.write("\t" + self.name + " phenotype\n")
+        sys.stderr.write("\t" + self.name + ".\n")
         self.get_outputfile_names()
         if len(self.kmers_for_ML) == 0:
             self.summary_file.write("No k-mers passed the step of k-mer filtering for " \
