@@ -727,12 +727,13 @@ class phenotypes():
 
     def concatenate_test_files(self, phenotype):
         if phenotypes.scale == "continuous":
-            self.test_output = "t-test_results_" + phenotype + ".txt"
+            test_results = "t-test_results_"
         else:
-            self.test_output = "chi-squared_test_results_" + phenotype + ".txt"
+            test_results = "chi-squared_test_results_"
+        self.test_output = test_results + phenotype + ".txt"
         call(
             [
-            "cat " + beginning_text + phenotype + "_* > " +
+            "cat " + test_results + phenotype + "_* > " +
             self.test_output
             ],
             shell=True
@@ -740,7 +741,7 @@ class phenotypes():
         for l in xrange(Samples.num_threads):
             call(
                 [
-                "rm " + beginning_text + phenotype +
+                "rm " + test_results + phenotype +
                 "_%05d.txt" % l
                 ],
                 shell=True
