@@ -799,7 +799,7 @@ class phenotypes():
 
     def get_pvalue_cutoff(self, pvalues, nr_of_kmers_tested):
         if self.B:
-            self.pvalue_cutoff = (cls.pvalue_cutoff/nr_of_kmers_tested)
+            self.pvalue_cutoff = (self.pvalue_cutoff/nr_of_kmers_tested)
         elif self.FDR:
             pvalue_cutoff_by_FDR = 0
             for index, pvalue in enumerate(pvalues):
