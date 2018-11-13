@@ -78,7 +78,7 @@ def Main():
 
     kmer_lists.add_argument(
     	"-l", '--length', type=str, metavar="", default="13", 
-    	help="K-mer length. Must be an integer between (1-32, default = 16)"
+    	help="K-mer length. Must be an integer between (1-32, default = 13)"
     	)
     kmer_lists.add_argument(
     	"-c", '--cutoff', type=str, metavar="INT", default="1",
