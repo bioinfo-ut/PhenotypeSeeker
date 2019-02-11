@@ -495,6 +495,12 @@ class phenotypes():
                 ],
                 shell=True
                 )
+            call(
+                [
+                "rm -r K-mer_lists/" + sample + "_mapped.txt"
+                ], 
+                shell=True
+                )
 
     @classmethod
     def _splitted_vectors_to_multiple_input(cls):
@@ -954,7 +960,7 @@ class phenotypes():
 
     def get_outputfile_names(self):
         self.summary_file = open("summary_of_" + self.model_name_short + "_analysis_" \
-            + self.name + ".pkl", "w")
+            + self.name + ".txt", "w")
         self.coeff_file = open("k-mers_and_coefficients_in_" + self.model_name_short \
             + "_model_" + self.name + ".txt", "w")
         self.model_file = open(self.model_name_short + "_model_" + self.name + ".pkl", "w")
