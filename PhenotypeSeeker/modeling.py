@@ -301,6 +301,7 @@ class Samples():
         process = Popen(mash_args, shell=True, stderr=PIPE)
         for line in iter(process.stderr.readline, ''):
             stderr_print(line.strip())
+        call(["rm K-mer_lists/*.msh"], shell=True)
         with open("mash_distances.mat", "w+") as f1:
             call(["mash_2.1", "dist", "reference.msh", "reference.msh"], stdout=f1)
 
