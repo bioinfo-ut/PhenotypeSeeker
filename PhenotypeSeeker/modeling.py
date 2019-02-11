@@ -272,7 +272,7 @@ class Samples():
     # input samples.
     
     def get_mash_sketches(self):
-        mash_args = "mash sketch -r " + self.address + " -o K-mer_lists/" + self.name
+        mash_args = "mash_2.1 sketch -r " + self.address + " -o K-mer_lists/" + self.name
     	process = Popen(mash_args, shell=True, stderr=PIPE)
         for line in iter(process.stderr.readline, ''):
             stderr_print(line.strip())
@@ -292,12 +292,12 @@ class Samples():
 
     @classmethod
     def get_mash_distances(cls):
-        mash_args = "mash paste reference.msh K-mer_lists/*.msh"
+        mash_args = "mash_2.1 paste reference.msh K-mer_lists/*.msh"
         process = Popen(mash_args, shell=True, stderr=PIPE)
         for line in iter(process.stderr.readline, ''):
             stderr_print(line.strip())
         with open("mash_distances.mat", "w+") as f1:
-            call(["mash", "dist", "reference.msh", "reference.msh"], stdout=f1)
+            call(["mash_2.1", "dist", "reference.msh", "reference.msh"], stdout=f1)
 
     @classmethod
     def _mash_output_to_distance_matrix(cls, names_of_samples, mash_distances):
