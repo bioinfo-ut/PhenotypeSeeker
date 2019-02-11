@@ -239,6 +239,11 @@ class Samples():
                 ".list"
                 ]
                 , stdout=outputfile)
+            call(
+                [
+                "rm " + "K-mer_lists/" + self.name + "_" + self.kmer_length + ".list"
+                ]
+                , shell=True)
         Input.lock.acquire()
         stderr_print.currentSampleNum.value += 1
         Input.lock.release()
@@ -473,13 +478,13 @@ class phenotypes():
 
     @classmethod
     def get_params_for_kmers_testing(cls):
-        cls._split_sample_vectors_for_multithreading()
-        cls._splitted_vectors_to_multiple_input()
         cls.no_kmers_to_analyse.value = int(
             check_output(
                 ['wc', '-l', "K-mer_lists/" + Input.samples.keys()[0] + "_mapped.txt"]
                 ).split()[0]
             )
+        cls._split_sample_vectors_for_multithreading()
+        cls._splitted_vectors_to_multiple_input()
         cls.progress_checkpoint.value = int(
             math.ceil(cls.no_kmers_to_analyse.value/(100*Samples.num_threads))
             )
