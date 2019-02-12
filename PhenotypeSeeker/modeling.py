@@ -241,7 +241,8 @@ class Samples():
                 , stdout=outputfile)
             call(
                 [
-                "rm " + "K-mer_lists/" + self.name + "_" + self.kmer_length + ".list"
+                "rm " + "K-mer_lists/" + self.name + "_" + self.kmer_length + ".list" \
+                " K-mer_lists/feature_vector_" + self.kmer_length + ".list"
                 ]
                 , shell=True)
         Input.lock.acquire()
