@@ -267,7 +267,7 @@ class Samples():
         glistmaker_args = ["glistmaker"] + \
             [sample.address for sample in Input.samples.values()] + \
             [
-            '-c', cls.cutoff, '-w', cls.kmer_length, '-o', 'K-mer_lists/feature_vector'
+            '-c', cls.cutoff, '-w', Samples.kmer_length, '-o', 'K-mer_lists/feature_vector'
             ]
         call(glistmaker_args)
 
