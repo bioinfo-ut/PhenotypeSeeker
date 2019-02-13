@@ -241,8 +241,7 @@ class Samples():
                 , stdout=outputfile)
             call(
                 [
-                "rm " + "K-mer_lists/" + self.name + "_" + self.kmer_length + ".list" \
-                " K-mer_lists/feature_vector_" + self.kmer_length + ".list"
+                "rm " + "K-mer_lists/" + self.name + "_" + self.kmer_length + ".list" 
                 ]
                 , shell=True)
         Input.lock.acquire()
@@ -480,6 +479,7 @@ class phenotypes():
 
     @classmethod
     def get_params_for_kmers_testing(cls):
+    	call(["rm K-mer_lists/feature_vector_" + self.kmer_length + ".list"])
         cls.no_kmers_to_analyse.value = int(
             check_output(
                 ['wc', '-l', "K-mer_lists/" + Input.samples.keys()[0] + "_mapped.txt"]
