@@ -505,12 +505,6 @@ class phenotypes():
                 ],
                 shell=True
                 )
-            call(
-                [
-                "rm -r K-mer_lists/" + sample + "_mapped.txt"
-                ], 
-                shell=True
-                )
 
     @classmethod
     def _splitted_vectors_to_multiple_input(cls):
