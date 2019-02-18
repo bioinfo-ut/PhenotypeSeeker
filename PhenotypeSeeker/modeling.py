@@ -1350,7 +1350,7 @@ def modeling(args):
         lambda x: x.machine_learning_modelling(),
         Input.phenotypes_to_analyse.values()
         )
-    call(['rm', '-r', 'K-mer_lists'])
+    call(['rm', '-r', 'K-mer_lists']
 
     if args.assembly == "+":
         sys.stderr.write("Assembling the k-mers used in modeling of " 
