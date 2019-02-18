@@ -566,7 +566,6 @@ class phenotypes():
             self.no_kmers_to_analyse.value, "tests conducted.", self.name + ": "
         )
         for item in split_of_kmer_lists:
-            item.close()
             call(['rm', item])
         test_results_file.close()
         return(pvalues)
@@ -978,7 +977,6 @@ class phenotypes():
             if line[0].split()[0] in self.kmers_for_ML:
                 self.ML_df[line[0].split()[0]] = [int(j.split()[1].strip()) for j in line]
         for item in kmer_lists:
-            item.close()
             call(['rm', '-r', 'K-mer_lists'])
         self.ML_df = self.ML_df.astype(bool).astype(int)
         self.ML_df['phenotype'] = [
