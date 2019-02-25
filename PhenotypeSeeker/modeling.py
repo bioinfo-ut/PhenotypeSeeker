@@ -472,9 +472,6 @@ class phenotypes():
                 self.get_kmers_tested, Input.samples.values()
                 ), self.vectors_as_multiple_input
             )
-        for vector in self.vectors_as_multiple_input:
-            for item in vector:
-                call(['rm', item])
         self.pvalues = \
             sorted(list(chain(*pvalues_from_all_threads)))
         sys.stderr.write("\n")
@@ -1346,6 +1343,9 @@ def modeling(args):
         lambda x:  x.get_kmers_filtered(), 
         Input.phenotypes_to_analyse.values()
         )
+    for vector in phenotypes.vectors_as_multiple_input:
+        for item in vector:
+            call(['rm', item])
     phenotypes.start_modeling()
     map(
         lambda x: x.machine_learning_modelling(),
