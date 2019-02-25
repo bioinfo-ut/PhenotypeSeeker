@@ -472,9 +472,11 @@ class phenotypes():
                 self.get_kmers_tested, Input.samples.values()
                 ), self.vectors_as_multiple_input
             )
+        for vector in self.vectors_as_multiple_input:
+            for item in vector:
+                call(['rm', item])
         self.pvalues = \
             sorted(list(chain(*pvalues_from_all_threads)))
-        call(['rm', 'K-mer_lists/*_mapped_*'])
         sys.stderr.write("\n")
         self.concatenate_test_files(self.name)
 
