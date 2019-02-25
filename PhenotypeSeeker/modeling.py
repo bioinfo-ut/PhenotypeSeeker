@@ -474,6 +474,7 @@ class phenotypes():
             )
         self.pvalues = \
             sorted(list(chain(*pvalues_from_all_threads)))
+        call(['rm', 'K-mer_lists/*_mapped_*'])
         sys.stderr.write("\n")
         self.concatenate_test_files(self.name)
 
@@ -565,8 +566,6 @@ class phenotypes():
         stderr_print.check_progress(
             self.no_kmers_to_analyse.value, "tests conducted.", self.name + ": "
         )
-        for item in split_of_kmer_lists:
-            call(['rm', item])
         test_results_file.close()
         return(pvalues)
 
