@@ -949,7 +949,7 @@ class phenotypes():
         if self.testset_size != 0.0:
             kf = StratifiedKFold(n_splits=10)
             fold = 0
-            for train_index, test_index in kf.split(self.ML_df):
+            for train_index, test_index in kf.split(self.ML_df, self.ML_df['phenotype'].values):
                 fold += 1
                 self.ML_df_train, self.ML_df_test = (
                     self.ML_df.iloc[train_index], self.ML_df.iloc[test_index]
