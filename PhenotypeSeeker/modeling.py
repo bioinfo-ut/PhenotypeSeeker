@@ -948,7 +948,9 @@ class phenotypes():
 
         if self.testset_size != 0.0:
             kf = KFold(n_splits=10)
+            fold = 0
             for train_index, test_index in kf.split(self.ML_df):
+                fold += 1
                 self.ML_df_train, self.ML_df_test = (
                     self.ML_df.iloc[train_index], ML_df.iloc[test_index]
                     )
@@ -960,33 +962,29 @@ class phenotypes():
                 self.weights_test = self.ML_df_test.iloc[:,-1:]
 
                 self.fit_model()
-                self.summary_file.write(
-                    "\nCross-validation results on the first train/test set split: \n"
-                    )
+                self.summary_file.write("\n######Train/test split nr.%d:######\n" % fold)
                 self.cross_validation_results()
-                self.summary_file.write(
-                    "\nModel performance on the first train/test set split: \n"
-                    )
-        else:
-            self.X_train = self.ML_df.iloc[:,0:-2]
-            self.y_train = self.ML_df.iloc[:,-2:-1]
-            self.weights_train = self.ML_df.iloc[:,-1:]
-
-            self.fit_model()
-            self.cross_validation_results()
-
-            self.summary_file.write('\nTraining set:\n')
-            self.predict(self.X_train, self.y_train)
-            if self.testset_size != 0.0:
+                self.summary_file.write('\nTraining set:\n')
+                self.predict(self.X_train, self.y_train)
                 self.summary_file.write('\nTest set:\n')
                 self.predict(self.X_test, self.y_test)
+        self.X_train = self.ML_df.iloc[:,0:-2]
+        self.y_train = self.ML_df.iloc[:,-2:-1]
+        self.weights_train = self.ML_df.iloc[:,-1:]
 
-            joblib.dump(self.model_fitted, self.model_file)
-            self.write_model_coefficients_to_file()
+        self.fit_model()
+        self.cross_validation_results()
 
-            self.summary_file.close()
-            self.coeff_file.close()
-            self.model_file.close()
+        if self.testset_size == 0.0:
+            self.summary_file.write('\nTraining set:\n')
+            self.predict(self.X_train, self.y_train)
+
+        joblib.dump(self.model_fitted, self.model_file)
+        self.write_model_coefficients_to_file()
+
+        self.summary_file.close()
+        self.coeff_file.close()
+        self.model_file.close()
 
 
     def get_outputfile_names(self):
@@ -1075,6 +1073,7 @@ class phenotypes():
                     index, labels.loc[index].values[0],
                     self.model_fitted.predict(row.reshape(1, -1))[0]
                     ))
+
         if self.scale == "continuous":
             self.model_performance_regressor(dataset, labels.values.flatten(), predictions)
         elif self.scale == "binary":
