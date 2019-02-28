@@ -958,6 +958,15 @@ class phenotypes():
                 self.X_test = self.ML_df_test.iloc[:,0:-2]
                 self.y_test = self.ML_df_test.iloc[:,-2:-1]
                 self.weights_test = self.ML_df_test.iloc[:,-1:]
+
+                self.fit_model()
+                self.summary_file.write(
+                    "\nCross-validation results on the first train/test set split: \n"
+                    )
+                self.cross_validation_results()
+                self.summary_file.write(
+                    "\nModel performance on the first train/test set split: \n"
+                    )
         else:
             self.X_train = self.ML_df.iloc[:,0:-2]
             self.y_train = self.ML_df.iloc[:,-2:-1]
