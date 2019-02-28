@@ -952,7 +952,7 @@ class phenotypes():
             for train_index, test_index in kf.split(self.ML_df):
                 fold += 1
                 self.ML_df_train, self.ML_df_test = (
-                    self.ML_df.iloc[train_index], ML_df.iloc[test_index]
+                    self.ML_df.iloc[train_index], self.ML_df.iloc[test_index]
                     )
                 self.X_train = self.ML_df_train.iloc[:,0:-2]
                 self.y_train = self.ML_df_train.iloc[:,-2:-1]
