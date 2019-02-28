@@ -199,10 +199,10 @@ def Main():
         For 0 < l1_ratio < 1, the penalty is a combination of L1 and L2.'
         )
     regression_models.add_argument(
-    	'-s', "--testset_size", metavar="", type=float, default=0.25,
+    	'-s', "--testset_size", metavar="", type=float, default=0.0,
     	help='The size of the test set. Represents the proportion of the \
     	dataset to include in the test split. Should be a float between 0.0 \
-    	and 1.0 (default 0.25). Train set size is complement of the test set \
+    	and 1.0 (default 0.0). Train set size is complement of the test set \
         size'
     	)
     regression_models.add_argument(
