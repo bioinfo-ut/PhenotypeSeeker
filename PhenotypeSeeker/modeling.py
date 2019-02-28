@@ -29,7 +29,7 @@ from sklearn.metrics import (
     roc_auc_score, average_precision_score, matthews_corrcoef, cohen_kappa_score,
     confusion_matrix, accuracy_score
     )
-from sklearn.model_selection import RandomizedSearchCV, GridSearchCV, train_test_split
+from sklearn.model_selection import RandomizedSearchCV, GridSearchCV, train_test_split, KFold
 from functools import partial
 import xgboost as xgb
 import Bio
@@ -945,21 +945,39 @@ class phenotypes():
                 "machine learning modelling.\n")
             return
         self.get_dataframe_for_machine_learning()
-        self.fit_model()
-        self.cross_validation_results()
 
-        self.summary_file.write('\nTraining set:\n')
-        self.predict(self.X_train, self.y_train)
         if self.testset_size != 0.0:
-            self.summary_file.write('\nTest set:\n')
-            self.predict(self.X_test, self.y_test)
+            kf = KFold(n_splits=10)
+            for train_index, test_index in kf.split(self.ML_df):
+                self.ML_df_train, self.ML_df_test = (
+                    self.ML_df.iloc[train_index], ML_df.iloc[test_index]
+                    )
+                self.X_train = self.ML_df_train.iloc[:,0:-2]
+                self.y_train = self.ML_df_train.iloc[:,-2:-1]
+                self.weights_train = self.ML_df_train.iloc[:,-1:]
+                self.X_test = self.ML_df_test.iloc[:,0:-2]
+                self.y_test = self.ML_df_test.iloc[:,-2:-1]
+                self.weights_test = self.ML_df_test.iloc[:,-1:]
+        else:
+            self.X_train = self.ML_df.iloc[:,0:-2]
+            self.y_train = self.ML_df.iloc[:,-2:-1]
+            self.weights_train = self.ML_df.iloc[:,-1:]
 
-        joblib.dump(self.model_fitted, self.model_file)
-        self.write_model_coefficients_to_file()
+            self.fit_model()
+            self.cross_validation_results()
 
-        self.summary_file.close()
-        self.coeff_file.close()
-        self.model_file.close()
+            self.summary_file.write('\nTraining set:\n')
+            self.predict(self.X_train, self.y_train)
+            if self.testset_size != 0.0:
+                self.summary_file.write('\nTest set:\n')
+                self.predict(self.X_test, self.y_test)
+
+            joblib.dump(self.model_fitted, self.model_file)
+            self.write_model_coefficients_to_file()
+
+            self.summary_file.close()
+            self.coeff_file.close()
+            self.model_file.close()
 
 
     def get_outputfile_names(self):
@@ -989,37 +1007,13 @@ class phenotypes():
             target_names=np.array(["resistant", "sensitive"]),
             feature_names=self.ML_df.iloc[:,0:-2].columns.values
             )
-        if self.testset_size != 0.0:
-            if phenotypes.scale == "continuous":
-                stratify = None
-            elif phenotypes.scale == "binary":
-                stratify = self.skl_dataset.target
-            self.ML_df_train, self.ML_df_test = train_test_split(
-                self.ML_df, test_size=self.testset_size,
-                stratify=stratify, random_state=55
-                )
-            self.X_train = self.ML_df_train.iloc[:,0:-2]
-            self.y_train = self.ML_df_train.iloc[:,-2:-1]
-            self.weights_train = self.ML_df_train.iloc[:,-1:]
-            self.X_test = self.ML_df_test.iloc[:,0:-2]
-            self.y_test = self.ML_df_test.iloc[:,-2:-1]
-            self.weights_test = self.ML_df_test.iloc[:,-1:]
-        else:
-            self.X_train = self.ML_df.iloc[:,0:-2]
-            self.y_train = self.ML_df.iloc[:,-2:-1]
-            self.weights_train = self.ML_df.iloc[:,-1:]
 
         if phenotypes.scale == "continuous":
-            self.y_train = self.y_train.astype(float)
-            if self.testset_size != 0.0:
-                self.y_test = self.y_test.astype(float)    
+            self.ML_df['phenotype'] = self.ML_df['phenotype'].astype(float)  
         elif phenotypes.scale == "binary":
-            self.y_train = self.y_train.astype(int)
-            if self.testset_size != 0.0:
-                self.y_test = self.y_test.astype(int)
+            self.ML_df['phenotype'] = self.ML_df['phenotype'].astype(int)   
 
         self.summary_file.write("Dataset:\n%s\n\n" % self.skl_dataset)  
-
 
     def fit_model(self):
         if self.scale == "continuous":
