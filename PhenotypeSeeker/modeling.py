@@ -29,7 +29,7 @@ from sklearn.metrics import (
     roc_auc_score, average_precision_score, matthews_corrcoef, cohen_kappa_score,
     confusion_matrix, accuracy_score
     )
-from sklearn.model_selection import RandomizedSearchCV, GridSearchCV, train_test_split, KFold
+from sklearn.model_selection import RandomizedSearchCV, GridSearchCV, train_test_split, StratifiedKFold
 from functools import partial
 import xgboost as xgb
 import Bio
@@ -947,7 +947,7 @@ class phenotypes():
         self.get_dataframe_for_machine_learning()
 
         if self.testset_size != 0.0:
-            kf = KFold(n_splits=10)
+            kf = StratifiedKFold(n_splits=10)
             fold = 0
             for train_index, test_index in kf.split(self.ML_df):
                 fold += 1
