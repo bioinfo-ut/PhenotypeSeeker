@@ -994,7 +994,7 @@ class phenotypes():
                 self.summary_file.write('\nTest set:\n')
                 self.predict(self.X_test, self.y_test, self.metrics_dict_test)
 
-                self.summary_file.write('\nThe final model training on the whole dataset:\n')
+            self.summary_file.write('\nThe final model training on the whole dataset:\n')
         self.X_train = self.ML_df.iloc[:,0:-2]
         self.y_train = self.ML_df.iloc[:,-2:-1]
         self.weights_train = self.ML_df.iloc[:,-1:]
@@ -1088,7 +1088,7 @@ class phenotypes():
 
 
     def cross_validation_results(self):
-        if self.model_name_short not in ("RF", "NB", "XGBC", "XGBR"):
+        if self.model_name_short not in ("NB", "XGBC", "XGBR"):
             self.summary_file.write('Parameters:\n%s\n\n' % self.model)
             if self.scale == "continuous":
                 self.summary_file.write("Grid scores (R2 score) on development set: \n")
