@@ -83,7 +83,7 @@ class Input():
             min_samples, max_samples, mpheno, kmer_length,
             cutoff, num_threads, pvalue_cutoff, kmer_limit,
             FDR, B, binary_classifier, regressor, penalty, max_iter,
-            tol, l1_ratio, testset_size, kernel, n_iter,
+            tol, l1_ratio, n_splits_cv_outer, kernel, n_iter,
             n_splits
             ):
         cls._get_phenotypes_to_analyse(mpheno)
@@ -107,7 +107,7 @@ class Input():
         phenotypes.max_iter = max_iter
         phenotypes.tol = tol
         phenotypes.l1_ratio = l1_ratio
-        phenotypes.testset_size = testset_size
+        phenotypes.n_splits_cv_outer = n_splits_cv_outer
         phenotypes.kernel = kernel
         phenotypes.n_iter = n_iter
         phenotypes.n_splits = n_splits
@@ -422,7 +422,7 @@ class phenotypes():
     hyper_parameters = None
     alphas = None
     gammes = None
-    testset_size = 0.0
+    n_splits_cv_outer = None
     kernel = None
     n_iter = None
     n_splits = None
@@ -953,7 +953,7 @@ class phenotypes():
             return
         self.get_dataframe_for_machine_learning()
 
-        if self.testset_size != 0.0:
+        if self.n_splits_cv_outer:
             kf = StratifiedKFold(n_splits=10)
             fold = 0
             for train_index, test_index in kf.split(self.ML_df, self.ML_df['phenotype'].values):
@@ -988,14 +988,14 @@ class phenotypes():
         joblib.dump(self.model_fitted, self.model_file)
         self.write_model_coefficients_to_file()
 
-        if self.testset_size != 0.0:
+        if self.n_splits_cv_outer:
             self.summary_file.write(
                 "\nMean performance metrics over all train/test splits: \n"
                 )
             if self.scale == "continuous":
-                self.mean_performance_metrics_regressor()
+                self.mean_model_performance_regressor()
             elif self.scale == "binary":
-                self.mean_performance_metrics_classifier()
+                self.mean_model_performance_metrics()
 
         self.summary_file.close()
         self.coeff_file.close()
@@ -1416,7 +1416,7 @@ def modeling(args):
         args.num_threads, args.pvalue, args.n_kmers, args.FDR, 
         args.Bonferroni, args.binary_classifier, args.regressor, 
         args.penalty, args.max_iter, args.tol, args.l1_ratio,
-        args.testset_size, args.kernel, args.n_iter, args.n_splits
+        args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits
         )
     Input.get_multithreading_parameters()
 
