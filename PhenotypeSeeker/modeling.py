@@ -84,7 +84,7 @@ class Input():
             cutoff, num_threads, pvalue_cutoff, kmer_limit,
             FDR, B, binary_classifier, regressor, penalty, max_iter,
             tol, l1_ratio, n_splits_cv_outer, kernel, n_iter,
-            n_splits
+            n_splits_cv_inner
             ):
         cls._get_phenotypes_to_analyse(mpheno)
         phenotypes.alphas = cls._get_alphas(
@@ -110,7 +110,7 @@ class Input():
         phenotypes.n_splits_cv_outer = n_splits_cv_outer
         phenotypes.kernel = kernel
         phenotypes.n_iter = n_iter
-        phenotypes.n_splits = n_splits
+        phenotypes.n_splits_cv_inner = n_splits_cv_inner
 
         cls.get_model_name(regressor, binary_classifier)
 
@@ -425,7 +425,7 @@ class phenotypes():
     n_splits_cv_outer = None
     kernel = None
     n_iter = None
-    n_splits = None
+    n_splits_cv_inner = None
     xgb_train = None
     xgb_test = None
 
@@ -922,24 +922,24 @@ class phenotypes():
         if cls.scale == "continuous":
             if cls.model_name_short == "lin_reg":
                 cls.best_model = GridSearchCV(
-                    cls.model, cls.hyper_parameters, cv=cls.n_splits
+                    cls.model, cls.hyper_parameters, cv=cls.n_splits_cv_inner
                     )
             elif cls.model_name_short == "XGBR":
                 cls.best_model = cls.model
         elif cls.scale == "binary":
             if cls.model_name_long == "logistic regression":
                 cls.best_model = GridSearchCV(
-                    cls.model, cls.hyper_parameters, cv=cls.n_splits
+                    cls.model, cls.hyper_parameters, cv=cls.n_splits_cv_inner
                     )
             elif cls.model_name_long == "support vector machine":
                 if cls.kernel == "linear":
                     cls.best_model = GridSearchCV(
-                        cls.model, cls.hyper_parameters, cv=cls.n_splits
+                        cls.model, cls.hyper_parameters, cv=cls.n_splits_cv_inner
                         )
                 if cls.kernel == "rbf":
                     cls.best_model = RandomizedSearchCV(
                         cls.model, cls.hyper_parameters,
-                        n_iter=cls.n_iter, cv=cls.n_splits
+                        n_iter=cls.n_iter, cv=cls.n_splits_cv_inner
                         )
             elif cls.model_name_short in ("RF", "NB", "XGBC"):
                 cls.best_model = cls.model
@@ -1416,7 +1416,7 @@ def modeling(args):
         args.num_threads, args.pvalue, args.n_kmers, args.FDR, 
         args.Bonferroni, args.binary_classifier, args.regressor, 
         args.penalty, args.max_iter, args.tol, args.l1_ratio,
-        args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits
+        args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner
         )
     Input.get_multithreading_parameters()
 
