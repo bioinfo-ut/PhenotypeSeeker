@@ -1005,11 +1005,11 @@ class phenotypes():
                 self.summary_file.write(
                     "\nMean performance metrics over all train splits: \n\n"
                     )
-                self.mean_model_performance_classifier(metrics_dict_train)
+                self.mean_model_performance_classifier(self.metrics_dict_train)
                 self.summary_file.write(
                     "\nMean performance metrics over all test splits: \n\n"
                     )
-                self.mean_model_performance_classifier(metrics_dict_test)
+                self.mean_model_performance_classifier(self.metrics_dict_test)
 
         self.summary_file.close()
         self.coeff_file.close()
