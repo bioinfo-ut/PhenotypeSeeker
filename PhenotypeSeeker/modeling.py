@@ -975,9 +975,9 @@ class phenotypes():
                 self.summary_file.write("\n##### Train/test split nr.%d: #####\n" % fold)
                 self.cross_validation_results()
                 self.summary_file.write('\nTraining set:\n')
-                self.predict(self.X_train, self.y_train, metrics_dict_train)
+                self.predict(self.X_train, self.y_train, self.metrics_dict_train)
                 self.summary_file.write('\nTest set:\n')
-                self.predict(self.X_test, self.y_test, metrics_dict_test)
+                self.predict(self.X_test, self.y_test, self.metrics_dict_test)
 
                 self.summary_file.write('\nThe final model training on the whole dataset:\n')
         self.X_train = self.ML_df.iloc[:,0:-2]
