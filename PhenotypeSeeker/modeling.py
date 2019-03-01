@@ -995,7 +995,7 @@ class phenotypes():
             if self.scale == "continuous":
                 self.mean_model_performance_regressor()
             elif self.scale == "binary":
-                self.mean_model_performance_metrics()
+                self.mean_model_performance_classifier()
 
         self.summary_file.close()
         self.coeff_file.close()
