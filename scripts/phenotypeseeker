@@ -159,9 +159,9 @@ def Main():
         regularization path (default = 25)'
         )
     regression_models.add_argument(
-        '--n_iter', metavar='', type=int, default=50,
-        help='The number of gamma&alpha combinations that are tried \
-        while tuning the RBF Kernel hyperparameters.'
+        '--n_iter', metavar='', type=int, default=25,
+        help='The number of parameter settings that are sampled while tuning \
+        the hyperparameters for the rbf kernel or random forest models.'
         )
     regression_models.add_argument(
     	'-cv2', '--n_splits_cv_inner', metavar='', type=int, default=10,

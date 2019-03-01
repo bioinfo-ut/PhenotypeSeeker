@@ -892,7 +892,7 @@ class phenotypes():
                     max_iter=cls.max_iter, tol=cls.tol
                     ) 
             elif cls.model_name_long == "random forest":
-                cls.model = RandomForestClassifier(n_estimators=100)
+                cls.model = RandomForestClassifier()
             elif cls.model_name_long == "Naive Bayes":
                 cls.model = BernoulliNB()
             elif cls.model_name_short == "XGBC":
@@ -919,6 +919,17 @@ class phenotypes():
                     cls.hyper_parameters = {'C':Cs}
                 if cls.kernel == "rbf":
                     cls.hyper_parameters = {'C':Cs, 'gamma':Gammas}
+            elif cls.model_name_long == "random forest":
+                cls.hyper_parameters = {
+                    'bootstrap': [True, False],
+                    'max_depth': [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, None],
+                    'max_features': ['auto', 'sqrt'],
+                     'min_samples_leaf': [1, 2, 4],
+                     'min_samples_split': [2, 5, 10],
+                     'n_estimators': [
+                        100, 200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000
+                        ]
+                    }
 
     @classmethod
     def get_best_model(cls):
@@ -944,7 +955,11 @@ class phenotypes():
                         cls.model, cls.hyper_parameters,
                         n_iter=cls.n_iter, cv=cls.n_splits_cv_inner
                         )
-            elif cls.model_name_short in ("RF", "NB", "XGBC"):
+            elif cls.model_name_long == "random forest":
+                cls.best_model = RandomizedSearchCV(
+                    cls.model, cls.hyper_parameters, n_iter=cls.n_iter, cv=cls.n_splits_cv_inner
+                    )
+            elif cls.model_name_short in ("NB", "XGBC"):
                 cls.best_model = cls.model
 
     def machine_learning_modelling(self):
