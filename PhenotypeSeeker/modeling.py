@@ -437,7 +437,7 @@ class phenotypes():
     # Performance metrics dictionary
     metrics = {
         "MSE": [], "CoD": [], "SpCC": [], "Sp_pval": [], "PeCC": [], "PE_pval": [], 
-        "DFA": [], "Acc": [], "Sn": [], "AUCROC": [], "Pr": [], "MCC": [], "kappa": [],
+        "DFA": [], "Acc": [], "Sn": [], "Sp": [], "AUCROC": [], "Pr": [], "MCC": [], "kappa": [],
         "VME": [], "ME": [], "F1_sc": []
         }
 
