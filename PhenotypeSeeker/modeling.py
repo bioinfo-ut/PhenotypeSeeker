@@ -434,13 +434,6 @@ class phenotypes():
     coeff_file = None
     model_file = None
 
-    # Performance metrics dictionary
-    metrics = {
-        "MSE": [], "CoD": [], "SpCC": [], "Sp_pval": [], "PeCC": [], "PE_pval": [], 
-        "DFA": [], "Acc": [], "Sn": [], "Sp": [], "AUCROC": [], "Pr": [], "MCC": [], "kappa": [],
-        "VME": [], "ME": [], "F1_sc": []
-        }
-
     def __init__(self, name):
         self.name = name
         self.pvalues = None
@@ -460,6 +453,13 @@ class phenotypes():
         self.weights_dataset = None
         self.model_fitted = None
         self.test_output = None
+        # Performance metrics dictionary
+        metrics = {
+            "MSE": [], "CoD": [], "SpCC": [], "Sp_pval": [], "PeCC": [], "PE_pval": [],
+            "DFA": [], "Acc": [], "Sn": [], "Sp": [], "AUCROC": [], "Pr": [], "MCC": [],
+            "kappa": [],"VME": [], "ME": [], "F1_sc": []
+            }
+
 
     # -------------------------------------------------------------------
     # Functions for calculating the association test results for kmers.
@@ -1208,7 +1208,7 @@ class phenotypes():
     def mean_model_performance_classifier(self):
 
         F1_sc = np.mean(self.metrics["F1_sc"])
-        self.summary_file.write('\nMean squared error: %s\n' % MSE)
+        self.summary_file.write("F1-score: %s\n" % F1_sc)
 
         Acc = np.mean(self.metrics["Acc"])
         self.summary_file.write("Mean accuracy: %s\n" % Acc)
