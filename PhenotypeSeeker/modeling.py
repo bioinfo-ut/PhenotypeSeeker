@@ -27,7 +27,7 @@ from sklearn.svm import SVC
 from sklearn.metrics import (
     classification_report, r2_score, mean_squared_error, recall_score,
     roc_auc_score, average_precision_score, matthews_corrcoef, cohen_kappa_score,
-    confusion_matrix, accuracy_score
+    confusion_matrix, accuracy_score, f1_score
     )
 from sklearn.model_selection import RandomizedSearchCV, GridSearchCV, train_test_split, StratifiedKFold
 from functools import partial
@@ -433,6 +433,13 @@ class phenotypes():
     summary_file = None
     coeff_file = None
     model_file = None
+
+    # Performance metrics dictionary
+    metrics = {
+        "MSE": [], "CoD": [], "SpCC": [], "Sp_pval": [], "PeCC": [], "PE_pval": [], 
+        "DFA": [], "Acc": [], "Sn": [], "AUCROC": [], "Pr": [], "MCC": [], "kappa": [],
+        "VME": [], "ME": [], "F1_sc": []
+        }
 
     def __init__(self, name):
         self.name = name
@@ -962,30 +969,37 @@ class phenotypes():
                 self.weights_test = self.ML_df_test.iloc[:,-1:]
 
                 self.fit_model()
-                self.summary_file.write("\n######Train/test split nr.%d:######\n" % fold)
+                self.summary_file.write("\n##### Train/test split nr.%d: #####\n" % fold)
                 self.cross_validation_results()
                 self.summary_file.write('\nTraining set:\n')
                 self.predict(self.X_train, self.y_train)
                 self.summary_file.write('\nTest set:\n')
                 self.predict(self.X_test, self.y_test)
+
+                self.summary_file.write('\nThe final model training on the whole dataset:\n')
         self.X_train = self.ML_df.iloc[:,0:-2]
         self.y_train = self.ML_df.iloc[:,-2:-1]
         self.weights_train = self.ML_df.iloc[:,-1:]
 
         self.fit_model()
         self.cross_validation_results()
-
-        if self.testset_size == 0.0:
-            self.summary_file.write('\nTraining set:\n')
-            self.predict(self.X_train, self.y_train)
+        self.predict(self.X_train, self.y_train)
 
         joblib.dump(self.model_fitted, self.model_file)
         self.write_model_coefficients_to_file()
 
+        if self.testset_size != 0.0:
+            self.summary_file.write(
+                "\nMean performance metrics over all train/test splits: \n"
+                )
+            if self.scale == "continuous":
+                self.mean_performance_metrics_regressor()
+            elif self.scale == "binary":
+                self.mean_performance_metrics_classifier()
+
         self.summary_file.close()
         self.coeff_file.close()
         self.model_file.close()
-
 
     def get_outputfile_names(self):
         self.summary_file = open("summary_of_" + self.model_name_short + "_analysis_" \
@@ -1073,6 +1087,7 @@ class phenotypes():
                     index, labels.loc[index].values[0],
                     self.model_fitted.predict(row.reshape(1, -1))[0]
                     ))
+        self.summary_file.write('\n')
 
         if self.scale == "continuous":
             self.model_performance_regressor(dataset, labels.values.flatten(), predictions)
@@ -1080,57 +1095,147 @@ class phenotypes():
             self.model_performance_classifier(dataset, labels.values.flatten(), predictions)
 
     def model_performance_regressor(self, dataset, labels, predictions):
-        self.summary_file.write('\nMean squared error: %s\n' % \
-                 mean_squared_error(labels, predictions))
+
+        MSE = mean_squared_error(labels, predictions)
+        self.summary_file.write('\nMean squared error: %s\n' % MSE)
+        self.metrics["MSE"].append(MSE)
+
+        CoD = self.model_fitted.score(dataset.values, labels)
         self.summary_file.write("The coefficient of determination:"
-            + " %s\n" % self.model_fitted.score(dataset.values, labels))
+            + " %s\n" % CoD)
+        self.metrics["CoD"].append(CoD)
+
+        SpCC, Sp_pval = stats.spearmanr(labels, predictions)
         self.summary_file.write("The Spearman correlation coefficient and p-value:" \
-            " %s, %s \n" % stats.spearmanr(labels, predictions))
-        r_value, pval_r = \
-            stats.pearsonr(labels, predictions)
+            " %s, %s \n" % SpCC, Sp_pval)
+        self.metrics["SpCC"].append(SpCC)
+        self.metrics["Sp_pval"].append(Sp_pval)
+
+        PeCC, Pe_pval = stats.pearsonr(labels, predictions)
         self.summary_file.write("The Pearson correlation coefficient and p-value: " \
-                " %s, %s \n" % (r_value, pval_r))
-        self.summary_file.write("The plus/minus 1 dilution factor accuracy (for MICs):" \
-            " %s \n\n" % self.within_1_tier_accuracy(
-                labels, predictions
-                )
+                " %s, %s \n" % PeCC, Pe_pval)
+        self.metrics["PeCC"].append(PeCC)
+        self.metrics["Pe_pval"].append(Pe_pval)
+
+        DFA = self.within_1_tier_accuracy(labels, predictions)
+        self.summary_file.write(
+            "The plus/minus 1 dilution factor accuracy (for MICs):" " %s \n\n" % DFA
+            )
+        self.metrics["DFA"].append(DFA)
+
+    def mean_model_performance_regressor(self):
+
+        MSE = np.mean(self.metrics["MSE"])
+        self.summary_file.write('\nMean squared error: %s\n' % MSE)
+
+        CoD = np.mean(self.metrics["Cod"])
+        self.summary_file.write("The coefficient of determination:"
+            + " %s\n" % CoD)
+
+        SpCC = np.mean(self.metrics["SpCC"])
+        Sp_pval = np.mean(self.metrics["Sp_pval"])
+        self.summary_file.write("The Spearman correlation coefficient and p-value:" \
+            " %s, %s \n" % SpCC, Sp_pval)
+
+        PeCC = np.mean(self.metrics["PeCC"])
+        Pe_pval = np.mean(self.metrics["Pe_pval"])
+        self.summary_file.write("The Pearson correlation coefficient and p-value: " \
+                " %s, %s \n" % PeCC, Pe_pval)
+
+        DFA = np.mean(self.metrics["DFA"])
+        self.summary_file.write(
+            "The plus/minus 1 dilution factor accuracy (for MICs):" " %s \n\n" % DFA
             )
 
     def model_performance_classifier(self, dataset, labels, predictions):
-            self.summary_file.write("Mean accuracy: %s\n" % self.model_fitted.score(dataset, labels))
-            self.summary_file.write("Sensitivity: %s\n" % \
-                    recall_score(labels, predictions))
-            self.summary_file.write("Specificity: %s\n" % \
-                    recall_score(
-                        list(map(lambda x: 1 if x == 0 else 0, labels)), 
-                        list(map(lambda x: 1 if x == 0 else 0, predictions
-                        ))))
-            self.summary_file.write("AUC-ROC: %s\n" % \
-                roc_auc_score(labels, predictions, average="micro"))
-            self.summary_file.write("Average precision: %s\n" % \
-                average_precision_score(
-                    labels, 
-                    self.model_fitted.predict_proba(dataset)[:,1]
-                    )                        )
-            self.summary_file.write("MCC: %s\n" % \
-                matthews_corrcoef(labels, predictions))
-            self.summary_file.write("Cohen kappa: %s\n" %\
-                cohen_kappa_score(labels, predictions))
-            self.summary_file.write("Very major error rate: %s\n" %\
-                self.VME(labels, predictions))
-            self.summary_file.write("Major error rate: %s\n" %\
-                self.ME(labels, predictions))
-            self.summary_file.write('Classification report:\n\n %s\n' % classification_report(
-                labels, predictions, 
-                target_names=["sensitive", "resistant"]
-                ))
-            cm = confusion_matrix(labels, predictions)
-            self.summary_file.write("Confusion matrix:\n")
-            self.summary_file.write("Predicted\t0\t1:\n")
-            self.summary_file.write("Actual\n")
-            self.summary_file.write("0\t\t%s\t%s\n" % tuple(cm[0]))
-            self.summary_file.write("1\t\t%s\t%s\n\n" % tuple(cm[1]))
 
+        F1_sc = f1_score(labels, predictions)
+        self.summary_file.write("F1-score: %s\n" % F1_sc)
+        self.metrics["F1_sc"].append(F1_sc)
+
+        Acc = self.model_fitted.score(dataset, labels)
+        self.summary_file.write("Mean accuracy: %s\n" % Acc)
+        self.metrics["Acc"].append(Acc)
+
+        Sn = recall_score(labels, predictions)
+        self.summary_file.write("Sensitivity: %s\n" % Sn)
+        self.metrics["Sn"].append(Sn)
+
+        Sp = recall_score(
+                    list(map(lambda x: 1 if x == 0 else 0, labels)), 
+                    list(map(lambda x: 1 if x == 0 else 0, predictions))
+                    )
+        self.summary_file.write("Specificity: %s\n" % Sp)
+        self.metrics["Sp"].append(Sp)
+
+        AUCROC = roc_auc_score(labels, predictions, average="micro")
+        self.summary_file.write("AUC-ROC: %s\n" % AUCROC)
+        self.metrics["AUCROC"].append(AUCROC)
+
+        Pr = average_precision_score(
+                labels, self.model_fitted.predict_proba(dataset)[:,1]
+                ) 
+        self.summary_file.write("Average precision: %s\n" % Pr)
+        self.metrics["Pr"].append(Pr)
+
+        MCC = matthews_corrcoef(labels, predictions)
+        self.summary_file.write("MCC: %s\n" % MCC)
+        self.metrics["MCC"].append(MCC)
+
+        kappa = cohen_kappa_score(labels, predictions)
+        self.summary_file.write("Cohen kappa: %s\n" % kappa)
+        self.metrics["kappa"].append(kappa)
+
+        VME = self.VME(labels, predictions)
+        self.summary_file.write("Very major error rate: %s\n" % VME)
+        self.metrics["VME"].append(VME)
+
+        ME = self.ME(labels, predictions)
+        self.summary_file.write("Major error rate: %s\n" % ME)
+        self.metrics["ME"].append(ME)
+
+        self.summary_file.write('Classification report:\n\n %s\n' % classification_report(
+            labels, predictions, 
+            target_names=["sensitive", "resistant"]
+            ))
+        cm = confusion_matrix(labels, predictions)
+        self.summary_file.write("Confusion matrix:\n")
+        self.summary_file.write("Predicted\t0\t1:\n")
+        self.summary_file.write("Actual\n")
+        self.summary_file.write("0\t\t%s\t%s\n" % tuple(cm[0]))
+        self.summary_file.write("1\t\t%s\t%s\n\n" % tuple(cm[1]))
+
+    def mean_model_performance_classifier(self):
+
+        F1_sc = np.mean(self.metrics["F1_sc"])
+        self.summary_file.write('\nMean squared error: %s\n' % MSE)
+
+        Acc = np.mean(self.metrics["Acc"])
+        self.summary_file.write("Mean accuracy: %s\n" % Acc)
+
+        Sn = np.mean(self.metrics["Sn"])
+        self.summary_file.write("Sensitivity: %s\n" % Sn)
+
+        Sp = np.mean(self.metrics["Sp"])
+        self.summary_file.write("Specificity: %s\n" % Sp)
+
+        AUCROC = np.mean(self.metrics["AUCROC"])
+        self.summary_file.write("AUC-ROC: %s\n" % AUCROC)
+
+        Pr = np.mean(self.metrics["Pr"])
+        self.summary_file.write("Average precision: %s\n" % Pr)
+
+        MCC = np.mean(self.metrics["MCC"])
+        self.summary_file.write("MCC: %s\n" % MCC)
+
+        kappa = np.mean(self.metrics["kappa"])
+        self.summary_file.write("Cohen kappa: %s\n" % kappa)
+
+        VME = np.mean(self.metrics["VME"])
+        self.summary_file.write("Very major error rate: %s\n" % VME)
+
+        ME = np.mean(self.metrics["ME"])
+        self.summary_file.write("Major error rate: %s\n" % ME)           
 
     def write_model_coefficients_to_file(self):
         self.coeff_file.write("K-mer\tcoef._in_" + self.model_name_short + \
