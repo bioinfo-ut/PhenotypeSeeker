@@ -1275,7 +1275,7 @@ class phenotypes():
         for item in izip(targets, predictions):
             if item[0] == 1 and item[1] == 0:
                 VMEs += 1
-        VME = str(float(VMEs)/len(targets)*100)+"%"
+        VME = float(VMEs)/len(targets)
         return VME
 
     @staticmethod
@@ -1285,7 +1285,7 @@ class phenotypes():
         for item in izip(targets, predictions):
             if item[0] == 0 and item[1] == 1:
                  MEs += 1
-        ME = str(float(MEs)/len(targets)*100)+"%"
+        ME = float(MEs)/len(targets)
         return ME
 
     @staticmethod
