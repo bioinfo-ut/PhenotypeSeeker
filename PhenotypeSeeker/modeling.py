@@ -1144,24 +1144,24 @@ class phenotypes():
 
     def mean_model_performance_regressor(self, metrics_dict):
 
-        MSE = np.mean(self.metrics_dict["MSE"])
+        MSE = np.mean(metrics_dict["MSE"])
         self.summary_file.write('\nMean squared error: %s\n' % MSE)
 
-        CoD = np.mean(self.metrics_dict["Cod"])
+        CoD = np.mean(metrics_dict["Cod"])
         self.summary_file.write("The coefficient of determination:"
             + " %s\n" % CoD)
 
-        SpCC = np.mean(self.metrics_dict["SpCC"])
-        Sp_pval = np.mean(self.metrics_dict["Sp_pval"])
+        SpCC = np.mean(metrics_dict["SpCC"])
+        Sp_pval = np.mean(metrics_dict["Sp_pval"])
         self.summary_file.write("The Spearman correlation coefficient and p-value:" \
             " %s, %s \n" % SpCC, Sp_pval)
 
-        PeCC = np.mean(self.metrics_dict["PeCC"])
-        Pe_pval = np.mean(self.metrics_dict["Pe_pval"])
+        PeCC = np.mean(metrics_dict["PeCC"])
+        Pe_pval = np.mean(metrics_dict["Pe_pval"])
         self.summary_file.write("The Pearson correlation coefficient and p-value: " \
                 " %s, %s \n" % PeCC, Pe_pval)
 
-        DFA = np.mean(self.metrics_dict["DFA"])
+        DFA = np.mean(metrics_dict["DFA"])
         self.summary_file.write(
             "The plus/minus 1 dilution factor accuracy (for MICs):" " %s \n\n" % DFA
             )
@@ -1236,34 +1236,34 @@ class phenotypes():
 
     def mean_model_performance_classifier(self, metrics_dict):
 
-        F1_sc = np.mean(self.metrics_dict["F1_sc"])
+        F1_sc = np.mean(metrics_dict["F1_sc"])
         self.summary_file.write("F1-score: %s\n" % F1_sc)
 
-        Acc = np.mean(self.metrics_dict["Acc"])
+        Acc = np.mean(metrics_dict["Acc"])
         self.summary_file.write("Mean accuracy: %s\n" % Acc)
 
-        Sn = np.mean(self.metrics_dict["Sn"])
+        Sn = np.mean(metrics_dict["Sn"])
         self.summary_file.write("Sensitivity: %s\n" % Sn)
 
-        Sp = np.mean(self.metrics_dict["Sp"])
+        Sp = np.mean(metrics_dict["Sp"])
         self.summary_file.write("Specificity: %s\n" % Sp)
 
-        AUCROC = np.mean(self.metrics_dict["AUCROC"])
+        AUCROC = np.mean(metrics_dict["AUCROC"])
         self.summary_file.write("AUC-ROC: %s\n" % AUCROC)
 
-        Pr = np.mean(self.metrics_dict["Pr"])
+        Pr = np.mean(metrics_dict["Pr"])
         self.summary_file.write("Average precision: %s\n" % Pr)
 
-        MCC = np.mean(self.metrics_dict["MCC"])
+        MCC = np.mean(metrics_dict["MCC"])
         self.summary_file.write("MCC: %s\n" % MCC)
 
-        kappa = np.mean(self.metrics_dict["kappa"])
+        kappa = np.mean(metrics_dict["kappa"])
         self.summary_file.write("Cohen kappa: %s\n" % kappa)
 
-        VME = np.mean(self.metrics_dict["VME"])
+        VME = np.mean(metrics_dict["VME"])
         self.summary_file.write("Very major error rate: %s\n" % VME)
 
-        ME = np.mean(self.metrics_dict["ME"])
+        ME = np.mean(metrics_dict["ME"])
         self.summary_file.write("Major error rate: %s\n" % ME)           
 
     def write_model_coefficients_to_file(self):
