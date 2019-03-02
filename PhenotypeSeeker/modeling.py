@@ -1290,7 +1290,7 @@ class phenotypes():
                 self.model_fitted.best_estimator_.coef_
         elif self.model_name_short in ("RF"):
             df_for_coeffs.loc['coefficient'] = \
-                self.model_fitted.feature_importances_
+                self.model_fitted.best_estimator_.feature_importances_
         elif self.model_name_short in ("XGBR", "XGBC"):
             df_for_coeffs.loc['coefficient'] = \
                 self.model_fitted.feature_importances_
