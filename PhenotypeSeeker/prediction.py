@@ -129,7 +129,7 @@ def predict(samples_order, phenotypes_to_predict):
                         samples_order, predictions, predict_proba
                         ): 
                     f1.write(ID + "\t" + str(prediction) 
-                        + "\t" + str(round(max(proba), 2))  + "\n")
+                        + "\t" + str(round(proba[1], 2))  + "\n")
             else:
                 f1.write("Sample_ID\tpredicted_phenotype\n")
                 for ID, prediction in zip(samples_order, predictions):
