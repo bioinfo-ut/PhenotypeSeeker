@@ -1,11 +1,11 @@
 #!/bin/bash
 
-python2.7 -m pip install --user --upgrade pip
-python2.7 -m pip install --user --upgrade setuptools
-python2.7 -m pip install --user --upgrade numpy
+pip2.7 install --user --upgrade pip
+pip2.7 install --user --upgrade setuptools
+pip2.7 install --user --upgrade numpy
 
 cp bin/* ~/.local/bin/
-python2.7 -m pip install --user .
+pip2.7 install --user .
 
 sed -n "s:\"mash\":\"~/.local/bin/mash\":g" PhenotypeSeeker/modeling.py
 sed -n "s:\"glistmaker \":\"~/.local/bin/glistmaker \":g" PhenotypeSeeker/modeling.py
