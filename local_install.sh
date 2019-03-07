@@ -2,7 +2,7 @@
 
 pip2.7 install --user --upgrade pip
 pip2.7 install --user --upgrade setuptools
-pip2.7 install --user --upgrade numpy
+pip2.7 install --user --upgrade --ignore-installed numpy
 
 cp bin/* ~/.local/bin/
 pip2.7 install --user .
