@@ -1,7 +1,7 @@
 #!/usr/bin/python2.7
 
 __author__ = "Erki Aun"
-__version__ = "0.3.1"
+__version__ = "0.4.0"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
