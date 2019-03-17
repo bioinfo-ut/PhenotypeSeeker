@@ -972,7 +972,7 @@ class phenotypes():
         self.get_dataframe_for_machine_learning()
 
         if self.n_splits_cv_outer:
-            kf = StratifiedKFold(n_splits=10)
+            kf = StratifiedKFold(n_splits=self.n_splits_cv_outer)
             fold = 0
             for train_index, test_index in kf.split(self.ML_df, self.ML_df['phenotype'].values):
                 fold += 1
