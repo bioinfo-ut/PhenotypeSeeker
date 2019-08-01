@@ -921,7 +921,7 @@ class phenotypes():
                     cls.hyper_parameters = {'C':Cs, 'gamma':Gammas}
             elif cls.model_name_long == "random forest":
                 cls.hyper_parameters = {
-                	'bootstrap' = [True, False],
+                	'bootstrap': [True, False],
                     'max_depth': [4, 5, 6, 7, 8, 10, 20, 100, None],
                     'max_features': [None, 'sqrt', 'log2'],
                     'min_samples_leaf': [1, 2, 4],
