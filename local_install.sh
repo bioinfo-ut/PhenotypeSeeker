@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pip2.7 install --user --upgrade pip
+pip2 install --user --upgrade pip
 pip2.7 install --user --upgrade setuptools
 pip2.7 install --user --upgrade --ignore-installed numpy
 
