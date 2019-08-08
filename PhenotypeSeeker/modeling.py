@@ -1018,7 +1018,7 @@ class phenotypes():
             (
             self.ML_df_train, self.ML_df_test
             ) = train_test_split(
-            self.ML_df test_size=self.testset_size, random_state=55,
+            self.ML_df, test_size=self.testset_size, random_state=55,
             stratify=stratify
             )
             self.X_train, self.y_train, self.weights_train = self.split_df(ML_df_train)
