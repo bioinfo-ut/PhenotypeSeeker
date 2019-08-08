@@ -1497,7 +1497,7 @@ def modeling(args):
         args.num_threads, args.pvalue, args.n_kmers, args.FDR, 
         args.Bonferroni, args.binary_classifier, args.regressor, 
         args.penalty, args.max_iter, args.tol, args.l1_ratio,
-        args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner
+        args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner,
         args.testset_size
         )
     Input.get_multithreading_parameters()
