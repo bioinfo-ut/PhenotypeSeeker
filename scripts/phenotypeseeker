@@ -206,6 +206,13 @@ def Main():
         are ((nr of splits-1)/nr of splits) and (1/nr of splits) respectively.'
     	)
     regression_models.add_argument(
+        '-s', "--testset_size", metavar="", type=float, default=0.25,
+        help='The size of the test set. Represents the proportion of the \
+        dataset to include in the test split. Should be a float between 0.0 \
+        and 1.0 (default 0.25). Train set size is complement of the test set \
+        size'
+        )
+    regression_models.add_argument(
         "--max_iter", metavar="", type=float, default=1000,
         help='Hard limit on iterations within solver, or -1 for no limit \
         (default = 1000).'

@@ -29,7 +29,10 @@ from sklearn.metrics import (
     roc_auc_score, average_precision_score, matthews_corrcoef, cohen_kappa_score,
     confusion_matrix, accuracy_score, f1_score
     )
-from sklearn.model_selection import RandomizedSearchCV, GridSearchCV, train_test_split, StratifiedKFold
+from sklearn.model_selection import (
+    RandomizedSearchCV, GridSearchCV, train_test_split, StratifiedKFold,
+    KFold
+    )
 from functools import partial
 import xgboost as xgb
 import Bio
@@ -111,6 +114,7 @@ class Input():
         phenotypes.kernel = kernel
         phenotypes.n_iter = n_iter
         phenotypes.n_splits_cv_inner = n_splits_cv_inner
+        phenotypes.testset_size = testset_size
 
         cls.get_model_name(regressor, binary_classifier)
 
@@ -428,6 +432,7 @@ class phenotypes():
     n_splits_cv_inner = None
     xgb_train = None
     xgb_test = None
+    testset_size = None
 
     # ML output file holders
     summary_file = None
@@ -963,6 +968,10 @@ class phenotypes():
             elif cls.model_name_short in ("NB", "XGBC"):
                 cls.best_model = cls.model
 
+    @classmethod
+    def split_df(cls, df):
+        return df.iloc[:,0:-2], df.iloc[:,-2:-1], df.ilox[:,-1:]
+
     def machine_learning_modelling(self):
         sys.stderr.write("\t" + self.name + ".\n")
         self.get_outputfile_names()
@@ -973,24 +982,23 @@ class phenotypes():
         self.get_dataframe_for_machine_learning()
 
         if self.n_splits_cv_outer:
-            if np.min(np.bincount(self.ML_df['phenotype'].values)) < self.n_splits_cv_outer:
-                kf = StratifiedKFold(n_splits=np.min(np.bincount(self.ML_df['phenotype'].values)))
-                self.summary_file.write("\nSetting number of train/test splits equal to minor \
-                    phenotype count - %s\n")
-            else:
-                kf = StratifiedKFold(n_splits=self.n_splits_cv_outer)
+            if phenotypes.scale == "continuous":
+                kf = StratifiedKFold(n_splits=self.n_splits_cv_outer)               
+            elif phenotypes.scale == "binary":
+                if np.min(np.bincount(self.ML_df['phenotype'].values)) < self.n_splits_cv_outer:
+                    kf = StratifiedKFold(n_splits=np.min(np.bincount(self.ML_df['phenotype'].values)))
+                    self.summary_file.write("\nSetting number of train/test splits equal to minor \
+                        phenotype count - %s\n")
+                else:
+                    kf = StratifiedKFold(n_splits=self.n_splits_cv_outer)
             fold = 0
             for train_index, test_index in kf.split(self.ML_df, self.ML_df['phenotype'].values):
                 fold += 1
                 self.ML_df_train, self.ML_df_test = (
                     self.ML_df.iloc[train_index], self.ML_df.iloc[test_index]
                     )
-                self.X_train = self.ML_df_train.iloc[:,0:-2]
-                self.y_train = self.ML_df_train.iloc[:,-2:-1]
-                self.weights_train = self.ML_df_train.iloc[:,-1:]
-                self.X_test = self.ML_df_test.iloc[:,0:-2]
-                self.y_test = self.ML_df_test.iloc[:,-2:-1]
-                self.weights_test = self.ML_df_test.iloc[:,-1:]
+                self.X_train, self.y_train, self.weights_train = self.split_df(ML_df_train)
+                self.X_test, self.y_test, self.weights_test = self.split_df(ML_df_test)
 
                 self.fit_model()
                 self.summary_file.write("\n##### Train/test split nr.%d: #####\n" % fold)
@@ -1001,9 +1009,32 @@ class phenotypes():
                 self.predict(self.X_test, self.y_test, self.metrics_dict_test)
 
             self.summary_file.write('\nThe final model training on the whole dataset:\n')
-        self.X_train = self.ML_df.iloc[:,0:-2]
-        self.y_train = self.ML_df.iloc[:,-2:-1]
-        self.weights_train = self.ML_df.iloc[:,-1:]
+
+        elif self.testset_size:
+            if phenotypes.scale == "continuous":
+                stratify = None
+            elif phenotypes.scale == "binary":
+                stratify = self.skl_dataset.target
+            (
+            self.ML_df_train, self.ML_df_test
+            ) = train_test_split(
+            self.ML_df test_size=self.testset_size, random_state=55,
+            stratify=stratify
+            )
+            self.X_train, self.y_train, self.weights_train = self.split_df(ML_df_train)
+            self.X_test, self.y_test, self.weights_test = self.split_df(ML_df_test)
+
+            self.fit_model()
+            self.summary_file.write("\n##### Train/test split #####\n")
+            self.cross_validation_results()
+            self.summary_file.write('\nTraining set:\n')
+            self.predict(self.X_train, self.y_train, self.metrics_dict_train)
+            self.summary_file.write('\nTest set:\n')
+            self.predict(self.X_test, self.y_test, self.metrics_dict_test)
+
+            self.summary_file.write('\nThe final model training on the whole dataset:\n')
+
+        self.X_train, self.y_train, self.weights_train = self.split_df(ML_df_train)
 
         self.fit_model()
         self.cross_validation_results()
@@ -1467,6 +1498,7 @@ def modeling(args):
         args.Bonferroni, args.binary_classifier, args.regressor, 
         args.penalty, args.max_iter, args.tol, args.l1_ratio,
         args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner
+        args.testset_size
         )
     Input.get_multithreading_parameters()
 
