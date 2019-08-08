@@ -87,7 +87,7 @@ class Input():
             cutoff, num_threads, pvalue_cutoff, kmer_limit,
             FDR, B, binary_classifier, regressor, penalty, max_iter,
             tol, l1_ratio, n_splits_cv_outer, kernel, n_iter,
-            n_splits_cv_inner
+            n_splits_cv_inner, testset_size
             ):
         cls._get_phenotypes_to_analyse(mpheno)
         phenotypes.alphas = cls._get_alphas(
