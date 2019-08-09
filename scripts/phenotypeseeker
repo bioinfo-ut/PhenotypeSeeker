@@ -64,9 +64,12 @@ def Main():
     	'Options for k-mer filtering by pvalue'
     	)
     B_or_FDR = kmer_selection_by_pval.add_mutually_exclusive_group()
+
     regression_models = parser_a.add_argument_group(
     	'Options for regression models'
-    	) 
+    	)
+    outer_cv = regression_models.add_mutually_exclusive_group()
+
     other = parser_a.add_argument_group('Other options')
 
     required_options.add_argument(
@@ -198,19 +201,21 @@ def Main():
         an L2 penalty. For l1_ratio = 1, it is an L1 penalty. \
         For 0 < l1_ratio < 1, the penalty is a combination of L1 and L2.'
         )
-    regression_models.add_argument(
+    outer_cv.add_argument(
     	'-cv1', "--n_splits_cv_outer", metavar="", type=int, default=None,
     	help='Number of folds to split dataset into training and test set. \
-        Must be at least 2 (default None = no test set used). \
-        The sizes of the training and test set in each fold \
-        are ((nr of splits-1)/nr of splits) and (1/nr of splits) respectively.'
+        Must be at least 2 (default = None). The sizes of the training and \
+        test set in each fold are ((nr of splits-1)/nr of splits) and \
+        (1/nr of splits) respectively. Conflicts with alternative train/test split \
+        specifying method – "-s", "--testset_size"!'
     	)
-    regression_models.add_argument(
-        '-s', "--testset_size", metavar="", type=float, default=0.25,
-        help='The size of the test set. Represents the proportion of the \
-        dataset to include in the test split. Should be a float between 0.0 \
-        and 1.0 (default 0.25). Train set size is complement of the test set \
-        size'
+    outer_cv.add_argument(
+        '-s', "--testset_size", metavar="", type=float, default=None,
+        help='The size of the test set in 1-fold train/test data splitting. \
+        Represents the proportion of the dataset to include in the test split. \
+        Should be a float between 0.0 and 1.0 (default 0.25). Train set size is \
+        complement of the test set size. Conflicts with alternative train/test split \
+        specifying method – "-cv1"/"--n_splits_cv_outer"!'
         )
     regression_models.add_argument(
         "--max_iter", metavar="", type=float, default=1000,
