@@ -207,7 +207,7 @@ def Main():
     	help='Number of folds to split dataset into training and test set. \
         Must be at least 2 (default = None). The sizes of the training and \
         test set in each fold are ((nr of splits-1)/nr of splits) and \
-        (1/nr of splits) respectively. Conflicts with alternative train/test split \
+        (1/nr of splits) respectively. Conflicts with 1-fold train/test split \
         specifying method – "-s", "--testset_size"!'
     	)
     outer_cv.add_argument(
@@ -215,8 +215,8 @@ def Main():
         help='The size of the test set in 1-fold train/test data splitting. \
         Represents the proportion of the dataset to include in the test split. \
         Should be a float between 0.0 and 1.0 (default 0.25). Train set size is \
-        complement of the test set size. Conflicts with alternative train/test split \
-        specifying method – "-cv1"/"--n_splits_cv_outer"!'
+        complement of the test set size. Conflicts with multiple-fold train/test \
+        split specifying method – "-cv1"/"--n_splits_cv_outer"!'
         )
     regression_models.add_argument(
         "--max_iter", metavar="", type=float, default=1000,
