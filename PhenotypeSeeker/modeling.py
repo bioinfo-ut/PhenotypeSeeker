@@ -123,14 +123,14 @@ class Input():
         if phenotypes.scale == "continuous":
             if regressor == "lin":
                 phenotypes.model_name_long = "linear regression"
-                phenotypes.model_name_short = "lin_reg"
+                phenotypes.model_name_short = "linreg"
             elif regressor == "XGBR":
                 phenotypes.model_name_long = "XGBRegressor"
                 phenotypes.model_name_short = "XGBR"
         elif phenotypes.scale == "binary":
             if binary_classifier == "log":
                 phenotypes.model_name_long = "logistic regression"
-                phenotypes.model_name_short = "log_reg"
+                phenotypes.model_name_short = "logreg"
             elif binary_classifier == "SVM":
                 phenotypes.model_name_long = "support vector machine"
                 phenotypes.model_name_short = "SVM"
@@ -861,7 +861,7 @@ class phenotypes():
     @classmethod
     def set_model(cls):
         if cls.scale == "continuous":
-            if cls.model_name_short == "lin_reg":
+            if cls.model_name_short == "linreg":
                 # Defining linear regression parameters    
                 if cls.penalty == 'L1':
                     cls.model = Lasso(max_iter=cls.max_iter, tol=cls.tol)        
@@ -906,7 +906,7 @@ class phenotypes():
     @classmethod
     def set_hyperparameters(cls):
         if cls.scale == "continuous":
-            if cls.model_name_short == "lin_reg":
+            if cls.model_name_short == "linreg":
                 # Defining linear regression parameters    
                 cls.hyper_parameters = {'alpha': cls.alphas}
         elif cls.scale == "binary":
@@ -940,7 +940,7 @@ class phenotypes():
     @classmethod
     def get_best_model(cls):
         if cls.scale == "continuous":
-            if cls.model_name_short == "lin_reg":
+            if cls.model_name_short == "linreg":
                 cls.best_model = GridSearchCV(
                     cls.model, cls.hyper_parameters, cv=cls.n_splits_cv_inner
                     )
@@ -983,7 +983,7 @@ class phenotypes():
 
         if self.n_splits_cv_outer:
             if phenotypes.scale == "continuous":
-                kf = StratifiedKFold(n_splits=self.n_splits_cv_outer)               
+                kf = KFold(n_splits=self.n_splits_cv_outer)               
             elif phenotypes.scale == "binary":
                 if np.min(np.bincount(self.ML_df['phenotype'].values)) < self.n_splits_cv_outer:
                     kf = StratifiedKFold(n_splits=np.min(np.bincount(self.ML_df['phenotype'].values)))
@@ -1025,7 +1025,7 @@ class phenotypes():
             self.X_test, self.y_test, self.weights_test = self.split_df(ML_df_test)
 
             self.fit_model()
-            self.summary_file.write("\n##### Train/test split #####\n")
+            self.summary_file.write("\n##### Train/test split: #####\n")
             self.cross_validation_results()
             self.summary_file.write('\nTraining set:\n')
             self.predict(self.X_train, self.y_train, self.metrics_dict_train)
@@ -1104,7 +1104,7 @@ class phenotypes():
 
     def fit_model(self):
         if self.scale == "continuous":
-            if self.model_name_short == "lin_reg":
+            if self.model_name_short == "linreg":
                 if self.penalty in ("L1", "elasticnet"):
                     self.model_fitted = self.best_model.fit(self.X_train, self.y_train.values.flatten())
                 elif self.penalty == L2:
@@ -1322,7 +1322,7 @@ class phenotypes():
         self.coeff_file.write("K-mer\tcoef._in_" + self.model_name_short + \
             "_model\tNo._of_samples_with_k-mer\tSamples_with_k-mer\n")
         df_for_coeffs = self.ML_df.iloc[:,0:-2]
-        if self.model_name_short == "lin_reg":
+        if self.model_name_short == "linreg":
             df_for_coeffs.loc['coefficient'] = \
                 self.model_fitted.best_estimator_.coef_
         elif self.model_name_short in ("RF"):
@@ -1331,7 +1331,7 @@ class phenotypes():
         elif self.model_name_short in ("XGBR", "XGBC"):
             df_for_coeffs.loc['coefficient'] = \
                 self.model_fitted.feature_importances_
-        elif self.model_name_short in ("SVM", "log_reg"):
+        elif self.model_name_short in ("SVM", "logreg"):
             if self.kernel != "rbf":
                 df_for_coeffs.loc['coefficient'] = \
                     self.model_fitted.best_estimator_.coef_[0]
