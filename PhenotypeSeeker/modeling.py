@@ -987,18 +987,24 @@ class phenotypes():
             elif phenotypes.scale == "binary":
                 if np.min(np.bincount(self.ML_df['phenotype'].values)) < self.n_splits_cv_outer:
                     kf = StratifiedKFold(n_splits=np.min(np.bincount(self.ML_df['phenotype'].values)))
-                    self.summary_file.write("\nSetting number of train/test splits equal to minor \
-                        phenotype count - %s\n")
+                    self.summary_file.write("\nSetting number of train/test splits \
+                        equal to minor phenotype count - %s\n")
                 else:
                     kf = StratifiedKFold(n_splits=self.n_splits_cv_outer)
             fold = 0
-            for train_index, test_index in kf.split(self.ML_df, self.ML_df['phenotype'].values):
+            for train_index, test_index in kf.split(
+                    self.ML_df, self.ML_df['phenotype'].values
+                ):
                 fold += 1
                 self.ML_df_train, self.ML_df_test = (
                     self.ML_df.iloc[train_index], self.ML_df.iloc[test_index]
                     )
-                self.X_train, self.y_train, self.weights_train = self.split_df(ML_df_train)
-                self.X_test, self.y_test, self.weights_test = self.split_df(ML_df_test)
+                self.X_train, self.y_train, self.weights_train = self.split_df(
+                    self.ML_df_train
+                    )
+                self.X_test, self.y_test, self.weights_test = self.split_df(
+                    self.ML_df_test
+                    )
 
                 self.fit_model()
                 self.summary_file.write("\n##### Train/test split nr.%d: #####\n" % fold)
@@ -1008,7 +1014,9 @@ class phenotypes():
                 self.summary_file.write('\nTest set:\n')
                 self.predict(self.X_test, self.y_test, self.metrics_dict_test)
 
-            self.summary_file.write('\nThe final model training on the whole dataset:\n')
+            self.summary_file.write(
+                '\nThe final model training on the whole dataset:\n'
+                )
 
         elif self.testset_size:
             if phenotypes.scale == "continuous":
