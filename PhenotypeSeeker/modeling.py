@@ -970,7 +970,7 @@ class phenotypes():
 
     @classmethod
     def split_df(cls, df):
-        return df.iloc[:,0:-2], df.iloc[:,-2:-1], df.ilox[:,-1:]
+        return df.iloc[:,0:-2], df.iloc[:,-2:-1], df.iloc[:,-1:]
 
     def machine_learning_modelling(self):
         sys.stderr.write("\t" + self.name + ".\n")
