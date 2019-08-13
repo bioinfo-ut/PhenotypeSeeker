@@ -1007,7 +1007,9 @@ class phenotypes():
                     )
 
                 self.fit_model()
-                self.summary_file.write("\n##### Train/test split nr.%d: #####\n" % fold)
+                self.summary_file.write(
+                    "\n##### Train/test split nr.%d: #####\n" % fold
+                    )
                 self.cross_validation_results()
                 self.summary_file.write('\nTraining set:\n')
                 self.predict(self.X_train, self.y_train, self.metrics_dict_train)
@@ -1029,8 +1031,12 @@ class phenotypes():
             self.ML_df, test_size=self.testset_size, random_state=55,
             stratify=stratify
             )
-            self.X_train, self.y_train, self.weights_train = self.split_df(ML_df_train)
-            self.X_test, self.y_test, self.weights_test = self.split_df(ML_df_test)
+            self.X_train, self.y_train, self.weights_train = self.split_df(
+                self.ML_df_train
+                )
+            self.X_test, self.y_test, self.weights_test = self.split_df(
+                self.ML_df_test
+                )
 
             self.fit_model()
             self.summary_file.write("\n##### Train/test split: #####\n")
@@ -1040,9 +1046,13 @@ class phenotypes():
             self.summary_file.write('\nTest set:\n')
             self.predict(self.X_test, self.y_test, self.metrics_dict_test)
 
-            self.summary_file.write('\nThe final model training on the whole dataset:\n')
+            self.summary_file.write(
+                '\nThe final model training on the whole dataset:\n'
+                )
 
-        self.X_train, self.y_train, self.weights_train = self.split_df(ML_df_train)
+        self.X_train, self.y_train, self.weights_train = self.split_df(
+            self.ML_df_train
+            )
 
         self.fit_model()
         self.cross_validation_results()
