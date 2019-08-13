@@ -130,7 +130,7 @@ class Input():
         elif phenotypes.scale == "binary":
             if binary_classifier == "log":
                 phenotypes.model_name_long = "logistic regression"
-                phenotypes.model_name_short = "logreg"
+                phenotypes.model_name_short = "log_reg"
             elif binary_classifier == "SVM":
                 phenotypes.model_name_long = "support vector machine"
                 phenotypes.model_name_short = "SVM"
@@ -1331,7 +1331,7 @@ class phenotypes():
         elif self.model_name_short in ("XGBR", "XGBC"):
             df_for_coeffs.loc['coefficient'] = \
                 self.model_fitted.feature_importances_
-        elif self.model_name_short in ("SVM", "logreg"):
+        elif self.model_name_short in ("SVM", "log_reg"):
             if self.kernel != "rbf":
                 df_for_coeffs.loc['coefficient'] = \
                     self.model_fitted.best_estimator_.coef_[0]
