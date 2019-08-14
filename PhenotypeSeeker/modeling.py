@@ -1532,7 +1532,7 @@ def modeling(args):
     Input.pool.map(
         lambda x: x.map_samples(), Input.samples.values()
         )
-    if args.weights == "+":
+    if not args.no_weights:
         sys.stderr.write("\nEstimating the Mash distances between samples...\n")
     	Input.pool.map(
 	        lambda x: x.get_mash_sketches(), Input.samples.values()
@@ -1560,7 +1560,7 @@ def modeling(args):
         )
     call(['rm', '-r', 'K-mer_lists'])
 
-    if args.assembly == "+":
+    if not args.no_assembly:
         sys.stderr.write("Assembling the k-mers used in modeling of " 
             + Samples.phenotypes[0] + " data...\n")
         map(

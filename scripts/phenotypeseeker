@@ -221,6 +221,11 @@ def Main():
         split specifying method – "-cv1"/"--n_splits_cv_outer"!'
         )
     regression_models.add_argument(
+        "-tow", "--train_on_whole", action='store_true',
+        help="Train the output model on whole dataset given, including the samples \
+        assigned to test set in model evalution.".
+        )
+    regression_models.add_argument(
         "--max_iter", metavar="", type=float, default=1000,
         help='Hard limit on iterations within solver, or -1 for no limit \
         (default = 1000).'
@@ -236,13 +241,13 @@ def Main():
     	(default = all phenotype columns)'
     	)
     other.add_argument(
-    	"--weights", type=str, metavar='"+ or -"', default="+",
-    	help='Use samples GSC weights in statistical testing and \
-    	linear/logistic regression model (default "+").'
+    	"-nw", "--no_weights", action='store_true',
+    	help='Do not use samples GSC weights in statistical testing and \
+    	linear/logistic regression model.'
     	)
     other.add_argument(
-        "--assembly", type=str, metavar='"+ or -"', default="+",
-        help='Assemble the k-mers used in regression model (default "+").'
+        "-na", "--no_assembly", action='store_true',
+        help='Do not assemble the k-mers used in regression model.'
         )
     other.add_argument(
         "--take_logs", action='store_true',
@@ -250,7 +255,7 @@ def Main():
         (eg. original antibiotic resistance measurements).'
         )
     other.add_argument(
-        "--num_threads", type=int, metavar='INT', default=8,
+        "-nt", "--num_threads", type=int, metavar='INT', default=8,
         help='Specify the number of threads the program is run on (default 8).'
         )
     other.add_argument("-h", "--help", action="help",
