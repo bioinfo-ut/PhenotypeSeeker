@@ -1015,10 +1015,11 @@ class phenotypes():
                 self.predict(self.X_train, self.y_train, self.metrics_dict_train)
                 self.summary_file.write('\nTest set:\n')
                 self.predict(self.X_test, self.y_test, self.metrics_dict_test)
-
-            self.summary_file.write(
-                '\nThe final model training on the whole dataset:\n'
-                )
+                
+                if not args.train_on_whole:
+                    self.summary_file.write(
+                    '''\n### Outputting the last model to a model file! ###\n'''
+                    )
 
         elif self.testset_size:
             if phenotypes.scale == "continuous":
@@ -1039,24 +1040,34 @@ class phenotypes():
                 )
 
             self.fit_model()
-            self.summary_file.write("\n##### Train/test split: #####\n")
             self.cross_validation_results()
             self.summary_file.write('\nTraining set:\n')
             self.predict(self.X_train, self.y_train, self.metrics_dict_train)
             self.summary_file.write('\nTest set:\n')
             self.predict(self.X_test, self.y_test, self.metrics_dict_test)
 
-            self.summary_file.write(
-                '\nThe final model training on the whole dataset:\n'
+            if not args.train_on_whole:
+                self.summary_file.write(
+                '\n### Outputting the model to a file! ###\n'
                 )
 
-        self.X_train, self.y_train, self.weights_train = self.split_df(
-            self.ML_df_train
-            )
-
-        self.fit_model()
-        self.cross_validation_results()
-        self.predict(self.X_train, self.y_train)
+        if (not self.n_splits_cv_outer and not self.testset_size) or args.train_on_whole:
+            if self.n_splits_cv_outer or self.testset_size:
+                self.summary_file.write(
+                '\nThe final output model training on the whole dataset:\n'
+                )
+            self.X_train, self.y_train, self.weights_train = self.split_df(self.ML_df)
+            self.fit_model()
+            self.cross_validation_results()
+            self.predict(self.X_train, self.y_train)
+            if self.n_splits_cv_outer or self.testset_size:
+                self.summary_file.write(
+                '\n### Outputting the last model trained on whole data to a model file! ###\n'
+                )
+            else:                
+                self.summary_file.write(
+                '\n### Outputting the model to a model file! ###\n'
+                )
 
         joblib.dump(self.model_fitted, self.model_file)
         self.write_model_coefficients_to_file()

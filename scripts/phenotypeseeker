@@ -69,7 +69,7 @@ def Main():
     regression_models = parser_a.add_argument_group(
     	'Options for regression models'
     	)
-    outer_cv = regression_models.add_mutually_exclusive_group()
+    train_test_split = regression_models.add_mutually_exclusive_group()
 
     other = parser_a.add_argument_group('Other options')
 
@@ -204,7 +204,7 @@ def Main():
         an L2 penalty. For l1_ratio = 1, it is an L1 penalty. \
         For 0 < l1_ratio < 1, the penalty is a combination of L1 and L2.'
         )
-    outer_cv.add_argument(
+    train_test_split.add_argument(
     	'-cv1', "--n_splits_cv_outer", metavar="", type=int, default=None,
     	help='Number of folds to split dataset into training and test set. \
         Must be at least 2 (default = None). The sizes of the training and \
@@ -212,7 +212,7 @@ def Main():
         (1/nr of splits) respectively. Conflicts with 1-fold train/test split \
         specifying method – "-s", "--testset_size"!'
     	)
-    outer_cv.add_argument(
+    train_test_split.add_argument(
         '-s', "--testset_size", metavar="", type=float, default=None,
         help='The size of the test set in 1-fold train/test data splitting. \
         Represents the proportion of the dataset to include in the test split. \
