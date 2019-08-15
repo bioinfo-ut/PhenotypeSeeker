@@ -213,7 +213,7 @@ def Main():
         specifying method – "-s", "--testset_size"!'
     	)
     train_test_split.add_argument(
-        '-s', "--testset_size", metavar="", type=float, default=None,
+        '-ts', "--testset_size", metavar="", type=float, default=None,
         help='The size of the test set in 1-fold train/test data splitting. \
         Represents the proportion of the dataset to include in the test split. \
         Should be a float between 0.0 and 1.0 (default 0.25). Train set size is \
@@ -223,7 +223,7 @@ def Main():
     regression_models.add_argument(
         "-tow", "--train_on_whole", action='store_true',
         help="Train the output model on whole dataset given, including the samples \
-        assigned to test set in model evalution.".
+        assigned to test set in model evalution."
         )
     regression_models.add_argument(
         "--max_iter", metavar="", type=float, default=1000,
