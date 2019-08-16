@@ -231,7 +231,7 @@ def Main():
         (default = 1000).'
         )
     regression_models.add_argument(
-        "--tol", metavar="", type=float, default=1e-4,
+        "--tolerance", "-tol", metavar="", type=float, default=1e-4,
         help='Tolerance for stopping criterion (default = 1e-4).'
         )
 

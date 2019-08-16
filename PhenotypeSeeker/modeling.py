@@ -87,7 +87,7 @@ class Input():
             cutoff, num_threads, pvalue_cutoff, kmer_limit,
             FDR, B, binary_classifier, regressor, penalty, max_iter,
             tol, l1_ratio, n_splits_cv_outer, kernel, n_iter,
-            n_splits_cv_inner, testset_size
+            n_splits_cv_inner, testset_size, train_on_whole
             ):
         cls._get_phenotypes_to_analyse(mpheno)
         phenotypes.alphas = cls._get_alphas(
@@ -115,6 +115,7 @@ class Input():
         phenotypes.n_iter = n_iter
         phenotypes.n_splits_cv_inner = n_splits_cv_inner
         phenotypes.testset_size = testset_size
+        phenotypes.train_on_whole = train_on_whole
 
         cls.get_model_name(regressor, binary_classifier)
 
@@ -1016,7 +1017,7 @@ class phenotypes():
                 self.summary_file.write('\nTest set:\n')
                 self.predict(self.X_test, self.y_test, self.metrics_dict_test)
                 
-                if not args.train_on_whole:
+                if not self.train_on_whole:
                     self.summary_file.write(
                     '''\n### Outputting the last model to a model file! ###\n'''
                     )
@@ -1046,12 +1047,12 @@ class phenotypes():
             self.summary_file.write('\nTest set:\n')
             self.predict(self.X_test, self.y_test, self.metrics_dict_test)
 
-            if not args.train_on_whole:
+            if not self.train_on_whole:
                 self.summary_file.write(
                 '\n### Outputting the model to a file! ###\n'
                 )
 
-        if (not self.n_splits_cv_outer and not self.testset_size) or args.train_on_whole:
+        if (not self.n_splits_cv_outer and not self.testset_size) or self.train_on_whole:
             if self.n_splits_cv_outer or self.testset_size:
                 self.summary_file.write(
                 '\nThe final output model training on the whole dataset:\n'
@@ -1527,7 +1528,7 @@ def modeling(args):
         args.Bonferroni, args.binary_classifier, args.regressor, 
         args.penalty, args.max_iter, args.tol, args.l1_ratio,
         args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner,
-        args.testset_size
+        args.testset_size, args.train_on_whole
         )
     Input.get_multithreading_parameters()
 
