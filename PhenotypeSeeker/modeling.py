@@ -59,8 +59,8 @@ class Input():
             for pheno in Samples.phenotypes:
                 try:
                     float(pheno)
-                    print("""Warning! It seems that the input file is 
-                        missing the header row!""")
+                    sys.stderr.write("Warning! It seems that the input file is \
+                        missing the header row!")
                 except ValueError:
                     pass
             for line in inputfile:
@@ -193,18 +193,18 @@ class Input():
                     elif logreg_solver in ("liblinear", "saga"):
                         return logreg_solver
                     else:
-                        raise SystemExit("""With L1 penalty the logistic regression 
-                            solver should be selected from 'liblinear' or 'saga'. 
-                            You selected {}.""".format(logreg_solver))
+                        raise SystemExit("With L1 penalty the logistic regression \
+                            solver should be selected from 'liblinear' or 'saga'. \
+                            You selected {}.".format(logreg_solver))
                 elif phenotypes.penalty == "L2":
                     if logreg_solver == None:
                         return "lbfgs"
                     elif logreg_solver in ('liblinear', 'newton-cg', 'lbfgs', 'sag', 'saga'):
                         return logreg_solver
                     else:
-                        raise SystemExit("""With L2 penalty the logistic regression 
-                            solver should be selected from 'liblinear', 'newton-cg', 'lbfgs',
-                            'sag' or 'saga'. You selected {}.""".format(logreg_solver))
+                        raise SystemExit("With L2 penalty the logistic regression \
+                            solver should be selected from 'liblinear', 'newton-cg', 'lbfgs', \
+                            'sag' or 'saga'. You selected {}.".format(logreg_solver))
                 
 
     @classmethod
