@@ -195,7 +195,7 @@ class Input():
                     else:
                         raise SystemExit(f"""With L1 penalty the logistic regression 
                             solver should be selected from 'liblinear' or 'saga'. 
-                            You selected {logreg_solver}""")
+                            You selected.""")
                 elif phenotypes.penalty == "L2":
                     if logreg_solver == None:
                         return "lbfgs"
