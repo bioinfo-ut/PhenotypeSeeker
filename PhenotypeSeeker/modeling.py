@@ -118,7 +118,7 @@ class Input():
         phenotypes.testset_size = testset_size
         phenotypes.train_on_whole = train_on_whole
         cls.get_model_name(regressor, binary_classifier)
-        phenotypes.logreg_solver = cls._get_logreg_solver(
+        phenotypes.logreg_solver = cls._check_logreg_solver(
             logreg_solver)
 
     @staticmethod
