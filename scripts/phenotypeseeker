@@ -199,6 +199,12 @@ def Main():
         default) and "rbf" (Gaussian kernel)'
         )
     regression_models.add_argument(
+        "--logreg_solver", "-ls", metavar="", type=str, default=None,
+        help='''Algorithm to use in the logistic regression optimization problem.
+        For L2 penalty – 'liblinear', 'newton-cg’, ‘lbfgs’ (default), ‘sag’ or ‘saga’ solvers.
+        For L1 penalty – ‘liblinear’ (default) or ‘saga’ solvers.'''
+        )
+    regression_models.add_argument(
         '--l1_ratio', metavar='', type=float, default=0.5,
         help='The elastic net mixing parameter with. For l1_ratio = 0, it is \
         an L2 penalty. For l1_ratio = 1, it is an L1 penalty. \

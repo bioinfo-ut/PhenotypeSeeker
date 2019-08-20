@@ -58,9 +58,9 @@ class Input():
             Samples.no_phenotypes = len(header)-2
             for pheno in Samples.phenotypes:
                 try:
-                    int(pheno)
-                    print("Warning! It seems that the input file is" \
-                        " missing the header row!")
+                    float(pheno)
+                    print("""Warning! It seems that the input file is 
+                        missing the header row!""")
                 except ValueError:
                     pass
             for line in inputfile:
@@ -87,7 +87,8 @@ class Input():
             cutoff, num_threads, pvalue_cutoff, kmer_limit,
             FDR, B, binary_classifier, regressor, penalty, max_iter,
             tol, l1_ratio, n_splits_cv_outer, kernel, n_iter,
-            n_splits_cv_inner, testset_size, train_on_whole
+            n_splits_cv_inner, testset_size, train_on_whole,
+            logreg_solver
             ):
         cls._get_phenotypes_to_analyse(mpheno)
         phenotypes.alphas = cls._get_alphas(
@@ -116,8 +117,9 @@ class Input():
         phenotypes.n_splits_cv_inner = n_splits_cv_inner
         phenotypes.testset_size = testset_size
         phenotypes.train_on_whole = train_on_whole
-
         cls.get_model_name(regressor, binary_classifier)
+        phenotypes.logreg_solver = cls._get_logreg_solver(
+            logreg_solver)
 
     @staticmethod
     def get_model_name(regressor, binary_classifier):
@@ -180,6 +182,30 @@ class Input():
         if max_samples == 0:
             max_samples = Samples.no_samples - 2
         return min_samples, max_samples
+
+    @staticmethod
+    def _check_logreg_solver(logreg_solver):
+        if phenotypes.scale == "binary":
+            if phenotypes.model_name_short == "logreg":
+                if phenotypes.penalty = "L1":
+                    if logreg_solver == None:
+                        return "liblinear"
+                    elif logreg_solver in ("liblinear", "saga"):
+                        return logreg_solver
+                    else:
+                        raise SystemExit(f"""With L1 penalty the logistic regression 
+                            solver should be selected from 'liblinear' or 'saga'. 
+                            You selected {logreg_solver}""")
+                elif phenotypes.penalty = "L2":
+                    if logreg_solver == None:
+                        return "lbfgs"
+                    elif logreg_solver in ('liblinear', 'newton-cg', 'lbfgs', 'sag', 'saga'):
+                        return logreg_solver
+                    else:
+                        raise SystemExit(f"""With L2 penalty the logistic regression 
+                            solver should be selected from 'liblinear', 'newton-cg', 'lbfgs',
+                            'sag' or 'saga'. You selected {logreg_solver}""")
+                
 
     @classmethod
     def _get_phenotypes_to_analyse(cls, mpheno):
@@ -879,12 +905,12 @@ class phenotypes():
                 #Defining logistic regression parameters
                 if cls.penalty == "L1":
                     cls.model = LogisticRegression(
-                        penalty='l1', solver='liblinear',
+                        penalty='l1', solver=cls.logreg_solver,
                         max_iter=cls.max_iter, tol=cls.tol
                         )        
                 elif cls.penalty == "L2":
                     cls.model = LogisticRegression(
-                        penalty='l2', solver='saga',
+                        penalty='l2', solver=cls.logreg_solver,
                         max_iter=cls.max_iter, tol=cls.tol
                         )
                 elif cls.penalty == "elasticnet" or "L1+L2":
@@ -1528,7 +1554,7 @@ def modeling(args):
         args.Bonferroni, args.binary_classifier, args.regressor, 
         args.penalty, args.max_iter, args.tolerance, args.l1_ratio,
         args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner,
-        args.testset_size, args.train_on_whole
+        args.testset_size, args.train_on_whole, args.logreg_solver
         )
     Input.get_multithreading_parameters()
 
