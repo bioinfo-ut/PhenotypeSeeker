@@ -1262,12 +1262,12 @@ class phenotypes():
         SpCC = np.mean(metrics_dict["SpCC"])
         Sp_pval = np.mean(metrics_dict["Sp_pval"])
         self.summary_file.write("The Spearman correlation coefficient and p-value:" \
-            " %s, %s \n" % SpCC, Sp_pval)
+            " %s, %s \n" % (SpCC, Sp_pval))
 
         PeCC = np.mean(metrics_dict["PeCC"])
         Pe_pval = np.mean(metrics_dict["Pe_pval"])
         self.summary_file.write("The Pearson correlation coefficient and p-value: " \
-                " %s, %s \n" % PeCC, Pe_pval)
+                " %s, %s \n" % (PeCC, Pe_pval))
 
         DFA = np.mean(metrics_dict["DFA"])
         self.summary_file.write(
