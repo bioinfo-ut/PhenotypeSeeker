@@ -59,8 +59,8 @@ class Input():
             for pheno in Samples.phenotypes:
                 try:
                     float(pheno)
-                    sys.stderr.write("Warning! It seems that the input file is \
-                        missing the header row!")
+                    sys.stderr.write("Warning! It seems that the input file " \
+                        "is missing the header row!\n")
                 except ValueError:
                     pass
             for line in inputfile:
