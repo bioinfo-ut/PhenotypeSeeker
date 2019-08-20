@@ -118,7 +118,7 @@ class Input():
         phenotypes.testset_size = testset_size
         phenotypes.train_on_whole = train_on_whole
         cls.get_model_name(regressor, binary_classifier)
-        phenotypes.logreg_solver = cls._check_logreg_solver(
+        phenotypes.logreg_solver = cls.get_logreg_solver(
             logreg_solver)
 
     @staticmethod
@@ -184,27 +184,26 @@ class Input():
         return min_samples, max_samples
 
     @staticmethod
-    def _check_logreg_solver(logreg_solver):
+    def get_logreg_solver(logreg_solver):
         if phenotypes.scale == "binary":
-            if phenotypes.model_name_short == "logreg":
+            if phenotypes.model_name_short == "log_reg":
                 if phenotypes.penalty == "L1":
                     if logreg_solver == None:
                         return "liblinear"
                     elif logreg_solver in ("liblinear", "saga"):
                         return logreg_solver
                     else:
-                        raise SystemExit("With L1 penalty the logistic regression \
-                            solver should be selected from 'liblinear' or 'saga'. \
-                            You selected {}.".format(logreg_solver))
+                        raise SystemExit("Logistic Regression with L1 penalty supports only \
+                            solvers in ['liblinear', 'saga'], got {}.".format(logreg_solver))
                 elif phenotypes.penalty == "L2":
                     if logreg_solver == None:
                         return "lbfgs"
                     elif logreg_solver in ('liblinear', 'newton-cg', 'lbfgs', 'sag', 'saga'):
                         return logreg_solver
                     else:
-                        raise SystemExit("With L2 penalty the logistic regression \
-                            solver should be selected from 'liblinear', 'newton-cg', 'lbfgs', \
-                            'sag' or 'saga'. You selected {}.".format(logreg_solver))
+                        raise SystemExit("Logistic Regression with L2 penalty supports only \
+                            solvers in [['liblinear', 'newton-cg', 'lbfgs', 'sag', 'saga'], \
+                            got {}.".format(logreg_solver))
                 
 
     @classmethod
