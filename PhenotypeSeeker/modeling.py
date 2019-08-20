@@ -187,7 +187,7 @@ class Input():
     def _check_logreg_solver(logreg_solver):
         if phenotypes.scale == "binary":
             if phenotypes.model_name_short == "logreg":
-                if phenotypes.penalty = "L1":
+                if phenotypes.penalty == "L1":
                     if logreg_solver == None:
                         return "liblinear"
                     elif logreg_solver in ("liblinear", "saga"):
@@ -196,7 +196,7 @@ class Input():
                         raise SystemExit(f"""With L1 penalty the logistic regression 
                             solver should be selected from 'liblinear' or 'saga'. 
                             You selected {logreg_solver}""")
-                elif phenotypes.penalty = "L2":
+                elif phenotypes.penalty == "L2":
                     if logreg_solver == None:
                         return "lbfgs"
                     elif logreg_solver in ('liblinear', 'newton-cg', 'lbfgs', 'sag', 'saga'):
