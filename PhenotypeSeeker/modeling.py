@@ -1230,14 +1230,14 @@ class phenotypes():
 
         SpCC, Sp_pval = stats.spearmanr(labels, predictions)
         self.summary_file.write("The Spearman correlation coefficient and p-value:" \
-            " %s, %s \n" % SpCC, Sp_pval)
+            " %s, %s \n" % (SpCC, Sp_pval))
         if metrics_dict:
             metrics_dict["SpCC"].append(SpCC)
             metrics_dict["Sp_pval"].append(Sp_pval)
 
         PeCC, Pe_pval = stats.pearsonr(labels, predictions)
         self.summary_file.write("The Pearson correlation coefficient and p-value: " \
-                " %s, %s \n" % PeCC, Pe_pval)
+                " %s, %s \n" % (PeCC, Pe_pval))
         if metrics_dict:
             metrics_dict["PeCC"].append(PeCC)
             metrics_dict["Pe_pval"].append(Pe_pval)
