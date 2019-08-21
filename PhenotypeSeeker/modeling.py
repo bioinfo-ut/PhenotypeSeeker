@@ -193,17 +193,17 @@ class Input():
                     elif logreg_solver in ("liblinear", "saga"):
                         return logreg_solver
                     else:
-                        raise SystemExit("Logistic Regression with L1 penalty supports only \
-                            solvers in ['liblinear', 'saga'], got {}.".format(logreg_solver))
+                        raise SystemExit("Logistic Regression with L1 penalty supports only " +
+                            "solvers in ['liblinear', 'saga'], got {}.".format(logreg_solver))
                 elif phenotypes.penalty == "L2":
                     if logreg_solver == None:
                         return "lbfgs"
                     elif logreg_solver in ('liblinear', 'newton-cg', 'lbfgs', 'sag', 'saga'):
                         return logreg_solver
                     else:
-                        raise SystemExit("Logistic Regression with L2 penalty supports only \
-                            solvers in [['liblinear', 'newton-cg', 'lbfgs', 'sag', 'saga'], \
-                            got {}.".format(logreg_solver))
+                        raise SystemExit("Logistic Regression with L2 penalty supports only " +
+                            "solvers in [['liblinear', 'newton-cg', 'lbfgs', 'sag', 'saga'], " +
+                            "got {}.".format(logreg_solver))
                 
 
     @classmethod
