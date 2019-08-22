@@ -485,12 +485,12 @@ class phenotypes():
         self.model_fitted = None
         self.test_output = None
         self.metrics_dict_train = {
-            "MSE": [], "CoD": [], "SpCC": [], "Sp_pval": [], "PeCC": [], "PE_pval": [],
+            "MSE": [], "CoD": [], "SpCC": [], "Sp_pval": [], "PeCC": [], "Pe_pval": [],
             "DFA": [], "Acc": [], "Sn": [], "Sp": [], "AUCROC": [], "Pr": [], "MCC": [],
             "kappa": [],"VME": [], "ME": [], "F1_sc": []
             }
         self.metrics_dict_test = {
-            "MSE": [], "CoD": [], "SpCC": [], "Sp_pval": [], "PeCC": [], "PE_pval": [],
+            "MSE": [], "CoD": [], "SpCC": [], "Sp_pval": [], "PeCC": [], "Pe_pval": [],
             "DFA": [], "Acc": [], "Sn": [], "Sp": [], "AUCROC": [], "Pr": [], "MCC": [],
             "kappa": [],"VME": [], "ME": [], "F1_sc": []
             }
