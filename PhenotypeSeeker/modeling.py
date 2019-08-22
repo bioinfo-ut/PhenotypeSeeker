@@ -1162,7 +1162,7 @@ class phenotypes():
         if self.scale == "continuous":
             if self.model_name_short == "linreg":
                 if self.penalty in ("L1", "elasticnet"):
-                    self.model_fitted = self.best_model.fit(self.X_train, self.y_train.values.flatten())
+                    self.model_fitted = self.best_model.fit(self.X_train.values, self.y_train.values.flatten())
                 elif self.penalty == L2:
                     self.model_fitted = self.best_model.fit(
                         self.X_train, self.y_train.values.flatten(),
@@ -1207,7 +1207,7 @@ class phenotypes():
         for index, row in dataset.iterrows():
                 self.summary_file.write('%s %s %s\n' % (
                     index, labels.loc[index].values[0],
-                    self.model_fitted.predict(row.reshape(1, -1))[0]
+                    self.model_fitted.predict(row.values.reshape(1, -1))[0]
                     ))
         self.summary_file.write('\n')
 
