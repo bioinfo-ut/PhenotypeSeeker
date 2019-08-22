@@ -202,7 +202,7 @@ class Input():
                         return logreg_solver
                     else:
                         raise SystemExit("Logistic Regression with L2 penalty supports only " +
-                            "solvers in [['liblinear', 'newton-cg', 'lbfgs', 'sag', 'saga'], " +
+                            "solvers in ['liblinear', 'newton-cg', 'lbfgs', 'sag', 'saga'], " +
                             "got {}.".format(logreg_solver))
                 
 
@@ -1143,6 +1143,7 @@ class phenotypes():
             ]
         self.ML_df.index = Input.samples.keys()
         self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
+        self.ML_df.to_csv(self.name + "_" + self.model_name_short + "_df.csv", index=False)
         #self.ML_df = self.ML_df.T.drop_duplicates().T
         self.skl_dataset = sklearn.datasets.base.Bunch(
             data=self.ML_df.iloc[:,0:-2].values, target=self.ML_df['phenotype'].values,
@@ -1276,7 +1277,7 @@ class phenotypes():
     def model_performance_classifier(self, dataset, labels, predictions, metrics_dict):
 
         F1_sc = f1_score(labels, predictions)
-        self.summary_file.write("F1-score: %s\n" % F1_sc)
+        self.summary_file.write("F1-score of positive class: %s\n" % F1_sc)
         if metrics_dict:
             metrics_dict["F1_sc"].append(F1_sc)
 
