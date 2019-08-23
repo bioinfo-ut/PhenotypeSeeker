@@ -299,7 +299,7 @@ class Samples():
             [
             '-c', cls.cutoff, '-w', Samples.kmer_length, '-o', 'K-mer_lists/feature_vector'
             ]
-        glistmaker_args = glistmaker_args.join(" ")
+        glistmaker_args = " ".join(glistmaker_args)
         call(glistmaker_args, shell=True)
 
 
