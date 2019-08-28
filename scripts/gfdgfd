@@ -1,5 +1,0 @@
-#!/usr/bin/python2.7
-
-message = "Hello world"
-
-print(message.upper())

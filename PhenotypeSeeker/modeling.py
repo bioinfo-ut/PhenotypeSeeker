@@ -50,7 +50,6 @@ class Input():
     @classmethod
     def get_input_data(cls, inputfilename, take_logs):
         # Read the data from inputfile into "samples" directory
-        samples = OrderedDict()
         Samples.take_logs = take_logs
         with open(inputfilename) as inputfile:
             header = inputfile.readline().split()

@@ -282,11 +282,6 @@ def Main():
     	(k-mers_and_coefficients_in_*_reg_model*.txt) file addresses.'
     	)
     parser_b.add_argument(
-    	"-l", type=str, metavar="INT (1-32)", default="13",
-    	help="Specify the k-mer length (default = 13). Must match with the \
-    	length used in models generation."
-    	)
-    parser_b.add_argument(
     	"-c", type=str, metavar="INT", default="1",
     	help="K-mer frequency cut-off. Must be an integer (default = 1)."
     	)
