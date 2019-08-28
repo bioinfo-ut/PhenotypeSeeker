@@ -1046,6 +1046,25 @@ class phenotypes():
                 self.summary_file.write(
                 '''\n### Outputting the last model to a model file! ###\n'''
                 )
+                
+            if self.scale == "continuous":
+                self.summary_file.write(
+                    "\nMean performance metrics over all train splits: \n\n"
+                    )
+                self.mean_model_performance_regressor(metrics_dict_train)
+                self.summary_file.write(
+                    "\nMean performance metrics over all test splits: \n\n"
+                    )
+                self.mean_model_performance_regressor(metrics_dict_test)
+            elif self.scale == "binary":
+                self.summary_file.write(
+                    "\nMean performance metrics over all train splits: \n\n"
+                    )
+                self.mean_model_performance_classifier(self.metrics_dict_train)
+                self.summary_file.write(
+                    "\nMean performance metrics over all test splits: \n\n"
+                    )
+                self.mean_model_performance_classifier(self.metrics_dict_test)
 
         elif self.testset_size:
             if phenotypes.scale == "continuous":
@@ -1097,26 +1116,6 @@ class phenotypes():
 
         joblib.dump(self.model_fitted, self.model_file)
         self.write_model_coefficients_to_file()
-
-        if self.n_splits_cv_outer:
-            if self.scale == "continuous":
-                self.summary_file.write(
-                    "\nMean performance metrics over all train splits: \n\n"
-                    )
-                self.mean_model_performance_regressor(metrics_dict_train)
-                self.summary_file.write(
-                    "\nMean performance metrics over all test splits: \n\n"
-                    )
-                self.mean_model_performance_regressor(metrics_dict_test)
-            elif self.scale == "binary":
-                self.summary_file.write(
-                    "\nMean performance metrics over all train splits: \n\n"
-                    )
-                self.mean_model_performance_classifier(self.metrics_dict_train)
-                self.summary_file.write(
-                    "\nMean performance metrics over all test splits: \n\n"
-                    )
-                self.mean_model_performance_classifier(self.metrics_dict_test)
 
         self.summary_file.close()
         self.coeff_file.close()
