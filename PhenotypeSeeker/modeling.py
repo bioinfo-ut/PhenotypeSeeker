@@ -1311,7 +1311,7 @@ class phenotypes():
         if metrics_dict:
             metrics_dict["Pr"].append(Pr)
 
-        MCC = round((matthews_corrcoef(labels, predictions), 2)
+        MCC = round(matthews_corrcoef(labels, predictions), 2)
         self.summary_file.write("MCC: %s\n" % MCC)
         if metrics_dict:
             metrics_dict["MCC"].append(MCC)
