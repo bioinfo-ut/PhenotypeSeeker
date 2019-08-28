@@ -1041,11 +1041,11 @@ class phenotypes():
                 self.predict(self.X_train, self.y_train, self.metrics_dict_train)
                 self.summary_file.write('\nTest set:\n')
                 self.predict(self.X_test, self.y_test, self.metrics_dict_test)
-                
-                if not self.train_on_whole:
-                    self.summary_file.write(
-                    '''\n### Outputting the last model to a model file! ###\n'''
-                    )
+            
+            if not self.train_on_whole:
+                self.summary_file.write(
+                '''\n### Outputting the last model to a model file! ###\n'''
+                )
 
         elif self.testset_size:
             if phenotypes.scale == "continuous":
