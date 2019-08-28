@@ -1321,12 +1321,12 @@ class phenotypes():
         if metrics_dict:
             metrics_dict["kappa"].append(kappa)
 
-        VME = self.VME(labels, predictions).round(2)
+        VME = self.VME(labels, predictions)
         self.summary_file.write("Very major error rate: %s\n" % VME)
         if metrics_dict:
             metrics_dict["VME"].append(VME)
 
-        ME = self.ME(labels, predictions).round(2)
+        ME = self.ME(labels, predictions)
         self.summary_file.write("Major error rate: %s\n" % ME)
         if metrics_dict:
             metrics_dict["ME"].append(ME)
