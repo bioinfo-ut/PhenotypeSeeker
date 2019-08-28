@@ -1412,7 +1412,7 @@ class phenotypes():
         for item in izip(targets, predictions):
             if item[0] == 1 and item[1] == 0:
                 VMEs += 1
-        VME = np.float(VMEs)/len(targets).round(2)
+        VME = (np.float(VMEs)/len(targets)).round(2)
         return VME
 
     @staticmethod
@@ -1422,7 +1422,7 @@ class phenotypes():
         for item in izip(targets, predictions):
             if item[0] == 0 and item[1] == 1:
                  MEs += 1
-        ME = np.float(MEs)/len(targets).round(2)
+        ME = np.float(MEs)/len(targets)).round(2)
         return ME
 
     @staticmethod
