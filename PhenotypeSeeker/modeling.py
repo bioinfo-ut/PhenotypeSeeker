@@ -1311,7 +1311,7 @@ class phenotypes():
         if metrics_dict:
             metrics_dict["Pr"].append(Pr)
 
-        MCC = matthews_corrcoef(labels, predictions).round(2)
+        MCC = round((matthews_corrcoef(labels, predictions), 2)
         self.summary_file.write("MCC: %s\n" % MCC)
         if metrics_dict:
             metrics_dict["MCC"].append(MCC)
@@ -1321,12 +1321,12 @@ class phenotypes():
         if metrics_dict:
             metrics_dict["kappa"].append(kappa)
 
-        VME = self.VME(labels, predictions)
+        VME = round(self.VME(labels, predictions), 2)
         self.summary_file.write("Very major error rate: %s\n" % VME)
         if metrics_dict:
             metrics_dict["VME"].append(VME)
 
-        ME = self.ME(labels, predictions)
+        ME = round(self.ME(labels, predictions), 2)
         self.summary_file.write("Major error rate: %s\n" % ME)
         if metrics_dict:
             metrics_dict["ME"].append(ME)
@@ -1412,7 +1412,7 @@ class phenotypes():
         for item in izip(targets, predictions):
             if item[0] == 1 and item[1] == 0:
                 VMEs += 1
-        VME = (np.float64(VMEs)/len(targets)).round(2)
+        VME = round(float(VMEs)/len(targets), 2)
         return VME
 
     @staticmethod
@@ -1422,7 +1422,7 @@ class phenotypes():
         for item in izip(targets, predictions):
             if item[0] == 0 and item[1] == 1:
                  MEs += 1
-        ME = (np.float64(MEs)/len(targets)).round(2)
+        ME = round(float(MEs)/len(targets), 2)
         return ME
 
     @staticmethod
