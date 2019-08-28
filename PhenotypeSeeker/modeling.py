@@ -1277,7 +1277,7 @@ class phenotypes():
     def model_performance_classifier(self, dataset, labels, predictions, metrics_dict):
 
         F1_sc = f1_score(labels, predictions).round(2)
-        self.summary_file.write("F1-score of positive class: %s\n" % F1_sc
+        self.summary_file.write("F1-score of positive class: %s\n" % F1_sc)
         if metrics_dict:
             metrics_dict["F1_sc"].append(F1_sc)
 
