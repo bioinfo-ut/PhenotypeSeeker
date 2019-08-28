@@ -1218,32 +1218,32 @@ class phenotypes():
 
     def model_performance_regressor(self, dataset, labels, predictions, metrics_dict):
 
-        MSE = mean_squared_error(labels, predictions)
+        MSE = mean_squared_error(labels, predictions).round(2)
         self.summary_file.write('\nMean squared error: %s\n' % MSE)
         if metrics_dict:
             metrics_dict["MSE"].append(MSE)
 
-        CoD = self.model_fitted.score(dataset.values, labels)
+        CoD = self.model_fitted.score(dataset.values, labels).round(2)
         self.summary_file.write("The coefficient of determination:"
             + " %s\n" % CoD)
         if metrics_dict:
             metrics_dict["CoD"].append(CoD)
 
-        SpCC, Sp_pval = stats.spearmanr(labels, predictions)
+        SpCC, Sp_pval = map(lambda x: x.round(2), stats.spearmanr(labels, predictions))
         self.summary_file.write("The Spearman correlation coefficient and p-value:" \
             " %s, %s \n" % (SpCC, Sp_pval))
         if metrics_dict:
             metrics_dict["SpCC"].append(SpCC)
             metrics_dict["Sp_pval"].append(Sp_pval)
 
-        PeCC, Pe_pval = stats.pearsonr(labels, predictions)
+        PeCC, Pe_pval = map(lambda x: x.round(2), stats.pearsonr(labels, predictions))
         self.summary_file.write("The Pearson correlation coefficient and p-value: " \
                 " %s, %s \n" % (PeCC, Pe_pval))
         if metrics_dict:
             metrics_dict["PeCC"].append(PeCC)
             metrics_dict["Pe_pval"].append(Pe_pval)
 
-        DFA = self.within_1_tier_accuracy(labels, predictions)
+        DFA = self.within_1_tier_accuracy(labels, predictions).round(2)
         self.summary_file.write(
             "The plus/minus 1 dilution factor accuracy (for MICs):" " %s \n\n" % DFA
             )
@@ -1276,17 +1276,17 @@ class phenotypes():
 
     def model_performance_classifier(self, dataset, labels, predictions, metrics_dict):
 
-        F1_sc = f1_score(labels, predictions)
-        self.summary_file.write("F1-score of positive class: %s\n" % F1_sc)
+        F1_sc = f1_score(labels, predictions).round(2)
+        self.summary_file.write("F1-score of positive class: %s\n" % F1_sc
         if metrics_dict:
             metrics_dict["F1_sc"].append(F1_sc)
 
-        Acc = self.model_fitted.score(dataset, labels)
+        Acc = self.model_fitted.score(dataset, labels).round(2)
         self.summary_file.write("Mean accuracy: %s\n" % Acc)
         if metrics_dict:
             metrics_dict["Acc"].append(Acc)
 
-        Sn = recall_score(labels, predictions)
+        Sn = recall_score(labels, predictions).round(2)
         self.summary_file.write("Sensitivity: %s\n" % Sn)
         if metrics_dict:
             metrics_dict["Sn"].append(Sn)
@@ -1294,39 +1294,39 @@ class phenotypes():
         Sp = recall_score(
                     list(map(lambda x: 1 if x == 0 else 0, labels)), 
                     list(map(lambda x: 1 if x == 0 else 0, predictions))
-                    )
+                    ).round(2)
         self.summary_file.write("Specificity: %s\n" % Sp)
         if metrics_dict:
             metrics_dict["Sp"].append(Sp)
 
-        AUCROC = roc_auc_score(labels, predictions, average="micro")
+        AUCROC = roc_auc_score(labels, predictions, average="micro").round(2)
         self.summary_file.write("AUC-ROC: %s\n" % AUCROC)
         if metrics_dict:
             metrics_dict["AUCROC"].append(AUCROC)
 
         Pr = average_precision_score(
                 labels, self.model_fitted.predict_proba(dataset)[:,1]
-                ) 
+                ).round(2)
         self.summary_file.write("Average precision: %s\n" % Pr)
         if metrics_dict:
             metrics_dict["Pr"].append(Pr)
 
-        MCC = matthews_corrcoef(labels, predictions)
+        MCC = matthews_corrcoef(labels, predictions).round(2)
         self.summary_file.write("MCC: %s\n" % MCC)
         if metrics_dict:
             metrics_dict["MCC"].append(MCC)
 
-        kappa = cohen_kappa_score(labels, predictions)
+        kappa = cohen_kappa_score(labels, predictions).round(2)
         self.summary_file.write("Cohen kappa: %s\n" % kappa)
         if metrics_dict:
             metrics_dict["kappa"].append(kappa)
 
-        VME = self.VME(labels, predictions)
+        VME = self.VME(labels, predictions).round(2)
         self.summary_file.write("Very major error rate: %s\n" % VME)
         if metrics_dict:
             metrics_dict["VME"].append(VME)
 
-        ME = self.ME(labels, predictions)
+        ME = self.ME(labels, predictions).round(2)
         self.summary_file.write("Major error rate: %s\n" % ME)
         if metrics_dict:
             metrics_dict["ME"].append(ME)
