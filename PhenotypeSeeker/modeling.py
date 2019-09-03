@@ -1046,7 +1046,7 @@ class phenotypes():
                 self.summary_file.write(
                 '''\n### Outputting the last model to a model file! ###\n'''
                 )
-                
+
             if self.scale == "continuous":
                 self.summary_file.write(
                     "\nMean performance metrics over all train splits: \n\n"
@@ -1344,7 +1344,7 @@ class phenotypes():
     def mean_model_performance_classifier(self, metrics_dict):
 
         F1_sc = np.mean(metrics_dict["F1_sc"])
-        self.summary_file.write("F1-score: %s\n" % F1_sc)
+        self.summary_file.write("F1-score of positive class: %s\n" % F1_sc)
 
         Acc = np.mean(metrics_dict["Acc"])
         self.summary_file.write("Mean accuracy: %s\n" % Acc)
