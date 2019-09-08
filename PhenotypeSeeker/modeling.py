@@ -316,9 +316,9 @@ class Samples():
     @classmethod
     def get_weights(cls):
         cls.get_mash_distances()
-        cls._mash_output_to_distance_matrix(Input.samples.keys(), "mash_distances.mat")
+        cls._mash_output_to_distance_matrix(list(Input.samples.keys()), "mash_distances.mat")
         dist_mat = cls._distance_matrix_modifier("distances.mat")
-        cls._distance_matrix_to_phyloxml(Input.samples.keys(), dist_mat)   
+        cls._distance_matrix_to_phyloxml(list(Input.samples.keys()), dist_mat)   
         cls._phyloxml_to_newick("tree_xml.txt")
         stderr_print("Calculating the Gerstein Sonnhammer Coathia " \
             "weights from mash distance matrix...")
@@ -564,7 +564,7 @@ class phenotypes():
             )
         cls.no_kmers_to_analyse.value = int(
             check_output(
-                ['wc', '-l', "K-mer_lists/" + Input.samples.keys()[0] + "_mapped.txt"]
+                ['wc', '-l', "K-mer_lists/" + list(Input.samples.keys())[0] + "_mapped.txt"]
                 ).split()[0]
             )
         cls._split_sample_vectors_for_multithreading()
@@ -1176,7 +1176,7 @@ class phenotypes():
         self.ML_df['weight'] = [
             sample.weight for sample in Input.samples.values()
             ]
-        self.ML_df.index = Input.samples.keys()
+        self.ML_df.index = list(Input.samples.keys())
         self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
         self.ML_df.to_csv(self.name + "_" + self.model_name_short + "_df.csv")
         #self.ML_df = self.ML_df.T.drop_duplicates().T
