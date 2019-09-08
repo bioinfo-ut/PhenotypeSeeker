@@ -14,6 +14,7 @@ warnings.showwarning = lambda *args, **kwargs: None
 
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor, _DistanceMatrix
 from collections import Counter, OrderedDict
+from ete3 import Tree
 from multiprocess import Manager, Pool, Value
 from scipy import stats
 from sklearn.externals import joblib
@@ -34,7 +35,6 @@ from sklearn.model_selection import (
 from functools import partial
 import xgboost as xgb
 import Bio
-import ete3
 import numpy as np
 import pandas as pd
 import sklearn.datasets
