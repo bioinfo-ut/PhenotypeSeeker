@@ -1610,10 +1610,10 @@ def modeling(args):
 
     # Analyses of phenotypes
     phenotypes.start_kmer_testing()
-    map(
+    list(map(
         lambda x:  x.test_kmers_association_with_phenotype(), 
         Input.phenotypes_to_analyse.values()
-        )
+        ))
     sys.stderr.write("Filtering the k-mers by p-value:\n")
     map(
         lambda x:  x.get_kmers_filtered(), 
