@@ -445,7 +445,6 @@ class stderr_print():
     @classmethod
     def check_progress(cls, totalKmers, text, phenotype=""):
         currentPercent = (cls.currentKmerNum.value/float(totalKmers))*100
-        print(currentPercent,  cls.previousPercent.value)
         if int(currentPercent) > cls.previousPercent.value:
             output = "\t" + phenotype + "%d%% of " % (
                 currentPercent
@@ -612,7 +611,7 @@ class phenotypes():
                 "chi-squared_test_results_" + self.name + "_" + mt_code + ".txt", "w"
                 )
 
-        for line in zip(*[open(item) for item in split_of_kmer_lists]):
+        for line in zip_longest(*[open(item) for item in split_of_kmer_lists], ''):
             counter += 1
             if counter%self.progress_checkpoint.value == 0:
                 Input.lock.acquire()
@@ -1166,7 +1165,7 @@ class phenotypes():
 
     def get_dataframe_for_machine_learning(self):
         kmer_lists = ["K-mer_lists/" + sample + "_mapped.txt" for sample in Input.samples]
-        for line in zip(*[open(item) for item in kmer_lists]):
+        for line in zip_longest(*[open(item) for item in kmer_lists], ''):
             if line[0].split()[0] in self.kmers_for_ML:
                 self.ML_df[line[0].split()[0]] = [int(j.split()[1].strip()) for j in line]
         self.ML_df = self.ML_df.astype(bool).astype(int)
