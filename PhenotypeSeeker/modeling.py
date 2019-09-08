@@ -5,7 +5,7 @@ __version__ = "0.4.0"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
-from itertools import chain, izip, izip_longest, permutations
+from itertools import chain, zip_longest, permutations
 from subprocess import call, Popen, PIPE, check_output
 import math
 import sys
@@ -288,7 +288,7 @@ class Samples():
             phenotypes.scale = "continuous"
         if cls.take_logs:
             phenotype_list = map(lambda x: math.log(x, 2), phenotype_list)
-        for i,j in izip(cls.phenotypes, phenotype_list):
+        for i,j in zip(cls.phenotypes, phenotype_list):
             sample_phenotypes[i] = j
         return cls(name, address, sample_phenotypes)
 
@@ -612,9 +612,7 @@ class phenotypes():
                 "chi-squared_test_results_" + self.name + "_" + mt_code + ".txt", "w"
                 )
 
-        for line in izip_longest(
-                *[open(item) for item in split_of_kmer_lists], fillvalue = ''
-            ):
+        for line in zip(*[open(item) for item in split_of_kmer_lists]):
             counter += 1
             if counter%self.progress_checkpoint.value == 0:
                 Input.lock.acquire()
@@ -698,14 +696,14 @@ class phenotypes():
         #Parametes for group containig the k-mer
         wtd_mean_y = np.average(y, weights=y_weights)
         sumofweightsy = sum(y_weights)
-        ybar = np.float64(sum([i*j for i,j in izip(y, y_weights)])/sumofweightsy)
-        vary = sum([i*j for i,j in izip(y_weights, (y - ybar)**2)])/(sumofweightsy-1)
+        ybar = np.float64(sum([i*j for i,j in zip(y, y_weights)])/sumofweightsy)
+        vary = sum([i*j for i,j in zip(y_weights, (y - ybar)**2)])/(sumofweightsy-1)
         
         #Parameters for group not containig the k-mer
         wtd_mean_x = np.average(x, weights=x_weights)
         sumofweightsx = sum(x_weights)
-        xbar = np.float64(sum([i*j for i,j in izip(x, x_weights)])/sumofweightsx)
-        varx = sum([i*j for i,j in izip(x_weights, (x - xbar)**2)])/(sumofweightsx-1)
+        xbar = np.float64(sum([i*j for i,j in zip(x, x_weights)])/sumofweightsx)
+        varx = sum([i*j for i,j in zip(x_weights, (x - xbar)**2)])/(sumofweightsx-1)
 
         #Calculating the weighted Welch's t-test results
         dif = wtd_mean_x-wtd_mean_y
@@ -1168,7 +1166,7 @@ class phenotypes():
 
     def get_dataframe_for_machine_learning(self):
         kmer_lists = ["K-mer_lists/" + sample + "_mapped.txt" for sample in Input.samples]
-        for line in izip_longest(*[open(item) for item in kmer_lists], fillvalue = ''):
+        for line in zip(*[open(item) for item in kmer_lists]):
             if line[0].split()[0] in self.kmers_for_ML:
                 self.ML_df[line[0].split()[0]] = [int(j.split()[1].strip()) for j in line]
         self.ML_df = self.ML_df.astype(bool).astype(int)
@@ -1227,7 +1225,7 @@ class phenotypes():
             means = self.model_fitted.cv_results_['mean_test_score']
             stds = self.model_fitted.cv_results_['std_test_score']
             params = self.model_fitted.cv_results_['params']
-            for mean, std, param in izip(
+            for mean, std, param in zip(
                     means, stds, params
                     ):
                 self.summary_file.write(
@@ -1446,7 +1444,7 @@ class phenotypes():
     def VME(targets, predictions):
         # Function to calculate the very major error (VME) rate
         VMEs = 0
-        for item in izip(targets, predictions):
+        for item in zip(targets, predictions):
             if item[0] == 1 and item[1] == 0:
                 VMEs += 1
         VME = round(float(VMEs)/len(targets), 2)
@@ -1456,7 +1454,7 @@ class phenotypes():
     def ME(targets, predictions):
         # Function to calculate the major error (ME) rate
         MEs = 0
-        for item in izip(targets, predictions):
+        for item in zip(targets, predictions):
             if item[0] == 0 and item[1] == 1:
                  MEs += 1
         ME = round(float(MEs)/len(targets), 2)
@@ -1467,7 +1465,7 @@ class phenotypes():
         # Calculate the plus/minus one dilution factor accuracy
         # for predicted antibiotic resistance values.
         within_1_tier = 0
-        for item in izip(targets, predictions):
+        for item in zip(targets, predictions):
             if abs(item[0]-item[1]) <= 1:
                 within_1_tier +=1
         accuracy = float(within_1_tier)/len(targets)
