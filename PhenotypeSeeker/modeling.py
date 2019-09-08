@@ -389,9 +389,9 @@ class Samples():
         # string. Returns dictionary where sample names are keys and GSC 
         # weights are values.
         cls.tree=Tree(newick_tree, format=1)
-        clip_branch_lengths(cls.tree)
-        set_branch_sum(cls.tree)
-        set_node_weight(cls.tree)
+        cls.clip_branch_lengths(cls.tree)
+        cls.set_branch_sum(cls.tree)
+        cls.set_node_weight(cls.tree)
 
         weights = {}
         for leaf in cls.tree.iter_leaves():
