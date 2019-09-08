@@ -408,8 +408,8 @@ class Samples():
             elif branch.dist < min_val:
                 branch.dist = min_val
 
-    @staticmethod
-    def set_branch_sum(tree):
+    @classmethod
+    def set_branch_sum(cls, tree):
         total = 0
         for child in tree.get_children():
             cls.set_branch_sum(child)
@@ -417,8 +417,8 @@ class Samples():
             total += child.dist
         tree.BranchSum = total
 
-    @staticmethod
-    def set_node_weight(tree):
+    @classmethod
+    def set_node_weight(cls, tree):
         parent = tree.up
         if parent is None:
             tree.NodeWeight = 1.0
