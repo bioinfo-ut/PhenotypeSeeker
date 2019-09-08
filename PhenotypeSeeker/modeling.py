@@ -323,7 +323,6 @@ class Samples():
         stderr_print("Calculating the Gerstein Sonnhammer Coathia " \
             "weights from mash distance matrix...")
         weights = cls.GSC_weights_from_newick("tree_newick.txt", normalize="mean1")
-        print(weights)
         for key, value in weights.items():
             Input.samples[key].weight = value
 
