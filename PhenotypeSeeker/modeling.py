@@ -1615,18 +1615,18 @@ def modeling(args):
         Input.phenotypes_to_analyse.values()
         ))
     sys.stderr.write("Filtering the k-mers by p-value:\n")
-    map(
+    list(map(
         lambda x:  x.get_kmers_filtered(), 
         Input.phenotypes_to_analyse.values()
-        )
+        ))
     for vector in phenotypes.vectors_as_multiple_input:
         for item in vector:
             call(['rm', item])
     phenotypes.start_modeling()
-    map(
+    list(map(
         lambda x: x.machine_learning_modelling(),
         Input.phenotypes_to_analyse.values()
-        )
+        ))
     call(['rm', '-r', 'K-mer_lists'])
 
     if not args.no_assembly:
