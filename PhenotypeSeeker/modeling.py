@@ -412,7 +412,7 @@ class Samples():
     def set_branch_sum(tree):
         total = 0
         for child in tree.get_children():
-            set_branch_sum(child)
+            cls.set_branch_sum(child)
             total += child.BranchSum
             total += child.dist
         tree.BranchSum = total
@@ -426,7 +426,7 @@ class Samples():
             tree.NodeWeight = parent.NodeWeight * \
                 (tree.dist + tree.BranchSum)/parent.BranchSum
         for child in tree.get_children():
-            set_node_weight(child)
+            cls.set_node_weight(child)
 
 
 
