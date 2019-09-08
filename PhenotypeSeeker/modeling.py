@@ -350,7 +350,7 @@ class Samples():
                     if counter%cls.no_samples == 0:
                         if counter != cls.no_samples**2:
                             f2.write(
-                                "\n" + names_of_samples[counter/cls.no_samples]
+                                "\n" + names_of_samples[counter//cls.no_samples]
                                 )
 
     @staticmethod
