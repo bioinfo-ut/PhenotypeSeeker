@@ -310,7 +310,7 @@ class Samples():
     def get_mash_sketches(self):
         mash_args = "mash sketch -r " + self.address + " -o K-mer_lists/" + self.name
         process = Popen(mash_args, shell=True, stderr=PIPE)
-        for line in iter(process.stderr.readline, ''):
+        for line in iter(process.stderr.readline, b''):
             stderr_print(line.strip())
 
     @classmethod
