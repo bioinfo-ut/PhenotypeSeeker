@@ -28,7 +28,7 @@ phenotypeseeker --version
 
 ### Install locally without sudo privileges
 
-Python, python-pip, python-dev and git must be installed to install PhenotypeSeeker locally without sudo rights!
+Python3, python3-pip, python3-dev and git must be installed to install PhenotypeSeeker locally without sudo rights!
 
 To install the PhenotypeSeeker locally, open the command-line and type in the following commands:
 ```
