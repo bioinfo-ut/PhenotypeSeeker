@@ -388,7 +388,7 @@ class Samples():
         # Calculating Gerstein Sonnhammer Coathia weights from Newick 
         # string. Returns dictionary where sample names are keys and GSC 
         # weights are values.
-        cls.tree=Tree(newick_tree)
+        cls.tree=Tree(newick_tree, format=1)
         clip_branch_lengths(cls.tree)
         set_branch_sum(cls.tree)
         set_node_weight(cls.tree)
