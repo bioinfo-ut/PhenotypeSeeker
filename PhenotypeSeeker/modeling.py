@@ -1158,7 +1158,7 @@ class phenotypes():
             + self.name + ".txt", "w")
         self.coeff_file = open("k-mers_and_coefficients_in_" + self.model_name_short \
             + "_model_" + self.name + ".txt", "w")
-        self.model_file = open(self.model_name_short + "_model_" + self.name + ".pkl", "w")
+        self.model_file = open(self.model_name_short + "_model_" + self.name + ".pkl", "wb")
 
     def get_dataframe_for_machine_learning(self):
         kmer_lists = ["K-mer_lists/" + sample + "_mapped.txt" for sample in Input.samples]
