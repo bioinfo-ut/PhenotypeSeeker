@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python3
 
 __author__ = "Erki Aun"
 __version__ = "0.4.0"
@@ -13,8 +13,6 @@ import warnings
 warnings.showwarning = lambda *args, **kwargs: None
 
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor, _DistanceMatrix
-from cogent import LoadTree
-from cogent.align.weights.methods import GSC
 from collections import Counter, OrderedDict
 from multiprocess import Manager, Pool, Value
 from scipy import stats
@@ -36,6 +34,7 @@ from sklearn.model_selection import (
 from functools import partial
 import xgboost as xgb
 import Bio
+import ete3
 import numpy as np
 import pandas as pd
 import sklearn.datasets
@@ -228,6 +227,8 @@ class Samples():
     max_samples = None
     num_threads = None
 
+    tree = None
+
     mash_distances_args = []
 
     def __init__(self, name, address, phenotypes, weight=1):
@@ -321,7 +322,8 @@ class Samples():
         cls._phyloxml_to_newick("tree_xml.txt")
         stderr_print("Calculating the Gerstein Sonnhammer Coathia " \
             "weights from mash distance matrix...")
-        weights = cls._newick_to_GSC_weights("tree_newick.txt")
+        weights = cls.GSC_weights_from_newick("tree_newick.txt", normalize="mean1")
+        print(weights)
         for key, value in weights.iteritems():
             Input.samples[key].weight = value
 
@@ -381,16 +383,52 @@ class Samples():
         with open("tree_newick.txt", "w+") as f1:
             Bio.Phylo.convert(phyloxml, "phyloxml", f1, "newick")
 
-    @staticmethod
-    def _newick_to_GSC_weights(newick_tree):
+    @classmethod
+    def GSC_weights_from_newick(cls, newick_tree, normalize="sum1"):
         # Calculating Gerstein Sonnhammer Coathia weights from Newick 
         # string. Returns dictionary where sample names are keys and GSC 
         # weights are values.
-        tree=LoadTree(newick_tree)
-        weights=GSC(tree)
-        for item in weights:
-            weights[item] = 1 - weights[item]
+        cls.tree=Tree(newick_tree)
+        clip_branch_lengths(cls.tree)
+        set_branch_sum(cls.tree)
+        set_node_weight(cls.tree)
+
+        weights = {}
+        for leaf in cls.tree.iter_leaves():
+            weights[leaf.name] = leaf.NodeWeight
+        if normalize == "mean1":
+            weights = {k: v*len(weights) for k, v in weights.items()}
         return(weights)
+
+    @staticmethod
+    def clip_branch_lengths(tree, min_val=1e-9, max_val=1e9): 
+        for branch in tree.traverse("levelorder"):
+            if branch.dist > max_val:
+                branch.dist = max_val
+            elif branch.dist < min_val:
+                branch.dist = min_val
+
+    @staticmethod
+    def set_branch_sum(tree):
+        total = 0
+        for child in tree.get_children():
+            set_branch_sum(child)
+            total += child.BranchSum
+            total += child.dist
+        tree.BranchSum = total
+
+    @staticmethod
+    def set_node_weight(tree):
+        parent = tree.up
+        if parent is None:
+            tree.NodeWeight = 1.0
+        else:
+            tree.NodeWeight = parent.NodeWeight * \
+                (tree.dist + tree.BranchSum)/parent.BranchSum
+        for child in tree.get_children():
+            set_node_weight(child)
+
+
 
 class stderr_print():
     # --------------------------------------------------------
