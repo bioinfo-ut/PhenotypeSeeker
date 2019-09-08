@@ -1,11 +1,10 @@
 #!/usr/bin/python3
 
 __author__ = "Erki Aun"
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
-from itertools import izip_longest
 from subprocess import call
 import math
 import warnings
@@ -160,5 +159,5 @@ def vectors_to_matrix_prediction(samples_order, phenotypes_to_predict):
             "K-mer_lists/" + item + "_k-mer_counts_filtered_" + phenotype
             + ".txt" for item in samples_order
             ]
-        for line in izip_longest(*[open(item) for item in kmer_list_files], fillvalue = ''):
+        for line in zip(*[open(item) for item in kmer_list_files]):
             kmer_matrix.write('\t'.join([j.split()[2].strip() for j in line]) + "\n")
