@@ -445,6 +445,7 @@ class stderr_print():
     @classmethod
     def check_progress(cls, totalKmers, text, phenotype=""):
         currentPercent = (cls.currentKmerNum.value/float(totalKmers))*100
+        print(currentPercent,  cls.previousPercent.value)
         if int(currentPercent) > cls.previousPercent.value:
             output = "\t" + phenotype + "%d%% of " % (
                 currentPercent
