@@ -16,7 +16,7 @@ setup(name = 'PhenotypeSeeker',
           ],
       scripts = ['scripts/phenotypeseeker'],
       install_requires = [
-          'scipy', 'Biopython', 'scikit-learn', 'xgboost', 'multiprocess',
+          'numpy', 'scipy', 'Biopython', 'scikit-learn', 'xgboost', 'multiprocess',
           'pandas'
           ],
       )

@@ -2,7 +2,6 @@
 
 pip3 install --user --upgrade pip
 pip3 install --user --upgrade setuptools
-pip3 install --user --upgrade --ignore-installed numpy
 
 cp bin/* ~/.local/bin/
 pip3 install --user .
