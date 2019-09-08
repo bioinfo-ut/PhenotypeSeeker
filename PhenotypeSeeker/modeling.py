@@ -309,7 +309,7 @@ class Samples():
     
     def get_mash_sketches(self):
         mash_args = "mash sketch -r " + self.address + " -o K-mer_lists/" + self.name
-    	process = Popen(mash_args, shell=True, stderr=PIPE)
+        process = Popen(mash_args, shell=True, stderr=PIPE)
         for line in iter(process.stderr.readline, ''):
             stderr_print(line.strip())
 
@@ -558,7 +558,7 @@ class phenotypes():
 
     @classmethod
     def get_params_for_kmers_testing(cls):
-    	call(
+        call(
             ["rm K-mer_lists/feature_vector_" + Samples.kmer_length + ".list"],
             shell=True
             )
@@ -990,7 +990,7 @@ class phenotypes():
                     cls.hyper_parameters = {'C':Cs, 'gamma':Gammas}
             elif cls.model_name_long == "random forest":
                 cls.hyper_parameters = {
-                	'bootstrap': [True, False],
+                    'bootstrap': [True, False],
                     'max_depth': [4, 5, 6, 7, 8, 10, 20, 100, None],
                     'max_features': [None, 'sqrt', 'log2'],
                     'min_samples_leaf': [1, 2, 4],
@@ -1609,9 +1609,9 @@ def modeling(args):
         )
     if not args.no_weights:
         sys.stderr.write("\nEstimating the Mash distances between samples...\n")
-    	Input.pool.map(
-	        lambda x: x.get_mash_sketches(), Input.samples.values()
-	        )
+        Input.pool.map(
+            lambda x: x.get_mash_sketches(), Input.samples.values()
+            )
         Samples.get_weights()
 
     # Analyses of phenotypes
