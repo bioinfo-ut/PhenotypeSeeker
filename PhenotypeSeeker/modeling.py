@@ -546,9 +546,7 @@ class phenotypes():
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
         pvalues_from_all_threads = Input.pool.map(
-            partial(
-                self.get_kmers_tested, Input.samples.values()
-                ), self.vectors_as_multiple_input
+                self.get_kmers_tested, self.vectors_as_multiple_input
             )
         self.pvalues = \
             sorted(list(chain(*pvalues_from_all_threads)))
@@ -586,7 +584,6 @@ class phenotypes():
 
     @classmethod
     def _splitted_vectors_to_multiple_input(cls):
-        vectors_as_multiple_input = []
         for i in range(Samples.num_threads):
             cls.vectors_as_multiple_input.append(
                 [
@@ -596,7 +593,7 @@ class phenotypes():
                 )
         
 
-    def get_kmers_tested(self, samples, split_of_kmer_lists):
+    def get_kmers_tested(self, split_of_kmer_lists):
         
         pvalues = []
         counter = 0
@@ -626,12 +623,12 @@ class phenotypes():
             if phenotypes.scale == "binary":
                 pvalue = self.conduct_chi_squared_test(
                     kmer, kmer_presence_vector,
-                    test_results_file, samples
+                    test_results_file, Input.samples.values()
                     )
             elif phenotypes.scale == "continuous":
                 pvalue = self.conduct_t_test(
                     kmer, kmer_presence_vector,
-                    test_results_file, samples
+                    test_results_file, Input.samples.values()
                     )
             if pvalue:
                 pvalues.append(pvalue)
