@@ -5,7 +5,7 @@ __version__ = "0.5.0"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
-from itertools import chain, zip_longest, permutations
+from itertools import chain, permutations
 from subprocess import call, Popen, PIPE, check_output
 import math
 import sys
@@ -608,7 +608,7 @@ class phenotypes():
                 "chi-squared_test_results_" + self.name + "_" + mt_code + ".txt", "w"
                 )
 
-        for line in zip_longest(*[open(item) for item in split_of_kmer_lists], ''):
+        for line in zip(*[open(item) for item in split_of_kmer_lists]):
             counter += 1
             if counter%self.progress_checkpoint.value == 0:
                 Input.lock.acquire()
@@ -1162,7 +1162,7 @@ class phenotypes():
 
     def get_dataframe_for_machine_learning(self):
         kmer_lists = ["K-mer_lists/" + sample + "_mapped.txt" for sample in Input.samples]
-        for line in zip_longest(*[open(item) for item in kmer_lists], ''):
+        for line in zip(*[open(item) for item in kmer_lists]):
             if line[0].split()[0] in self.kmers_for_ML:
                 self.ML_df[line[0].split()[0]] = [int(j.split()[1].strip()) for j in line]
         self.ML_df = self.ML_df.astype(bool).astype(int)
