@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 __author__ = "Erki Aun"
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
@@ -207,7 +207,7 @@ class Input():
     @classmethod
     def _get_phenotypes_to_analyse(cls, mpheno):
         if not mpheno:
-            phenotypes_to_analyze = xrange(Samples.no_phenotypes)
+            phenotypes_to_analyze = range(Samples.no_phenotypes)
         else: 
             phenotypes_to_analyze = map(lambda x: x-1, mpheno)
         for item in phenotypes_to_analyze:
@@ -364,8 +364,8 @@ class Samples():
                 line = line.strip().split()
                 distancematrix.append(line[1:counter])
                 counter += 1
-        for i in xrange(len(distancematrix)):
-            for j in xrange(len(distancematrix[i])):
+        for i in range(len(distancematrix)):
+            for j in range(len(distancematrix[i])):
                 distancematrix[i][j] = float(distancematrix[i][j])
         return(distancematrix)
 
@@ -588,7 +588,7 @@ class phenotypes():
     @classmethod
     def _splitted_vectors_to_multiple_input(cls):
         vectors_as_multiple_input = []
-        for i in xrange(Samples.num_threads):
+        for i in range(Samples.num_threads):
             cls.vectors_as_multiple_input.append(
                 [
                 "K-mer_lists/" + sample + "_mapped_%05d" %i \
@@ -832,7 +832,7 @@ class phenotypes():
             ],
             shell=True
             )
-        for l in xrange(Samples.num_threads):
+        for l in range(Samples.num_threads):
             call(
                 [
                 "rm " + test_results + phenotype +
