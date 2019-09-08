@@ -312,7 +312,6 @@ class Samples():
         process = Popen(mash_args, shell=True, stderr=PIPE, universal_newlines=True)
         for line in iter(process.stderr.readline, ''):
              stderr_print(line.strip())
-        process.stdout.close()
 
     @classmethod
     def get_weights(cls):
