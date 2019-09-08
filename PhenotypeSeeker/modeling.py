@@ -324,7 +324,7 @@ class Samples():
             "weights from mash distance matrix...")
         weights = cls.GSC_weights_from_newick("tree_newick.txt", normalize="mean1")
         print(weights)
-        for key, value in weights.iteritems():
+        for key, value in weights.items():
             Input.samples[key].weight = value
 
     @classmethod
@@ -1232,7 +1232,7 @@ class phenotypes():
                     "%0.3f (+/-%0.03f) for %r \n" % (mean, std * 2, param)
                     )
             self.summary_file.write("\nBest parameters found on development set: \n")
-            for key, value in self.model_fitted.best_params_.iteritems():
+            for key, value in self.model_fitted.best_params_.items():
                 self.summary_file.write(key + " : " + str(value) + "\n")
 
     def predict(self, dataset, labels, metrics_dict=None):
