@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 __author__ = "Erki Aun"
 __version__ = "0.5.0"

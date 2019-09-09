@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 __author__ = "Erki Aun"
 __version__ = "0.5.0"
@@ -1591,6 +1591,7 @@ def modeling(args):
 
     # Operations with samples
     sys.stderr.write("Generating the k-mer lists for input samples:\n")
+    sys.stderr.write("\r\x1b[K"+data.__str__())
     Input.pool.map(
         lambda x: x.get_kmer_lists(), Input.samples.values()
         )
