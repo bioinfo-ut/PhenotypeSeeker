@@ -1599,7 +1599,7 @@ def modeling(args):
         args.testset_size, args.train_on_whole, args.logreg_solver
         )
     Input.get_multithreading_parameters()
-"\x1b[1;1;101mopened in your browser.\x1b[0m\n"
+    
     # Operations with samples
     sys.stderr.write("\x1b[1;32mGenerating the k-mer lists for input samples:\x1b[0m\n")
     sys.stderr.flush()
