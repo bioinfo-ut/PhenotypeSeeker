@@ -23,5 +23,3 @@ echo "phenotypeseeker prediction PS_prediction_example_files/inputfile1 PS_predi
 echo
 
 phenotypeseeker prediction PS_prediction_example_files/inputfile1 PS_prediction_example_files/inputfile2
-
-echo "Finished!"

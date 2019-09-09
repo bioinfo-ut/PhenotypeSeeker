@@ -19,9 +19,7 @@ tar -zxvf PS_modeling_example_files.tar.gz
 #Launch the "PhenotypeSeeker modeling"
 echo
 echo "Launching the phenotypeseeker modeling:"
-echo "phenotypeseeker modeling PS_modeling_example_files/data.pheno -w"
+echo "phenotypeseeker modeling PS_modeling_example_files/data.pheno"
 echo
 
 phenotypeseeker modeling PS_modeling_example_files/data.pheno 
-
-echo "Finished!"

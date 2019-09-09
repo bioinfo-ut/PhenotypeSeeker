@@ -440,24 +440,25 @@ class stderr_print():
     previousPercent = Value("i", 0)
 
     def __init__(self,data):
-        sys.stderr.write("\r\x1b[K\x1b[1;32m"+data.__str__())
+        sys.stderr.write("\r\x1b[K"+data.__str__())
         sys.stderr.flush()
 
     @classmethod
     def check_progress(cls, totalKmers, text, phenotype=""):
         currentPercent = (cls.currentKmerNum.value/float(totalKmers))*100
         if int(currentPercent) > cls.previousPercent.value:
-            output = "\t" + phenotype + "%d%% of " % (
-                currentPercent
-                ) + text
+            if int(currentPercent) != 100:
+                output = f"\t\x1b[1;32m{phenotype} \x1b[1;91m{currentPercent} \x1b[1;32m{text}\x1b[0m"
+            else:
+                output = f"\t\x1b[1;32m{phenotype} {currentPercent} {text}\x1b[0m"
             cls.previousPercent.value = int(currentPercent)
             cls(output)
 
     @classmethod
     def print_progress(cls, txt):
-        if cls.currentSampleNum.value < 100:
+        if cls.currentSampleNum.value != Samples.no_samples:
             output = f"""\t\x1b[1;91m{cls.currentSampleNum.value}\x1b[1;32m of {Samples.no_samples} {txt}\x1b[0m"""
-        elif cls.currentSampleNum.value == 100:
+        else:
             output = f"""\t\x1b[1;32m{cls.currentSampleNum.value} of {Samples.no_samples} {txt}\x1b[0m"""            
         cls(output)
 
@@ -1583,8 +1584,8 @@ class phenotypes():
 def modeling(args):
     # The main function of "phenotypeseeker modeling"
 
-    sys.stderr.write("\x1b[1;1;101m\t### PhenotypeSeeker ###\x1b[0m\n")
-    sys.stderr.write("\x1b[1;1;101m\t###    modeling     ###\x1b[0m\n\n")
+    sys.stderr.write("\t\x1b[1;1;101m### PhenotypeSeeker ###\x1b[0m\n")
+    sys.stderr.write("\t\x1b[1;1;101m###    modeling     ###\x1b[0m\n\n")
 
     # Processing the input data
     Input.get_input_data(args.inputfile, args.take_logs)
