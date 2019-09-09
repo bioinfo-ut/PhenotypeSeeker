@@ -439,7 +439,8 @@ class stderr_print():
     previousPercent = Value("i", 0)
 
     def __init__(self,data):
-        sys.stderr.write("\r\x1b[K"+data.__str__())
+        #sys.stderr.write("\r\x1b[K"+data.__str__())
+        sys.stderr.write(data)
         sys.stderr.flush()
 
     @classmethod
