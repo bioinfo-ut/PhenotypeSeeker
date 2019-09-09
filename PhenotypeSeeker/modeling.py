@@ -1590,7 +1590,8 @@ def modeling(args):
     Input.get_multithreading_parameters()
 
     # Operations with samples
-    sys.stderr.write("Generating the k-mer lists for input samples:\n").flush()
+    sys.stderr.write("Generating the k-mer lists for input samples:\n")
+    sys.stderr.flush()
     Input.pool.map(
         lambda x: x.get_kmer_lists(), Input.samples.values()
         )
