@@ -538,10 +538,10 @@ class phenotypes():
     @classmethod
     def start_kmer_testing(cls):
         if phenotypes.scale == "continuous":
-            sys.stderr.write("\n\x1b[1;32mConducting the k-mer specific Welch t-tests:\n")
+            sys.stderr.write("\n\x1b[1;32mConducting the k-mer specific Welch t-tests:\x1b[0m\n")
             sys.stderr.flush()
         else:
-            sys.stderr.write("\n\x1b[1;32mConducting the k-mer specific chi-square tests:\n")
+            sys.stderr.write("\n\x1b[1;32mConducting the k-mer specific chi-square tests:\x1b[0m\n")
             sys.stderr.flush()
         cls.get_params_for_kmers_testing()
 
@@ -916,7 +916,7 @@ class phenotypes():
 
     @classmethod
     def start_modeling(cls):
-        sys.stderr.write("\x1b[1;32mGenerating the " + cls.model_name_long + " model for phenotype: \n")
+        sys.stderr.write("\x1b[1;32mGenerating the " + cls.model_name_long + " model for phenotype: \x1b[0m\n")
         sys.stderr.flush()
         cls.set_model()
         cls.set_hyperparameters()
@@ -1037,7 +1037,7 @@ class phenotypes():
         return df.iloc[:,0:-2], df.iloc[:,-2:-1], df.iloc[:,-1:]
 
     def machine_learning_modelling(self):
-        sys.stderr.write("\x1b[1;32m\t" + self.name + ".\n")
+        sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
         sys.stderr.flush()
         self.get_outputfile_names()
         if len(self.kmers_for_ML) == 0:
@@ -1563,7 +1563,7 @@ class phenotypes():
         #Open files to write the results of k-mer assembling
         if Samples.no_phenotypes > 1:
             f1 = open("assembled_kmers_" + self.name + ".fasta", "w+")
-            sys.stderr.write("\x1b[1;32m\tof " + self.name + " data...\n")
+            sys.stderr.write("\x1b[1;32m\tof " + self.name + " data...\x1b[0m\n")
             sys.stderr.flush()
         else:
             f1 = open("assembled_kmers.fasta", "w+")
@@ -1583,6 +1583,9 @@ class phenotypes():
 def modeling(args):
     # The main function of "phenotypeseeker modeling"
 
+    sys.stderr.write("\x1b[1;1;101m### PhenotypeSeeker ###\x1b[0m\n")
+    sys.stderr.write("\x1b[1;1;101m###    modeling     ###\x1b[0m\n\n")
+
     # Processing the input data
     Input.get_input_data(args.inputfile, args.take_logs)
     Input.Input_args(
@@ -1596,24 +1599,24 @@ def modeling(args):
         args.testset_size, args.train_on_whole, args.logreg_solver
         )
     Input.get_multithreading_parameters()
-
+"\x1b[1;1;101mopened in your browser.\x1b[0m\n"
     # Operations with samples
-    sys.stderr.write("\x1b[1;32mGenerating the k-mer lists for input samples:\n")
+    sys.stderr.write("\x1b[1;32mGenerating the k-mer lists for input samples:\x1b[0m\n")
     sys.stderr.flush()
     Input.pool.map(
         lambda x: x.get_kmer_lists(), Input.samples.values()
         )
-    sys.stderr.write("\n\x1b[1;32mGenerating the k-mer feature vector.\n")
+    sys.stderr.write("\n\x1b[1;32mGenerating the k-mer feature vector.\x1b[0m\n")
     sys.stderr.flush()
     Samples.get_feature_vector()
-    sys.stderr.write("\x1b[1;32mMapping samples to the feature vector space:\n")
+    sys.stderr.write("\x1b[1;32mMapping samples to the feature vector space:\x1b[0m\n")
     sys.stderr.flush()
     stderr_print.currentSampleNum.value = 0
     Input.pool.map(
         lambda x: x.map_samples(), Input.samples.values()
         )
     if not args.no_weights:
-        sys.stderr.write("\n\x1b[1;32mEstimating the Mash distances between samples...\n")
+        sys.stderr.write("\n\x1b[1;32mEstimating the Mash distances between samples...\x1b[0m\n")
         sys.stderr.flush()
         Input.pool.map(
             lambda x: x.get_mash_sketches(), Input.samples.values()
@@ -1626,7 +1629,7 @@ def modeling(args):
         lambda x:  x.test_kmers_association_with_phenotype(), 
         Input.phenotypes_to_analyse.values()
         ))
-    sys.stderr.write("\x1b[1;32mFiltering the k-mers by p-value:\n")
+    sys.stderr.write("\x1b[1;32mFiltering the k-mers by p-value:\x1b[0m\n")
     sys.stderr.flush()
     list(map(
         lambda x:  x.get_kmers_filtered(), 
@@ -1644,9 +1647,10 @@ def modeling(args):
 
     if not args.no_assembly:
         sys.stderr.write("\x1b[1;32mAssembling the k-mers used in modeling of " 
-            + Samples.phenotypes[0] + " data...\n")
+            + Samples.phenotypes[0] + " data...\x1b[0m\n")
         sys.stderr.flush()
         map(
             lambda x: x.assembling(),
             Input.phenotypes_to_analyse.values()
             )
+    sys.stderr.write("\x1b[1;4;3;91mFinished\041\x1b[0m\n")
