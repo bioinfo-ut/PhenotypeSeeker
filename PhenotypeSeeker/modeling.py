@@ -321,8 +321,7 @@ class Samples():
         dist_mat = cls._distance_matrix_modifier("distances.mat")
         cls._distance_matrix_to_phyloxml(list(Input.samples.keys()), dist_mat)   
         cls._phyloxml_to_newick("tree_xml.txt")
-        stderr_print("\x1b[1;32mCalculating the Gerstein Sonnhammer Coathia " \
-            "weights from mash distance matrix...\x1b[0m")
+        stderr_print("\x1b[1;32mCalculating the GSC weights from mash distance matrix...\x1b[0m")
         weights = cls.GSC_weights_from_newick("tree_newick.txt", normalize="mean1")
         for key, value in weights.items():
             Input.samples[key].weight = value
@@ -440,7 +439,7 @@ class stderr_print():
     previousPercent = Value("i", 0)
 
     def __init__(self,data):
-        sys.stderr.write("\r\x1b[K"+data.__str__())
+        sys.stderr.write("\r\x1b[K\x1b[1;32m"+data.__str__()+"\x1b[0m")
         sys.stderr.flush()
 
     @classmethod
@@ -448,18 +447,18 @@ class stderr_print():
         currentPercent = int((cls.currentKmerNum.value/float(totalKmers))*100)
         if currentPercent > cls.previousPercent.value:
             if currentPercent != 100:
-                output = f"\t\x1b[1;32m{phenotype} \x1b[1;91m{currentPercent}% \x1b[1;32m{text}\x1b[0m"
+                output = f"\t{phenotype} \x1b[1;91m{currentPercent}% \x1b[1;32m{text}"
             else:
-                output = f"\t\x1b[1;32m{phenotype} {currentPercent}% {text}\x1b[0m"
+                output = f"\t{phenotype} {currentPercent}% {text}"
             cls.previousPercent.value = currentPercent
             cls(output)
 
     @classmethod
     def print_progress(cls, txt):
         if cls.currentSampleNum.value != Samples.no_samples:
-            output = f"""\t\x1b[1;91m{cls.currentSampleNum.value}\x1b[1;32m of {Samples.no_samples} {txt}\x1b[0m"""
+            output = f"""\t\x1b[1;91m{cls.currentSampleNum.value}\x1b[1;32m of {Samples.no_samples} {txt}"""
         else:
-            output = f"""\t\x1b[1;32m{cls.currentSampleNum.value} of {Samples.no_samples} {txt}\x1b[0m"""            
+            output = f"""\t{cls.currentSampleNum.value} of {Samples.no_samples} {txt}"""            
         cls(output)
 
 class phenotypes():
@@ -1654,4 +1653,4 @@ def modeling(args):
             lambda x: x.assembling(),
             Input.phenotypes_to_analyse.values()
             )
-    sys.stderr.write("\x1b[1;4;3;91mFinished\041\x1b[0m\n")
+    sys.stderr.write("\n\x1b[1;1;101m\t### PhenotypeSeeker modeling finished ###\t\t\x1b[0m\n")
