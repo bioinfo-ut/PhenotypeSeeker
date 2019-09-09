@@ -439,8 +439,7 @@ class stderr_print():
     previousPercent = Value("i", 0)
 
     def __init__(self,data):
-        #sys.stderr.write("\r\x1b[K"+data.__str__())
-        sys.stderr.write(data)
+        sys.stderr.write("\r\x1b[K"+data.__str__())
         sys.stderr.flush()
 
     @classmethod
@@ -1591,8 +1590,7 @@ def modeling(args):
     Input.get_multithreading_parameters()
 
     # Operations with samples
-    sys.stderr.write("Generating the k-mer lists for input samples:\n")
-    sys.stderr.flush()
+    sys.stderr.write("Generating the k-mer lists for input samples:\n").flush()
     Input.pool.map(
         lambda x: x.get_kmer_lists(), Input.samples.values()
         )
