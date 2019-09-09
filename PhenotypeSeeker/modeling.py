@@ -264,11 +264,11 @@ class Samples():
         with open(outputfile, "w+") as outputfile:
             call(
                 [
-                "glistquery", "K-mer_lists/" + self.name + "_" + self.kmer_length +
-                ".list", "-l", "K-mer_lists/feature_vector_" + self.kmer_length +
+                "glistquery K-mer_lists/" + self.name + "_" + self.kmer_length +
+                ".list -l K-mer_lists/feature_vector_" + self.kmer_length +
                 ".list"
                 ]
-                , stdout=outputfile)
+                , shell=True, stdout=outputfile)
             call(
                 [
                 "rm " + "K-mer_lists/" + self.name + "_" + self.kmer_length + ".list" 
