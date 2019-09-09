@@ -455,10 +455,10 @@ class stderr_print():
 
     @classmethod
     def print_progress(cls, txt):
-        output = "\t%d of %d %s" % (
-            cls.currentSampleNum.value, Samples.no_samples,
-            txt
-            )
+        if cls.currentSampleNum.value < 100:
+            output = f"""\t\x1b[1;91m{cls.currentSampleNum.value}\x1b[1;32m of {Samples.no_samples} {txt}\x1b[0m"""
+        elif cls.currentSampleNum.value == 100:
+            output = f"""\t\x1b[1;32m{cls.currentSampleNum.value} of {Samples.no_samples} {txt}\x1b[0m"""            
         cls(output)
 
 class phenotypes():
@@ -1583,8 +1583,8 @@ class phenotypes():
 def modeling(args):
     # The main function of "phenotypeseeker modeling"
 
-    sys.stderr.write("\x1b[1;1;101m### PhenotypeSeeker ###\x1b[0m\n")
-    sys.stderr.write("\x1b[1;1;101m###    modeling     ###\x1b[0m\n\n")
+    sys.stderr.write("\x1b[1;1;101m\t### PhenotypeSeeker ###\x1b[0m\n")
+    sys.stderr.write("\x1b[1;1;101m\t###    modeling     ###\x1b[0m\n\n")
 
     # Processing the input data
     Input.get_input_data(args.inputfile, args.take_logs)
@@ -1599,7 +1599,7 @@ def modeling(args):
         args.testset_size, args.train_on_whole, args.logreg_solver
         )
     Input.get_multithreading_parameters()
-    
+
     # Operations with samples
     sys.stderr.write("\x1b[1;32mGenerating the k-mer lists for input samples:\x1b[0m\n")
     sys.stderr.flush()
