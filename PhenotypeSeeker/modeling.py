@@ -334,7 +334,7 @@ class Samples():
             stderr_print(line.strip())
         call(["rm K-mer_lists/*.msh"], shell=True)
         with open("mash_distances.mat", "w+") as f1:
-            call(["mash", "dist", "reference.msh", "reference.msh"], stdout=f1)
+            call(["mash dist reference.msh reference.msh"], shell=True, stdout=f1)
 
     @classmethod
     def _mash_output_to_distance_matrix(cls, names_of_samples, mash_distances):
