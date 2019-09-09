@@ -57,8 +57,9 @@ class Input():
             for pheno in Samples.phenotypes:
                 try:
                     float(pheno)
-                    sys.stderr.write("Warning! It seems that the input file " \
+                    sys.stderr.write("\x1b[1;1mWarning! It seems that the input file " \
                         "is missing the header row!\n")
+                    sys.stderr.flush()
                 except ValueError:
                     pass
             for line in inputfile:
@@ -439,7 +440,7 @@ class stderr_print():
     previousPercent = Value("i", 0)
 
     def __init__(self,data):
-        sys.stderr.write("\r\x1b[K"+data.__str__())
+        sys.stderr.write("\r\x1b[K\x1b[1;32m"+data.__str__())
         sys.stderr.flush()
 
     @classmethod
@@ -537,9 +538,11 @@ class phenotypes():
     @classmethod
     def start_kmer_testing(cls):
         if phenotypes.scale == "continuous":
-            sys.stderr.write("\nConducting the k-mer specific Welch t-tests:\n")
+            sys.stderr.write("\n\x1b[1;32mConducting the k-mer specific Welch t-tests:\n")
+            sys.stderr.flush()
         else:
-            sys.stderr.write("\nConducting the k-mer specific chi-square tests:\n")
+            sys.stderr.write("\n\x1b[1;32mConducting the k-mer specific chi-square tests:\n")
+            sys.stderr.flush()
         cls.get_params_for_kmers_testing()
 
     def test_kmers_association_with_phenotype(self):
@@ -551,6 +554,7 @@ class phenotypes():
         self.pvalues = \
             sorted(list(chain(*pvalues_from_all_threads)))
         sys.stderr.write("\n")
+        sys.stderr.flush()
         self.concatenate_test_files(self.name)
 
     @classmethod
@@ -875,6 +879,7 @@ class phenotypes():
             nr_of_kmers_tested, "k-mers filtered.", self.name + ": "
             )
         sys.stderr.write("\n")
+        sys.stderr.flush()
         if len(self.kmers_for_ML) == 0:
             outputfile.write("\nNo k-mers passed the filtration by p-value.\n")
         inputfile.close()
@@ -911,7 +916,8 @@ class phenotypes():
 
     @classmethod
     def start_modeling(cls):
-        sys.stderr.write("Generating the " + cls.model_name_long + " model for phenotype: \n")
+        sys.stderr.write("\x1b[1;32mGenerating the " + cls.model_name_long + " model for phenotype: \n")
+        sys.stderr.flush()
         cls.set_model()
         cls.set_hyperparameters()
         cls.get_best_model()
@@ -1031,7 +1037,8 @@ class phenotypes():
         return df.iloc[:,0:-2], df.iloc[:,-2:-1], df.iloc[:,-1:]
 
     def machine_learning_modelling(self):
-        sys.stderr.write("\t" + self.name + ".\n")
+        sys.stderr.write("\x1b[1;32m\t" + self.name + ".\n")
+        sys.stderr.flush()
         self.get_outputfile_names()
         if len(self.kmers_for_ML) == 0:
             self.summary_file.write("No k-mers passed the step of k-mer filtering for " \
@@ -1556,7 +1563,8 @@ class phenotypes():
         #Open files to write the results of k-mer assembling
         if Samples.no_phenotypes > 1:
             f1 = open("assembled_kmers_" + self.name + ".fasta", "w+")
-            sys.stderr.write("\tof " + self.name + " data...\n")
+            sys.stderr.write("\x1b[1;32m\tof " + self.name + " data...\n")
+            sys.stderr.flush()
         else:
             f1 = open("assembled_kmers.fasta", "w+")
         if len(self.kmers_for_ML) == 0:
@@ -1590,20 +1598,23 @@ def modeling(args):
     Input.get_multithreading_parameters()
 
     # Operations with samples
-    sys.stderr.write("Generating the k-mer lists for input samples:\n")
+    sys.stderr.write("\x1b[1;32mGenerating the k-mer lists for input samples:\n")
     sys.stderr.flush()
     Input.pool.map(
         lambda x: x.get_kmer_lists(), Input.samples.values()
         )
-    sys.stderr.write("\nGenerating the k-mer feature vector.\n")
+    sys.stderr.write("\n\x1b[1;32mGenerating the k-mer feature vector.\n")
+    sys.stderr.flush()
     Samples.get_feature_vector()
-    sys.stderr.write("Mapping samples to the feature vector space:\n")
+    sys.stderr.write("\x1b[1;32mMapping samples to the feature vector space:\n")
+    sys.stderr.flush()
     stderr_print.currentSampleNum.value = 0
     Input.pool.map(
         lambda x: x.map_samples(), Input.samples.values()
         )
     if not args.no_weights:
-        sys.stderr.write("\nEstimating the Mash distances between samples...\n")
+        sys.stderr.write("\n\x1b[1;32mEstimating the Mash distances between samples...\n")
+        sys.stderr.flush()
         Input.pool.map(
             lambda x: x.get_mash_sketches(), Input.samples.values()
             )
@@ -1615,7 +1626,8 @@ def modeling(args):
         lambda x:  x.test_kmers_association_with_phenotype(), 
         Input.phenotypes_to_analyse.values()
         ))
-    sys.stderr.write("Filtering the k-mers by p-value:\n")
+    sys.stderr.write("\x1b[1;32mFiltering the k-mers by p-value:\n")
+    sys.stderr.flush()
     list(map(
         lambda x:  x.get_kmers_filtered(), 
         Input.phenotypes_to_analyse.values()
@@ -1631,8 +1643,9 @@ def modeling(args):
     call(['rm', '-r', 'K-mer_lists'])
 
     if not args.no_assembly:
-        sys.stderr.write("Assembling the k-mers used in modeling of " 
+        sys.stderr.write("\x1b[1;32mAssembling the k-mers used in modeling of " 
             + Samples.phenotypes[0] + " data...\n")
+        sys.stderr.flush()
         map(
             lambda x: x.assembling(),
             Input.phenotypes_to_analyse.values()
