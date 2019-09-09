@@ -321,7 +321,7 @@ class Samples():
         dist_mat = cls._distance_matrix_modifier("distances.mat")
         cls._distance_matrix_to_phyloxml(list(Input.samples.keys()), dist_mat)   
         cls._phyloxml_to_newick("tree_xml.txt")
-        stderr_print("\x1b[1;32Calculating the Gerstein Sonnhammer Coathia " \
+        stderr_print("\x1b[1;32mCalculating the Gerstein Sonnhammer Coathia " \
             "weights from mash distance matrix...\x1b[0m")
         weights = cls.GSC_weights_from_newick("tree_newick.txt", normalize="mean1")
         for key, value in weights.items():
@@ -1584,8 +1584,8 @@ class phenotypes():
 def modeling(args):
     # The main function of "phenotypeseeker modeling"
 
-    sys.stderr.write("\x1b[1;1;101m\t### PhenotypeSeeker ###\t\x1b[0m\n")
-    sys.stderr.write("\x1b[1;1;101m\t###    modeling     ###\t\x1b[0m\n\n")
+    sys.stderr.write("\x1b[1;1;101m\t### PhenotypeSeeker ###\t\t\x1b[0m\n")
+    sys.stderr.write("\x1b[1;1;101m\t###    modeling     ###\t\t\x1b[0m\n\n")
 
     # Processing the input data
     Input.get_input_data(args.inputfile, args.take_logs)
