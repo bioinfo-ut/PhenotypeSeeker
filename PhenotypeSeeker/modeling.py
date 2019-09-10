@@ -483,7 +483,6 @@ class phenotypes():
     # Machine learning parameters
     model = None
     best_model = None
-    clf = None
     penalty = None
     max_iter = None
     tol = None
@@ -495,14 +494,7 @@ class phenotypes():
     kernel = None
     n_iter = None
     n_splits_cv_inner = None
-    xgb_train = None
-    xgb_test = None
     testset_size = None
-
-    # ML output file holders
-    summary_file = None
-    coeff_file = None
-    model_file = None
 
     def __init__(self, name):
         self.name = name
@@ -533,6 +525,10 @@ class phenotypes():
             "DFA": [], "Acc": [], "Sn": [], "Sp": [], "AUCROC": [], "Pr": [], "MCC": [],
             "kappa": [],"VME": [], "ME": [], "F1_sc": []
             }
+        # ML output file holders
+        self.summary_file = None
+        self.coeff_file = None
+        self.model_file = None
 
     # -------------------------------------------------------------------
     # Functions for calculating the association test results for kmers.
@@ -1640,10 +1636,10 @@ def modeling(args):
         for item in vector:
             call(['rm', item])
     phenotypes.start_modeling()
-    list(map(
+    Input.pool.map(
         lambda x: x.machine_learning_modelling(),
         Input.phenotypes_to_analyse.values()
-        ))
+        )
     call(['rm', '-r', 'K-mer_lists'])
 
     if not args.no_assembly:
