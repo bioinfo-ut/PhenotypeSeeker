@@ -481,8 +481,6 @@ class phenotypes():
     B = None
 
     # Machine learning parameters
-    model = None
-    best_model = None
     penalty = None
     max_iter = None
     tol = None
@@ -525,6 +523,8 @@ class phenotypes():
             "DFA": [], "Acc": [], "Sn": [], "Sp": [], "AUCROC": [], "Pr": [], "MCC": [],
             "kappa": [],"VME": [], "ME": [], "F1_sc": []
             }
+        self.model = None
+        self.best_model = None
         # ML output file holders
         self.summary_file = None
         self.coeff_file = None
@@ -911,20 +911,12 @@ class phenotypes():
                 \tNo._of_samples_with_k-mer\tSamples_with_k-mer\n"
                 )
 
-    @classmethod
-    def split_df(cls, df):
-        return df.iloc[:,0:-2], df.iloc[:,-2:-1], df.iloc[:,-1:]
-
     def machine_learning_modelling(self):
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
         sys.stderr.flush()
         self.set_model()
         self.set_hyperparameters()
         self.get_best_model()
-        print(self.model_name_short)
-        print(self.model_name_long)
-        print(self.model)
-        print(self.best_model)
         return
         self.get_outputfile_names()
         if len(self.kmers_for_ML) == 0:
@@ -1046,6 +1038,10 @@ class phenotypes():
         self.summary_file.close()
         self.coeff_file.close()
         self.model_file.close()
+
+    @classmethod
+    def split_df(cls, df):
+        return df.iloc[:,0:-2], df.iloc[:,-2:-1], df.iloc[:,-1:]
 
     def set_model(self):
         if self.scale == "continuous":
@@ -1632,21 +1628,12 @@ def modeling(args):
     for vector in phenotypes.vectors_as_multiple_input:
         for item in vector:
             call(['rm', item])
-    input()
     sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
     sys.stderr.flush()
-    print(phenotypes.model_name_short)
-    print(phenotypes.model_name_long)
-    print(phenotypes.model)
-    print(phenotypes.best_model)
     Input.pool.map(
         lambda x: x.machine_learning_modelling(),
         Input.phenotypes_to_analyse.values()
         )
-    print(phenotypes.model_name_short)
-    print(phenotypes.model_name_long)
-    print(phenotypes.model)
-    print(phenotypes.best_model)
 
     call(['rm', '-r', 'K-mer_lists'])
 
