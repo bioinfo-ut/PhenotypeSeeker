@@ -1036,6 +1036,14 @@ class phenotypes():
     def machine_learning_modelling(self):
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
         sys.stderr.flush()
+        print(phenotypes.model_name_short)
+        print(phenotypes.model_name_long)
+        print(phenotypes.model)
+        print(phenotypes.best_model)
+        print(self.model_name_short)
+        print(self.model_name_long)
+        print(self.model)
+        print(self.best_model)
         self.get_outputfile_names()
         if len(self.kmers_for_ML) == 0:
             self.summary_file.write("No k-mers passed the step of k-mer filtering for " \
@@ -1637,6 +1645,10 @@ def modeling(args):
             call(['rm', item])
     input()
     phenotypes.start_modeling()
+    print(phenotypes.model_name_short)
+    print(phenotypes.model_name_long)
+    print(phenotypes.model)
+    print(phenotypes.best_model)
     Input.pool.map(
         lambda x: x.machine_learning_modelling(),
         Input.phenotypes_to_analyse.values()
