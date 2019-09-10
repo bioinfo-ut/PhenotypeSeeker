@@ -1653,6 +1653,11 @@ def modeling(args):
         lambda x: x.machine_learning_modelling(),
         Input.phenotypes_to_analyse.values()
         )
+    print(phenotypes.model_name_short)
+    print(phenotypes.model_name_long)
+    print(phenotypes.model)
+    print(phenotypes.best_model)
+    
     call(['rm', '-r', 'K-mer_lists'])
 
     if not args.no_assembly:
