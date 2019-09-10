@@ -1033,7 +1033,7 @@ class phenotypes():
     def split_df(cls, df):
         return df.iloc[:,0:-2], df.iloc[:,-2:-1], df.iloc[:,-1:]
 
-    def machine_learning_modelling(self):
+    def machine_learning_modelling(self, model, best_model):
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
         sys.stderr.flush()
         print(phenotypes.model_name_short)
@@ -1044,6 +1044,10 @@ class phenotypes():
         print(self.model_name_long)
         print(self.model)
         print(self.best_model)
+        print(model_name_short)
+        print(model_name_long)
+        print(model)
+        print(best_model)
         return
         self.get_outputfile_names()
         if len(self.kmers_for_ML) == 0:
@@ -1652,7 +1656,8 @@ def modeling(args):
     print(phenotypes.best_model)
     Input.pool.map(
         lambda x: x.machine_learning_modelling(),
-        Input.phenotypes_to_analyse.values()
+        Input.phenotypes_to_analyse.values(),
+        phenotypes.model, phenotypes.best_model
         )
     print(phenotypes.model_name_short)
     print(phenotypes.model_name_long)
