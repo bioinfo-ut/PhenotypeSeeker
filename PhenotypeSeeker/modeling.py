@@ -1635,7 +1635,7 @@ def modeling(args):
     for vector in phenotypes.vectors_as_multiple_input:
         for item in vector:
             call(['rm', item])
-    raw_input()
+    input()
     phenotypes.start_modeling()
     Input.pool.map(
         lambda x: x.machine_learning_modelling(),
