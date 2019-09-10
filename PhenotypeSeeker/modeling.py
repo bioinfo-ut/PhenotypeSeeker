@@ -60,6 +60,7 @@ class Input():
                     sys.stderr.write("\x1b[1;1mWarning! It seems that the input file " \
                         "is missing the header row!\n")
                     sys.stderr.flush()
+                    break
                 except ValueError:
                     pass
             for line in inputfile:

@@ -201,8 +201,8 @@ def Main():
     regression_models.add_argument(
         "--logreg_solver", "-ls", metavar="", type=str, default=None,
         help='''Algorithm to use in the logistic regression optimization problem.
-        For L2 penalty – 'liblinear', 'newton-cg’, ‘lbfgs’ (default), ‘sag’ or ‘saga’ solvers.
-        For L1 penalty – ‘liblinear’ (default) or ‘saga’ solvers.'''
+        For L2 penalty - 'liblinear', 'newton-cg', 'lbfgs' (default), 'sag' or 'saga' solvers.
+        For L1 penalty - 'liblinear' (default) or 'saga' solvers.'''
         )
     regression_models.add_argument(
         '--l1_ratio', metavar='', type=float, default=0.5,
@@ -216,7 +216,7 @@ def Main():
         Must be at least 2 (default = None). The sizes of the training and \
         test set in each fold are ((nr of splits-1)/nr of splits) and \
         (1/nr of splits) respectively. Conflicts with 1-fold train/test split \
-        specifying method – "-s", "--testset_size"!'
+        specifying method - "-s", "--testset_size"!'
     	)
     train_test_split.add_argument(
         '-ts', "--testset_size", metavar="", type=float, default=None,
@@ -224,7 +224,7 @@ def Main():
         Represents the proportion of the dataset to include in the test split. \
         Should be a float between 0.0 and 1.0 (default 0.25). Train set size is \
         complement of the test set size. Conflicts with multiple-fold train/test \
-        split specifying method – "-cv1"/"--n_splits_cv_outer"!'
+        split specifying method - "-cv1"/"--n_splits_cv_outer"!'
         )
     regression_models.add_argument(
         "-tow", "--train_on_whole", action='store_true',
