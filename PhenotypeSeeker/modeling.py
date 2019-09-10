@@ -1641,7 +1641,7 @@ def modeling(args):
         for item in vector:
             call(['rm', item])
     input()
-    sys.stderr.write("\x1b[1;32mGenerating the " + cls.model_name_long + " model for phenotype: \x1b[0m\n")
+    sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
     sys.stderr.flush()
     print(phenotypes.model_name_short)
     print(phenotypes.model_name_long)
