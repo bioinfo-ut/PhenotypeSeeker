@@ -921,18 +921,10 @@ class phenotypes():
         self.set_model()
         self.set_hyperparameters()
         self.get_best_model()
-        print(phenotypes.model_name_short)
-        print(phenotypes.model_name_long)
-        print(phenotypes.model)
-        print(phenotypes.best_model)
         print(self.model_name_short)
         print(self.model_name_long)
         print(self.model)
         print(self.best_model)
-        print(model_name_short)
-        print(model_name_long)
-        print(model)
-        print(best_model)
         return
         self.get_outputfile_names()
         if len(self.kmers_for_ML) == 0:
