@@ -917,7 +917,6 @@ class phenotypes():
         self.set_model()
         self.set_hyperparameters()
         self.get_best_model()
-        return
         self.get_outputfile_names()
         if len(self.kmers_for_ML) == 0:
             self.summary_file.write("No k-mers passed the step of k-mer filtering for " \
