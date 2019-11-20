@@ -60,7 +60,7 @@ def kmer_filtering_by_freq_cutoff_in_sample(
                             list1[2] = "0"
                             f2.write("\t".join(list1)+"\n")
 
-def map_samples_prediction(samples_info, kmer_length, phenotypes_to_predict):
+def map_samples_prediction(samples_info, phenotypes_to_predict):
     # Takes k-mers of model as feature space and maps input samples 
     # k-mer lists to that feature space. A vector of k-mers frequency 
     # information is created for every sample.
@@ -142,7 +142,7 @@ def prediction(args):
     
     get_kmers(phenotypes_to_predict)
     format_kmer_db(phenotypes_to_predict)
-    map_samples_prediction(samples, args.l, phenotypes_to_predict)
+    map_samples_prediction(samples, phenotypes_to_predict)
     kmer_filtering_by_freq_cutoff_in_sample(
         samples, args.c, phenotypes_to_predict)
     vectors_to_matrix_prediction(samples_order, phenotypes_to_predict
