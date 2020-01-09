@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 __author__ = "Erki Aun"
-__version__ = "0.5.2"
+__version__ = "0.5.3"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
@@ -37,7 +37,6 @@ import xgboost as xgb
 import Bio
 import numpy as np
 import pandas as pd
-import sklearn.datasets
 
 class Input():
 
@@ -1171,11 +1170,11 @@ class phenotypes():
         self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
         self.ML_df.to_csv(self.name + "_" + self.model_name_short + "_df.csv")
         #self.ML_df = self.ML_df.T.drop_duplicates().T
-        self.skl_dataset = sklearn.datasets.base.Bunch(
-            data=self.ML_df.iloc[:,0:-2].values, target=self.ML_df['phenotype'].values,
-            target_names=np.array(["resistant", "sensitive"]),
-            feature_names=self.ML_df.iloc[:,0:-2].columns.values
-            )
+        # self.skl_dataset = sklearn.datasets.base.Bunch(
+        #     data=self.ML_df.iloc[:,0:-2].values, target=self.ML_df['phenotype'].values,
+        #     target_names=np.array(["resistant", "sensitive"]),
+        #     feature_names=self.ML_df.iloc[:,0:-2].columns.values
+        #     )
 
         if phenotypes.scale == "continuous":
             self.ML_df['phenotype'] = self.ML_df['phenotype'].astype(float)  
