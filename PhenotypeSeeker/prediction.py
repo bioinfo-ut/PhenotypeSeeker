@@ -109,9 +109,7 @@ def predict(samples_order, phenotypes_to_predict):
         kmers_presence_matrix = []
         with open("K-mer_lists/k-mer_matrix_" + phenotype  + ".txt") as f1:
             for line in f1:
-                kmers_presence_matrix.append(map(
-                    lambda x: 0 if x == 0 else 1, map(int, line.split())
-                    ))
+                kmers_presence_matrix.append([0 if int(x) == 0 else 1 for x in line.split()])
         kmers_presence_matrix = np.array(kmers_presence_matrix).transpose()
         
         #Loading regression model
