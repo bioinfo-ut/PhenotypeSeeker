@@ -1552,10 +1552,9 @@ class phenotypes():
         #Open files to write the results of k-mer assembling
         if Samples.no_phenotypes > 1:
             f1 = open("assembled_kmers_" + self.name + ".fasta", "w+")
-            sys.stderr.write("\x1b[1;32m\tof " + self.name + " data...\x1b[0m\n")
+            sys.stderr.write("\x1b[1;32m\t" + self.name + " data...\x1b[0m\n")
             sys.stderr.flush()
-        else:
-            f1 = open("assembled_kmers.fasta", "w+")
+            
         if len(self.kmers_for_ML) == 0:
             f1.write("No k-mers passed the step of k-mer selection for \
                 assembling.\n")
@@ -1637,10 +1636,9 @@ def modeling(args):
     call(['rm', '-r', 'K-mer_lists'])
 
     if not args.no_assembly:
-        sys.stderr.write("\x1b[1;32mAssembling the k-mers used in modeling of " 
-            + Samples.phenotypes[0] + " data...\x1b[0m\n")
+        sys.stderr.write("\x1b[1;32mAssembling the k-mers used in modeling of: \x1b[0m\n")
         sys.stderr.flush()
-        map(
+        Input.pool.map(
             lambda x: x.assembling(),
             Input.phenotypes_to_analyse.values()
             )
