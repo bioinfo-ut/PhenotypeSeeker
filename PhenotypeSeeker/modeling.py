@@ -1269,9 +1269,10 @@ class phenotypes():
             metrics_dict["PeCC"].append(PeCC)
             metrics_dict["Pe_pval"].append(Pe_pval)
 
-        DFA = self.within_1_tier_accuracy(labels, predictions).round(2)
+        DFA = self.within_1_tier_accuracy(labels, predictions)
         self.summary_file.write(
-            "The plus/minus 1 dilution factor accuracy (for MICs):" " %s \n\n" % DFA
+            "The plus/minus 1 dilution factor accuracy (for MICs):" \
+            " %s \n\n" % DFA
             )
         if metrics_dict:
             metrics_dict["DFA"].append(DFA)
@@ -1347,12 +1348,12 @@ class phenotypes():
         if metrics_dict:
             metrics_dict["kappa"].append(kappa)
 
-        VME = round(self.VME(labels, predictions), 2)
+        VME = self.VME(labels, predictions)
         self.summary_file.write("Very major error rate: %s\n" % VME)
         if metrics_dict:
             metrics_dict["VME"].append(VME)
 
-        ME = round(self.ME(labels, predictions), 2)
+        ME = self.ME(labels, predictions)
         self.summary_file.write("Major error rate: %s\n" % ME)
         if metrics_dict:
             metrics_dict["ME"].append(ME)
@@ -1459,7 +1460,7 @@ class phenotypes():
         for item in zip(targets, predictions):
             if abs(item[0]-item[1]) <= 1:
                 within_1_tier +=1
-        accuracy = float(within_1_tier)/len(targets)
+        accuracy = round(float(within_1_tier)/len(targets), 2)
         return accuracy
 
     # Assembly methods
