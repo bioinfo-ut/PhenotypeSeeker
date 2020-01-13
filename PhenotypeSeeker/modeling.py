@@ -63,10 +63,11 @@ class Input():
                 except ValueError:
                     pass
             for line in inputfile:
-                sample_name = line.split()[0]
-                cls.samples[sample_name] = (
-                    Samples.from_inputfile(line)
-                    )
+                if line.strip():
+                    sample_name = line.split()[0]
+                    cls.samples[sample_name] = (
+                        Samples.from_inputfile(line)
+                        )
 
     # ---------------------------------------------------------
     # Set parameters for multithreading
@@ -891,7 +892,7 @@ class phenotypes():
                         / nr_of_kmers_tested) * self.pvalue_cutoff
                         ):
                     pvalue_cutoff_by_FDR = pvalue
-                elif index > pvalue:
+                elif pvalue > self.pvalue_cutoff:
                     break
             self.pvalue_cutoff = pvalue_cutoff_by_FDR
 
