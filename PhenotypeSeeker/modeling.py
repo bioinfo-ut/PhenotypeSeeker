@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 __author__ = "Erki Aun"
-__version__ = "0.5.3"
+__version__ = "0.5.4"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
@@ -891,7 +891,7 @@ class phenotypes():
                         / nr_of_kmers_tested) * self.pvalue_cutoff
                         ):
                     pvalue_cutoff_by_FDR = pvalue
-                elif item > pvalue:
+                elif index > pvalue:
                     break
             self.pvalue_cutoff = pvalue_cutoff_by_FDR
 
