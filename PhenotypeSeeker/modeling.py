@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 __author__ = "Erki Aun"
-__version__ = "0.5.4"
+__version__ = "0.5.5"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
@@ -1604,7 +1604,7 @@ def modeling(args):
         lambda x: x.map_samples(), Input.samples.values()
         )
     if not args.no_weights:
-        mash_files = ["distances.mat", "reference.msh", "mash_distances.mat]:
+        mash_files = ["distances.mat", "reference.msh", "mash_distances.mat"]
         for mash_file in mash_files:
             if os.path.exists(mash_file):
                 os.remove(mash_file)
