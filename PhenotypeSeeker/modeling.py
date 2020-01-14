@@ -8,6 +8,7 @@ __email__ = "erki.aun@ut.ee"
 from itertools import chain, permutations
 from subprocess import call, Popen, PIPE, check_output
 import math
+import os
 import sys
 import warnings
 warnings.showwarning = lambda *args, **kwargs: None
@@ -1604,7 +1605,7 @@ def modeling(args):
         lambda x: x.map_samples(), Input.samples.values()
         )
     if not args.no_weights:
-        mash_files = ["distances.mat", "reference.msh", "mash_distances.mat"]
+        mash_files = ["distances.mat", "reference.msh", "mash_distances.mat]
         for mash_file in mash_files:
             if os.path.exists(mash_file):
                 os.remove(mash_file)
