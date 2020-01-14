@@ -1604,6 +1604,11 @@ def modeling(args):
         lambda x: x.map_samples(), Input.samples.values()
         )
     if not args.no_weights:
+        mash_files = ["distances.mat", "reference.msh", "mash_distances.mat]:
+        for mash_file in mash_files:
+            if os.path.exists(mash_file):
+                os.remove(mash_file)
+                sys.stderr.write("\n\x1b[1;32mDeleting the existing" + mash_file + "file...\x1b[0m\n")
         sys.stderr.write("\n\x1b[1;32mEstimating the Mash distances between samples...\x1b[0m\n")
         sys.stderr.flush()
         Input.pool.map(
