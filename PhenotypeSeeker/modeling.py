@@ -1551,10 +1551,9 @@ class phenotypes():
 
 
         #Open files to write the results of k-mer assembling
-        if Samples.no_phenotypes > 1:
-            f1 = open("assembled_kmers_" + self.name + ".fasta", "w+")
-            sys.stderr.write("\x1b[1;32m\t" + self.name + " data.\x1b[0m\n")
-            sys.stderr.flush()
+        f1 = open("assembled_kmers_" + self.name + ".fasta", "w+")
+        sys.stderr.write("\x1b[1;32m\t" + self.name + " data.\x1b[0m\n")
+        sys.stderr.flush()
 
         if len(self.kmers_for_ML) == 0:
             f1.write("No k-mers passed the step of k-mer selection for \
@@ -1609,7 +1608,7 @@ def modeling(args):
         for mash_file in mash_files:
             if os.path.exists(mash_file):
                 os.remove(mash_file)
-                sys.stderr.write("\n\x1b[1;32mDeleting the existing" + mash_file + "file...\x1b[0m\n")
+                sys.stderr.write("\n\x1b[1;32mDeleting the existing" + mash_file + "file...\x1b[0m")
         sys.stderr.write("\n\x1b[1;32mEstimating the Mash distances between samples...\x1b[0m\n")
         sys.stderr.flush()
         Input.pool.map(
