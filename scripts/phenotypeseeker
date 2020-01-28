@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 __author__ = "Erki Aun"
-__version__ = "0.5.4"
+__version__ = "0.5.5"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
@@ -36,7 +36,7 @@ def Main():
     parser._positionals.title = 'Required option'
 
     other2 = parser.add_argument_group('Other options')
-    other2.add_argument('--version', action='version', version='%(prog)s 0.5.4')
+    other2.add_argument('--version', action='version', version='%(prog)s 0.5.5')
     other2.add_argument(
     	'-h', '--help', action=_HelpAction,
     	help='Show this help message and exit.'
@@ -219,7 +219,7 @@ def Main():
         specifying method - "-s", "--testset_size"!'
     	)
     train_test_split.add_argument(
-        '-ts', "--testset_size", metavar="", type=float, default=None,
+        '-ts', "--testset_size", metavar="", type=float, default=0.25,
         help='The size of the test set in 1-fold train/test data splitting. \
         Represents the proportion of the dataset to include in the test split. \
         Should be a float between 0.0 and 1.0 (default 0.25). Train set size is \
