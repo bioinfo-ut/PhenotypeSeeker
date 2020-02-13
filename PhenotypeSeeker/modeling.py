@@ -1608,7 +1608,7 @@ def modeling(args):
         for mash_file in mash_files:
             if os.path.exists(mash_file):
                 os.remove(mash_file)
-                sys.stderr.write("\n\x1b[1;32mDeleting the existing" + mash_file + "file...\x1b[0m")
+                sys.stderr.write("\n\x1b[1;32mDeleting the existing " + mash_file + "file...\x1b[0m")
         sys.stderr.write("\n\x1b[1;32mEstimating the Mash distances between samples...\x1b[0m\n")
         sys.stderr.flush()
         Input.pool.map(
