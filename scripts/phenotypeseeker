@@ -292,7 +292,11 @@ def Main():
     parser_b.set_defaults(func=prediction.prediction)
 
     args = parser.parse_args()
-    args.func(args)
+    try:
+        func = args.func(args)
+    except AttributeError:
+        parser.error("too few arguments")
+        parser.exit()
 
     
 
