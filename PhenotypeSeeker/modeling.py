@@ -1256,14 +1256,14 @@ class phenotypes():
         if metrics_dict:
             metrics_dict["CoD"].append(CoD)
 
-        SpCC, Sp_pval = map(lambda x: x.round(2), stats.spearmanr(labels, predictions))
+        SpCC, Sp_pval = map(lambda x: round(x, 2), stats.spearmanr(labels, predictions))
         self.summary_file.write("The Spearman correlation coefficient and p-value:" \
             " %s, %s \n" % (SpCC, Sp_pval))
         if metrics_dict:
             metrics_dict["SpCC"].append(SpCC)
             metrics_dict["Sp_pval"].append(Sp_pval)
 
-        PeCC, Pe_pval = map(lambda x: x.round(2), stats.pearsonr(labels, predictions))
+        PeCC, Pe_pval = map(lambda x: round(x, 2), stats.pearsonr(labels, predictions))
         self.summary_file.write("The Pearson correlation coefficient and p-value: " \
                 " %s, %s \n" % (PeCC, Pe_pval))
         if metrics_dict:
