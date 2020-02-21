@@ -987,7 +987,7 @@ class phenotypes():
             if phenotypes.scale == "continuous":
                 stratify = None
             elif phenotypes.scale == "binary":
-                stratify = self.skl_dataset.target
+                stratify = self.ML_df['phenotype'].values
             (
             self.ML_df_train, self.ML_df_test
             ) = train_test_split(
