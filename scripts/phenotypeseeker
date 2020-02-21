@@ -292,11 +292,13 @@ def Main():
     parser_b.set_defaults(func=prediction.prediction)
 
     args = parser.parse_args()
-    # try:
-    func = args.func(args)
-    # except AttributeError:
-    #     parser.error("too few arguments")
-    #     parser.exit()
+    try:
+        func = args.func(args)
+    except AttributeError as e:
+        print(str(e))
+        if str(e) == "'Namespace' object has no attribute 'func'":
+            parser.error("too few arguments")
+            parser.exit()
 
     
 
