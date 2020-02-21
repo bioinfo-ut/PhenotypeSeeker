@@ -298,7 +298,8 @@ def Main():
         if str(e) == "'Namespace' object has no attribute 'func'":
             parser.error("too few arguments")
             parser.exit()
-
+        else:
+            print(str(e))
     
 
 
