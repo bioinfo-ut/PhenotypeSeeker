@@ -295,7 +295,6 @@ def Main():
     try:
         func = args.func(args)
     except AttributeError as e:
-        print(str(e))
         if str(e) == "'Namespace' object has no attribute 'func'":
             parser.error("too few arguments")
             parser.exit()
