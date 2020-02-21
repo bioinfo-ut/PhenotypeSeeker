@@ -299,7 +299,7 @@ def Main():
             parser.error("too few arguments")
             parser.exit()
         else:
-            print(str(e))
+            print(traceback.format_exc())
     
 
 
