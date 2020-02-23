@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 __author__ = "Erki Aun"
-__version__ = "0.5.5"
+__version__ = "0.6"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
@@ -12,6 +12,12 @@ import os
 import sys
 import warnings
 warnings.showwarning = lambda *args, **kwargs: None
+
+import pkg_resources
+pkg_resources.require(
+    "numpy==1.18.1", "Bio==1.76", "pandas==1.0.1", "xgboost==1.0.1", "scipy=1.4.1",
+    "sklearn==0.22.1", "ete3==3.1.1", "multiprocess==0.70.9"
+    )
 
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor, _DistanceMatrix
 from collections import Counter, OrderedDict
