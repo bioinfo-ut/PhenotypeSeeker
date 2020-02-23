@@ -10,6 +10,9 @@ import math
 import warnings
 warnings.showwarning = lambda *args, **kwargs: None
 
+import pkg_resources
+pkg_resources.require("numpy==1.18.1", "scikit-learn==0.22.1")
+
 import numpy as np
 from sklearn.externals import joblib
 
