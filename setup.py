@@ -3,7 +3,7 @@
 from setuptools import setup
 
 setup(name = 'PhenotypeSeeker',
-      version ='0.6',
+      version ='0.6.1',
       description = 'Identifies phenotype-specific k-mers, creates phenotype \
           prediction models and using this model predicts phenotype from \
           sequenced bacterial strains',

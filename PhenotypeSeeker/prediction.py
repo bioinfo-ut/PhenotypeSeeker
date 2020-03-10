@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 __author__ = "Erki Aun"
-__version__ = "0.6"
+__version__ = "0.6.1"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
