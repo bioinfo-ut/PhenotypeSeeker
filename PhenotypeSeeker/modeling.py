@@ -1256,7 +1256,7 @@ class phenotypes():
         if metrics_dict:
             metrics_dict["MSE"].append(MSE)
 
-        CoD = self.model_fitted.score(dataset.values, labels).round(2)
+        CoD = round(self.model_fitted.score(dataset.values, labels), 2)
         self.summary_file.write("The coefficient of determination:"
             + " %s\n" % CoD)
         if metrics_dict:
