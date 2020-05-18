@@ -932,6 +932,11 @@ class phenotypes():
 
         if self.n_splits_cv_outer:
             if phenotypes.scale == "continuous":
+                if (self.n_splits_cv_outer // Samples.no_samples) < 2:
+                    self.summary_file.write(
+                        '\nThe selected "--n_splits_cv_outer" parameter (%s) is too large for the number of input samples (%s).\n \
+                        Setting the "--n_splits_cv_outer" parameter to (%s)'
+                        )
                 kf = KFold(n_splits=self.n_splits_cv_outer)               
             elif phenotypes.scale == "binary":
                 if np.min(np.bincount(self.ML_df['phenotype'].values)) < self.n_splits_cv_outer:
@@ -1614,7 +1619,7 @@ def modeling(args):
         for mash_file in mash_files:
             if os.path.exists(mash_file):
                 os.remove(mash_file)
-                sys.stderr.write("\n\x1b[1;32mDeleting the existing " + mash_file + "file...\x1b[0m")
+                sys.stderr.write("\n\x1b[1;32mDeleting the existing " + mash_file + " file...\x1b[0m")
         sys.stderr.write("\n\x1b[1;32mEstimating the Mash distances between samples...\x1b[0m\n")
         sys.stderr.flush()
         Input.pool.map(
