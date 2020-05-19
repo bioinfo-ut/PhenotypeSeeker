@@ -118,7 +118,7 @@ class Input():
         phenotypes.max_iter = max_iter
         phenotypes.tol = tol
         phenotypes.l1_ratio = l1_ratio
-        phenotypes.n_splits_cv_outer = n_splits_cv_outer
+        cls.get_n_splits_cv_outer(n_splits_cv_outer)
         phenotypes.kernel = kernel
         phenotypes.n_iter = n_iter
         phenotypes.n_splits_cv_inner = n_splits_cv_inner
