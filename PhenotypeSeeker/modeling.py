@@ -133,10 +133,9 @@ class Input():
         if phenotypes.scale == "continuous":
             if n_splits_cv_outer > Samples.no_samples // 2:
                 phenotypes.n_splits_cv_outer = Samples.no_samples // 2
-                sys.stderr.write("\x1b[1;32mWarning! The 'n_splits_cv_outer' parameter is too high to \n" \
+                sys.stderr.write("\x1b[1;33mWarning! The 'n_splits_cv_outer' parameter is too high to \n" \
                         "leave the required 2 samples into test set for each split!\x1b[0m\n")
-                sys.stderr.write("\x1b[1;32mLowering the 'n_splits_cv_outer' parameter to " + str(phenotypes.n_splits_cv_outer) + "!\x1b[0m\n")
-                sys.stderr.write("\x1b[1;32mGenerating the  model for phenotype: \x1b[0m\n")
+                sys.stderr.write("\x1b[1;33mLowering the 'n_splits_cv_outer' parameter to " + str(phenotypes.n_splits_cv_outer) + "!\x1b[0m\n\n")
 
     @staticmethod
     def get_model_name(regressor, binary_classifier):
