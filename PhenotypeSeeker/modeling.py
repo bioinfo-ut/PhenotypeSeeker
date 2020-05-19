@@ -63,8 +63,8 @@ class Input():
             for pheno in Samples.phenotypes:
                 try:
                     float(pheno)
-                    sys.stderr.write("\x1b[1;1mWarning! It seems that the input file " \
-                        "is missing the header row!\n")
+                    sys.stderr.write("\x1b[1;33mWarning! It seems that the input file " \
+                        "is missing the header row!\x1b[0m\n")
                     sys.stderr.flush()
                     break
                 except ValueError:
@@ -992,7 +992,7 @@ class phenotypes():
                 self.summary_file.write(
                     "\nMean performance metrics over all test splits: \n\n"
                     )
-                self.mean_model_performance_regressor(metrics_dict_test)
+                self.mean_model_performance_regressor(self.metrics_dict_test)
             elif self.scale == "binary":
                 self.summary_file.write(
                     "\nMean performance metrics over all train splits: \n\n"
