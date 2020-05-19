@@ -1303,7 +1303,7 @@ class phenotypes():
         MSE = np.mean(metrics_dict["MSE"]).round(2)
         self.summary_file.write('\nMean squared error: %s\n' % MSE)
 
-        CoD = np.mean(metrics_dict["Cod"]).round(2)
+        CoD = np.mean(metrics_dict["CoD"]).round(2)
         self.summary_file.write("The coefficient of determination:"
             + " %s\n" % CoD)
 
