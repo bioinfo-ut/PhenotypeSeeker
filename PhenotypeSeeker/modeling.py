@@ -134,8 +134,8 @@ class Input():
             if n_splits_cv_outer > Samples.no_samples // 2:
                 phenotypes.n_splits_cv_outer = Samples.no_samples // 2
                 sys.stderr.write("\x1b[1;1mWarning! The 'n_splits_cv_outer' parameter is too high to \n" \
-                        "leave the required 2 samples into test set for each split!\n")
-                sys.stderr.write("\x1b[1;1mLowering the 'n_splits_cv_outer' parameter to " + str(phenotypes.n_splits_cv_outer) + "!\n")
+                        "leave the required 2 samples into test set for each split!\x1b[0m\n")
+                sys.stderr.write("\x1b[1;1mLowering the 'n_splits_cv_outer' parameter to " + str(phenotypes.n_splits_cv_outer) + "!\x1b[0m\n")
 
     @staticmethod
     def get_model_name(regressor, binary_classifier):
@@ -988,7 +988,7 @@ class phenotypes():
                 self.summary_file.write(
                     "\nMean performance metrics over all train splits: \n\n"
                     )
-                self.mean_model_performance_regressor(metrics_dict_train)
+                self.mean_model_performance_regressor(self.metrics_dict_train)
                 self.summary_file.write(
                     "\nMean performance metrics over all test splits: \n\n"
                     )
