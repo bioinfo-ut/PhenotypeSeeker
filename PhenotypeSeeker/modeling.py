@@ -129,6 +129,15 @@ class Input():
             logreg_solver)
 
     @staticmethod
+    def get_n_splits_cv_outer(n_splits_cv_outer):
+        if phenotypes.scale == "continuous":
+            if n_splits_cv_outer > Samples.no_samples // 2:
+                phenotypes.n_splits_cv_outer = Samples.no_samples // 2
+                sys.stderr.write("\x1b[1;1mWarning! The 'n_splits_cv_outer' parameter is too high to \n" \
+                        "leave the required 2 samples into test set for each split!\n")
+                sys.stderr.write("\x1b[1;1mLowering the 'n_splits_cv_outer' parameter to " + phenotypes.n_splits_cv_outer + "!\n")
+
+    @staticmethod
     def get_model_name(regressor, binary_classifier):
         if phenotypes.scale == "continuous":
             if regressor == "lin":
