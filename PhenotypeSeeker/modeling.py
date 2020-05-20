@@ -871,7 +871,11 @@ class phenotypes():
         phenotype = self.name
         nr_of_kmers_tested = float(len(self.pvalues))
         self.get_pvalue_cutoff(self.pvalues, nr_of_kmers_tested)
-        max_pvalue_by_limit = float('%.2E' % self.pvalues[self.kmer_limit-1])
+        reference = self.pvalues[self.kmer_limit]
+        counter = 1
+        while self.pvalues[self.kmer_limit-counter] == reference:
+            counter +=1
+        max_pvalue_by_limit = float('%.2E' % self.pvalues[self.kmer_limit-counter])
         del self.pvalues
 
         stderr_print.currentKmerNum.value = 0
@@ -950,11 +954,6 @@ class phenotypes():
 
         if self.n_splits_cv_outer:
             if phenotypes.scale == "continuous":
-                if (self.n_splits_cv_outer // Samples.no_samples) < 2:
-                    self.summary_file.write(
-                        '\nThe selected "--n_splits_cv_outer" parameter (%s) is too large for the number of input samples (%s).\n \
-                        Setting the "--n_splits_cv_outer" parameter to (%s)'
-                        )
                 kf = KFold(n_splits=self.n_splits_cv_outer)               
             elif phenotypes.scale == "binary":
                 if np.min(np.bincount(self.ML_df['phenotype'].values)) < self.n_splits_cv_outer:
