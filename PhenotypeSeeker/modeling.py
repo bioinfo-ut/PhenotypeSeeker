@@ -117,25 +117,34 @@ class Input():
         phenotypes.penalty = penalty.upper()
         phenotypes.max_iter = max_iter
         phenotypes.tol = tol
-        phenotypes.l1_ratio = l1_ratio
-        cls.get_n_splits_cv_outer(n_splits_cv_outer)
+        phenotypes.l1_ratio = l1_ratio      
         phenotypes.kernel = kernel
         phenotypes.n_iter = n_iter
-        phenotypes.n_splits_cv_inner = n_splits_cv_inner
         phenotypes.testset_size = testset_size
         phenotypes.train_on_whole = train_on_whole
         cls.get_model_name(regressor, binary_classifier)
+        cls.get_n_splits_cv_outer(n_splits_cv_outer)
+        cls.get_n_splits_cv_inner(n_splits_cv_inner)  
         phenotypes.logreg_solver = cls.get_logreg_solver(
             logreg_solver)
 
     @staticmethod
     def get_n_splits_cv_outer(n_splits_cv_outer):
-        if phenotypes.scale == "continuous":
-            if n_splits_cv_outer > Samples.no_samples // 2:
+        if phenotypes.scale == "continuous" and (n_splits_cv_outer > Samples.no_samples // 2):
                 phenotypes.n_splits_cv_outer = Samples.no_samples // 2
                 sys.stderr.write("\x1b[1;33mWarning! The 'n_splits_cv_outer' parameter is too high to \n" \
                         "leave the required 2 samples into test set for each split!\x1b[0m\n")
                 sys.stderr.write("\x1b[1;33mLowering the 'n_splits_cv_outer' parameter to " + str(phenotypes.n_splits_cv_outer) + "!\x1b[0m\n\n")
+        else:
+            phenotypes.n_splits_cv_outer = n_splits_cv_outer
+
+    @staticmethod
+    def get_n_splits_cv_inner(n_splits_cv_inner):
+        min_samps_in_train_set = Samples.no_samples - math.ceil(Samples.no_samples / phenotypes.n_splits_cv_outer)
+        if n_splits_cv_inner > min_samps_in_train_set:
+            phenotypes.n_splits_cv_inner = min_samps_in_train_set
+        else:
+            phenotypes.n_splits_cv_inner = n_splits_cv_inner
 
     @staticmethod
     def get_model_name(regressor, binary_classifier):
