@@ -153,8 +153,7 @@ VL_0145	1	1.0
 ```
 ## PhenotypeSeeker web tool
 
-</br> <span style="font-size:14pt;color:#7CFC00;">*Green text 1*
-</span>
+PhenotypeSeeker web-tool enabels to use a lot of pre-trained models to predict phenotypes from genome data.
 
 ## Contact
 If you require further assistance please contact us by sending email to
