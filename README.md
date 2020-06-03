@@ -153,7 +153,9 @@ VL_0145	1	1.0
 ```
 ## PhenotypeSeeker web tool
 
-PhenotypeSeeker web-tool enabels to use a lot of pre-trained models to predict phenotypes from genome data.
+PhenotypeSeeker web tool enabels to use phenotype predictive models pre-trained on large datasets.
+
+[Click here](http://bioinfo.ut.ee/PhenotypeSeeker) to visit PhenotypeSeeker webpage and use our web-tool for phenotype prediction from bacterial genome data.
 
 ## Contact
 If you require further assistance please contact us by sending email to
