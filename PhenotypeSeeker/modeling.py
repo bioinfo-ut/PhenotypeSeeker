@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 __author__ = "Erki Aun"
-__version__ = "0.6.1"
+__version__ = "0.6.2"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
@@ -123,8 +123,9 @@ class Input():
         phenotypes.testset_size = testset_size
         phenotypes.train_on_whole = train_on_whole
         cls.get_model_name(regressor, binary_classifier)
-        cls.get_n_splits_cv_outer(n_splits_cv_outer)
-        cls.get_n_splits_cv_inner(n_splits_cv_inner)  
+        if n_splits_cv_outer:
+            cls.get_n_splits_cv_outer(n_splits_cv_outer)
+            cls.get_n_splits_cv_inner(n_splits_cv_inner)  
         phenotypes.logreg_solver = cls.get_logreg_solver(
             logreg_solver)
 
