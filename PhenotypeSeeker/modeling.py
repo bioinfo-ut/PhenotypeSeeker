@@ -326,15 +326,9 @@ class Samples():
             [sample.address for sample in Input.samples.values()] + \
             [
             '-c', cls.cutoff, '-w', Samples.kmer_length, '-o', 'K-mer_lists/feature_vector'
-            ]
+            ].join(" ")
 
-        call(
-            ["glistmaker " + self.address + " -o K-mer_lists/" 
-            + self.name + " -w " + self.kmer_length + " -c " + self.cutoff], 
-            shell=True
-            )
-
-        call(glistmaker_args)
+        call(glistmaker_args, shell=True)
 
 
     # -------------------------------------------------------------------
