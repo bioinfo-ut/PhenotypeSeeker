@@ -106,6 +106,19 @@ def parse_prediction_input_file2(inputfilename):
             phenotypes_to_predict[list1[0]] = list1[1:]
     return(phenotypes_to_predict)
 
+def vectors_to_matrix_prediction(samples_order, phenotypes_to_predict):
+    # Takes all vectors with k-mer frequency information and inserts 
+    # them into matrix of dimensions "number of samples" x "number of 
+    # k-mers (features).
+    for phenotype in phenotypes_to_predict:
+        kmer_matrix = open("K-mer_lists/k-mer_matrix_" + phenotype  + ".txt", "w")
+        kmer_list_files = [
+            "K-mer_lists/" + item + "_k-mer_counts_filtered_" + phenotype
+            + ".txt" for item in samples_order
+            ]
+        for line in zip(*[open(item) for item in kmer_list_files]):
+            kmer_matrix.write('\t'.join([j.split()[2].strip() for j in line]) + "\n")
+
 def predict(samples_order, phenotypes_to_predict):
     # Generating a binary k-mer presence matrix
     for phenotype in phenotypes_to_predict:
@@ -149,16 +162,3 @@ def prediction(args):
     vectors_to_matrix_prediction(samples_order, phenotypes_to_predict
         )
     predict(samples_order, phenotypes_to_predict)            
-
-def vectors_to_matrix_prediction(samples_order, phenotypes_to_predict):
-    # Takes all vectors with k-mer frequency information and inserts 
-    # them into matrix of dimensions "number of samples" x "number of 
-    # k-mers (features).
-    for phenotype in phenotypes_to_predict:
-        kmer_matrix = open("K-mer_lists/k-mer_matrix_" + phenotype  + ".txt", "w")
-        kmer_list_files = [
-            "K-mer_lists/" + item + "_k-mer_counts_filtered_" + phenotype
-            + ".txt" for item in samples_order
-            ]
-        for line in zip(*[open(item) for item in kmer_list_files]):
-            kmer_matrix.write('\t'.join([j.split()[2].strip() for j in line]) + "\n")
