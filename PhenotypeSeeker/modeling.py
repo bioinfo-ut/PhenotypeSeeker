@@ -1601,7 +1601,7 @@ class phenotypes():
         for i, assembled_kmer in enumerate(assembled_kmers):
             coeff = 0
             Samples_w_assmbd_kmer = set()
-            for kmer_pos in range(len(assembled_kmer) - Samples.kmer_length + 1):
+            for kmer_pos in range(len(assembled_kmer) - int(Samples.kmer_length) + 1):
                 k_mer = assembled_kmer[0+kmer_pos:Samples.kmer_length+kmer_pos]
                 try:
                     running_coeff = self.df_for_coeffs[k_mer]
