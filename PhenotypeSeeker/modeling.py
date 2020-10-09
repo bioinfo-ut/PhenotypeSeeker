@@ -521,7 +521,7 @@ class phenotypes():
     testset_size = None
 
     def __init__(self, name):
-        self.df_for_coeffs
+        self.df_for_coeffs = None
         self.name = name
         self.pvalues = None
         self.kmers_for_ML = set()
@@ -1454,13 +1454,13 @@ class phenotypes():
             if self.kernel != "rbf":
                 self.df_for_coeffs.loc['coefficient'] = \
                     self.model_fitted.best_estimator_.coef_[0]
-        for kmer in df_for_coeffs:
+        for kmer in self.df_for_coeffs:
             if self.kernel == "rbf" or self.model_name_short == "NB":
                 kmer_coef = "NA"
             else:
                 kmer_coef = self.df_for_coeffs[kmer].loc['coefficient']
             samples_with_kmer = \
-                self.df_for_coeffs.loc[df_for_coeffs[kmer] == 1].index.tolist()
+                self.df_for_coeffs.loc[self.df_for_coeffs[kmer] == 1].index.tolist()
             self.coeff_file.write("%s\t%s\t%s\t| %s\n" % (
                 kmer, kmer_coef,
                 len(samples_with_kmer), " ".join(samples_with_kmer)
@@ -1605,10 +1605,10 @@ class phenotypes():
                 k_mer = assembled_kmer[0+kmer_pos:Samples.kmer_length+kmer_pos]
                 try:
                     running_coeff = self.df_for_coeffs[k_mer]
-                    Samples_w_assmbd_kmer.update(self.df_for_coeffs.loc[df_for_coeffs[kmer] == 1].index.tolist())
+                    Samples_w_assmbd_kmer.update(self.df_for_coeffs.loc[self.df_for_coeffs[kmer] == 1].index.tolist())
                 except:
                     running_coeff = self.df_for_coeffs[self.ReverseComplement(k_mer)]
-                    Samples_w_assmbd_kmer.update(self.df_for_coeffs.loc[df_for_coeffs[kmer] == 1].index.tolist())
+                    Samples_w_assmbd_kmer.update(self.df_for_coeffs.loc[self.df_for_coeffs[kmer] == 1].index.tolist())
                 if abs(running_coef) > coeff:
                     coeff = running_coeff
             f1.write(">seq_" + str(i+1) + "_length_" 
