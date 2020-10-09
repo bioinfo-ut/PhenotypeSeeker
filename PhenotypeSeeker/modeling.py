@@ -1602,7 +1602,7 @@ class phenotypes():
             coeff = 0
             Samples_w_assmbd_kmer = set()
             for kmer_pos in range(len(assembled_kmer) - int(Samples.kmer_length) + 1):
-                k_mer = assembled_kmer[0+kmer_pos:Samples.kmer_length+kmer_pos]
+                k_mer = assembled_kmer[0+kmer_pos:int(Samples.kmer_length)+kmer_pos]
                 try:
                     running_coeff = self.df_for_coeffs[k_mer]
                     Samples_w_assmbd_kmer.update(self.df_for_coeffs.loc[self.df_for_coeffs[kmer] == 1].index.tolist())
