@@ -521,6 +521,7 @@ class phenotypes():
     testset_size = None
 
     def __init__(self, name):
+        self.df_for_coeffs
         self.name = name
         self.pvalues = None
         self.kmers_for_ML = set()
@@ -555,7 +556,7 @@ class phenotypes():
         self.summary_file = None
         self.coeff_file = None
         self.model_file = None
-        
+
 
     # -------------------------------------------------------------------
     # Functions for calculating the association test results for kmers.
@@ -1439,27 +1440,27 @@ class phenotypes():
     def write_model_coefficients_to_file(self):
         self.coeff_file.write("K-mer\tcoef._in_" + self.model_name_short + \
             "_model\tNo._of_samples_with_k-mer\tSamples_with_k-mer\n")
-        df_for_coeffs = self.ML_df.iloc[:,0:-2]
+        self.df_for_coeffs = self.ML_df.iloc[:,0:-2]
         if self.model_name_short == "linreg":
-            df_for_coeffs.loc['coefficient'] = \
+            self.df_for_coeffs.loc['coefficient'] = \
                 self.model_fitted.best_estimator_.coef_
         elif self.model_name_short in ("RF"):
-            df_for_coeffs.loc['coefficient'] = \
+            self.df_for_coeffs.loc['coefficient'] = \
                 self.model_fitted.best_estimator_.feature_importances_
         elif self.model_name_short in ("XGBR", "XGBC"):
-            df_for_coeffs.loc['coefficient'] = \
+            self.df_for_coeffs.loc['coefficient'] = \
                 self.model_fitted.feature_importances_
         elif self.model_name_short in ("SVM", "log_reg"):
             if self.kernel != "rbf":
-                df_for_coeffs.loc['coefficient'] = \
+                self.df_for_coeffs.loc['coefficient'] = \
                     self.model_fitted.best_estimator_.coef_[0]
         for kmer in df_for_coeffs:
             if self.kernel == "rbf" or self.model_name_short == "NB":
                 kmer_coef = "NA"
             else:
-                kmer_coef = df_for_coeffs[kmer].loc['coefficient']
+                kmer_coef = self.df_for_coeffs[kmer].loc['coefficient']
             samples_with_kmer = \
-                df_for_coeffs.loc[df_for_coeffs[kmer] == 1].index.tolist()
+                self.df_for_coeffs.loc[df_for_coeffs[kmer] == 1].index.tolist()
             self.coeff_file.write("%s\t%s\t%s\t| %s\n" % (
                 kmer, kmer_coef,
                 len(samples_with_kmer), " ".join(samples_with_kmer)
@@ -1597,9 +1598,24 @@ class phenotypes():
         assembled_kmers = sorted(
             self.kmer_assembler(), key = len
             )[::-1]
-        for i, item in enumerate(assembled_kmers):
+        for i, assembled_kmer in enumerate(assembled_kmers):
+            coeff = 0
+            Samples_w_assmbd_kmer = set()
+            for kmer_pos in range(len(assembled_kmer) - Samples.kmer_length + 1):
+                k_mer = assembled_kmer[0+kmer_pos:Samples.kmer_length+kmer_pos]
+                try:
+                    running_coeff = self.df_for_coeffs[k_mer]
+                    Samples_w_assmbd_kmer.update(self.df_for_coeffs.loc[df_for_coeffs[kmer] == 1].index.tolist())
+                except:
+                    running_coeff = self.df_for_coeffs[self.ReverseComplement(k_mer)]
+                    Samples_w_assmbd_kmer.update(self.df_for_coeffs.loc[df_for_coeffs[kmer] == 1].index.tolist())
+                if abs(running_coef) > coeff:
+                    coeff = running_coeff
             f1.write(">seq_" + str(i+1) + "_length_" 
-                + str(len(item)) + "\n" + item + "\n")
+                + str(len(assembled_kmer)) + "_coeff._" 
+                + running_coeff + "samples_w_seq" 
+                + "_".join(Samples_w_assmbd_kmer) 
+                + "\n" + assembled_kmer + "\n")
         f1.close()
 
 def modeling(args):
