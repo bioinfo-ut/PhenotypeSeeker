@@ -555,6 +555,7 @@ class phenotypes():
         self.summary_file = None
         self.coeff_file = None
         self.model_file = None
+        
 
     # -------------------------------------------------------------------
     # Functions for calculating the association test results for kmers.
