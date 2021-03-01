@@ -896,9 +896,9 @@ class phenotypes():
                 outputfile.write(line)
                 # if float(line_to_list[2]) <= max_pvalue_by_limit:
                 if (
-                    kmers4ML < self.kmer_limit and
-                    float(line_to_list[2]) < max_pvalue_by_limit
-                    ):
+                        kmers4ML < self.kmer_limit and
+                        float(line_to_list[2]) < max_pvalue_by_limit
+                        ):
                     self.kmers_for_ML.add(line_to_list[0])
                     kmers4ML += 1
             if counter%checkpoint == 0:
