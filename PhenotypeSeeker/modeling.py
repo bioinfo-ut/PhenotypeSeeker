@@ -874,10 +874,10 @@ class phenotypes():
         nr_of_kmers_tested = float(len(self.pvalues))
         self.get_pvalue_cutoff(self.pvalues, nr_of_kmers_tested)
         # reference = self.pvalues[self.kmer_limit]
-        # counter = 1
+        counter = 1
         # while self.pvalues[self.kmer_limit-counter] == reference:
         #     counter +=1
-        # max_pvalue_by_limit = float('%.2E' % self.pvalues[self.kmer_limit-counter])
+        max_pvalue_by_limit = float('%.2E' % self.pvalues[self.kmer_limit-counter])
         del self.pvalues
 
         stderr_print.currentKmerNum.value = 0
@@ -895,7 +895,10 @@ class phenotypes():
             if float(line_to_list[2]) < self.pvalue_cutoff:
                 outputfile.write(line)
                 # if float(line_to_list[2]) <= max_pvalue_by_limit:
-                if kmers4ML < self.kmer_limit:
+                if (
+                    kmers4ML < self.kmer_limit and
+                    float(line_to_list[2]) < max_pvalue_by_limit
+                    ):
                     self.kmers_for_ML.add(line_to_list[0])
                     kmers4ML += 1
             if counter%checkpoint == 0:
