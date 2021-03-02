@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 __author__ = "Erki Aun"
-__version__ = "0.6.2"
+__version__ = "0.6.3"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
@@ -874,10 +874,9 @@ class phenotypes():
         nr_of_kmers_tested = float(len(self.pvalues))
         self.get_pvalue_cutoff(self.pvalues, nr_of_kmers_tested)
         # reference = self.pvalues[self.kmer_limit]
-        counter = 1
         # while self.pvalues[self.kmer_limit-counter] == reference:
         #     counter +=1
-        pvalues_for_ML_kmers = self.pvalues[:self.kmer_limit-counter]
+        pvalues_for_ML_kmers = self.pvalues[:self.kmer_limit]
         pvalues_for_ML_kmers = [float("%.2E" % x) for x in pvalues_for_ML_kmers]
         del self.pvalues
 
