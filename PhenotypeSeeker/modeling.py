@@ -894,6 +894,7 @@ class phenotypes():
             p_val = float(line_to_list[2])
             if p_val < self.pvalue_cutoff:
                 outputfile.write(line)
+                print(p_val)
                 if p_val in pvalues_for_ML_kmers:
                     self.kmers_for_ML.add(line_to_list[0])
                     pvalues_for_ML_kmers.remove(p_val)
