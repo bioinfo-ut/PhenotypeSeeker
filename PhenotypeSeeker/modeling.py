@@ -878,6 +878,7 @@ class phenotypes():
         # while self.pvalues[self.kmer_limit-counter] == reference:
         #     counter +=1
         pvalues_for_ML_kmers = self.pvalues[:self.kmer_limit-counter]
+        print(pvalues_for_ML_kmers)
         del self.pvalues
 
         stderr_print.currentKmerNum.value = 0
