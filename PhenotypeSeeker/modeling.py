@@ -878,7 +878,7 @@ class phenotypes():
         # while self.pvalues[self.kmer_limit-counter] == reference:
         #     counter +=1
         pvalues_for_ML_kmers = self.pvalues[:self.kmer_limit-counter]
-        [float("%.2E" % x) for x in pvalues_for_ML_kmers]
+        pvalues_for_ML_kmers = [float("%.2E" % x) for x in pvalues_for_ML_kmers]
         del self.pvalues
 
         stderr_print.currentKmerNum.value = 0
