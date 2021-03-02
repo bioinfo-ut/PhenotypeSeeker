@@ -877,7 +877,7 @@ class phenotypes():
         counter = 1
         # while self.pvalues[self.kmer_limit-counter] == reference:
         #     counter +=1
-        print(pvalues)
+        print(self.pvalues)
         max_pvalue_by_limit = float('%.2E' % self.pvalues[self.kmer_limit-counter])
         del self.pvalues
 
