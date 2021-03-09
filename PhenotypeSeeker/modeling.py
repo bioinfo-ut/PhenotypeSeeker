@@ -1077,12 +1077,13 @@ class phenotypes():
     def set_model(self):
         if self.scale == "continuous":
             if self.model_name_short == "linreg":
-                # Defining linear regression parameters    
+                # Defining linear regression parameters
+
                 if self.penalty == 'L1':
                     self.model = Lasso(max_iter=self.max_iter, tol=self.tol)        
                 if self.penalty == 'L2':
                     self.model = Ridge(max_iter=self.max_iter, tol=self.tol)
-                if self.penalty == 'elasticnet' or "L1+L2":
+                if self.penalty == 'elasticnet' or self.penalty == "L1+L2":
                     self.model = ElasticNet(
                         l1_ratio=self.l1_ratio, max_iter=self.max_iter, tol=self.tol
                         )
