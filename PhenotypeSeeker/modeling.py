@@ -1223,10 +1223,7 @@ class phenotypes():
                 if self.penalty in ("L1", "elasticnet"):
                     self.model_fitted = self.best_model.fit(self.X_train.values, self.y_train.values.flatten())
                 elif self.penalty == "L2":
-                    self.model_fitted = self.best_model.fit(
-                        self.X_train, self.y_train.values.flatten(),
-                        sample_weight=self.weights_train.values.flatten()
-                        )
+                    self.model_fitted = self.best_model.fit(self.X_train.values, self.y_train.values.flatten())
             elif self.model_name_short == "XGBR":
                 self.model_fitted = self.best_model.fit(self.X_train.values, self.y_train.values.flatten())
         elif self.scale == "binary":
