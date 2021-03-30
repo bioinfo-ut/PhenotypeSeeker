@@ -321,14 +321,16 @@ class Samples():
         return cls(name, address, sample_phenotypes)
 
     @classmethod
-    def get_feature_vector(cls):
-        glistmaker_args = " ".join(["glistmaker"] + \
-            [sample.address for sample in Input.samples.values()] + \
-            [
-            '-c', cls.cutoff, '-w', Samples.kmer_length, '-o', 'K-mer_lists/feature_vector'
-            ])
+    def get_feature_vector(cls, lists_to_unite):
+        # glistmaker_args = " ".join(["glistmaker"] + \
+        #     [sample.address for sample in Input.samples.values()] + \
+        #     [
+        #     '-c', cls.cutoff, '-w', Samples.kmer_length, '-o', 'K-mer_lists/feature_vector'
+        #     ])
 
-        call(glistmaker_args, shell=True)
+        # call(glistmaker_args, shell=True)
+
+
 
 
     # -------------------------------------------------------------------
@@ -1629,7 +1631,7 @@ def modeling(args):
     # Samples.get_feature_vector()
     Input.pool.map(
         Samples.get_feature_vector,
-        [(Input.samples.keys()[i:i + 10], i) for i in range(0, len(Samples.no_samples), 1024)]
+        [(list(Input.samples.keys()[i:i + 10]), i) for i in range(0, Samples.no_samples, 1024)]
         )
     sys.stderr.write("\x1b[1;32mMapping samples to the feature vector space:\x1b[0m\n")
     sys.stderr.flush()
