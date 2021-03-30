@@ -278,10 +278,11 @@ class Samples():
             + self.name + " -w " + self.kmer_length + " -c " + self.cutoff], 
             shell=True
             )
-        Input.lock.acquire()
-        stderr_print.currentSampleNum.value += 1
-        Input.lock.release()
-        stderr_print.print_progress("lists generated.")
+        print(self.address)
+        # Input.lock.acquire()
+        # stderr_print.currentSampleNum.value += 1
+        # Input.lock.release()
+        # stderr_print.print_progress("lists generated.")
 
     def map_samples(self):
         # Takes k-mers, which passed frequency filtering as 
@@ -1628,12 +1629,10 @@ def modeling(args):
     #  Operations with samples
     sys.stderr.write("\x1b[1;32mGenerating the k-mer lists for input samples:\x1b[0m\n")
     sys.stderr.flush()
-    
+
     Input.pool.map(
         lambda x: x.get_kmer_lists(), Input.samples.values()
         )
-    Input.pool.close()
-    Input.pool.join()
 
     sys.stderr.write("\n\x1b[1;32mGenerating the k-mer feature vector.\x1b[0m\n")
     sys.stderr.flush()
