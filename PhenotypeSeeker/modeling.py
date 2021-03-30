@@ -329,7 +329,7 @@ class Samples():
         #     ])
 
         # call(glistmaker_args, shell=True)
-
+        print(lists_to_unite)
 
 
 
@@ -1631,8 +1631,9 @@ def modeling(args):
     # Samples.get_feature_vector()
     Input.pool.map(
         Samples.get_feature_vector,
-        [(list(Input.samples.keys()[i:i + 10]), i) for i in range(0, Samples.no_samples, 1024)]
+        [(list(Input.samples.keys())[1024:1024 + 10], i/1024) for i in range(0, Samples.no_samples, 1024)]
         )
+    exit()
     sys.stderr.write("\x1b[1;32mMapping samples to the feature vector space:\x1b[0m\n")
     sys.stderr.flush()
     stderr_print.currentSampleNum.value = 0
