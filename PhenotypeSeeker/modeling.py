@@ -274,7 +274,7 @@ class Samples():
         # (list or dict).
         call(["mkdir", "-p", "K-mer_lists"])
         call(
-            ["glistmaker", self.address, "-o", "K-mer_lists/", 
+            ["glistmaker", self.address, "-o", "K-mer_lists/" + 
             self.name, "-w", self.kmer_length, "-c", self.cutoff]
             )
         Input.lock.acquire()
