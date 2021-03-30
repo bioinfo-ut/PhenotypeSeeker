@@ -332,9 +332,10 @@ class Samples():
 
     @classmethod
     def get_feature_vector(cls, lists_to_unite):    
-        glistcompare_args = ["glistcompare", "-u", "-o", "union_" + str(lists_to_unite[1]]) + \
+        glistcompare_args = ["glistcompare", "-u", "-o", "union_" + str(lists_to_unite[1])] + \
             [sample.address for sample in lists_to_unite[0]]
 
+        call(glistmaker_args)
 
 
     # -------------------------------------------------------------------
