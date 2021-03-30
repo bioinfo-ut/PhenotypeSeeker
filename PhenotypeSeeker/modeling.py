@@ -339,7 +339,7 @@ class Samples():
     @classmethod
     def get_feature_vector(cls):
         glistcompare_args = ["glistcompare", "-u", "-o", 'K-mer_lists/feature_vector'] + \
-            [ "K-mer_lists/" + str(i) + Samples.kmer_length + "_union.list" \
+            [ "K-mer_lists/" + str(i) + "_" + Samples.kmer_length + "_union.list" \
                 for i in range (0, math.ceil(Samples.no_samples/1024))]
         call(glistcompare_args)
 
