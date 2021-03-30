@@ -1630,8 +1630,9 @@ def modeling(args):
     # sys.stderr.flush()
     # Samples.get_feature_vector()
     Input.pool.map(
-        Samples.get_feature_vector,
-        [(list(Input.samples.keys())[1024:1024 + 10], i/1024) for i in range(0, Samples.no_samples, 1024)]
+            Samples.get_feature_vector,
+            [(list(Input.samples.keys())[1024:i + 1024], int(i/1024)
+            ) for i in range(0, Samples.no_samples, 1024)]
         )
     exit()
     sys.stderr.write("\x1b[1;32mMapping samples to the feature vector space:\x1b[0m\n")
