@@ -321,15 +321,19 @@ class Samples():
         return cls(name, address, sample_phenotypes)
 
     @classmethod
-    def get_feature_vector(cls, lists_to_unite):
-        # glistmaker_args = " ".join(["glistmaker"] + \
-        #     [sample.address for sample in Input.samples.values()] + \
-        #     [
-        #     '-c', cls.cutoff, '-w', Samples.kmer_length, '-o', 'K-mer_lists/feature_vector'
-        #     ])
+    def get_feature_vector(cls):
+        glistmaker_args = ["glistmaker"] + \
+            [sample.address for sample in Input.samples.values()] + \
+            [
+            '-c', cls.cutoff, '-w', Samples.kmer_length, '-o', 'K-mer_lists/feature_vector'
+            ]
 
-        # call(glistmaker_args, shell=True)
-        print(lists_to_unite)
+        call(glistmaker_args)
+
+    @classmethod
+    def get_feature_vector(cls, lists_to_unite):    
+        glistcompare_args = ["glistcompare", "-u", "-o", "union_" + lists_to_unite[1]] + \
+            [sample.address for sample in lists_to_unite[0]]
 
 
 
@@ -1631,7 +1635,7 @@ def modeling(args):
     # Samples.get_feature_vector()
     Input.pool.map(
             Samples.get_feature_vector,
-            [(list(Input.samples.keys())[i:i + 1024], int(i/1024)
+            [(list(Input.samples.values())[i:i + 1024], int(i/1024)
             ) for i in range(0, Samples.no_samples, 1024)]
         )
     exit()
