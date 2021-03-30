@@ -340,7 +340,8 @@ class Samples():
     def get_feature_vector(cls):
         glistcompare_args = ["glistcompare", "-u", "-o", 'K-mer_lists/feature_vector'] + \
             [ "K-mer_lists/" + str(i) + Samples.kmer_length + "_union.list" \
-                for i in range (0, math.ceil(10000/1024))]
+                for i in range (0, math.ceil(Samples.no_samples/1024))]
+        call(glistcompare_args)
 
     # -------------------------------------------------------------------
     # Functions for calculating the mash distances and GSC weights for
@@ -1641,11 +1642,11 @@ def modeling(args):
     # sys.stderr.flush()
 
     # Samples.get_feature_vector()
-    Input.pool.map(
-            Samples.pre_unite_lists,
-            [(list(Input.samples.values())[i:i + 1024], int(i/1024)
-            ) for i in range(0, Samples.no_samples, 1024)]
-        )
+    # Input.pool.map(
+    #         Samples.pre_unite_lists,
+    #         [(list(Input.samples.values())[i:i + 1024], int(i/1024)
+    #         ) for i in range(0, Samples.no_samples, 1024)]
+    #     )
     Samples.get_feature_vector()
 
     exit()
