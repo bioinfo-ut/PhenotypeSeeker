@@ -277,12 +277,10 @@ class Samples():
             ["glistmaker", self.address, "-o", "K-mer_lists/" + 
             self.name, "-w", self.kmer_length, "-c", self.cutoff]
             )
-        print(self.address)
-        print(process)
-        # Input.lock.acquire()
-        # stderr_print.currentSampleNum.value += 1
-        # Input.lock.release()
-        # stderr_print.print_progress("lists generated.")
+        Input.lock.acquire()
+        stderr_print.currentSampleNum.value += 1
+        Input.lock.release()
+        stderr_print.print_progress("lists generated.")
 
     def map_samples(self):
         # Takes k-mers, which passed frequency filtering as 
@@ -321,23 +319,28 @@ class Samples():
             sample_phenotypes[i] = j
         return cls(name, address, sample_phenotypes)
 
-    @classmethod
-    def get_feature_vector(cls):
-        glistmaker_args = ["glistmaker"] + \
-            [sample.address for sample in Input.samples.values()] + \
-            [
-            '-c', cls.cutoff, '-w', Samples.kmer_length, '-o', 'K-mer_lists/feature_vector'
-            ]
+    # @classmethod
+    # def get_feature_vector(cls):
+    #     glistmaker_args = ["glistmaker"] + \
+    #         [sample.address for sample in Input.samples.values()] + \
+    #         [
+    #         '-c', cls.cutoff, '-w', Samples.kmer_length, '-o', 'K-mer_lists/feature_vector'
+    #         ]
 
-        call(glistmaker_args)
+    #     call(glistmaker_args)
 
     @classmethod
-    def get_feature_vector(cls, lists_to_unite):    
-        glistcompare_args = ["glistcompare", "-u", "-o", "union_" + str(lists_to_unite[1])] + \
+    def pre_unite_lists(cls, lists_to_unite):    
+        glistcompare_args = ["glistcompare", "-u", "-o", "K-mer_lists/" + str(lists_to_unite[1])] + \
             [ "K-mer_lists/" + sample.name + "_" + sample.kmer_length + ".list" \
             for sample in lists_to_unite[0]]
-        print(glistcompare_args)
         call(glistcompare_args)
+
+    @classmethod
+    def get_feature_vector(cls):
+        glistcompare_args = ["glistcompare", "-u", "-o", 'K-mer_lists/feature_vector'] +
+            [ "K-mer_lists/" + str(i) + sample.kmer_length + "_union.list" \
+                for i in range (0, math.ceil(10000/1024))]
 
     # -------------------------------------------------------------------
     # Functions for calculating the mash distances and GSC weights for
@@ -1636,12 +1639,15 @@ def modeling(args):
 
     sys.stderr.write("\n\x1b[1;32mGenerating the k-mer feature vector.\x1b[0m\n")
     sys.stderr.flush()
+
     # Samples.get_feature_vector()
     Input.pool.map(
-            Samples.get_feature_vector,
+            Samples.pre_unite_lists,
             [(list(Input.samples.values())[i:i + 1024], int(i/1024)
             ) for i in range(0, Samples.no_samples, 1024)]
         )
+    Samples.get_feature_vector()
+
     exit()
     sys.stderr.write("\x1b[1;32mMapping samples to the feature vector space:\x1b[0m\n")
     sys.stderr.flush()
