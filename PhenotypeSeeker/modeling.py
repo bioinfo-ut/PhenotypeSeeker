@@ -1625,14 +1625,14 @@ def modeling(args):
         )
     Input.get_multithreading_parameters()
 
-    # Operations with samples
-    # sys.stderr.write("\x1b[1;32mGenerating the k-mer lists for input samples:\x1b[0m\n")
-    # sys.stderr.flush()
-    # Input.pool.map(
-    #     lambda x: x.get_kmer_lists(), Input.samples.values()
-    #     )
-    # sys.stderr.write("\n\x1b[1;32mGenerating the k-mer feature vector.\x1b[0m\n")
-    # sys.stderr.flush()
+    #  Operations with samples
+    sys.stderr.write("\x1b[1;32mGenerating the k-mer lists for input samples:\x1b[0m\n")
+    sys.stderr.flush()
+    Input.pool.map(
+        lambda x: x.get_kmer_lists(), Input.samples.values()
+        )
+    sys.stderr.write("\n\x1b[1;32mGenerating the k-mer feature vector.\x1b[0m\n")
+    sys.stderr.flush()
     # Samples.get_feature_vector()
     Input.pool.map(
             Samples.get_feature_vector,
