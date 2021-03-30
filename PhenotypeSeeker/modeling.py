@@ -6,7 +6,7 @@ __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
 from itertools import chain, permutations
-from subprocess import call, Popen, PIPE, check_output
+from subprocess import call, Popen, PIPE, check_output, run
 import math
 import os
 import sys
@@ -272,15 +272,17 @@ class Samples():
         # Makes "K-mer_lists" directory where all lists are stored.
         # Generates k-mer lists for every sample in names_of_samples variable 
         # (list or dict).
-        call(["mkdir", "-p", "K-mer_lists"])
-        call(
+        run(["mkdir", "-p", "K-mer_lists"])
+        process = run(
             ["glistmaker", self.address, "-o", "K-mer_lists/" + 
             self.name, "-w", self.kmer_length, "-c", self.cutoff]
             )
-        Input.lock.acquire()
-        stderr_print.currentSampleNum.value += 1
-        Input.lock.release()
-        stderr_print.print_progress("lists generated.")
+        print(self.address)
+        print(process)
+        # Input.lock.acquire()
+        # stderr_print.currentSampleNum.value += 1
+        # Input.lock.release()
+        # stderr_print.print_progress("lists generated.")
 
     def map_samples(self):
         # Takes k-mers, which passed frequency filtering as 
