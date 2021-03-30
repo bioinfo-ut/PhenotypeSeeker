@@ -1626,7 +1626,11 @@ def modeling(args):
     #     )
     # sys.stderr.write("\n\x1b[1;32mGenerating the k-mer feature vector.\x1b[0m\n")
     # sys.stderr.flush()
-    Samples.get_feature_vector()
+    # Samples.get_feature_vector()
+    Input.pool.map(
+        Samples.get_feature_vector,
+        [(Input.samples.keys()[i:i + 10], i) for i in range(0, len(Samples.no_samples), 1024)]
+        )
     sys.stderr.write("\x1b[1;32mMapping samples to the feature vector space:\x1b[0m\n")
     sys.stderr.flush()
     stderr_print.currentSampleNum.value = 0
