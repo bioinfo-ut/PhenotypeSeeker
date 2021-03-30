@@ -274,15 +274,13 @@ class Samples():
         # (list or dict).
         call(["mkdir", "-p", "K-mer_lists"])
         call(
-            ["glistmaker " + self.address + " -o K-mer_lists/" 
-            + self.name + " -w " + self.kmer_length + " -c " + self.cutoff], 
-            shell=True
+            ["glistmaker", self.address, "-o", "K-mer_lists/", 
+            self.name, "-w", self.kmer_length, "-c", self.cutoff]
             )
-        print(self.address)
-        # Input.lock.acquire()
-        # stderr_print.currentSampleNum.value += 1
-        # Input.lock.release()
-        # stderr_print.print_progress("lists generated.")
+        Input.lock.acquire()
+        stderr_print.currentSampleNum.value += 1
+        Input.lock.release()
+        stderr_print.print_progress("lists generated.")
 
     def map_samples(self):
         # Takes k-mers, which passed frequency filtering as 
