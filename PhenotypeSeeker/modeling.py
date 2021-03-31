@@ -326,8 +326,9 @@ class Samples():
             [
             '-c', cls.cutoff, '-w', Samples.kmer_length, '-o', 'K-mer_lists/feature_vector'
             ]
-        print(glistmaker_args)
-        call(glistmaker_args)
+        # print(glistmaker_args)
+        p = run(glistmaker_args)
+        print(p.returncode)
 
     # @classmethod
     # def pre_unite_lists(cls, lists_to_unite):    
