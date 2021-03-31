@@ -319,31 +319,31 @@ class Samples():
             sample_phenotypes[i] = j
         return cls(name, address, sample_phenotypes)
 
-    # @classmethod
-    # def get_feature_vector(cls):
-    #     glistmaker_args = ["glistmaker"] + \
-    #         [sample.address for sample in Input.samples.values()] + \
-    #         [
-    #         '-c', cls.cutoff, '-w', Samples.kmer_length, '-o', 'K-mer_lists/feature_vector'
-    #         ]
-    #     # print(glistmaker_args)
-    #     p = run(glistmaker_args)
-    #     print(p)
-
-    @classmethod
-    def pre_unite_lists(cls, lists_to_unite):    
-        glistcompare_args = ["glistcompare", "-u", "-o", "K-mer_lists/" + str(lists_to_unite[1])] + \
-            [ "K-mer_lists/" + sample.name + "_" + sample.kmer_length + ".list" \
-            for sample in lists_to_unite[0]]
-        call(glistcompare_args)
-
     @classmethod
     def get_feature_vector(cls):
-        glistcompare_args = ["glistcompare", "-u", "-o", 'K-mer_lists/feature_vector'] + \
-            [ "K-mer_lists/" + str(i) + "_" + Samples.kmer_length + "_union.list" \
-                for i in range (0, math.ceil(Samples.no_samples/1024))]
-        print(glistcompare_args)
-        call(glistcompare_args)
+        glistmaker_args = ["glistmaker"] + \
+            [sample.address for sample in Input.samples.values()] + \
+            [
+            '-c', cls.cutoff, '-w', Samples.kmer_length, '-o', 'K-mer_lists/feature_vector'
+            ]
+        # print(glistmaker_args)
+        p = run(glistmaker_args)
+        print(p)
+
+    # @classmethod
+    # def pre_unite_lists(cls, lists_to_unite):    
+    #     glistcompare_args = ["glistcompare", "-u", "-o", "K-mer_lists/" + str(lists_to_unite[1])] + \
+    #         [ "K-mer_lists/" + sample.name + "_" + sample.kmer_length + ".list" \
+    #         for sample in lists_to_unite[0]]
+    #     call(glistcompare_args)
+
+    # @classmethod
+    # def get_feature_vector(cls):
+    #     glistcompare_args = ["glistcompare", "-u", "-o", 'K-mer_lists/feature_vector'] + \
+    #         [ "K-mer_lists/" + str(i) + "_" + Samples.kmer_length + "_union.list" \
+    #             for i in range (0, math.ceil(Samples.no_samples/1024))]
+    #     print(glistcompare_args)
+    #     call(glistcompare_args)
 
     # -------------------------------------------------------------------
     # Functions for calculating the mash distances and GSC weights for
