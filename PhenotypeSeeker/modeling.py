@@ -321,13 +321,13 @@ class Samples():
 
     @classmethod
     def get_feature_vector(cls):
-        glistmaker_args = " ".join(["glistmaker"] + \
+        glistmaker_args = ["glistmaker"] + \
             [sample.address for sample in Input.samples.values()] + \
             [
             '-c', cls.cutoff, '-w', Samples.kmer_length, '-o', 'K-mer_lists/feature_vector'
-            ])
+            ]
         # print(glistmaker_args)
-        p = run(glistmaker_args, shell=True)
+        p = run(glistmaker_args)
         print(p)
 
     # @classmethod
