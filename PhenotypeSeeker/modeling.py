@@ -319,15 +319,15 @@ class Samples():
             sample_phenotypes[i] = j
         return cls(name, address, sample_phenotypes)
 
-    # @classmethod
-    # def get_feature_vector(cls):
-    #     glistmaker_args = ["glistmaker"] + \
-    #         [sample.address for sample in Input.samples.values()] + \
-    #         [
-    #         '-c', cls.cutoff, '-w', Samples.kmer_length, '-o', 'K-mer_lists/feature_vector'
-    #         ]
-
-    #     call(glistmaker_args)
+    @classmethod
+    def get_feature_vector(cls):
+        glistmaker_args = " ".join(["glistmaker"] + \
+            [sample.address for sample in Input.samples.values()] + \
+            [
+            '-c', cls.cutoff, '-w', Samples.kmer_length, '-o', 'K-mer_lists/feature_vector'
+            ])
+        print(glistmaker_args)
+        call(glistmaker_args)
 
     @classmethod
     def pre_unite_lists(cls, lists_to_unite):    
@@ -1632,23 +1632,23 @@ def modeling(args):
     Input.get_multithreading_parameters()
 
     #  Operations with samples
-    # sys.stderr.write("\x1b[1;32mGenerating the k-mer lists for input samples:\x1b[0m\n")
-    # sys.stderr.flush()
+    sys.stderr.write("\x1b[1;32mGenerating the k-mer lists for input samples:\x1b[0m\n")
+    sys.stderr.flush()
 
-    # Input.pool.map(
-    #     lambda x: x.get_kmer_lists(), Input.samples.values()
-    #     )
+    Input.pool.map(
+        lambda x: x.get_kmer_lists(), Input.samples.values()
+        )
 
-    # sys.stderr.write("\n\x1b[1;32mGenerating the k-mer feature vector.\x1b[0m\n")
-    # sys.stderr.flush()
+    sys.stderr.write("\n\x1b[1;32mGenerating the k-mer feature vector.\x1b[0m\n")
+    sys.stderr.flush()
 
-    # Samples.get_feature_vector()
+    Samples.get_feature_vector()
     # Input.pool.map(
     #         Samples.pre_unite_lists,
     #         [(list(Input.samples.values())[i:i + 1024], int(i/1024)
     #         ) for i in range(0, Samples.no_samples, 1024)]
     #     )
-    Samples.get_feature_vector()
+    # Samples.get_feature_vector()
 
     exit()
     sys.stderr.write("\x1b[1;32mMapping samples to the feature vector space:\x1b[0m\n")
