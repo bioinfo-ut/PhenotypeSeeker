@@ -336,13 +336,13 @@ class Samples():
             for sample in lists_to_unite[0]]
         call(glistcompare_args)
 
-    @classmethod
-    def get_feature_vector(cls):
-        glistcompare_args = ["glistcompare", "-u", "-o", 'K-mer_lists/feature_vector'] + \
-            [ "K-mer_lists/" + str(i) + "_" + Samples.kmer_length + "_union.list" \
-                for i in range (0, math.ceil(Samples.no_samples/1024))]
-        print(glistcompare_args)
-        call(glistcompare_args)
+    # @classmethod
+    # def get_feature_vector(cls):
+    #     glistcompare_args = ["glistcompare", "-u", "-o", 'K-mer_lists/feature_vector'] + \
+    #         [ "K-mer_lists/" + str(i) + "_" + Samples.kmer_length + "_union.list" \
+    #             for i in range (0, math.ceil(Samples.no_samples/1024))]
+    #     print(glistcompare_args)
+    #     call(glistcompare_args)
 
     # -------------------------------------------------------------------
     # Functions for calculating the mash distances and GSC weights for
