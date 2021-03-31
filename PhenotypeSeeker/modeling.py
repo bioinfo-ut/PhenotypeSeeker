@@ -341,6 +341,7 @@ class Samples():
         glistcompare_args = ["glistcompare", "-u", "-o", 'K-mer_lists/feature_vector'] + \
             [ "K-mer_lists/" + str(i) + "_" + Samples.kmer_length + "_union.list" \
                 for i in range (0, math.ceil(Samples.no_samples/1024))]
+        print(glistcompare_args)
         call(glistcompare_args)
 
     # -------------------------------------------------------------------
@@ -1642,11 +1643,11 @@ def modeling(args):
     # sys.stderr.flush()
 
     # Samples.get_feature_vector()
-    Input.pool.map(
-            Samples.pre_unite_lists,
-            [(list(Input.samples.values())[i:i + 1024], int(i/1024)
-            ) for i in range(0, Samples.no_samples, 1024)]
-        )
+    # Input.pool.map(
+    #         Samples.pre_unite_lists,
+    #         [(list(Input.samples.values())[i:i + 1024], int(i/1024)
+    #         ) for i in range(0, Samples.no_samples, 1024)]
+    #     )
     Samples.get_feature_vector()
 
     exit()
