@@ -329,12 +329,12 @@ class Samples():
             
         call(glistmaker_args)
 
-    @classmethod
-    def pre_unite_lists(cls, lists_to_unite):    
-        glistcompare_args = ["glistcompare", "-u", "-o", "K-mer_lists/" + str(lists_to_unite[1])] + \
-            [ "K-mer_lists/" + sample.name + "_" + sample.kmer_length + ".list" \
-            for sample in lists_to_unite[0]]
-        call(glistcompare_args)
+    # @classmethod
+    # def pre_unite_lists(cls, lists_to_unite):    
+    #     glistcompare_args = ["glistcompare", "-u", "-o", "K-mer_lists/" + str(lists_to_unite[1])] + \
+    #         [ "K-mer_lists/" + sample.name + "_" + sample.kmer_length + ".list" \
+    #         for sample in lists_to_unite[0]]
+    #     call(glistcompare_args)
 
     # @classmethod
     # def get_feature_vector(cls):
