@@ -356,7 +356,7 @@ class Samples():
                 ]
             Input.pool.map(partial(cls.get_union, round=i), iterate_to_union)
         print(cls.union_output)
-        # call(["ls", "-lthr", cls.union_output])
+        call(["ls", "-lthr", "K-mer_lists/565665.3_7_13_union.list"])
 
     @classmethod
     def get_union(cls, lists_to_unite, round):
