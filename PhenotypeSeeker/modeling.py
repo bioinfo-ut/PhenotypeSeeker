@@ -258,7 +258,7 @@ class Samples():
     tree = None
 
     mash_distances_args = []
-    feature_vector = None
+    union_output = None
 
     def __init__(self, name, address, phenotypes, weight=1):
         self.name = name
