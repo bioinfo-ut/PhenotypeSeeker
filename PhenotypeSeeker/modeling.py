@@ -355,8 +355,8 @@ class Samples():
                 iterate_to_union[j: j + 4 if len(iterate_to_union) < j + 4 else j + 2] for j in range(0, len(iterate_to_union), 2) if j + 2 <= len(iterate_to_union)
                 ]
             Input.pool.map(partial(cls.get_union, round=i), iterate_to_union)
-        call("mv", cls.union_output, "K-mer_lists/feature_vector.list")
-
+        call("ls -lthr", cls.union_output)
+        # , "K-mer_lists/feature_vector.list"
     @classmethod
     def get_union(cls, lists_to_unite, round):
         glistcompare_args = ["glistcompare", "-u", "-o", 'K-mer_lists/' + lists_to_unite[0].name + "_" + str(round + 1)] + \
