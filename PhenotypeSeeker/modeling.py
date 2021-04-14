@@ -355,7 +355,7 @@ class Samples():
                 iterate_to_union[j: j + 4 if len(iterate_to_union) < j + 4 else j + 2] for j in range(0, len(iterate_to_union), 2) if j + 2 <= len(iterate_to_union)
                 ]
             Input.pool.map(partial(cls.get_union, round=i), iterate_to_union)
-            print(cls.union_output)
+        pool.join()
         print("hey")
         print(cls.union_output)
         print("hopsti")
@@ -368,7 +368,7 @@ class Samples():
                 for sample in lists_to_unite]
         call(glistcompare_args)
         cls.union_output = "K-mer_lists/" + lists_to_unite[0].name + "_" + str(round + 1) + "_" + Samples.kmer_length + "_union.list"
-        print(cls.union_output)
+        # print(cls.union_output)
 
     # -------------------------------------------------------------------
     # Functions for calculating the mash distances and GSC weights for
