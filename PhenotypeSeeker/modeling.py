@@ -258,6 +258,7 @@ class Samples():
     tree = None
 
     mash_distances_args = []
+    feature_vector = None
 
     def __init__(self, name, address, phenotypes, weight=1):
         self.name = name
@@ -345,12 +346,24 @@ class Samples():
     #     call(glistcompare_args)
 
     @classmethod
-    def get_feature_vector(cls, lists_to_unite, round):
+    def get_feature_vector(cls):
+        # Feature vector loop
+        iterate_to_union = [[x] for x in list(Input.samples.values())]
+        for i in range(math.log(cls.no_samples, 2).__trunc__()):
+            iterate_to_union = [x[0] for x in iterate_to_union]
+            iterate_to_union = [
+                iterate_to_union[j: j + 4 if len(iterate_to_union) < j + 4 else j + 2] for j in range(0, len(iterate_to_union), 2) if j + 2 <= len(iterate_to_union)
+                ]
+            Input.pool.map(partial(cls.get_union, round=i), iterate_to_union)
+
+    @classmethod
+    def get_union(cls, lists_to_unite, round):
         glistcompare_args = ["glistcompare", "-u", "-o", 'K-mer_lists/' + lists_to_unite[0].name + "_" + str(round + 1)] + \
             [ "K-mer_lists/" + sample.name + "_" + str(round) + "_" + Samples.kmer_length + ("_union" if round > 0 else "") + ".list" \
                 for sample in lists_to_unite]
-        print(glistcompare_args)
         call(glistcompare_args)
+        cls.union_output = "K-mer_lists/" + lists_to_unite[0].name + "_" + str(round + 1) + "_" + Samples.kmer_length + "_union.list"
+        print(cls.union_output)
 
     # -------------------------------------------------------------------
     # Functions for calculating the mash distances and GSC weights for
@@ -1650,14 +1663,7 @@ def modeling(args):
     sys.stderr.write("\n\x1b[1;32mGenerating the k-mer feature vector.\x1b[0m\n")
     sys.stderr.flush()
 
-    # Feature vector loop
-    iterate_to_union = [[x] for x in list(Input.samples.values())]
-    for i in range(math.log(Samples.no_samples, 2).__trunc__()):
-        iterate_to_union = [x[0] for x in iterate_to_union]
-        iterate_to_union = [
-            iterate_to_union[j: j + 4 if len(iterate_to_union) < j + 4 else j + 2] for j in range(0, len(iterate_to_union), 2) if j + 2 <= len(iterate_to_union)
-            ]
-        Input.pool.map(partial(Samples.get_feature_vector, round=i), iterate_to_union)
+    Samples.get_feature_vector()
 
     # Input.pool.map(
     #         Samples.pre_unite_lists,
