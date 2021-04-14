@@ -1657,7 +1657,7 @@ def modeling(args):
         iterate_to_union = [
             iterate_to_union[j: j + 4 if len(iterate_to_union) < j + 4 else j + 2] for j in range(0, len(iterate_to_union), 2) if j + 2 <= len(iterate_to_union)
             ]
-        Input.pool.map(partial(Samples.get_feature_vector(), round=i), iterate_to_union)
+        Input.pool.map(partial(Samples.get_feature_vector, round=i), iterate_to_union)
 
     # Input.pool.map(
     #         Samples.pre_unite_lists,
