@@ -348,14 +348,13 @@ class Samples():
     @classmethod
     def get_feature_vector(cls):
         # Feature vector loop
-        union = None
         iterate_to_union = [[x] for x in list(Input.samples.values())]
         for i in range(math.log(cls.no_samples, 2).__trunc__()):
             iterate_to_union = [x[0] for x in iterate_to_union]
             iterate_to_union = [
                 iterate_to_union[j: j + 4 if len(iterate_to_union) < j + 4 else j + 2] for j in range(0, len(iterate_to_union), 2) if j + 2 <= len(iterate_to_union)
                 ]
-            Input.pool.map(partial(cls.get_union, round=i, union), iterate_to_union)
+            Input.pool.map(partial(cls.get_union, round=i), iterate_to_union)
         print(cls.union_output)
         print(id(cls.union_output))      
         #call(["ls", "-lthr", "K-mer_lists/565665.3_7_13_union.list"])
