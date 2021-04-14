@@ -350,7 +350,7 @@ class Samples():
             [ "K-mer_lists/" + sample.name + "_" + str(round) + "_" + Samples.kmer_length + ("_union" if round > 0 else "") + ".list" \
                 for sample in lists_to_unite]
         print(glistcompare_args)
-        # call(glistcompare_args)
+        call(glistcompare_args)
 
     # -------------------------------------------------------------------
     # Functions for calculating the mash distances and GSC weights for
