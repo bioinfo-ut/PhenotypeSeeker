@@ -355,7 +355,9 @@ class Samples():
                 iterate_to_union[j: j + 4 if len(iterate_to_union) < j + 4 else j + 2] for j in range(0, len(iterate_to_union), 2) if j + 2 <= len(iterate_to_union)
                 ]
             Input.pool.map(partial(cls.get_union, round=i), iterate_to_union)
+        print("hey")
         print(cls.union_output)
+        print("hopsti")
         call(["ls", "-lthr", "K-mer_lists/565665.3_7_13_union.list"])
 
     @classmethod
