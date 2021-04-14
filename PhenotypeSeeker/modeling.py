@@ -1619,13 +1619,14 @@ class phenotypes():
                 + str(len(item)) + "\n" + item + "\n")
         f1.close()
 
-def modeling(args=None):
+def modeling(args):
     # The main function of "phenotypeseeker modeling"
 
     sys.stderr.write("\x1b[1;1;101m######                   PhenotypeSeeker                   ######\x1b[0m\n")
     sys.stderr.write("\x1b[1;1;101m######                      modeling                       ######\x1b[0m\n\n")
 
     # Processing the input data
+    Input.get_input_data(args.inputfile, args.take_logs)
     Input.Input_args(
         args.alphas, args.alpha_min, args.alpha_max, args.n_alphas,
         args.gammas, args.gamma_min, args.gamma_max, args.n_gammas,
@@ -1717,5 +1718,3 @@ def modeling(args=None):
             Input.phenotypes_to_analyse.values()
             )
     sys.stderr.write("\n\x1b[1;1;101m######          PhenotypeSeeker modeling finished          ######\x1b[0m\n")
-
-modeling()
