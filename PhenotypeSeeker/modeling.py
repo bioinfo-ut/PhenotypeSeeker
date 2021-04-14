@@ -1652,7 +1652,7 @@ def modeling(args):
 
     # Feature vector loop
     iterate_to_union = list(Input.samples.values())
-    for i in range(math.log(Input.no_samples, 2).__trunc__()):
+    for i in range(math.log(Samples.no_samples, 2).__trunc__()):
         iterate_to_union = [x[0] for x in iterate_to_union]
         iterate_to_union = [
             iterate_to_union[j: j + 4 if len(iterate_to_union) < j + 4 else j + 2] for j in range(0, len(iterate_to_union), 2) if j + 2 <= len(iterate_to_union)
