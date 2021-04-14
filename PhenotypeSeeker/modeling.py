@@ -275,7 +275,7 @@ class Samples():
         run(["mkdir", "-p", "K-mer_lists"])
         process = run(
             ["glistmaker", self.address, "-o", "K-mer_lists/" + 
-            self.name, "-w", self.kmer_length, "-c", self.cutoff]
+            self.name + "_0", "-w", self.kmer_length, "-c", self.cutoff]
             )
         Input.lock.acquire()
         stderr_print.currentSampleNum.value += 1
@@ -329,20 +329,28 @@ class Samples():
     #     print(glistmaker_args)
     #     call(glistmaker_args)
 
-    @classmethod
-    def pre_unite_lists(cls, lists_to_unite):    
-        glistcompare_args = ["glistcompare", "-u", "-o", "K-mer_lists/" + str(lists_to_unite[1])] + \
-            [ "K-mer_lists/" + sample.name + "_" + sample.kmer_length + ".list" \
-            for sample in lists_to_unite[0]]
-        call(glistcompare_args)
+    # @classmethod
+    # def pre_unite_lists(cls, lists_to_unite):    
+    #     glistcompare_args = ["glistcompare", "-u", "-o", "K-mer_lists/" + str(lists_to_unite[1])] + \
+    #         [ "K-mer_lists/" + sample.name + "_" + sample.kmer_length + ".list" \
+    #         for sample in lists_to_unite[0]]
+    #     call(glistcompare_args)
+
+    # @classmethod
+    # def get_feature_vector(cls):
+    #     glistcompare_args = ["glistcompare", "-u", "-o", 'K-mer_lists/feature_vector'] + \
+    #         [ "K-mer_lists/" + str(i) + "_" + Samples.kmer_length + "_union.list" \
+    #             for i in range (0, math.ceil(Samples.no_samples/1024))]
+    #     print(glistcompare_args)
+    #     call(glistcompare_args)
 
     @classmethod
-    def get_feature_vector(cls):
-        glistcompare_args = ["glistcompare", "-u", "-o", 'K-mer_lists/feature_vector'] + \
-            [ "K-mer_lists/" + str(i) + "_" + Samples.kmer_length + "_union.list" \
-                for i in range (0, math.ceil(Samples.no_samples/1024))]
+    def get_feature_vector(cls, lists_to_unite, round):
+        glistcompare_args = ["glistcompare", "-u", "-o", 'K-mer_lists/' + lists_to_unite[0] + "_" + str(round + 1)] + \
+            [ "K-mer_lists/" + sample.name + "_" + str(round) + "_" Samples.kmer_length + ("_union" if round > 0 else "") + ".list" \
+                for sample in lists_to_unite]
         print(glistcompare_args)
-        call(glistcompare_args)
+        # call(glistcompare_args)
 
     # -------------------------------------------------------------------
     # Functions for calculating the mash distances and GSC weights for
@@ -1611,14 +1619,13 @@ class phenotypes():
                 + str(len(item)) + "\n" + item + "\n")
         f1.close()
 
-def modeling(args):
+def modeling(args=None):
     # The main function of "phenotypeseeker modeling"
 
     sys.stderr.write("\x1b[1;1;101m######                   PhenotypeSeeker                   ######\x1b[0m\n")
     sys.stderr.write("\x1b[1;1;101m######                      modeling                       ######\x1b[0m\n\n")
 
     # Processing the input data
-    Input.get_input_data(args.inputfile, args.take_logs)
     Input.Input_args(
         args.alphas, args.alpha_min, args.alpha_max, args.n_alphas,
         args.gammas, args.gamma_min, args.gamma_max, args.n_gammas,
@@ -1642,12 +1649,21 @@ def modeling(args):
     sys.stderr.write("\n\x1b[1;32mGenerating the k-mer feature vector.\x1b[0m\n")
     sys.stderr.flush()
 
-    Input.pool.map(
-            Samples.pre_unite_lists,
-            [(list(Input.samples.values())[i:i + 1024], int(i/1024)
-            ) for i in range(0, Samples.no_samples, 1024)]
-        )
-    Samples.get_feature_vector()
+    # Feature vector loop
+    iterate_to_union = list(Input.samples.values())
+    for i in range(math.log(Input.no_samples, 2).__trunc__()):
+        iterate_to_union = [x[0] for x in iterate_to_union]
+        iterate_to_union = [
+            iterate_to_union[j: j + 4 if len(iterate_to_union) < j + 4 else j + 2] for j in range(0, len(iterate_to_union), 2) if j + 2 <= len(iterate_to_union)
+            ]
+        Input.pool.map(partial(Samples.get_feature_vector(), round=i), iterate_to_union)
+
+    # Input.pool.map(
+    #         Samples.pre_unite_lists,
+    #         [(list(Input.samples.values())[i:i + 1024], int(i/1024)
+    #         ) for i in range(0, Samples.no_samples, 1024)]
+    #     )
+    # Samples.get_feature_vector()
 
     exit()
     sys.stderr.write("\x1b[1;32mMapping samples to the feature vector space:\x1b[0m\n")
@@ -1701,3 +1717,5 @@ def modeling(args):
             Input.phenotypes_to_analyse.values()
             )
     sys.stderr.write("\n\x1b[1;1;101m######          PhenotypeSeeker modeling finished          ######\x1b[0m\n")
+
+modeling()
