@@ -355,7 +355,8 @@ class Samples():
                 iterate_to_union[j: j + 4 if len(iterate_to_union) < j + 4 else j + 2] for j in range(0, len(iterate_to_union), 2) if j + 2 <= len(iterate_to_union)
                 ]
             Input.pool.map(partial(cls.get_union, round=i), iterate_to_union)
-        call(["ls", "-lthr", cls.union_output])
+        print(cls.union_output)
+        # call(["ls", "-lthr", cls.union_output])
 
     @classmethod
     def get_union(cls, lists_to_unite, round):
