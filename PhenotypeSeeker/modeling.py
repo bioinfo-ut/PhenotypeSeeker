@@ -347,7 +347,7 @@ class Samples():
     @classmethod
     def get_feature_vector(cls, lists_to_unite, round):
         glistcompare_args = ["glistcompare", "-u", "-o", 'K-mer_lists/' + lists_to_unite[0] + "_" + str(round + 1)] + \
-            [ "K-mer_lists/" + sample.name + "_" + str(round) + "_" Samples.kmer_length + ("_union" if round > 0 else "") + ".list" \
+            [ "K-mer_lists/" + sample.name + "_" + str(round) + "_" + Samples.kmer_length + ("_union" if round > 0 else "") + ".list" \
                 for sample in lists_to_unite]
         print(glistcompare_args)
         # call(glistcompare_args)
