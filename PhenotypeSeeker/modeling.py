@@ -1651,7 +1651,7 @@ def modeling(args):
     sys.stderr.flush()
 
     # Feature vector loop
-    iterate_to_union = list(Input.samples.values())
+    iterate_to_union = [[x] for x in list(Input.samples.values())]
     for i in range(math.log(Samples.no_samples, 2).__trunc__()):
         iterate_to_union = [x[0] for x in iterate_to_union]
         iterate_to_union = [
