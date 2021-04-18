@@ -359,7 +359,7 @@ class Samples():
                 iterate_to_union[j: j + 4 if len(iterate_to_union) < j + 4 else j + 2] for j in range(0, len(iterate_to_union), 2) if j + 2 <= len(iterate_to_union)
                 ]
             Input.pool.map(partial(cls.get_union, round=i), iterate_to_union)
-        print(cls.union_output.decode())
+        print(cls.union_output[0].decode())
         call(["mv %s feature_vector.list" % cls.union_output])    
 
     @classmethod
