@@ -658,7 +658,6 @@ class phenotypes():
             kmer_presence_vector = [j.split()[1].strip() for j in line]
 
             if phenotypes.scale == "binary":
-                print(Input.samples.values())
                 pvalue = self.conduct_chi_squared_test(
                     kmer, kmer_presence_vector,
                     test_results_file, Input.samples.values()
@@ -754,6 +753,7 @@ class phenotypes():
         self, kmer, kmer_presence, test_results_file,
         samples
         ):
+        print("hey")
         samples_w_kmer = []
         (
         w_pheno_w_kmer, w_pheno_wo_kmer, wo_pheno_w_kmer, wo_pheno_wo_kmer,
@@ -761,6 +761,8 @@ class phenotypes():
         ) = self.get_samples_distribution_for_chisquared(
             kmer_presence, samples_w_kmer, samples
             )
+        print(w_pheno_w_kmer, w_pheno_wo_kmer, wo_pheno_w_kmer, wo_pheno_wo_kmer,
+        no_samples_wo_kmer)
         no_samples_w_kmer = len(samples_w_kmer)
         if no_samples_w_kmer < Samples.min_samples or no_samples_wo_kmer < 2 \
             or no_samples_w_kmer > Samples.max_samples:
