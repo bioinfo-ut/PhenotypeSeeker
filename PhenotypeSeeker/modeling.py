@@ -370,6 +370,7 @@ class Samples():
         call(glistcompare_args)
         union_output = "K-mer_lists/%s_%s_%s_union.list" % (lists_to_unite[0].name, str(round + 1), Samples.kmer_length)
         cls.union_output = [union_output.encode()]
+        print(cls.union_output[0].decode())
 
     # -------------------------------------------------------------------
     # Functions for calculating the mash distances and GSC weights for
