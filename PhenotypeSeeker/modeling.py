@@ -275,8 +275,8 @@ class Samples():
         # (list or dict).
         run(["mkdir", "-p", "K-mer_lists"])
         process = run(
-            ["glistmaker", self.address, "-o", "K-mer_lists/" + 
-            self.name + "_0", "-w", self.kmer_length, "-c", self.cutoff]
+            ["glistmaker " + self.address + " -o K-mer_lists/" + 
+            self.name + "_0" + " -w " + self.kmer_length + " -c " + self.cutoff], shell=True
             )
         Input.lock.acquire()
         stderr_print.currentSampleNum.value += 1
@@ -333,10 +333,10 @@ class Samples():
 
     @classmethod
     def get_union(cls, lists_to_unite, round):
-        glistcompare_args = ["glistcompare", "-u", "-o", 'K-mer_lists/' + lists_to_unite[0].name + "_" + str(round + 1)] + \
-            [ "K-mer_lists/" + sample.name + "_" + str(round) + "_" + Samples.kmer_length + ("_union" if round > 0 else "") + ".list" \
-                for sample in lists_to_unite]
-        call(glistcompare_args)
+        glistcompare_args = ["glistcompare -u -o K-mer_lists/" + lists_to_unite[0].name + "_" + str(round + 1)] + \
+            "".join([ " K-mer_lists/" + sample.name + "_" + str(round) + "_" + Samples.kmer_length + ("_union" if round > 0 else "") + ".list" \
+                for sample in lists_to_unite])
+        call(glistcompare_args, shell=True)
         cls.union_output.append("K-mer_lists/%s_%s_%s_union.list" % (lists_to_unite[0].name, str(round + 1), Samples.kmer_length))
 
     # -------------------------------------------------------------------
