@@ -355,8 +355,7 @@ class Samples():
                 iterate_to_union[j: j + 4 if len(iterate_to_union) < j + 4 else j + 2] for j in range(0, len(iterate_to_union), 2) if j + 2 <= len(iterate_to_union)
                 ]
             Input.pool.map(partial(cls.get_union, round=i), iterate_to_union)
-        print(cls.union.output)
-        call(["mv %s feature_vector.list" % cls.union.output], shell=True)    
+        call(["mv %s K-mer_lists/feature_vector.list" % cls.union.output], shell=True)    
 
     @classmethod
     def get_union(cls, lists_to_unite, round):
@@ -366,7 +365,6 @@ class Samples():
         call(glistcompare_args)
         output = 'K-mer_lists/' + lists_to_unite[0].name + "_" + str(round + 1) + "_" + Samples.kmer_length + "_union.list"
         cls.union.output = "K-mer_lists/%s_%s_%s_union.list" % (lists_to_unite[0].name, str(round + 1), Samples.kmer_length)
-        print(cls.union.output)
 
     # -------------------------------------------------------------------
     # Functions for calculating the mash distances and GSC weights for
@@ -1665,23 +1663,14 @@ def modeling(args):
 
     sys.stderr.write("\n\x1b[1;32mGenerating the k-mer feature vector.\x1b[0m\n")
     sys.stderr.flush()
-
     Samples.get_feature_vector()
-
-    # Input.pool.map(
-    #         Samples.pre_unite_lists,
-    #         [(list(Input.samples.values())[i:i + 1024], int(i/1024)
-    #         ) for i in range(0, Samples.no_samples, 1024)]
-    #     )
-    # Samples.get_feature_vector()
-
-    exit()
     sys.stderr.write("\x1b[1;32mMapping samples to the feature vector space:\x1b[0m\n")
     sys.stderr.flush()
     stderr_print.currentSampleNum.value = 0
     Input.pool.map(
         lambda x: x.map_samples(), Input.samples.values()
         )
+    exit()
     if not args.no_weights:
         mash_files = ["distances.mat", "reference.msh", "mash_distances.mat"]
         for mash_file in mash_files:
