@@ -591,6 +591,7 @@ class phenotypes():
     @classmethod
     def get_params_for_kmers_testing(cls):
         # Removing old stuff
+        [lambda x: call(["rm {}".format(x)], shell=True) for union in cls.union_output]
         call(
             ["rm K-mer_lists/feature_vector.list"],
             shell=True
