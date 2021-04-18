@@ -293,13 +293,12 @@ class Samples():
             call(
                 [
                 "glistquery K-mer_lists/" + self.name + "_0_" + self.kmer_length +
-                ".list -l K-mer_lists/feature_vector_" + self.kmer_length +
-                ".list"
+                ".list -l K-mer_lists/feature_vector.list"
                 ]
                 , shell=True, stdout=outputfile)
             call(
                 [
-                "rm " + "K-mer_lists/" + self.name + "_" + self.kmer_length + ".list" 
+                "rm " + "K-mer_lists/" + self.name + "_0_" + self.kmer_length + ".list" 
                 ]
                 , shell=True)
         Input.lock.acquire()
