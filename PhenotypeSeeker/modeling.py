@@ -262,7 +262,7 @@ class Samples():
 
     mash_distances_args = []
     # union_output = Manager().Namespace()
-    union_output = Array("c_char_p", 1)
+    union_output = Array(c_char_p, 1)
 
     def __init__(self, name, address, phenotypes, weight=1):
         self.name = name
