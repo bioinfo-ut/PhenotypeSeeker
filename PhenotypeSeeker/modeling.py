@@ -360,8 +360,7 @@ class Samples():
                 ]
             Input.pool.map(partial(cls.get_union, round=i), iterate_to_union)
         print(cls.union_output.decode())
-        print(id(cls.union_output))      
-        #call(["ls", "-lthr", "K-mer_lists/565665.3_7_13_union.list"])
+        call(["mv %s feature_vector.list" % cls.union_output])    
 
     @classmethod
     def get_union(cls, lists_to_unite, round):
@@ -371,15 +370,11 @@ class Samples():
         call(glistcompare_args)
         union_output = "K-mer_lists/%s_%s_%s_union.list" % (lists_to_unite[0].name, str(round + 1), Samples.kmer_length)
         cls.union_output = [union_output.encode()]
-        print("hey")
-        print(cls.union_output)
-        print(id(cls.union_output))
-        print("hopsti")
 
     # -------------------------------------------------------------------
     # Functions for calculating the mash distances and GSC weights for
     # input samples.
-    
+
     def get_mash_sketches(self):
         mash_args = "mash sketch -r " + self.address + " -o K-mer_lists/" + self.name
         process = Popen(mash_args, shell=True, stderr=PIPE, universal_newlines=True)
