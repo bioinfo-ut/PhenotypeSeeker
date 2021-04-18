@@ -969,6 +969,8 @@ class phenotypes():
             if phenotypes.scale == "continuous":
                 kf = KFold(n_splits=self.n_splits_cv_outer)               
             elif phenotypes.scale == "binary":
+                print("hey")
+                print(self.n_splits_cv_outer)
                 print(self.ML_df['phenotype'].values)
                 if np.min(np.bincount(self.ML_df['phenotype'].values)) < self.n_splits_cv_outer:
                     kf = StratifiedKFold(n_splits=np.min(np.bincount(self.ML_df['phenotype'].values)))
