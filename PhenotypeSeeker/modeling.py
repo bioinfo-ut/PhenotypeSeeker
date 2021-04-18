@@ -369,7 +369,7 @@ class Samples():
             [ "K-mer_lists/" + sample.name + "_" + str(round) + "_" + Samples.kmer_length + ("_union" if round > 0 else "") + ".list" \
                 for sample in lists_to_unite]
         call(glistcompare_args)
-        cls.union_output = [b"K-mer_lists/" + lists_to_unite[0].name + "_" + str(round + 1) + "_" + Samples.kmer_length + "_union.list"]
+        cls.union_output = [b"K-mer_lists/%s_%s_%s_union.list" % (lists_to_unite[0].name, str(round + 1), Samples.kmer_length)]
         print("hey")
         print(cls.union_output)
         print(id(cls.union_output))
