@@ -356,7 +356,7 @@ class Samples():
                 ]
             Input.pool.map(partial(cls.get_union, round=i), iterate_to_union)
         print(cls.union.output)
-        call(["mv %s feature_vector.list" % cls.union.output])    
+        call(["mv %s feature_vector.list" % cls.union.output], shell=True)    
 
     @classmethod
     def get_union(cls, lists_to_unite, round):
