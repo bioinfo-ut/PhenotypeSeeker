@@ -882,6 +882,8 @@ class phenotypes():
         # testing.
         phenotype = self.name
         nr_of_kmers_tested = float(len(self.pvalues))
+        print(self.pvalues)
+        print(nr_of_kmers_tested)
         self.get_pvalue_cutoff(self.pvalues, nr_of_kmers_tested)
         # reference = self.pvalues[self.kmer_limit]
         # while self.pvalues[self.kmer_limit-counter] == reference:
