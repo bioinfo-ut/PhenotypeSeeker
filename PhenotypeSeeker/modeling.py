@@ -773,7 +773,7 @@ class phenotypes():
         wo_pheno_w_kmer_expected, wo_pheno_wo_kmer_expected
         ) = self.get_expected_distribution(
             w_pheno, wo_pheno, w_kmer, wo_kmer, total)
-
+        print(w_pheno, wo_pheno, w_kmer, wo_kmer)
         chisquare_results = stats.chisquare(
             [
             w_pheno_w_kmer, w_pheno_wo_kmer,
@@ -785,7 +785,6 @@ class phenotypes():
             ],
             1
             )
-        print(chisquare_results)
         test_results_file.write(
             kmer + "\t%.2f\t%.2E\t" % chisquare_results 
             + str(no_samples_w_kmer)  +"\t| " + " ".join(samples_w_kmer) + "\n"
