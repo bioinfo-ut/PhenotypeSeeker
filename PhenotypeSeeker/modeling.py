@@ -785,11 +785,11 @@ class phenotypes():
             ],
             1
             )
+        print(chisquare_results)
         test_results_file.write(
             kmer + "\t%.2f\t%.2E\t" % chisquare_results 
             + str(no_samples_w_kmer)  +"\t| " + " ".join(samples_w_kmer) + "\n"
             )
-        print(chisquare_results)
         pvalue = chisquare_results[1]
         return pvalue
 
