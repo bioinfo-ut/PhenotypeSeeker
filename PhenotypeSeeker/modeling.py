@@ -258,7 +258,7 @@ class Samples():
     tree = None
 
     mash_distances_args = []
-    union_output = Manager().List()
+    union_output = Manager().list()
 
     def __init__(self, name, address, phenotypes, weight=1):
         self.name = name
