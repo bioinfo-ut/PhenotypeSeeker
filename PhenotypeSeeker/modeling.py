@@ -969,7 +969,7 @@ class phenotypes():
             if phenotypes.scale == "continuous":
                 kf = KFold(n_splits=self.n_splits_cv_outer)               
             elif phenotypes.scale == "binary":
-                print("hey")
+                print("hey0")
                 print(self.n_splits_cv_outer)
                 print(self.ML_df['phenotype'].values)
                 if np.min(np.bincount(self.ML_df['phenotype'].values)) < self.n_splits_cv_outer:
@@ -1028,6 +1028,7 @@ class phenotypes():
                 self.mean_model_performance_classifier(self.metrics_dict_test)
 
         elif self.testset_size:
+            print("hey")
             if phenotypes.scale == "continuous":
                 stratify = None
             elif phenotypes.scale == "binary":
@@ -1058,6 +1059,7 @@ class phenotypes():
                 )
 
         if (not self.n_splits_cv_outer and not self.testset_size) or self.train_on_whole:
+            print("hey2")
             if self.n_splits_cv_outer or self.testset_size:
                 self.summary_file.write(
                 '\nThe final output model training on the whole dataset:\n'
