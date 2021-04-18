@@ -969,6 +969,7 @@ class phenotypes():
             if phenotypes.scale == "continuous":
                 kf = KFold(n_splits=self.n_splits_cv_outer)               
             elif phenotypes.scale == "binary":
+                print(self.ML_df['phenotype'].values)
                 if np.min(np.bincount(self.ML_df['phenotype'].values)) < self.n_splits_cv_outer:
                     kf = StratifiedKFold(n_splits=np.min(np.bincount(self.ML_df['phenotype'].values)))
                     self.summary_file.write("\nSetting number of train/test splits \
