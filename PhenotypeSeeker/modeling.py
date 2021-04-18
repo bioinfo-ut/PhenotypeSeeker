@@ -676,7 +676,6 @@ class phenotypes():
             self.no_kmers_to_analyse.value, "tests conducted.", self.name + ": "
         )
         test_results_file.close()
-        print(pvalues)
         return(pvalues)
 
     def conduct_t_test(
@@ -790,6 +789,7 @@ class phenotypes():
             kmer + "\t%.2f\t%.2E\t" % chisquare_results 
             + str(no_samples_w_kmer)  +"\t| " + " ".join(samples_w_kmer) + "\n"
             )
+        print(chisquare_results)
         pvalue = chisquare_results[1]
         return pvalue
 
