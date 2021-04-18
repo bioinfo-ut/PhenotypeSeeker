@@ -16,7 +16,7 @@ if __name__ == '__main__':
 		print("child")
 		mystr = "h".encode()
 		l.append("mystriiiing")
-		n.bla = "boo"
+		n= "boo"
 		print(l)
 		print(id(l))
 	else:
@@ -24,4 +24,4 @@ if __name__ == '__main__':
 		time.sleep(2)
 		print(l)
 		print(id(l))
-		print(n.bla)
+		print(n)

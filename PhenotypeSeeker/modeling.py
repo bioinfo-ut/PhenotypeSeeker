@@ -45,9 +45,6 @@ import Bio
 import numpy as np
 import pandas as pd
 
-from ctypes import c_char_p
-from multiprocess import Array
-
 class Input():
 
     samples = OrderedDict()
@@ -261,8 +258,7 @@ class Samples():
     tree = None
 
     mash_distances_args = []
-    # union_output = Manager().Namespace()
-    union_output = Array(c_char_p, 1)
+    union = Manager().Namespace()
 
     def __init__(self, name, address, phenotypes, weight=1):
         self.name = name
@@ -359,8 +355,8 @@ class Samples():
                 iterate_to_union[j: j + 4 if len(iterate_to_union) < j + 4 else j + 2] for j in range(0, len(iterate_to_union), 2) if j + 2 <= len(iterate_to_union)
                 ]
             Input.pool.map(partial(cls.get_union, round=i), iterate_to_union)
-        print(cls.union_output[0].decode())
-        call(["mv %s feature_vector.list" % cls.union_output[0].decode()])    
+        print(cls.union.output)
+        call(["mv %s feature_vector.list" % cls.union.output])    
 
     @classmethod
     def get_union(cls, lists_to_unite, round):
@@ -368,9 +364,9 @@ class Samples():
             [ "K-mer_lists/" + sample.name + "_" + str(round) + "_" + Samples.kmer_length + ("_union" if round > 0 else "") + ".list" \
                 for sample in lists_to_unite]
         call(glistcompare_args)
-        union_output = "K-mer_lists/%s_%s_%s_union.list" % (lists_to_unite[0].name, str(round + 1), Samples.kmer_length)
-        cls.union_output = [union_output.encode()]
-        print(cls.union_output[0].decode())
+        output = 'K-mer_lists/' + lists_to_unite[0].name + "_" + str(round + 1) + "_" + Samples.kmer_length + "_union.list"
+        cls.union.output = "K-mer_lists/%s_%s_%s_union.list" % (lists_to_unite[0].name, str(round + 1), Samples.kmer_length)
+        print(cls.union.output)
 
     # -------------------------------------------------------------------
     # Functions for calculating the mash distances and GSC weights for
