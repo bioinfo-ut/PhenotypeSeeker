@@ -258,7 +258,7 @@ class Samples():
     tree = None
 
     mash_distances_args = []
-    union = Manager().Namespace()
+    union_output = Manager().List()
 
     def __init__(self, name, address, phenotypes, weight=1):
         self.name = name
@@ -329,7 +329,7 @@ class Samples():
                 iterate_to_union[j: j + 4 if len(iterate_to_union) < j + 4 else j + 2] for j in range(0, len(iterate_to_union), 2) if j + 2 <= len(iterate_to_union)
                 ]
             Input.pool.map(partial(cls.get_union, round=i), iterate_to_union)
-        call(["mv %s K-mer_lists/feature_vector.list" % cls.union.output], shell=True)    
+        call(["mv %s K-mer_lists/feature_vector.list" % cls.union_output[-1]], shell=True)    
 
     @classmethod
     def get_union(cls, lists_to_unite, round):
@@ -337,8 +337,7 @@ class Samples():
             [ "K-mer_lists/" + sample.name + "_" + str(round) + "_" + Samples.kmer_length + ("_union" if round > 0 else "") + ".list" \
                 for sample in lists_to_unite]
         call(glistcompare_args)
-        output = 'K-mer_lists/' + lists_to_unite[0].name + "_" + str(round + 1) + "_" + Samples.kmer_length + "_union.list"
-        cls.union.output = "K-mer_lists/%s_%s_%s_union.list" % (lists_to_unite[0].name, str(round + 1), Samples.kmer_length)
+        cls.union_output.append("K-mer_lists/%s_%s_%s_union.list" % (lists_to_unite[0].name, str(round + 1), Samples.kmer_length))
 
     # -------------------------------------------------------------------
     # Functions for calculating the mash distances and GSC weights for
@@ -591,8 +590,9 @@ class phenotypes():
 
     @classmethod
     def get_params_for_kmers_testing(cls):
+        # Removing old stuff
         call(
-            ["rm K-mer_lists/feature_vector_" + Samples.kmer_length + ".list"],
+            ["rm K-mer_lists/feature_vector.list"],
             shell=True
             )
         cls.no_kmers_to_analyse.value = int(
