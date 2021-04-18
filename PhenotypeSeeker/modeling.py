@@ -676,6 +676,7 @@ class phenotypes():
             self.no_kmers_to_analyse.value, "tests conducted.", self.name + ": "
         )
         test_results_file.close()
+        print(pvalues)
         return(pvalues)
 
     def conduct_t_test(
