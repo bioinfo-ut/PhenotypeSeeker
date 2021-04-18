@@ -45,6 +45,9 @@ import Bio
 import numpy as np
 import pandas as pd
 
+from ctypes import c_char_p
+from multiprocess import Array
+
 class Input():
 
     samples = OrderedDict()
@@ -258,7 +261,8 @@ class Samples():
     tree = None
 
     mash_distances_args = []
-    union_output = Value('c', "")
+    # union_output = Manager().Namespace()
+    union_output = Array("c_char_p", 1)
 
     def __init__(self, name, address, phenotypes, weight=1):
         self.name = name
@@ -365,7 +369,7 @@ class Samples():
             [ "K-mer_lists/" + sample.name + "_" + str(round) + "_" + Samples.kmer_length + ("_union" if round > 0 else "") + ".list" \
                 for sample in lists_to_unite]
         call(glistcompare_args)
-        cls.union_output = "K-mer_lists/" + lists_to_unite[0].name + "_" + str(round + 1) + "_" + Samples.kmer_length + "_union.list"
+        cls.union_output = [b"K-mer_lists/" + lists_to_unite[0].name + "_" + str(round + 1) + "_" + Samples.kmer_length + "_union.list"]
         print("hey")
         print(cls.union_output)
         print(id(cls.union_output))
