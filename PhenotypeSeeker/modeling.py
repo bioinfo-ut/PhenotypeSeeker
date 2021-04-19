@@ -613,14 +613,10 @@ class phenotypes():
     @classmethod
     def get_params_for_kmers_testing(cls):
         # Just removing old stuff
-        cls.no_kmers_to_analyse.value = int(
-            check_output(
-                ['glistquery', 'K-mer_lists/feature_vector.list', "|", "wc"]
-                ).split()[0]
-            )
         ps = subprocess.Popen(('glistquery', 'K-mer_lists/feature_vector.list'), stdout=subprocess.PIPE)
         output = subprocess.check_output(('wc', '-l'), stdin=ps.stdout)
         ps.wait()
+        cls.no_kmers_to_analyse.value = int(output)
         cls.progress_checkpoint.value = int(
             math.ceil(cls.no_kmers_to_analyse.value/(100*Samples.num_threads))
             )
