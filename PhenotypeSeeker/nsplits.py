@@ -1,7 +1,6 @@
 import numpy
 
-phvals = [1, 1, 1, 0, 1, 0, 0, 1]
+phvals = [[1, 2, 3], [1, 2, 3], [1, 2, 3]]
 
-bc = numpy.bincount([1, 1, 1, 0, 1, 0, 0, 1])
-
-print(bc)
+print(list(zip(*phvals)))
+print(numpy.transpose(phvals))

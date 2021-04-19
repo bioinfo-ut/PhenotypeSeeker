@@ -258,6 +258,7 @@ class Samples():
     tree = None
 
     mash_distances_args = []
+    vectors_as_multiple_input = Manager().list()
     union_output = Manager().list()
 
     def __init__(self, name, address, phenotypes, weight=1):
@@ -301,7 +302,23 @@ class Samples():
                 "rm " + "K-mer_lists/" + self.name + "_0_" + self.kmer_length + ".list" 
                 ]
                 , shell=True)
+        call(
+            [
+            "split -a 5 -d -n r/" + str(self.num_threads) + \
+            " K-mer_lists/" + self.name + "_mapped.txt " + \
+            "K-mer_lists/" + self.name + "_mapped_"
+            ],
+            shell=True
+            )
+        call(["rm K-mer_lists/{}_mapped.txt".format(self.name)], shell=True)
+
         Input.lock.acquire()
+        for i in range(Samples.num_threads):
+            self.vectors_as_multiple_input.append(
+                [
+                "K-mer_lists/" + self.name + "_mapped_%05d" % i
+                ]
+                )       
         stderr_print.currentSampleNum.value += 1
         Input.lock.release()
         stderr_print.print_progress("samples mapped.")
@@ -580,7 +597,7 @@ class phenotypes():
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
         pvalues_from_all_threads = Input.pool.map(
-                self.get_kmers_tested, self.vectors_as_multiple_input
+                self.get_kmers_tested, zip(*Samples.vectors_as_multiple_input)
             )
         self.pvalues = \
             sorted(list(chain(*pvalues_from_all_threads)))
@@ -590,7 +607,7 @@ class phenotypes():
 
     @classmethod
     def get_params_for_kmers_testing(cls):
-        # Removing old stuff
+        # Just removing old stuff
         [lambda x: call(["rm {}".format(x)], shell=True) for union in Samples.union_output]
         call(
             ["rm K-mer_lists/feature_vector.list"],
@@ -601,34 +618,10 @@ class phenotypes():
                 ['wc', '-l', "K-mer_lists/" + list(Input.samples.keys())[0] + "_mapped.txt"]
                 ).split()[0]
             )
-        cls._split_sample_vectors_for_multithreading()
         cls._splitted_vectors_to_multiple_input()
         cls.progress_checkpoint.value = int(
             math.ceil(cls.no_kmers_to_analyse.value/(100*Samples.num_threads))
             )
-
-    @staticmethod
-    def _split_sample_vectors_for_multithreading():
-        for sample in Input.samples:
-            call(
-                [
-                "split -a 5 -d -n r/" + str(Samples.num_threads) + \
-                " K-mer_lists/" + sample + "_mapped.txt " + \
-                "K-mer_lists/" + sample + "_mapped_"
-                ],
-                shell=True
-                )
-
-    @classmethod
-    def _splitted_vectors_to_multiple_input(cls):
-        for i in range(Samples.num_threads):
-            cls.vectors_as_multiple_input.append(
-                [
-                "K-mer_lists/" + sample + "_mapped_%05d" %i \
-                for sample in Input.samples
-                ]
-                )
-        
 
     def get_kmers_tested(self, split_of_kmer_lists):
         
@@ -969,8 +962,6 @@ class phenotypes():
             if phenotypes.scale == "continuous":
                 kf = KFold(n_splits=self.n_splits_cv_outer)               
             elif phenotypes.scale == "binary":
-                print("hey0")
-                print(self.n_splits_cv_outer)
                 print(self.ML_df['phenotype'].values)
                 if np.min(np.bincount(self.ML_df['phenotype'].values)) < self.n_splits_cv_outer:
                     kf = StratifiedKFold(n_splits=np.min(np.bincount(self.ML_df['phenotype'].values)))
@@ -1028,7 +1019,6 @@ class phenotypes():
                 self.mean_model_performance_classifier(self.metrics_dict_test)
 
         elif self.testset_size:
-            print("hey")
             if phenotypes.scale == "continuous":
                 stratify = None
             elif phenotypes.scale == "binary":
@@ -1059,7 +1049,6 @@ class phenotypes():
                 )
 
         if (not self.n_splits_cv_outer and not self.testset_size) or self.train_on_whole:
-            print("hey2")
             if self.n_splits_cv_outer or self.testset_size:
                 self.summary_file.write(
                 '\nThe final output model training on the whole dataset:\n'
