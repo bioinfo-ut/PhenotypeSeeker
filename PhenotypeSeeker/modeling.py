@@ -347,6 +347,7 @@ class Samples():
                 ]
             Input.pool.map(partial(cls.get_union, round=i), iterate_to_union)
         call(["mv %s K-mer_lists/feature_vector.list" % cls.union_output[-1]], shell=True)
+        print(cls.union_output)
         [lambda x: call(["rm {}".format(x)], shell=True) for union in cls.union_output]
 
     @classmethod
