@@ -615,7 +615,7 @@ class phenotypes():
         # Just removing old stuff
         cls.no_kmers_to_analyse.value = int(
             check_output(
-                ['glistquery', 'K-mer_lists/feature_vector.list', '|', 'wc', '-l']
+                ['glistquery', 'K-mer_lists/feature_vector.list']
                 ).split()[0]
             )
         cls.progress_checkpoint.value = int(
