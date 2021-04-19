@@ -346,7 +346,8 @@ class Samples():
                 iterate_to_union[j: j + 4 if len(iterate_to_union) < j + 4 else j + 2] for j in range(0, len(iterate_to_union), 2) if j + 2 <= len(iterate_to_union)
                 ]
             Input.pool.map(partial(cls.get_union, round=i), iterate_to_union)
-        call(["mv %s K-mer_lists/feature_vector.list" % cls.union_output[-1]], shell=True)    
+        call(["mv %s K-mer_lists/feature_vector.list" % cls.union_output[-1]], shell=True)
+        [lambda x: call(["rm {}".format(x)], shell=True) for union in cls.union_output]
 
     @classmethod
     def get_union(cls, lists_to_unite, round):
@@ -592,6 +593,10 @@ class phenotypes():
             sys.stderr.write("\n\x1b[1;32mConducting the k-mer specific chi-square tests:\x1b[0m\n")
             sys.stderr.flush()
         cls.get_params_for_kmers_testing()
+        call(
+            ["rm K-mer_lists/feature_vector.list"],
+            shell=True
+            )
 
     def test_kmers_association_with_phenotype(self):
         stderr_print.currentKmerNum.value = 0
@@ -608,17 +613,11 @@ class phenotypes():
     @classmethod
     def get_params_for_kmers_testing(cls):
         # Just removing old stuff
-        [lambda x: call(["rm {}".format(x)], shell=True) for union in Samples.union_output]
-        call(
-            ["rm K-mer_lists/feature_vector.list"],
-            shell=True
-            )
         cls.no_kmers_to_analyse.value = int(
             check_output(
-                ['wc', '-l', "K-mer_lists/" + list(Input.samples.keys())[0] + "_mapped.txt"]
+                ['glistquery', 'K-mer_lists/feature_vector.list', '|', 'wc', '-l']
                 ).split()[0]
             )
-        cls._splitted_vectors_to_multiple_input()
         cls.progress_checkpoint.value = int(
             math.ceil(cls.no_kmers_to_analyse.value/(100*Samples.num_threads))
             )
