@@ -601,7 +601,6 @@ class phenotypes():
     def test_kmers_association_with_phenotype(self):
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
-        print(Samples.vectors_as_multiple_input)
         pvalues_from_all_threads = Input.pool.map(
                 self.get_kmers_tested, zip(*Samples.vectors_as_multiple_input)
             )
@@ -954,6 +953,7 @@ class phenotypes():
             self.summary_file.write("No k-mers passed the step of k-mer filtering for " \
                 "machine learning modelling.\n")
             return
+        print(Input.pool)
         Input.pool.map(self.get_kmers_dict, zip(*Samples.vectors_as_multiple_input))
 
         if self.n_splits_cv_outer:
