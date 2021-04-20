@@ -636,7 +636,7 @@ class phenotypes():
             test_results_file = open(
                 "chi-squared_test_results_" + self.name + "_" + mt_code + ".txt", "w"
                 )
-
+        print(split_of_kmer_lists)
         for line in zip(*[open(item) for item in split_of_kmer_lists]):
             counter += 1
             if counter%self.progress_checkpoint.value == 0:
