@@ -853,11 +853,13 @@ class phenotypes():
             ],
             shell=True
             )
+        print(check_output(["wc", "-l", self.test_output]).split()[0])
         if not check_output(["wc", "-l", self.test_output]).split()[0]:
             with open(self.test_output) as test_out:
                 test_out.write(
                     "No k-mer had a suitable distribution to conduct the test."
                     )
+            del Input.phenotypes_to_analyse[phenotype]
         for l in range(Samples.num_threads):
             call(
                 [
