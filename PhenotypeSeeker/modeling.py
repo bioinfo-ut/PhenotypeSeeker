@@ -1231,6 +1231,9 @@ class phenotypes():
             if self.model_name_short == "XGBC":
                 self.model_fitted = self.best_model.fit(self.X_train.values, self.y_train.values.flatten())
             else:
+                print(self.X_train)
+                print(self.y_train.values.flatten())
+                print(self.weights_train.values.flatten())
                 self.model_fitted = self.best_model.fit(
                     self.X_train, self.y_train.values.flatten(),
                     sample_weight=self.weights_train.values.flatten()
