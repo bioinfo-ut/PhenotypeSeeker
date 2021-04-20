@@ -1660,9 +1660,9 @@ def modeling(args):
         lambda x:  x.test_kmers_association_with_phenotype(), 
         Input.phenotypes_to_analyse.values()
         ))
-    
+
     # Remove phenotypes with no results
-    [(lambda x: Input.phenotypes_to_analyse.pop(x))(x) for pt in phenotypes.no_results]
+    [(lambda x: Input.phenotypes_to_analyse.pop(x))(pt) for pt in phenotypes.no_results]
     sys.stderr.write("\x1b[1;32mFiltering the k-mers by p-value:\x1b[0m\n")
     sys.stderr.flush()
     list(map(
