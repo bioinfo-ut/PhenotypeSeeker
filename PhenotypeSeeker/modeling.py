@@ -858,7 +858,6 @@ class phenotypes():
                 test_out.write(
                     "No k-mer had a suitable distribution to conduct the test."
                     )
-                k-mer distribution in samples.
         for l in range(Samples.num_threads):
             call(
                 [
