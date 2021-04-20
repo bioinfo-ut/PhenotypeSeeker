@@ -550,7 +550,6 @@ class phenotypes():
         self.pvalues = None
         self.kmers_for_ML = set()
         self.skl_dataset = None
-        self.ML_df_dict = Manager().dict()
         self.ML_df = pd.DataFrame()
         self.ML_df_train = None
         self.ML_df_test = None
@@ -1193,7 +1192,7 @@ class phenotypes():
             print(split)
             for line in zip(*[open(item) for item in split]):
                 if line[0].split()[0] in self.kmers_for_ML:
-                    self.ML_df_dict[line[0].split()[0]] = [int(j.split()[1].strip()) for j in line]
+                    self.ML_df[line[0].split()[0]] = [int(j.split()[1].strip()) for j in line]
         self.ML_df = self.ML_df.astype(bool).astype(int)
         self.ML_df['phenotype'] = [
             sample.phenotypes[self.name] for sample in Input.samples.values()
