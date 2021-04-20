@@ -853,8 +853,7 @@ class phenotypes():
             ],
             shell=True
             )
-        print(check_output(["wc", "-l", self.test_output]).split()[0].decode())
-        if not check_output(["wc", "-l", self.test_output]).split()[0].decode():
+        if not int(check_output(["wc", "-l", self.test_output]).split()[0].decode()):
             with open(self.test_output) as test_out:
                 test_out.write(
                     "No k-mer had a suitable distribution to conduct the test."
