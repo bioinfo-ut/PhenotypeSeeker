@@ -346,7 +346,7 @@ class Samples():
                 ]
             Input.pool.map(partial(cls.get_union, round=i), iterate_to_union)
         call(["mv %s K-mer_lists/feature_vector.list" % cls.union_output[-1]], shell=True)
-        [(lambda x: call(["rm {}".format(x)], shell=True))(union) for union in cls.union_output]
+        [(lambda x: call(["rm {}".format(x)], shell=True))(union) for union in cls.union_output[:-1]]
 
     @classmethod
     def get_union(cls, lists_to_unite, round):
@@ -954,7 +954,7 @@ class phenotypes():
             self.summary_file.write("No k-mers passed the step of k-mer filtering for " \
                 "machine learning modelling.\n")
             return
-        pool.map(self.get_kmers_dict, zip(*Samples.vectors_as_multiple_input))
+        Input.pool.map(self.get_kmers_dict, zip(*Samples.vectors_as_multiple_input))
 
         if self.n_splits_cv_outer:
             if phenotypes.scale == "continuous":
