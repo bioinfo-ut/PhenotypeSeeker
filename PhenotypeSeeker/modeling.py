@@ -346,7 +346,7 @@ class Samples():
                 ]
             Input.pool.map(partial(cls.get_union, round=i), iterate_to_union)
         call(["mv %s K-mer_lists/feature_vector.list" % cls.union_output[-1]], shell=True)
-        [(lambda x: call(["rm {}".format(x)], shell=True))(union) for union in cls.union_output[:-1]]
+        [(lambda x: call(["rm -f {}".format(x)], shell=True))(union) for union in cls.union_output[:-1]]
 
     @classmethod
     def get_union(cls, lists_to_unite, round):
@@ -601,6 +601,7 @@ class phenotypes():
     def test_kmers_association_with_phenotype(self):
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
+        print(Samples.vectors_as_multiple_input)
         pvalues_from_all_threads = Input.pool.map(
                 self.get_kmers_tested, zip(*Samples.vectors_as_multiple_input)
             )
@@ -953,8 +954,7 @@ class phenotypes():
             self.summary_file.write("No k-mers passed the step of k-mer filtering for " \
                 "machine learning modelling.\n")
             return
-        print(list(zip(*Samples.vectors_as_multiple_input)))
-        Input.pool.map(self.get_kmers_dict, zip(*Samples.vectors_as_multiple_input))
+        pool.map(self.get_kmers_dict, zip(*Samples.vectors_as_multiple_input))
 
         if self.n_splits_cv_outer:
             if phenotypes.scale == "continuous":
@@ -1189,13 +1189,11 @@ class phenotypes():
             + "_model_" + self.name + ".txt", "w")
         self.model_file = open(self.model_name_short + "_model_" + self.name + ".pkl", "wb")
 
-    def get_kmer_dict(self, split_of_kmer_lists):
-        for line in zip(*[open(item) for item in zip(*split_of_kmer_lists)]):
-            if line[0].split()[0] in self.kmers_for_ML:
-                self.ML_df_dict[line[0].split()[0]] = [int(j.split()[1].strip()) for j in line]
-
-    def get_ML_dataframe():
-        self.ML_df = pd.DataFrame.from_dict(self.ML_df_dict)
+    def get_ML_dataframe(self):
+        for split in zip(*vectors_as_multiple_input):
+            for line in zip(*[open(item) for item in zip(*split)]):
+                if line[0].split()[0] in self.kmers_for_ML:
+                    self.ML_df_dict[line[0].split()[0]] = [int(j.split()[1].strip()) for j in line]
         self.ML_df = self.ML_df.astype(bool).astype(int)
         self.ML_df['phenotype'] = [
             sample.phenotypes[self.name] for sample in Input.samples.values()
@@ -1662,7 +1660,7 @@ def modeling(args):
         lambda x:  x.get_kmers_filtered(), 
         Input.phenotypes_to_analyse.values()
         ))
-    for vector in phenotypes.vectors_as_multiple_input:
+    for vector in Samples.vectors_as_multiple_input:
         for item in vector:
             call(['rm', item])
     sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
