@@ -1660,9 +1660,6 @@ def modeling(args):
         lambda x:  x.get_kmers_filtered(), 
         Input.phenotypes_to_analyse.values()
         ))
-    for vector in Samples.vectors_as_multiple_input:
-        for item in vector:
-            call(['rm', item])
     sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
     sys.stderr.flush()
     Input.pool.map(
