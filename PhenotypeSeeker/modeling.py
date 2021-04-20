@@ -347,7 +347,6 @@ class Samples():
                 ]
             Input.pool.map(partial(cls.get_union, round=i), iterate_to_union)
         call(["mv %s K-mer_lists/feature_vector.list" % cls.union_output[-1]], shell=True)
-        print(cls.union_output)
         [(lambda x: call(["rm {}".format(x)], shell=True))(union) for union in cls.union_output]
 
     @classmethod
@@ -602,6 +601,7 @@ class phenotypes():
     def test_kmers_association_with_phenotype(self):
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
+        print(Samples.vectors_as_multiple_input)
         pvalues_from_all_threads = Input.pool.map(
                 self.get_kmers_tested, zip(*Samples.vectors_as_multiple_input)
             )
@@ -636,7 +636,6 @@ class phenotypes():
             test_results_file = open(
                 "chi-squared_test_results_" + self.name + "_" + mt_code + ".txt", "w"
                 )
-        print(split_of_kmer_lists)
         for line in zip(*[open(item) for item in split_of_kmer_lists]):
             counter += 1
             if counter%self.progress_checkpoint.value == 0:
@@ -961,7 +960,6 @@ class phenotypes():
             if phenotypes.scale == "continuous":
                 kf = KFold(n_splits=self.n_splits_cv_outer)               
             elif phenotypes.scale == "binary":
-                print(self.ML_df['phenotype'].values)
                 if np.min(np.bincount(self.ML_df['phenotype'].values)) < self.n_splits_cv_outer:
                     kf = StratifiedKFold(n_splits=np.min(np.bincount(self.ML_df['phenotype'].values)))
                     self.summary_file.write("\nSetting number of train/test splits \
@@ -1193,11 +1191,6 @@ class phenotypes():
 
     def get_dataframe_for_machine_learning(self):
         kmer_lists = ["K-mer_lists/" + sample + "_mapped.txt" for sample in Input.samples]
-        print(kmer_lists)
-        print()
-        print(Samples.vectors_as_multiple_input)
-        print()
-        print(list(zip(*Samples.vectors_as_multiple_input)))
         for line in zip(*[open(item) for item in kmer_lists]):
             if line[0].split()[0] in self.kmers_for_ML:
                 self.ML_df[line[0].split()[0]] = [int(j.split()[1].strip()) for j in line]
