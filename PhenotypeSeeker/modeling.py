@@ -1189,7 +1189,6 @@ class phenotypes():
 
     def get_ML_dataframe(self):
         for split in zip(*Samples.vectors_as_multiple_input):
-            print(split)
             for line in zip(*[open(item) for item in split]):
                 if line[0].split()[0] in self.kmers_for_ML:
                     self.ML_df[line[0].split()[0]] = [int(j.split()[1].strip()) for j in line]
@@ -1230,9 +1229,6 @@ class phenotypes():
             if self.model_name_short == "XGBC":
                 self.model_fitted = self.best_model.fit(self.X_train.values, self.y_train.values.flatten())
             else:
-                print(self.X_train)
-                print(self.y_train.values.flatten())
-                print(self.weights_train.values.flatten())
                 self.model_fitted = self.best_model.fit(
                     self.X_train, self.y_train.values.flatten(),
                     sample_weight=self.weights_train.values.flatten()
