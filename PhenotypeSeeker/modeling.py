@@ -1038,6 +1038,8 @@ class phenotypes():
             self.X_test, self.y_test, self.weights_test = self.split_df(
                 self.ML_df_test
                 )
+            print(self.y_train)
+            print(self.y_test)
 
             self.fit_model()
             self.cross_validation_results()
