@@ -1194,7 +1194,7 @@ class phenotypes():
     def get_dataframe_for_machine_learning(self):
         kmer_lists = ["K-mer_lists/" + sample + "_mapped.txt" for sample in Input.samples]
         print(kmer_lists)
-        print(zip(*Samples.vectors_as_multiple_input))
+        print(list(zip(*Samples.vectors_as_multiple_input)))
         for line in zip(*[open(item) for item in kmer_lists]):
             if line[0].split()[0] in self.kmers_for_ML:
                 self.ML_df[line[0].split()[0]] = [int(j.split()[1].strip()) for j in line]
