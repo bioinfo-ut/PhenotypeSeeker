@@ -1189,7 +1189,7 @@ class phenotypes():
         self.model_file = open(self.model_name_short + "_model_" + self.name + ".pkl", "wb")
 
     def get_ML_dataframe(self):
-        for split in zip(*vectors_as_multiple_input):
+        for split in zip(*Samples.vectors_as_multiple_input):
             for line in zip(*[open(item) for item in zip(*split)]):
                 if line[0].split()[0] in self.kmers_for_ML:
                     self.ML_df_dict[line[0].split()[0]] = [int(j.split()[1].strip()) for j in line]
