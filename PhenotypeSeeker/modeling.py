@@ -348,7 +348,7 @@ class Samples():
             Input.pool.map(partial(cls.get_union, round=i), iterate_to_union)
         call(["mv %s K-mer_lists/feature_vector.list" % cls.union_output[-1]], shell=True)
         print(cls.union_output)
-        [lambda x: call(["rm {}".format(x)], shell=True) for union in cls.union_output]
+        [(lambda x: call(["rm {}".format(x)], shell=True))(union) for union in cls.union_output]
 
     @classmethod
     def get_union(cls, lists_to_unite, round):
@@ -1194,6 +1194,7 @@ class phenotypes():
     def get_dataframe_for_machine_learning(self):
         kmer_lists = ["K-mer_lists/" + sample + "_mapped.txt" for sample in Input.samples]
         print(kmer_lists)
+        print(zip(*Samples.vectors_as_multiple_input))
         for line in zip(*[open(item) for item in kmer_lists]):
             if line[0].split()[0] in self.kmers_for_ML:
                 self.ML_df[line[0].split()[0]] = [int(j.split()[1].strip()) for j in line]
