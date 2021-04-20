@@ -545,6 +545,8 @@ class phenotypes():
     n_splits_cv_inner = None
     testset_size = None
 
+    phenotypes_to_stop = []
+
     def __init__(self, name):
         self.name = name
         self.pvalues = None
@@ -858,7 +860,7 @@ class phenotypes():
                 test_out.write(
                     "No k-mer had a suitable distribution to conduct the test."
                     )
-            del Input.phenotypes_to_analyse[phenotype]
+            cls.phenotypes_to_stop.append(phenotype)
         for l in range(Samples.num_threads):
             call(
                 [
@@ -1660,6 +1662,7 @@ def modeling(args):
         ))
     sys.stderr.write("\x1b[1;32mFiltering the k-mers by p-value:\x1b[0m\n")
     sys.stderr.flush()
+    [(lambda x: Input.phenotypes_to_analyse.pop(x))(x) for pt in phenotypes.no_results]
     list(map(
         lambda x:  x.get_kmers_filtered(), 
         Input.phenotypes_to_analyse.values()
