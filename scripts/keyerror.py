@@ -1,3 +1,8 @@
 import numpy as np
 
-print(8/3)
+abra = 6
+
+if True:
+	print("heiho")
+else:
+	print(kadabra)
