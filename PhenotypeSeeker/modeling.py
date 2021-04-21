@@ -123,29 +123,39 @@ class Input():
         phenotypes.testset_size = testset_size
         phenotypes.train_on_whole = train_on_whole
         cls.get_model_name(regressor, binary_classifier)
-        if n_splits_cv_outer:
-            cls.get_n_splits_cv_outer(n_splits_cv_outer)
-            cls.get_n_splits_cv_inner(n_splits_cv_inner)  
+        phenotypes.n_splits_cv_outer = n_splits_cv_outer
+        phenotypes.n_splits_cv_inner = n_splits_cv_inner
         phenotypes.logreg_solver = cls.get_logreg_solver(
             logreg_solver)
 
     @staticmethod
-    def get_n_splits_cv_outer(n_splits_cv_outer):
+    def assert_n_splits_cv_outer(n_splits_cv_outer):
         if phenotypes.scale == "continuous" and (n_splits_cv_outer > Samples.no_samples // 2):
-                phenotypes.n_splits_cv_outer = Samples.no_samples // 2
-                sys.stderr.write("\x1b[1;33mWarning! The 'n_splits_cv_outer' parameter is too high to \n" \
-                        "leave the required 2 samples into test set for each split!\x1b[0m\n")
-                sys.stderr.write("\x1b[1;33mLowering the 'n_splits_cv_outer' parameter to " + str(phenotypes.n_splits_cv_outer) + "!\x1b[0m\n\n")
-        else:
-            phenotypes.n_splits_cv_outer = n_splits_cv_outer
+            phenotypes.n_splits_cv_outer = Samples.no_samples // 2
+            sys.stderr.write("\x1b[1;33mWarning! The 'n_splits_cv_outer' parameter is too high to \n" \
+                    "leave the required 2 samples into test set for each split!\x1b[0m\n")
+            sys.stderr.write("\x1b[1;33mSetting number of train/test splits equal to " \
+                + str(phenotypes.n_splits_cv_outer) + "!\x1b[0m\n\n")
+        elif phenotypes.scale == "binary" and np.min(np.bincount(phenotypes.ML_df['phenotype'].values)) < n_splits_cv_outer:
+            phenotypes.n_splits_cv_outer = np.min(np.bincount(phenotypes.ML_df['phenotype'].values))
+            sys.stderr.write("\x1b[1;33mSetting number of train/test splits \
+                equal to minor phenotype count - " + str(phenotypes.n_splits_cv_outer) + "!\x1b[0m\n\n")
+
 
     @staticmethod
-    def get_n_splits_cv_inner(n_splits_cv_inner):
-        min_samps_in_train_set = Samples.no_samples - math.ceil(Samples.no_samples / phenotypes.n_splits_cv_outer)
-        if n_splits_cv_inner > min_samps_in_train_set:
-            phenotypes.n_splits_cv_inner = min_samps_in_train_set
-        else:
-            phenotypes.n_splits_cv_inner = n_splits_cv_inner
+    def assert_n_splits_cv_inner(n_splits_cv_inner):
+        if phenotypes.scale == "continuous":
+            if phenotypes.n_splits_cv_outer:
+                min_cv_inner = Samples.no_samples - math.ceil(Samples.no_samples / phenotypes.n_splits_cv_outer)
+            else:
+                min_cv_inner = len(phenotypes.y_train):
+        elif phenotypes.scale == "binary":
+            if phenotypes.n_splits_cv_outer:
+                min_class = np.min(np.bincount(phenotypes.ML_df['phenotype'].values))
+                min_cv_inner = (min_class - ceil(min_class / phenotypes.n_splits_cv_outer))
+            else:
+                min_cv_inner = np.min(np.bincount(phenotypes.y_train)):
+        phenotypes.n_splits_cv_inner = np.min(min_cv_inner, phenotypes.n_splits_cv_inner)
 
     @staticmethod
     def get_model_name(regressor, binary_classifier):
@@ -963,15 +973,12 @@ class phenotypes():
         self.get_ML_dataframe()
 
         if self.n_splits_cv_outer:
+            Input.assert_n_splits_cv_outer(self.n_splits_cv_outer)
+            Input.assert_n_splits_cv_inner(self.n_splits_cv_inner)
             if phenotypes.scale == "continuous":
                 kf = KFold(n_splits=self.n_splits_cv_outer)               
             elif phenotypes.scale == "binary":
-                if np.min(np.bincount(self.ML_df['phenotype'].values)) < self.n_splits_cv_outer:
-                    kf = StratifiedKFold(n_splits=np.min(np.bincount(self.ML_df['phenotype'].values)))
-                    self.summary_file.write("\nSetting number of train/test splits \
-                        equal to minor phenotype count - %s\n")
-                else:
-                    kf = StratifiedKFold(n_splits=self.n_splits_cv_outer)
+                kf = StratifiedKFold(n_splits=self.n_splits_cv_outer)
             fold = 0
             for train_index, test_index in kf.split(
                     self.ML_df, self.ML_df['phenotype'].values
@@ -1038,8 +1045,7 @@ class phenotypes():
             self.X_test, self.y_test, self.weights_test = self.split_df(
                 self.ML_df_test
                 )
-            print(self.y_train)
-            print(self.y_test)
+            Input.assert_n_splits_cv_inner(self.n_splits_cv_inner)
 
             self.fit_model()
             self.cross_validation_results()
