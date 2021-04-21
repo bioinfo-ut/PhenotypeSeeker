@@ -155,9 +155,7 @@ class Input():
                 min_cv_inner = (min_class - math.ceil(min_class / phenotypes.n_splits_cv_outer))
             else:
                 min_cv_inner = np.min(np.bincount(y_train))
-                print(y_train)
-                print(min_cv_inner)
-        phenotypes.n_splits_cv_inner = np.min(min_cv_inner, phenotypes.n_splits_cv_inner)
+        phenotypes.n_splits_cv_inner = np.min([min_cv_inner, phenotypes.n_splits_cv_inner])
 
     @staticmethod
     def get_model_name(regressor, binary_classifier):
@@ -1048,7 +1046,6 @@ class phenotypes():
                 self.ML_df_test
                 )
             Input.assert_n_splits_cv_inner(self.n_splits_cv_inner, self.y_train.phenotype.values.tolist())
-            print(self.n_splits_cv_inner)
             self.fit_model()
             self.cross_validation_results()
             self.summary_file.write('\nTraining set:\n')
