@@ -1045,8 +1045,8 @@ class phenotypes():
             self.X_test, self.y_test, self.weights_test = self.split_df(
                 self.ML_df_test
                 )
-            print(self.y_train)
-            Input.assert_n_splits_cv_inner(self.n_splits_cv_inner, list(self.y_train))
+            print(self.y_train.phenotype.values.tolist())
+            Input.assert_n_splits_cv_inner(self.n_splits_cv_inner, self.y_train.phenotype.values.tolist())
 
             self.fit_model()
             self.cross_validation_results()
