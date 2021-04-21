@@ -964,7 +964,6 @@ class phenotypes():
         sys.stderr.flush()
         self.set_model()
         self.set_hyperparameters()
-        self.get_best_model()
         self.get_outputfile_names()
         if len(self.kmers_for_ML) == 0:
             self.summary_file.write("No k-mers passed the step of k-mer filtering for " \
@@ -994,6 +993,7 @@ class phenotypes():
                     self.ML_df_test
                     )
 
+                self.get_best_model()
                 self.fit_model()
                 self.summary_file.write(
                     "\n##### Train/test split nr.%d: #####\n" % fold
@@ -1045,7 +1045,9 @@ class phenotypes():
             self.X_test, self.y_test, self.weights_test = self.split_df(
                 self.ML_df_test
                 )
+
             Input.assert_n_splits_cv_inner(self.n_splits_cv_inner, self.y_train.phenotype.values.tolist())
+            self.get_best_model()
             self.fit_model()
             self.cross_validation_results()
             self.summary_file.write('\nTraining set:\n')
@@ -1064,6 +1066,7 @@ class phenotypes():
                 '\nThe final output model training on the whole dataset:\n'
                 )
             self.X_train, self.y_train, self.weights_train = self.split_df(self.ML_df)
+            self.get_best_model()
             self.fit_model()
             self.cross_validation_results()
             self.predict(self.X_train, self.y_train)
