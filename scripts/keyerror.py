@@ -1,8 +1,9 @@
-import numpy as np
+import pandas as pd
 
-abra = 6
+products = {'Product': ['Tablet','iPhone','Laptop','Monitor'],
+            }
 
-if True:
-	print("heiho")
-else:
-	print(kadabra)
+df = pd.DataFrame(products)
+print(df)
+products_list = df.Product.values.tolist()
+print (products_list)
