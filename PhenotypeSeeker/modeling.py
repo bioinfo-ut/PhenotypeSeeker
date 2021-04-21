@@ -143,18 +143,18 @@ class Input():
 
 
     @staticmethod
-    def assert_n_splits_cv_inner(n_splits_cv_inner):
+    def assert_n_splits_cv_inner(n_splits_cv_inner, y_train=None):
         if phenotypes.scale == "continuous":
             if phenotypes.n_splits_cv_outer:
                 min_cv_inner = Samples.no_samples - math.ceil(Samples.no_samples / phenotypes.n_splits_cv_outer)
             else:
-                min_cv_inner = len(phenotypes.y_train)
+                min_cv_inner = len(y_train)
         elif phenotypes.scale == "binary":
             if phenotypes.n_splits_cv_outer:
                 min_class = np.min(np.bincount(phenotypes.ML_df['phenotype'].values))
                 min_cv_inner = (min_class - math.ceil(min_class / phenotypes.n_splits_cv_outer))
             else:
-                min_cv_inner = np.min(np.bincount(phenotypes.y_train))
+                min_cv_inner = np.min(np.bincount(y_train))
         phenotypes.n_splits_cv_inner = np.min(min_cv_inner, phenotypes.n_splits_cv_inner)
 
     @staticmethod
@@ -1045,8 +1045,7 @@ class phenotypes():
             self.X_test, self.y_test, self.weights_test = self.split_df(
                 self.ML_df_test
                 )
-            print(self.y_train)
-            Input.assert_n_splits_cv_inner(self.n_splits_cv_inner)
+            Input.assert_n_splits_cv_inner(self.n_splits_cv_inner, self.y_train)
 
             self.fit_model()
             self.cross_validation_results()
