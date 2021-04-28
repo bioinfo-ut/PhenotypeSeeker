@@ -129,15 +129,15 @@ class Input():
             logreg_solver)
 
     @staticmethod
-    def assert_n_splits_cv_outer(n_splits_cv_outer):
+    def assert_n_splits_cv_outer(n_splits_cv_outer, ML_df):
         if phenotypes.scale == "continuous" and (n_splits_cv_outer > Samples.no_samples // 2):
             phenotypes.n_splits_cv_outer = Samples.no_samples // 2
             sys.stderr.write("\x1b[1;33mWarning! The 'n_splits_cv_outer' parameter is too high to \n" \
                     "leave the required 2 samples into test set for each split!\x1b[0m\n")
             sys.stderr.write("\x1b[1;33mSetting number of train/test splits equal to " \
                 + str(phenotypes.n_splits_cv_outer) + "!\x1b[0m\n\n")
-        elif phenotypes.scale == "binary" and np.min(np.bincount(phenotypes.ML_df['phenotype'].values)) < n_splits_cv_outer:
-            phenotypes.n_splits_cv_outer = np.min(np.bincount(phenotypes.ML_df['phenotype'].values))
+        elif phenotypes.scale == "binary" and np.min(np.bincount(ML_df['phenotype'].values)) < n_splits_cv_outer:
+            phenotypes.n_splits_cv_outer = np.min(np.bincount(ML_df['phenotype'].values))
             sys.stderr.write("\x1b[1;33mSetting number of train/test splits \
                 equal to minor phenotype count - " + str(phenotypes.n_splits_cv_outer) + "!\x1b[0m\n\n")
 
@@ -972,7 +972,7 @@ class phenotypes():
         self.get_ML_dataframe()
 
         if self.n_splits_cv_outer:
-            Input.assert_n_splits_cv_outer(self.n_splits_cv_outer)
+            Input.assert_n_splits_cv_outer(self.n_splits_cv_outer, self.ML_df)
             Input.assert_n_splits_cv_inner(self.n_splits_cv_inner)
             if phenotypes.scale == "continuous":
                 kf = KFold(n_splits=self.n_splits_cv_outer)               
