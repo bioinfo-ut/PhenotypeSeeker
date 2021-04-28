@@ -143,7 +143,7 @@ class Input():
 
 
     @staticmethod
-    def assert_n_splits_cv_inner(n_splits_cv_inner, y_train=None):
+    def assert_n_splits_cv_inner(n_splits_cv_inner, ML_df, y_train=None):
         if phenotypes.scale == "continuous":
             if phenotypes.n_splits_cv_outer:
                 min_cv_inner = Samples.no_samples - math.ceil(Samples.no_samples / phenotypes.n_splits_cv_outer)
@@ -151,7 +151,7 @@ class Input():
                 min_cv_inner = len(y_train)
         elif phenotypes.scale == "binary":
             if phenotypes.n_splits_cv_outer:
-                min_class = np.min(np.bincount(phenotypes.ML_df['phenotype'].values))
+                min_class = np.min(np.bincount(ML_df['phenotype'].values))
                 min_cv_inner = (min_class - math.ceil(min_class / phenotypes.n_splits_cv_outer))
             else:
                 min_cv_inner = np.min(np.bincount(y_train))
@@ -973,7 +973,7 @@ class phenotypes():
 
         if self.n_splits_cv_outer:
             Input.assert_n_splits_cv_outer(self.n_splits_cv_outer, self.ML_df)
-            Input.assert_n_splits_cv_inner(self.n_splits_cv_inner)
+            Input.assert_n_splits_cv_inner(self.n_splits_cv_inner, self.ML_df)
             if phenotypes.scale == "continuous":
                 kf = KFold(n_splits=self.n_splits_cv_outer)               
             elif phenotypes.scale == "binary":
@@ -1046,7 +1046,9 @@ class phenotypes():
                 self.ML_df_test
                 )
 
-            Input.assert_n_splits_cv_inner(self.n_splits_cv_inner, self.y_train.phenotype.values.tolist())
+            Input.assert_n_splits_cv_inner(
+                self.n_splits_cv_inner, self.ML_df, self.y_train.phenotype.values.tolist() 
+                )
             self.get_best_model()
             self.fit_model()
             self.cross_validation_results()
