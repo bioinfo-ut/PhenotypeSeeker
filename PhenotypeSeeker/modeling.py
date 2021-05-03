@@ -1688,7 +1688,7 @@ def modeling(args):
             lambda x:  x.get_kmers_filtered(), 
             Input.phenotypes_to_analyse.values()
             ))
-    if not Input.jump_to or Input.jump_to == "modelling":
+    if not Input.jump_to or ''.join(i for i, _ in itertools.groupby(Input.jump_to)) == "modeling":
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
         sys.stderr.flush()
         Input.pool.map(
