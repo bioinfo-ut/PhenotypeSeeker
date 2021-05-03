@@ -264,6 +264,12 @@ def Main():
         "-nt", "--num_threads", type=int, metavar='INT', default=8,
         help='Specify the number of threads the program is run on (default 8).'
         )
+    other.add_argument(
+        "-jt", "--jump_to", type=str, metavar='', default=None,
+        choices=["modelling"],
+        help='Continue a discontinued process and skip the steps, which output \
+        files exist already in the correct paths.'
+        )
     other.add_argument("-h", "--help", action="help",
     	help="Show this help message and exit."
     	)

@@ -51,6 +51,9 @@ class Input():
     phenotypes_to_analyse = OrderedDict()
     pool = None
     lock = None
+
+    jump_to = None
+    num_threads = 8
     
     @classmethod
     def get_input_data(cls, inputfilename, take_logs):
@@ -81,7 +84,7 @@ class Input():
     @classmethod
     def get_multithreading_parameters(cls):
         cls.lock = Manager().Lock()
-        cls.pool = Pool(Samples.num_threads)
+        cls.pool = Pool(Input.num_threads)
 
     # ---------------------------------------------------------
     # Functions for processing the command line input arguments
@@ -95,7 +98,7 @@ class Input():
             FDR, B, binary_classifier, regressor, penalty, max_iter,
             tol, l1_ratio, n_splits_cv_outer, kernel, n_iter,
             n_splits_cv_inner, testset_size, train_on_whole,
-            logreg_solver
+            logreg_solver, jump_to
             ):
         cls._get_phenotypes_to_analyse(mpheno)
         phenotypes.alphas = cls._get_alphas(
@@ -109,7 +112,8 @@ class Input():
             )
         Samples.kmer_length = kmer_length
         Samples.cutoff = cutoff
-        Samples.num_threads = num_threads
+        Input.num_threads = num_threads
+        Input.jump_to = jump_to
         phenotypes.pvalue_cutoff = pvalue_cutoff
         phenotypes.kmer_limit = kmer_limit
         phenotypes.FDR = FDR
@@ -263,7 +267,6 @@ class Samples():
     cutoff = None
     min_samples = None
     max_samples = None
-    num_threads = None
 
     tree = None
 
@@ -314,7 +317,7 @@ class Samples():
                 , shell=True)
         call(
             [
-            "split -a 5 -d -n r/" + str(self.num_threads) + \
+            "split -a 5 -d -n r/" + str(Input.num_threads) + \
             " K-mer_lists/" + self.name + "_mapped.txt " + \
             "K-mer_lists/" + self.name + "_mapped_"
             ],
@@ -325,7 +328,7 @@ class Samples():
         Input.lock.acquire()
         self.vectors_as_multiple_input.append(
             [
-            "K-mer_lists/" + self.name + "_mapped_%05d" % i for i in range(Samples.num_threads)
+            "K-mer_lists/" + self.name + "_mapped_%05d" % i for i in range(Input.num_threads)
             ]
             )       
         stderr_print.currentSampleNum.value += 1
@@ -629,7 +632,7 @@ class phenotypes():
         ps.wait()
         cls.no_kmers_to_analyse.value = int(output)
         cls.progress_checkpoint.value = int(
-            math.ceil(cls.no_kmers_to_analyse.value/(100*Samples.num_threads))
+            math.ceil(cls.no_kmers_to_analyse.value/(100*Input.num_threads))
             )
 
     def get_kmers_tested(self, split_of_kmer_lists):
@@ -871,7 +874,7 @@ class phenotypes():
                     "No k-mer had a suitable distribution to conduct the test."
                     )
             self.no_results.append(phenotype)
-        for l in range(Samples.num_threads):
+        for l in range(Input.num_threads):
             call(
                 [
                 "rm " + test_results + phenotype +
@@ -1632,61 +1635,63 @@ def modeling(args):
         args.Bonferroni, args.binary_classifier, args.regressor, 
         args.penalty, args.max_iter, args.tolerance, args.l1_ratio,
         args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner,
-        args.testset_size, args.train_on_whole, args.logreg_solver
+        args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to
         )
     Input.get_multithreading_parameters()
 
-    #  Operations with samples
-    sys.stderr.write("\x1b[1;32mGenerating the k-mer lists for input samples:\x1b[0m\n")
-    sys.stderr.flush()
+    if not Input.jump_to:
+        #  Operations with samples
+        sys.stderr.write("\x1b[1;32mGenerating the k-mer lists for input samples:\x1b[0m\n")
+        sys.stderr.flush()
 
-    Input.pool.map(
-        lambda x: x.get_kmer_lists(), Input.samples.values()
-        )
+        Input.pool.map(
+            lambda x: x.get_kmer_lists(), Input.samples.values()
+            )
 
-    sys.stderr.write("\n\x1b[1;32mGenerating the k-mer feature vector.\x1b[0m\n")
-    sys.stderr.flush()
-    Samples.get_feature_vector()
-    sys.stderr.write("\x1b[1;32mMapping samples to the feature vector space:\x1b[0m\n")
-    sys.stderr.flush()
-    stderr_print.currentSampleNum.value = 0
-    Input.pool.map(
-        lambda x: x.map_samples(), Input.samples.values()
-        )
-    if not args.no_weights:
-        mash_files = ["distances.mat", "reference.msh", "mash_distances.mat"]
-        for mash_file in mash_files:
-            if os.path.exists(mash_file):
-                os.remove(mash_file)
-                sys.stderr.write("\n\x1b[1;32mDeleting the existing " + mash_file + " file...\x1b[0m")
-        sys.stderr.write("\n\x1b[1;32mEstimating the Mash distances between samples...\x1b[0m\n")
+        sys.stderr.write("\n\x1b[1;32mGenerating the k-mer feature vector.\x1b[0m\n")
+        sys.stderr.flush()
+        Samples.get_feature_vector()
+        sys.stderr.write("\x1b[1;32mMapping samples to the feature vector space:\x1b[0m\n")
+        sys.stderr.flush()
+        stderr_print.currentSampleNum.value = 0
+        Input.pool.map(
+            lambda x: x.map_samples(), Input.samples.values()
+            )
+        if not args.no_weights:
+            mash_files = ["distances.mat", "reference.msh", "mash_distances.mat"]
+            for mash_file in mash_files:
+                if os.path.exists(mash_file):
+                    os.remove(mash_file)
+                    sys.stderr.write("\n\x1b[1;32mDeleting the existing " + mash_file + " file...\x1b[0m")
+            sys.stderr.write("\n\x1b[1;32mEstimating the Mash distances between samples...\x1b[0m\n")
+            sys.stderr.flush()
+            Input.pool.map(
+                lambda x: x.get_mash_sketches(), Input.samples.values()
+                )
+            Samples.get_weights()
+
+        # Analyses of phenotypes
+        phenotypes.start_kmer_testing()
+        list(map(
+            lambda x:  x.test_kmers_association_with_phenotype(), 
+            Input.phenotypes_to_analyse.values()
+            ))
+
+        # Remove phenotypes with no results
+        [(lambda x: Input.phenotypes_to_analyse.pop(x))(pt) for pt in phenotypes.no_results]
+        sys.stderr.write("\x1b[1;32mFiltering the k-mers by p-value:\x1b[0m\n")
+        sys.stderr.flush()
+        list(map(
+            lambda x:  x.get_kmers_filtered(), 
+            Input.phenotypes_to_analyse.values()
+            ))
+    if not Input.jump_to or Input.jump_to == "modelling":
+        sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
         sys.stderr.flush()
         Input.pool.map(
-            lambda x: x.get_mash_sketches(), Input.samples.values()
+            lambda x: x.machine_learning_modelling(),
+            Input.phenotypes_to_analyse.values()
             )
-        Samples.get_weights()
-
-    # Analyses of phenotypes
-    phenotypes.start_kmer_testing()
-    list(map(
-        lambda x:  x.test_kmers_association_with_phenotype(), 
-        Input.phenotypes_to_analyse.values()
-        ))
-
-    # Remove phenotypes with no results
-    [(lambda x: Input.phenotypes_to_analyse.pop(x))(pt) for pt in phenotypes.no_results]
-    sys.stderr.write("\x1b[1;32mFiltering the k-mers by p-value:\x1b[0m\n")
-    sys.stderr.flush()
-    list(map(
-        lambda x:  x.get_kmers_filtered(), 
-        Input.phenotypes_to_analyse.values()
-        ))
-    sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
-    sys.stderr.flush()
-    Input.pool.map(
-        lambda x: x.machine_learning_modelling(),
-        Input.phenotypes_to_analyse.values()
-        )
 
     call(['rm', '-r', 'K-mer_lists'])
 
