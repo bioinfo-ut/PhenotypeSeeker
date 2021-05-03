@@ -1211,20 +1211,23 @@ class phenotypes():
         self.model_file = open(self.model_name_short + "_model_" + self.name + ".pkl", "wb")
 
     def get_ML_dataframe(self):
-        for split in zip(*Samples.vectors_as_multiple_input):
-            for line in zip(*[open(item) for item in split]):
-                if line[0].split()[0] in self.kmers_for_ML:
-                    self.ML_df[line[0].split()[0]] = [int(j.split()[1].strip()) for j in line]
-        self.ML_df = self.ML_df.astype(bool).astype(int)
-        self.ML_df['phenotype'] = [
-            sample.phenotypes[self.name] for sample in Input.samples.values()
-            ]
-        self.ML_df['weight'] = [
-            sample.weight for sample in Input.samples.values()
-            ]
-        self.ML_df.index = list(Input.samples.keys())
-        self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
-        self.ML_df.to_csv(self.name + "_" + self.model_name_short + "_df.csv")
+        if Input.jump_to == "modelling":
+            self.ML_df = pf.read_csv(self.name + "_" + self.model_name_short + "_df.csv")
+        else:
+            for split in zip(*Samples.vectors_as_multiple_input):
+                for line in zip(*[open(item) for item in split]):
+                    if line[0].split()[0] in self.kmers_for_ML:
+                        self.ML_df[line[0].split()[0]] = [int(j.split()[1].strip()) for j in line]
+            self.ML_df = self.ML_df.astype(bool).astype(int)
+            self.ML_df['phenotype'] = [
+                sample.phenotypes[self.name] for sample in Input.samples.values()
+                ]
+            self.ML_df['weight'] = [
+                sample.weight for sample in Input.samples.values()
+                ]
+            self.ML_df.index = list(Input.samples.keys())
+            self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
+            self.ML_df.to_csv(self.name + "_" + self.model_name_short + "_df.csv")
         #self.ML_df = self.ML_df.T.drop_duplicates().T
         # self.skl_dataset = sklearn.datasets.base.Bunch(
         #     data=self.ML_df.iloc[:,0:-2].values, target=self.ML_df['phenotype'].values,
