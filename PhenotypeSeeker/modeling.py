@@ -1208,7 +1208,9 @@ class phenotypes():
 
     def get_ML_dataframe(self):
         if Input.jump_to == "modelling":
-            self.ML_df = pd.read_csv(self.name + "_" + self.model_name_short + "_df.csv")
+            self.ML_df = pd.read_csv(
+                self.name + "_" + self.model_name_short + "_df.csv", index_col=0
+                )
         elif len(self.kmers_for_ML) == 0:
             self.summary_file.write("No k-mers passed the step of k-mer filtering for " \
                 "machine learning modelling.\n")
