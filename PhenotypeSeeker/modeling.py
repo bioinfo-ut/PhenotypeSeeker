@@ -1211,6 +1211,7 @@ class phenotypes():
             self.ML_df = pd.read_csv(
                 self.name + "_" + self.model_name_short + "_df.csv", index_col=0
                 )
+            self.ML_df.index = self.ML_df.index.astype(str)
         elif len(self.kmers_for_ML) == 0:
             self.summary_file.write("No k-mers passed the step of k-mer filtering for " \
                 "machine learning modelling.\n")
