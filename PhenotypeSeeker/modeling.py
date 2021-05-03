@@ -968,10 +968,6 @@ class phenotypes():
         self.set_model()
         self.set_hyperparameters()
         self.get_outputfile_names()
-        if len(self.kmers_for_ML) == 0:
-            self.summary_file.write("No k-mers passed the step of k-mer filtering for " \
-                "machine learning modelling.\n")
-            return
         self.get_ML_dataframe()
 
         if self.n_splits_cv_outer:
@@ -1212,7 +1208,11 @@ class phenotypes():
 
     def get_ML_dataframe(self):
         if Input.jump_to == "modelling":
-            self.ML_df = pf.read_csv(self.name + "_" + self.model_name_short + "_df.csv")
+            self.ML_df = pd.read_csv(self.name + "_" + self.model_name_short + "_df.csv")
+        elif len(self.kmers_for_ML) == 0:
+            self.summary_file.write("No k-mers passed the step of k-mer filtering for " \
+                "machine learning modelling.\n")
+            return
         else:
             for split in zip(*Samples.vectors_as_multiple_input):
                 for line in zip(*[open(item) for item in split]):
@@ -1696,7 +1696,7 @@ def modeling(args):
             Input.phenotypes_to_analyse.values()
             )
 
-    call(['rm', '-r', 'K-mer_lists'])
+    call(['rm', '-rf', 'K-mer_lists'])
 
     if not args.no_assembly:
         sys.stderr.write("\x1b[1;32mAssembling the k-mers used in modeling of: \x1b[0m\n")
