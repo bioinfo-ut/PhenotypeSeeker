@@ -305,7 +305,7 @@ def Main():
 
     #Subparser "annotation" options
     parser_c.add_argument(
-        'inputfile1', default=sys.stdin,
+        'inputfile', default=sys.stdin,
         help='Text file of tab separated list of sample IDs and corresponding \
         Fasta/Fastq file addresses.')
     parser_c.set_defaults(func=annotation.annotation)
