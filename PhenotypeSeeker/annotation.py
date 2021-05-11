@@ -55,5 +55,5 @@ class Samples():
 
 def annotation(args):
 	Input.get_input_data(args.inputfile)
-	for item in Input.samples:
-		print(item.address)
+	for key, value in Input.samples:
+		print(value.address)
