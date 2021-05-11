@@ -41,8 +41,8 @@ class Samples():
     tree = None
 
     vectors_as_multiple_input = Manager().list()
-    
-    def __init__(self, name, address, phenotypes, weight=1):
+
+    def __init__(self, name, address):
         self.name = name
         self.address = address
     
