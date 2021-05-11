@@ -55,7 +55,7 @@ def Main():
     	add_help=False
     	)
     parser_c = subparsers.add_parser(
-        'prediction',
+        'annotation',
         help='Annotate the k-mers in phenotypeseeker outputfile',
         usage='PhenotypeSeeker annotation INPUTFILE1 [OPTIONS]',
         add_help=False
