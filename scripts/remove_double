@@ -1,3 +1,0 @@
-import itertools
-
-''.join(i for i, _ in itertools.groupby(s))
