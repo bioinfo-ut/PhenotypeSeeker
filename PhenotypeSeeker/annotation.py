@@ -10,11 +10,8 @@ from collections import OrderedDict
 class Input():
 
     samples = OrderedDict()
-    phenotypes_to_analyse = OrderedDict()
     pool = None
     lock = None
-
-    jump_to = None
     num_threads = 8
     
     @classmethod
@@ -30,6 +27,29 @@ class Input():
                     cls.samples[sample_name] = (
                         Samples.from_inputfile(line)
                         )
+class Samples():
+
+    no_samples = 0
+
+    kmer_length = None
+    cutoff = None
+    min_samples = None
+    max_samples = None
+
+    tree = None
+
+    mash_distances_args = []
+    vectors_as_multiple_input = Manager().list()
+    union_output = Manager().list()
+
+    def __init__(self, name, address, phenotypes, weight=1):
+        self.name = name
+        self.address = address
+        self.phenotypes = phenotypes
+        self.weight = weight
+    
+
+        Samples.no_samples += 1
 
 def annotation(args):
 	Input.get_input_data(args.inputfile)
