@@ -12,7 +12,7 @@ setup(name = 'PhenotypeSeeker',
       url = 'https://www.bioinfo.ut.ee/PhenotypeSeeker',
       py_modules = [
           'PhenotypeSeeker/modeling', 'PhenotypeSeeker/prediction',
-          'PhenotypeSeeker/__init__'
+          'PhenotypeSeeker/annotation', 'PhenotypeSeeker/__init__'
           ],
       scripts = ['scripts/phenotypeseeker'],
       install_requires = [
