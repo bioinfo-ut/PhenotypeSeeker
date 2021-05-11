@@ -20,7 +20,6 @@ class Input():
     @classmethod
     def get_input_data(cls, inputfilename):
         # Read the data from inputfile into "samples" directory
-        Samples.take_logs = take_logs
         with open(inputfilename) as inputfile:
             header = inputfile.readline().split()
             if os.path.exists(header[1]):
