@@ -16,7 +16,7 @@ class Input():
     num_threads = 8
     
     @classmethod
-    def get_input_data(cls, inputfilename, take_logs):
+    def get_input_data(cls, inputfilename):
         # Read the data from inputfile into "samples" directory
         Samples.take_logs = take_logs
         with open(inputfilename) as inputfile:
