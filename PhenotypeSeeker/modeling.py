@@ -20,7 +20,7 @@ pkg_resources.require(
     )
 
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor, _DistanceMatrix
-from collections import Counter, OrderedDict
+from collections import OrderedDict
 from ete3 import Tree
 from multiprocess import Manager, Pool, Value
 from scipy import stats

@@ -3,6 +3,8 @@ __version__ = "0.7.0"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
+from collections import OrderedDict
+
 class Input():
 
     samples = OrderedDict()
