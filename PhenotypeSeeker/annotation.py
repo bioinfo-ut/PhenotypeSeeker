@@ -40,18 +40,18 @@ class Samples():
 
     tree = None
 
-    mash_distances_args = []
     vectors_as_multiple_input = Manager().list()
-    union_output = Manager().list()
-
+    
     def __init__(self, name, address, phenotypes, weight=1):
         self.name = name
         self.address = address
-        self.phenotypes = phenotypes
-        self.weight = weight
     
-
         Samples.no_samples += 1
+
+    @classmethod
+    def from_inputfile(cls, line):
+        name, address = line.split()[0], line.split()[1]
+        return cls(name, address)
 
 def annotation(args):
 	Input.get_input_data(args.inputfile)
