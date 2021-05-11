@@ -7,6 +7,8 @@ import os
 
 from collections import OrderedDict
 
+from multiprocess import Manager, Pool, Value
+
 class Input():
 
     samples = OrderedDict()
