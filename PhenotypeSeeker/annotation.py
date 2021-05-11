@@ -39,4 +39,6 @@ class Input():
                         Samples.from_inputfile(line)
                         )
 
-print(Input.samples)
+def annotation(args):
+	Input.get_input_data(args.inputfile)
+	print(Input.samples)
