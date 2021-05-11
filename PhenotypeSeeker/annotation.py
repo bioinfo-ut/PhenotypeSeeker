@@ -3,6 +3,8 @@ __version__ = "0.7.0"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
+import os
+
 from collections import OrderedDict
 
 class Input():
@@ -21,17 +23,8 @@ class Input():
         Samples.take_logs = take_logs
         with open(inputfilename) as inputfile:
             header = inputfile.readline().split()
-            Samples.phenotypes = header[2:]
-            Samples.no_phenotypes = len(header)-2
-            for pheno in Samples.phenotypes:
-                try:
-                    float(pheno)
-                    sys.stderr.write("\x1b[1;33mWarning! It seems that the input file " \
-                        "is missing the header row!\x1b[0m\n")
-                    sys.stderr.flush()
-                    break
-                except ValueError:
-                    pass
+            if os.path.exists(header[1]):
+                inputfile.seek(0)
             for line in inputfile:
                 if line.strip():
                     sample_name = line.split()[0]
