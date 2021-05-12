@@ -977,7 +977,9 @@ class phenotypes():
         self.set_model()
         self.set_hyperparameters()
         self.get_outputfile_names()
+        print("Timer will start")
         self.get_ML_dataframe()
+        print("none?")
         exit()
         print("what none?")
         if self.n_splits_cv_outer:
