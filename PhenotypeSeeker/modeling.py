@@ -1215,6 +1215,7 @@ class phenotypes():
             + "_model_" + self.name + ".txt", "w")
         self.model_file = open(self.model_name_short + "_model_" + self.name + ".pkl", "wb")
 
+    @timer
     def get_ML_dataframe(self):
         if Input.jump_to == "modelling":
             self.ML_df = pd.read_csv(
