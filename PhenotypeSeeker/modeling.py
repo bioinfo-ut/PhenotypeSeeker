@@ -1230,13 +1230,8 @@ class phenotypes():
                 ]
             self.ML_df.index = list(Input.samples.keys())
             self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
+            self.ML_df = self.ML_df.T.drop_duplicates().T
             self.ML_df.to_csv(self.name + "_" + self.model_name_short + "_df.csv")
-        #self.ML_df = self.ML_df.T.drop_duplicates().T
-        # self.skl_dataset = sklearn.datasets.base.Bunch(
-        #     data=self.ML_df.iloc[:,0:-2].values, target=self.ML_df['phenotype'].values,
-        #     target_names=np.array(["resistant", "sensitive"]),
-        #     feature_names=self.ML_df.iloc[:,0:-2].columns.values
-        #     )
 
         if phenotypes.scale == "continuous":
             self.ML_df['phenotype'] = self.ML_df['phenotype'].astype(float)  
