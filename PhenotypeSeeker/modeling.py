@@ -1677,6 +1677,8 @@ def modeling(args):
         Input.pool.map(
             lambda x: x.map_samples(), Input.samples.values()
             )
+        print(Input.vectors_as_multiple_input)
+        exit()
         if not args.no_weights:
             mash_files = ["distances.mat", "reference.msh", "mash_distances.mat"]
             for mash_file in mash_files:
