@@ -563,7 +563,7 @@ class phenotypes():
     def __init__(self, name):
         self.name = name
         self.pvalues = None
-        self.kmers_for_ML = set()
+        self.kmers_for_ML = {}
         self.skl_dataset = None
         self.ML_df = pd.DataFrame()
         self.ML_df_train = None
@@ -895,8 +895,8 @@ class phenotypes():
         # reference = self.pvalues[self.kmer_limit]
         # while self.pvalues[self.kmer_limit-counter] == reference:
         #     counter +=1
-        pvalues_for_ML_kmers = self.pvalues[:self.kmer_limit]
-        pvalues_for_ML_kmers = [float("%.2E" % x) for x in pvalues_for_ML_kmers]
+        # pvalues_for_ML_kmers = self.pvalues[:self.kmer_limit]
+        # pvalues_for_ML_kmers = [float("%.2E" % x) for x in pvalues_for_ML_kmers]
         del self.pvalues
 
         stderr_print.currentKmerNum.value = 0
@@ -910,12 +910,12 @@ class phenotypes():
         for line in inputfile:
             counter += 1
             line_to_list = line.split()
-            p_val = float(line_to_list[2])
+            kmer, p_val = line_to_list[0], float(line_to_list[2])
             if p_val < self.pvalue_cutoff:
-                outputfile.write(line)
-                if p_val in pvalues_for_ML_kmers:
-                    self.kmers_for_ML.add(line_to_list[0])
-                    pvalues_for_ML_kmers.remove(p_val)
+                outputfile.write(line)               
+                # if p_val in pvalues_for_ML_kmers:
+                self.kmers_for_ML[kmer] = p_val
+                # pvalues_for_ML_kmers.remove(p_val)
             if counter%checkpoint == 0:
                 stderr_print.currentKmerNum.value += checkpoint
                 stderr_print.check_progress(
@@ -1221,6 +1221,10 @@ class phenotypes():
                 for line in zip(*[open(item) for item in split]):
                     if line[0].split()[0] in self.kmers_for_ML:
                         self.ML_df[line[0].split()[0]] = [int(j.split()[1].strip()) for j in line]
+            self.ML_df.append(self.kmers_for_ML, ignore_index=True)
+            print(self.ML_df)
+            exit()
+
             self.ML_df = self.ML_df.astype(bool).astype(int)
             self.ML_df['phenotype'] = [
                 sample.phenotypes[self.name] for sample in Input.samples.values()
