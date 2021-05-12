@@ -979,9 +979,7 @@ class phenotypes():
         self.get_outputfile_names()
         print("Timer will start")
         self.get_ML_dataframe()
-        print("none?")
-        exit()
-        print("what none?")
+        return
         if self.n_splits_cv_outer:
             Input.assert_n_splits_cv_outer(self.n_splits_cv_outer, self.ML_df)
             Input.assert_n_splits_cv_inner(self.n_splits_cv_inner, self.ML_df)
@@ -1707,7 +1705,7 @@ def modeling(args):
             lambda x: x.machine_learning_modelling(),
             Input.phenotypes_to_analyse.values()
             )
-
+    exit()
     call(['rm', '-rf', 'K-mer_lists'])
 
     if not args.no_assembly:
