@@ -51,7 +51,7 @@ def timer(f):
         start = time.time()
         f(*args)
         with open("log.txt", "w") as log:
-            log.write(f"Func took {time.time() - start} secs")
+            log.write(f"Func {f} took {time.time() - start} secs\n")
     return wrapper
 
 class Input():
@@ -1231,18 +1231,18 @@ class phenotypes():
                 for line in zip(*[open(item) for item in split]):
                     if line[0].split()[0] in self.kmers_for_ML:
                         self.ML_df[line[0].split()[0]] = [int(j.split()[1].strip()) for j in line]
-            self.ML_df.append(self.kmers_for_ML, ignore_index=True)
-            self.ML_df = self.ML_df.astype(bool).astype(int)
-            self.ML_df['phenotype'] = [
-                sample.phenotypes[self.name] for sample in Input.samples.values()
-                ]
-            self.ML_df['weight'] = [
-                sample.weight for sample in Input.samples.values()
-                ]
-            self.ML_df.index = list(Input.samples.keys())
-            self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
-            self.ML_df = self.ML_df.T.drop_duplicates().T
-            self.ML_df.to_csv(self.name + "_" + self.model_name_short + "_df.csv")
+            # self.ML_df.append(self.kmers_for_ML, ignore_index=True)
+            # self.ML_df = self.ML_df.astype(bool).astype(int)
+            # self.ML_df['phenotype'] = [
+            #     sample.phenotypes[self.name] for sample in Input.samples.values()
+            #     ]
+            # self.ML_df['weight'] = [
+            #     sample.weight for sample in Input.samples.values()
+            #     ]
+            # self.ML_df.index = list(Input.samples.keys())
+            # self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
+            # self.ML_df = self.ML_df.T.drop_duplicates().T
+            # self.ML_df.to_csv(self.name + "_" + self.model_name_short + "_df.csv")
 
         if phenotypes.scale == "continuous":
             self.ML_df['phenotype'] = self.ML_df['phenotype'].astype(float)  
