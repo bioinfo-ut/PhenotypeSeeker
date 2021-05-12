@@ -45,6 +45,15 @@ import Bio
 import numpy as np
 import pandas as pd
 
+import time
+def timer(f):
+    def wrapper(*args):
+        start = time.time()
+        f(*args)
+        with open("log.txt", "w") as log:
+            log.write(f"Func took {time.time() - start} secs")
+    return wrapper
+
 class Input():
 
     samples = OrderedDict()
@@ -67,7 +76,7 @@ class Input():
                 try:
                     float(pheno)
                     sys.stderr.write("\x1b[1;33mWarning! It seems that the input file " \
-                        "is missing the header row!\x1b[0m\n")
+                        "is missing header row!\x1b[0m\n")
                     sys.stderr.flush()
                     break
                 except ValueError:
@@ -895,8 +904,8 @@ class phenotypes():
         # reference = self.pvalues[self.kmer_limit]
         # while self.pvalues[self.kmer_limit-counter] == reference:
         #     counter +=1
-        # pvalues_for_ML_kmers = self.pvalues[:self.kmer_limit]
-        # pvalues_for_ML_kmers = [float("%.2E" % x) for x in pvalues_for_ML_kmers]
+        pvalues_for_ML_kmers = self.pvalues[:self.kmer_limit]
+        pvalues_for_ML_kmers = [float("%.2E" % x) for x in pvalues_for_ML_kmers]
         del self.pvalues
 
         stderr_print.currentKmerNum.value = 0
@@ -913,9 +922,9 @@ class phenotypes():
             kmer, p_val = line_to_list[0], float(line_to_list[2])
             if p_val < self.pvalue_cutoff:
                 outputfile.write(line)               
-                # if p_val in pvalues_for_ML_kmers:
-                self.kmers_for_ML[kmer] = p_val
-                # pvalues_for_ML_kmers.remove(p_val)
+                if p_val in pvalues_for_ML_kmers:
+                    self.kmers_for_ML[kmer] = p_val
+                    pvalues_for_ML_kmers.remove(p_val)
             if counter%checkpoint == 0:
                 stderr_print.currentKmerNum.value += checkpoint
                 stderr_print.check_progress(
@@ -1222,9 +1231,6 @@ class phenotypes():
                     if line[0].split()[0] in self.kmers_for_ML:
                         self.ML_df[line[0].split()[0]] = [int(j.split()[1].strip()) for j in line]
             self.ML_df.append(self.kmers_for_ML, ignore_index=True)
-            print(self.ML_df)
-            exit()
-
             self.ML_df = self.ML_df.astype(bool).astype(int)
             self.ML_df['phenotype'] = [
                 sample.phenotypes[self.name] for sample in Input.samples.values()
