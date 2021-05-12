@@ -916,16 +916,18 @@ class phenotypes():
         self.write_headerline(outputfile)
 
         counter = 0
+        unique_presence = set()
         for line in inputfile:
             counter += 1
             line_to_list = line.split()
             kmer, p_val = line_to_list[0], float(line_to_list[2])
             kmer_presence = line.split("|")[1]
-            print(kmer_presence)
             if p_val < self.pvalue_cutoff:
                 outputfile.write(line)               
                 # if p_val in pvalues_for_ML_kmers:
-                self.kmers_for_ML[kmer] = p_val
+                if kmer_presence not in unique_presence:
+                    unique_presence.add(kmer_presence)
+                    self.kmers_for_ML[kmer] = p_val
                 # pvalues_for_ML_kmers.remove(p_val)
             if counter%checkpoint == 0:
                 stderr_print.currentKmerNum.value += checkpoint
@@ -1237,8 +1239,6 @@ class phenotypes():
                         self.ML_df[line[0].split()[0]] = [int(j.split()[1].strip()) for j in line]
                         counter+=1
                         print(counter)
-                        if counter == 1000:
-                            return
             # self.ML_df.append(self.kmers_for_ML, ignore_index=True)
             # self.ML_df = self.ML_df.astype(bool).astype(int)
             # self.ML_df['phenotype'] = [
