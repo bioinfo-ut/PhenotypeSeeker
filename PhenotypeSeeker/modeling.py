@@ -1244,12 +1244,12 @@ class phenotypes():
             # self.ML_df = self.ML_df.T.drop_duplicates().T
             # self.ML_df.to_csv(self.name + "_" + self.model_name_short + "_df.csv")
 
-        if phenotypes.scale == "continuous":
-            self.ML_df['phenotype'] = self.ML_df['phenotype'].astype(float)  
-        elif phenotypes.scale == "binary":
-            self.ML_df['phenotype'] = self.ML_df['phenotype'].astype(int)   
+        # if phenotypes.scale == "continuous":
+        #     self.ML_df['phenotype'] = self.ML_df['phenotype'].astype(float)  
+        # elif phenotypes.scale == "binary":
+        #     self.ML_df['phenotype'] = self.ML_df['phenotype'].astype(int)   
 
-        self.summary_file.write("Dataset:\n%s\n\n" % self.skl_dataset)  
+        # self.summary_file.write("Dataset:\n%s\n\n" % self.skl_dataset)  
 
     def fit_model(self):
         if self.scale == "continuous":
