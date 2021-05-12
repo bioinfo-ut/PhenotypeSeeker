@@ -335,11 +335,10 @@ class Samples():
         call(["rm K-mer_lists/{}_mapped.txt".format(self.name)], shell=True)
 
         Input.lock.acquire()
-        self.vectors_as_multiple_input.append(
+        self.vectors_as_multiple_input[Input.samples] = 
             [
             "K-mer_lists/" + self.name + "_mapped_%05d" % i for i in range(Input.num_threads)
             ]
-            )       
         stderr_print.currentSampleNum.value += 1
         Input.lock.release()
         stderr_print.print_progress("samples mapped.")
