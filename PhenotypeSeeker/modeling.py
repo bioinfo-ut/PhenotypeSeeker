@@ -904,8 +904,8 @@ class phenotypes():
         # reference = self.pvalues[self.kmer_limit]
         # while self.pvalues[self.kmer_limit-counter] == reference:
         #     counter +=1
-        pvalues_for_ML_kmers = self.pvalues[:self.kmer_limit]
-        pvalues_for_ML_kmers = [float("%.2E" % x) for x in pvalues_for_ML_kmers]
+        # pvalues_for_ML_kmers = self.pvalues[:self.kmer_limit]
+        # pvalues_for_ML_kmers = [float("%.2E" % x) for x in pvalues_for_ML_kmers]
         del self.pvalues
 
         stderr_print.currentKmerNum.value = 0
@@ -922,9 +922,9 @@ class phenotypes():
             kmer, p_val = line_to_list[0], float(line_to_list[2])
             if p_val < self.pvalue_cutoff:
                 outputfile.write(line)               
-                if p_val in pvalues_for_ML_kmers:
-                    self.kmers_for_ML[kmer] = p_val
-                    pvalues_for_ML_kmers.remove(p_val)
+                # if p_val in pvalues_for_ML_kmers:
+                self.kmers_for_ML[kmer] = p_val
+                # pvalues_for_ML_kmers.remove(p_val)
             if counter%checkpoint == 0:
                 stderr_print.currentKmerNum.value += checkpoint
                 stderr_print.check_progress(
@@ -1228,10 +1228,14 @@ class phenotypes():
                 "machine learning modelling.\n")
             return
         else:
+            counter = 0
             for split in zip(*Samples.vectors_as_multiple_input):
                 for line in zip(*[open(item) for item in split]):
                     if line[0].split()[0] in self.kmers_for_ML:
                         self.ML_df[line[0].split()[0]] = [int(j.split()[1].strip()) for j in line]
+                        counter+=1
+                        if counter == 1000:
+                            return
             # self.ML_df.append(self.kmers_for_ML, ignore_index=True)
             # self.ML_df = self.ML_df.astype(bool).astype(int)
             # self.ML_df['phenotype'] = [

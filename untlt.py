@@ -23,11 +23,16 @@ import sys
 
 # print(df4)
 
-def myfunc():
-	print("helo")
-	sys.exit()
-	print("oleh")
+# def myfunc():
+# 	print("helo")
+# 	sys.exit()
+# 	print("oleh")
 
-myfunc()
+# myfunc()
 
-print("ulluuka")
+# print("ulluuka")
+
+pvals = {"kmer1" : 6.66, "kmer2" : 9.99, "kmer3" : 2}
+
+if "kmer1" in pvals:
+	print("Olemas")
