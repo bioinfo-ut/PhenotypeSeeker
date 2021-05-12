@@ -1234,7 +1234,7 @@ class phenotypes():
                     if line[0].split()[0] in self.kmers_for_ML:
                         self.ML_df[line[0].split()[0]] = [int(j.split()[1].strip()) for j in line]
                         counter+=1
-                        if counter == 1000:
+                        if counter == 10000:
                             return
             # self.ML_df.append(self.kmers_for_ML, ignore_index=True)
             # self.ML_df = self.ML_df.astype(bool).astype(int)
