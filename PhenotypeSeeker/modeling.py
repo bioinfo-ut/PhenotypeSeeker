@@ -979,6 +979,7 @@ class phenotypes():
         self.get_outputfile_names()
         self.get_ML_dataframe()
         exit()
+        print("what none?")
         if self.n_splits_cv_outer:
             Input.assert_n_splits_cv_outer(self.n_splits_cv_outer, self.ML_df)
             Input.assert_n_splits_cv_inner(self.n_splits_cv_inner, self.ML_df)
