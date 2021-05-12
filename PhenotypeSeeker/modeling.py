@@ -920,6 +920,8 @@ class phenotypes():
             counter += 1
             line_to_list = line.split()
             kmer, p_val = line_to_list[0], float(line_to_list[2])
+            kmer_presence = line.split("|")[1]
+            print(kmer_presence)
             if p_val < self.pvalue_cutoff:
                 outputfile.write(line)               
                 # if p_val in pvalues_for_ML_kmers:
