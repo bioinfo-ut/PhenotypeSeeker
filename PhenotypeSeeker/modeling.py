@@ -814,7 +814,7 @@ class phenotypes():
         without_pheno_with_kmer = 0
         without_pheno_without_kmer = 0
         for index, sample in enumerate(samples):
-            print(sample.name)
+            print(sample.name, Samples.vectors_as_multiple_input[index])
             if sample.phenotypes[self.name] == "1":
                 if (kmers_presence_vector[index] != "0"):
                     with_pheno_with_kmer += sample.weight 
