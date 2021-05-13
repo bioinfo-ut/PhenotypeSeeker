@@ -89,6 +89,7 @@ class Input():
                         Samples.from_inputfile(line)
                         )
         cls._get_phenotypes_to_analyse(mpheno)
+        # cls._get_multithreading_parameters()
         cls._set_phenotype_values(take_logs)
 
     @classmethod
@@ -100,6 +101,13 @@ class Input():
         for item in cls.mpheno_to_index:
             cls.phenotypes_to_analyse[Samples.phenotypes[item]] = \
                 phenotypes(Samples.phenotypes[item])
+
+    # ---------------------------------------------------------
+    # Set parameters for multithreading
+    @classmethod
+    def _get_multithreading_parameters(cls):
+        cls.lock = Manager().Lock()
+        cls.pool = Pool(Input.num_threads)
 
     @classmethod
     def _set_phenotype_values(cls, take_logs):
@@ -120,12 +128,6 @@ class Input():
                         sample.phenotypes[phenotype.name] = int(sample.phenotypes[phenotype.name])
                     except:
                         pass
-
-    # ---------------------------------------------------------
-    # Set parameters for multithreading
-    def _get_multithreading_parameters(cls):
-        cls.lock = Manager().Lock()
-        cls.pool = Pool(Input.num_threads)
 
     # ---------------------------------------------------------
     # Functions for processing the command line input arguments
