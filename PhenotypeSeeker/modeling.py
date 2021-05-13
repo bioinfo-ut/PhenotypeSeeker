@@ -982,7 +982,6 @@ class phenotypes():
         self.get_outputfile_names()
         print("Timer will start")
         self.get_ML_dataframe()
-        return
         if phenotypes.n_splits_cv_outer:
             Input.assert_n_splits_cv_outer(phenotypes.n_splits_cv_outer, self.ML_df)
             Input.assert_n_splits_cv_inner(phenotypes.n_splits_cv_inner, self.ML_df)
@@ -1236,7 +1235,6 @@ class phenotypes():
             self.ML_df.sort_values('p_val', axis=1, ascending=True, inplace=True)
             self.ML_df = self.ML_df.iloc[:,:self.kmer_limit]
             self.ML_df.drop('p_val', inplace=True)
-            print(self.ML_df)
             self.ML_df['phenotype'] = [
                 sample.phenotypes[self.name] for sample in Input.samples.values()
                 ]
@@ -1730,7 +1728,7 @@ def modeling(args):
             lambda x: x.machine_learning_modelling(),
             Input.phenotypes_to_analyse.values()
             )
-        
+
     call(['rm', '-rf', 'K-mer_lists'])
 
     if not args.no_assembly:
