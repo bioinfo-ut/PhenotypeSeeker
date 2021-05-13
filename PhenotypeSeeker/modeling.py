@@ -635,6 +635,7 @@ class phenotypes():
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
         print(self.model_name_long)
+        print("testlist", self.testlist)
         print(self.vectors_as_multiple_input)
         pvalues_from_all_threads = Input.pool.map(
                 self.get_kmers_tested, zip(*self.vectors_as_multiple_input)
