@@ -644,7 +644,7 @@ class phenotypes():
         self.concatenate_test_files(self.name)
 
     def get_kmers_tested(self, split_of_kmer_lists):
-        print(self.model_name_long)
+        print(split_of_kmer_lists)
         print(phenotypes.vectors_as_multiple_input)
         pvalues = []
         counter = 0
