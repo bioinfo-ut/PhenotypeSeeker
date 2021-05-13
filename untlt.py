@@ -48,3 +48,8 @@ import sys
 mynum = 3.0590232050182594e-07
 mynum = '{:.2E}'.format(mynum)
 print(mynum)
+
+import math
+
+x='1'
+math.log(x,2)

@@ -1252,15 +1252,16 @@ class phenotypes():
                 sample.weight for sample in Input.samples.values()
                 ]
             self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
+
+            if phenotypes.scale == "continuous":
+                self.ML_df['phenotype'] = self.ML_df['phenotype'].astype(float)  
+            elif phenotypes.scale == "binary":
+                self.ML_df['phenotype'] = self.ML_df['phenotype'].astype(int)   
+
+            # self.summary_file.write("Dataset:\n%s\n\n" % self.skl_dataset) 
             # self.ML_df = self.ML_df.T.drop_duplicates().T
             self.ML_df.to_csv(self.name + "_" + self.model_name_short + "_df.csv")
-        print(self.ML_df['phenotype'])
-        # if phenotypes.scale == "continuous":
-        #     self.ML_df['phenotype'] = self.ML_df['phenotype'].astype(float)  
-        # elif phenotypes.scale == "binary":
-        #     self.ML_df['phenotype'] = self.ML_df['phenotype'].astype(int)   
-
-        # self.summary_file.write("Dataset:\n%s\n\n" % self.skl_dataset)  
+            print(self.ML_df['phenotype']) 
 
     def fit_model(self):
         if self.scale == "continuous":
