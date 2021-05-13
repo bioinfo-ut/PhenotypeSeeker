@@ -621,11 +621,11 @@ class phenotypes():
         call(["rm K-mer_lists/feature_vector.list"], shell=True)
 
         # Set up split up vectors as multiple input list
-        for i in range(Input.num_threads):
+        for sample in Input.samples:
             cls.vectors_as_multiple_input.append(
                 [
-                "K-mer_lists/" + sample + "_mapped_%05d" %i \
-                for sample in Input.samples
+                "K-mer_lists/" + sample + "_mapped_%05d" % i \
+                for i in range(Input.num_threads)
                 ]
                 )
         print(cls.vectors_as_multiple_input)
