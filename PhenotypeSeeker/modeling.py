@@ -620,15 +620,7 @@ class phenotypes():
 
     # -------------------------------------------------------------------
     # Functions for calculating the association test results for kmers.
-    @classmethod
-    def kmer_testing_setup(cls):
-        if phenotypes.scale == "continuous":
-            sys.stderr.write("\n\x1b[1;32mConducting the k-mer specific Welch t-tests:\x1b[0m\n")
-            sys.stderr.flush()
-        else:
-            sys.stderr.write("\n\x1b[1;32mConducting the k-mer specific chi-square tests:\x1b[0m\n")
-            sys.stderr.flush()
-
+    def kmer_testing_setup(self):
         # Read the numbers of k-mers from feature_vector.list and delete file thereafter
         ps = Popen(('glistquery', 'K-mer_lists/feature_vector.list'), stdout=PIPE)
         output = check_output(('wc', '-l'), stdin=ps.stdout)
@@ -649,6 +641,12 @@ class phenotypes():
                 )
 
     def test_kmers_association_with_phenotype(self):
+        if self.scale == "continuous":
+            sys.stderr.write("\n\x1b[1;32mConducting the k-mer specific Welch t-tests:\x1b[0m\n")
+            sys.stderr.flush()
+        else:
+            sys.stderr.write("\n\x1b[1;32mConducting the k-mer specific chi-square tests:\x1b[0m\n")
+            sys.stderr.flush()
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
         pvalues_from_all_threads = Input.pool.map(
