@@ -568,7 +568,7 @@ class phenotypes():
         self.pvalues = None
         self.kmers_for_ML = {}
         self.skl_dataset = None
-        self.ML_df = pd.DataFrame()
+        self.ML_df = None
         self.ML_dict = dict()
         self.ML_df_train = None
         self.ML_df_test = None
@@ -928,11 +928,11 @@ class phenotypes():
                 if drop_collinearity:
                     if line.split("|")[1] not in unique_patterns:
                         unique_patterns.add(line.split("|")[1])
-                        self.ML_dict[kmer] = [
+                        self.kmers_for_ML[kmer] = [
                             1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()
                             ] + [p_val]
                 else:
-                    self.ML_dict[kmer] = [
+                    self.kmers_for_ML[kmer] = [
                             1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()
                             ] + [p_val]
                 # pvalues_for_ML_kmers.remove(p_val)
@@ -1238,14 +1238,7 @@ class phenotypes():
                 "machine learning modelling.\n")
             return
         else:
-            counter = 0
-            for split in zip(*self.vectors_as_multiple_input):
-                for line in zip(*[open(item) for item in split]):
-                    if line[0].split()[0] in self.kmers_for_ML:
-                        self.ML_df[line[0].split()[0]] = [int(j.split()[1].strip()) for j in line]
-                        counter+=1
-                        print(counter)
-            # self.ML_df.append(self.kmers_for_ML, ignore_index=True)
+            self.ML_df = pd.DataFrame(self.kmers_for_ML)
             # self.ML_df = self.ML_df.astype(bool).astype(int)
             # self.ML_df['phenotype'] = [
             #     sample.phenotypes[self.name] for sample in Input.samples.values()
@@ -1711,7 +1704,6 @@ def modeling(args):
             lambda x:  x.get_kmers_filtered(), 
             Input.phenotypes_to_analyse.values()
             ))
-    exit()
     if not Input.jump_to or ''.join(i for i, _ in groupby(Input.jump_to)) == "modeling":
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
         sys.stderr.flush()
