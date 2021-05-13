@@ -1241,8 +1241,8 @@ class phenotypes():
             index = list(Input.samples.keys()) + ['p_val']
             self.ML_df = pd.DataFrame(self.kmers_for_ML, index=index)
             self.ML_df.sort_values('p_val', axis=1, ascending=True, inplace=True)
+            self.ML_df = self.ML_df.iloc[:,:1000]
             print(self.ML_df)
-            # df.iloc[:,0:-2]
             # self.ML_df = self.ML_df.astype(bool).astype(int)
             # self.ML_df['phenotype'] = [
             #     sample.phenotypes[self.name] for sample in Input.samples.values()
