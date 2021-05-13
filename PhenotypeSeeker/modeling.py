@@ -111,6 +111,7 @@ class Input():
                     except:
                         pass
                 elif phenotype.scale == "binary":
+                    print(sample.phenotypes[phenotype.name])
                     try:
                         sample.phenotypes[phenotype.name] = int(sample.phenotypes[phenotype.name])
                     except:
