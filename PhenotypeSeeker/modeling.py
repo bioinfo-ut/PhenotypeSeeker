@@ -23,6 +23,7 @@ from Bio.Phylo.TreeConstruction import DistanceTreeConstructor, _DistanceMatrix
 from collections import OrderedDict
 from ete3 import Tree
 from multiprocess import Manager, Pool, Value
+multiprocessing.set_start_method('fork')
 from scipy import stats
 from sklearn.externals import joblib
 from sklearn.ensemble import RandomForestClassifier
