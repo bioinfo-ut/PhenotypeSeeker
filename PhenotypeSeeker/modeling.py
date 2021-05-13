@@ -926,14 +926,13 @@ class phenotypes():
                 if line.split("|")[1] not in unique_patterns:
                     unique_patterns.add(line.split("|")[1])
                     # self.kmers_for_ML[kmer] = p_val
-                    self.ML_df[kmer] = [1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()]
+                    self.ML_df[kmer] = [1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()].append(p_val)
                 # pvalues_for_ML_kmers.remove(p_val)
             if counter%checkpoint == 0:
                 stderr_print.currentKmerNum.value += checkpoint
                 stderr_print.check_progress(
                     nr_of_kmers_tested, "k-mers filtered.", self.name + ": "
                 )
-        print(self.ML_df)
         stderr_print.currentKmerNum.value += counter%checkpoint
         stderr_print.check_progress(
             nr_of_kmers_tested, "k-mers filtered.", self.name + ": "
@@ -944,6 +943,7 @@ class phenotypes():
             outputfile.write("\nNo k-mers passed the filtration by p-value.\n")
         inputfile.close()
         outputfile.close()
+        print(self.ML_df)
 
     def get_pvalue_cutoff(self, pvalues, nr_of_kmers_tested):
         if self.B:
