@@ -89,7 +89,6 @@ class Input():
                         Samples.from_inputfile(line)
                         )
         cls._get_phenotypes_to_analyse(mpheno)
-        cls._get_multithreading_parameters()
         cls._set_phenotype_values(take_logs)
 
     @classmethod
@@ -101,13 +100,6 @@ class Input():
         for item in cls.mpheno_to_index:
             cls.phenotypes_to_analyse[Samples.phenotypes[item]] = \
                 phenotypes(Samples.phenotypes[item])
-
-    # ---------------------------------------------------------
-    # Set parameters for multithreading
-    @classmethod
-    def _get_multithreading_parameters(cls):
-        cls.lock = Manager().Lock()
-        cls.pool = Pool(Input.num_threads)
 
     @classmethod
     def _set_phenotype_values(cls, take_logs):
@@ -128,6 +120,12 @@ class Input():
                         sample.phenotypes[phenotype.name] = int(sample.phenotypes[phenotype.name])
                     except:
                         pass
+
+    # ---------------------------------------------------------
+    # Set parameters for multithreading
+    def _get_multithreading_parameters(cls):
+        cls.lock = Manager().Lock()
+        cls.pool = Pool(Input.num_threads)
 
     # ---------------------------------------------------------
     # Functions for processing the command line input arguments
@@ -1683,7 +1681,8 @@ def modeling(args):
         args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner,
         args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to
         )
-    # Input._get_multithreading_parameters()
+    Input._get_multithreading_parameters()
+    
     if not Input.jump_to:
         #  Operations with samples
         sys.stderr.write("\x1b[1;32mGenerating the k-mer lists for input samples:\x1b[0m\n")
