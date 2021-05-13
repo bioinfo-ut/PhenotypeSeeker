@@ -908,7 +908,7 @@ class phenotypes():
 
         counter = 0
         unique_patterns = set()
-        drop_collinearity = False
+        drop_collinearity = True
         for line in inputfile:
             counter += 1
             line_to_list = line.split()
@@ -980,7 +980,6 @@ class phenotypes():
         self.set_model()
         self.set_hyperparameters()
         self.get_outputfile_names()
-        print("Timer will start")
         self.get_ML_dataframe()
         if phenotypes.n_splits_cv_outer:
             self.assert_n_splits_cv_outer(phenotypes.n_splits_cv_outer, self.ML_df)
