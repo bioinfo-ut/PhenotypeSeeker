@@ -606,18 +606,33 @@ class phenotypes():
     # -------------------------------------------------------------------
     # Functions for calculating the association test results for kmers.
     @classmethod
-    def start_kmer_testing(cls):
+    def kmer_testing_setup(cls):
         if phenotypes.scale == "continuous":
             sys.stderr.write("\n\x1b[1;32mConducting the k-mer specific Welch t-tests:\x1b[0m\n")
             sys.stderr.flush()
         else:
             sys.stderr.write("\n\x1b[1;32mConducting the k-mer specific chi-square tests:\x1b[0m\n")
             sys.stderr.flush()
-        cls.get_params_for_kmers_testing()
-        call(
-            ["rm K-mer_lists/feature_vector.list"],
-            shell=True
+
+        # Read the numbers of k-mers from feature_vector.list and delete file thereafter
+        ps = Popen(('glistquery', 'K-mer_lists/feature_vector.list'), stdout=PIPE)
+        output = check_output(('wc', '-l'), stdin=ps.stdout)
+        ps.wait()
+        cls.no_kmers_to_analyse.value = int(output)
+        cls.progress_checkpoint.value = int(
+            math.ceil(cls.no_kmers_to_analyse.value/(100*Input.num_threads))
             )
+        call(["rm K-mer_lists/feature_vector.list"], shell=True)
+
+        # Set up split up vectors as multiple input list
+        vectors_as_multiple_input = []
+        for i in xrange(Samples.num_threads):
+            cls.vectors_as_multiple_input.append(
+                [
+                "K-mer_lists/" + sample + "_mapped_%05d" %i \
+                for sample in Input.samples
+                ]
+                )
 
     def test_kmers_association_with_phenotype(self):
         stderr_print.currentKmerNum.value = 0
@@ -630,18 +645,6 @@ class phenotypes():
         sys.stderr.write("\n")
         sys.stderr.flush()
         self.concatenate_test_files(self.name)
-
-    @classmethod
-    def get_params_for_kmers_testing(cls):
-        cls._splitted_vectors_to_multiple_input()
-        # Just removing old stuff
-        ps = Popen(('glistquery', 'K-mer_lists/feature_vector.list'), stdout=PIPE)
-        output = check_output(('wc', '-l'), stdin=ps.stdout)
-        ps.wait()
-        cls.no_kmers_to_analyse.value = int(output)
-        cls.progress_checkpoint.value = int(
-            math.ceil(cls.no_kmers_to_analyse.value/(100*Input.num_threads))
-            )
 
     def get_kmers_tested(self, split_of_kmer_lists):
         
@@ -1691,7 +1694,7 @@ def modeling(args):
             Samples.get_weights()
 
         # Analyses of phenotypes
-        phenotypes.start_kmer_testing()
+        phenotypes.kmer_testing_setup()
         list(map(
             lambda x:  x.test_kmers_association_with_phenotype(), 
             Input.phenotypes_to_analyse.values()
