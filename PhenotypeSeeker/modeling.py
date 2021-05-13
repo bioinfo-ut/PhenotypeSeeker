@@ -923,8 +923,8 @@ class phenotypes():
             if p_val < self.pvalue_cutoff:
                 outputfile.write(line)               
                 # if p_val in pvalues_for_ML_kmers:
-                if samples_with_kmer not in unique_patterns:
-                    unique_patterns.add(samples_with_kmer)
+                if line.split("|")[1] not in unique_patterns:
+                    unique_patterns.add(line.split("|")[1])
                     # self.kmers_for_ML[kmer] = p_val
                     self.ML_df[kmer] = [1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()]
                 # pvalues_for_ML_kmers.remove(p_val)
