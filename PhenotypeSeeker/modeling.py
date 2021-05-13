@@ -643,7 +643,7 @@ class phenotypes():
         self.concatenate_test_files(self.name)
 
     def get_kmers_tested(self, split_of_kmer_lists):
-        
+        print(self.vectors_as_multiple_input)
         pvalues = []
         counter = 0
 
