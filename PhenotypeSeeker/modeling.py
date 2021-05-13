@@ -173,35 +173,6 @@ class Input():
             logreg_solver)
 
     @staticmethod
-    def assert_n_splits_cv_outer(n_splits_cv_outer, ML_df):
-        if phenotypes.scale == "continuous" and (n_splits_cv_outer > Samples.no_samples // 2):
-            phenotypes.n_splits_cv_outer = Samples.no_samples // 2
-            sys.stderr.write("\x1b[1;33mWarning! The 'n_splits_cv_outer' parameter is too high to \n" \
-                    "leave the required 2 samples into test set for each split!\x1b[0m\n")
-            sys.stderr.write("\x1b[1;33mSetting number of train/test splits equal to " \
-                + str(phenotypes.n_splits_cv_outer) + "!\x1b[0m\n\n")
-        elif phenotypes.scale == "binary" and np.min(np.bincount(ML_df['phenotype'].values)) < n_splits_cv_outer:
-            phenotypes.n_splits_cv_outer = np.min(np.bincount(ML_df['phenotype'].values))
-            sys.stderr.write("\x1b[1;33mSetting number of train/test splits \
-                equal to minor phenotype count - " + str(phenotypes.n_splits_cv_outer) + "!\x1b[0m\n\n")
-
-
-    @staticmethod
-    def assert_n_splits_cv_inner(n_splits_cv_inner, ML_df, y_train=None):
-        if phenotypes.scale == "continuous":
-            if phenotypes.n_splits_cv_outer:
-                min_cv_inner = Samples.no_samples - math.ceil(Samples.no_samples / phenotypes.n_splits_cv_outer)
-            else:
-                min_cv_inner = len(y_train)
-        elif phenotypes.scale == "binary":
-            if phenotypes.n_splits_cv_outer:
-                min_class = np.min(np.bincount(ML_df['phenotype'].values))
-                min_cv_inner = (min_class - math.ceil(min_class / phenotypes.n_splits_cv_outer))
-            else:
-                min_cv_inner = np.min(np.bincount(y_train))
-        phenotypes.n_splits_cv_inner = np.min([min_cv_inner, phenotypes.n_splits_cv_inner])
-
-    @staticmethod
     def get_model_name(regressor, binary_classifier):
         if phenotypes.scale == "continuous":
             if regressor == "lin":
@@ -260,7 +231,7 @@ class Input():
             min_samples = 2
         max_samples = int(max_samples)
         if max_samples == 0:
-            max_samples = Samples.no_samples - 2
+            max_samples = self.no_samples - 2
         return min_samples, max_samples
 
     @staticmethod
@@ -573,9 +544,9 @@ class phenotypes():
     hyper_parameters = None
     alphas = None
     gammes = None
-    n_splits_cv_outer = None
     kernel = None
     n_iter = None
+    n_splits_cv_outer = None
     n_splits_cv_inner = None
     testset_size = None
 
@@ -584,6 +555,8 @@ class phenotypes():
     def __init__(self, name):
         self.name = name
         self.no_samples = Samples.no_samples
+        self.n_splits_cv_outer = None
+        self.n_splits_cv_inner = None
         self.pvalues = None
         self.kmers_for_ML = {}
         self.skl_dataset = None
@@ -1010,9 +983,9 @@ class phenotypes():
         print("Timer will start")
         self.get_ML_dataframe()
         return
-        if self.n_splits_cv_outer:
-            Input.assert_n_splits_cv_outer(self.n_splits_cv_outer, self.ML_df)
-            Input.assert_n_splits_cv_inner(self.n_splits_cv_inner, self.ML_df)
+        if phenotypes.n_splits_cv_outer:
+            Input.assert_n_splits_cv_outer(phenotypes.n_splits_cv_outer, self.ML_df)
+            Input.assert_n_splits_cv_inner(phenotypes.n_splits_cv_inner, self.ML_df)
             if phenotypes.scale == "continuous":
                 kf = KFold(n_splits=self.n_splits_cv_outer)               
             elif phenotypes.scale == "binary":
@@ -1086,7 +1059,7 @@ class phenotypes():
                 )
 
             Input.assert_n_splits_cv_inner(
-                self.n_splits_cv_inner, self.ML_df, self.y_train.phenotype.values.tolist() 
+                phenotypes.n_splits_cv_inner, self.ML_df, self.y_train.phenotype.values.tolist() 
                 )
             self.get_best_model()
             self.fit_model()
@@ -1101,8 +1074,8 @@ class phenotypes():
                 '\n### Outputting the model to a file! ###\n'
                 )
 
-        if (not self.n_splits_cv_outer and not self.testset_size) or self.train_on_whole:
-            if self.n_splits_cv_outer or self.testset_size:
+        if (not phenotypes.n_splits_cv_outer and not self.testset_size) or self.train_on_whole:
+            if phenotypes.n_splits_cv_outer or self.testset_size:
                 self.summary_file.write(
                 '\nThe final output model training on the whole dataset:\n'
                 )
@@ -1111,7 +1084,7 @@ class phenotypes():
             self.fit_model()
             self.cross_validation_results()
             self.predict(self.X_train, self.y_train)
-            if self.n_splits_cv_outer or self.testset_size:
+            if phenotypes.n_splits_cv_outer or self.testset_size:
                 self.summary_file.write(
                 '\n### Outputting the last model trained on whole data to a model file! ###\n'
                 )
@@ -1558,6 +1531,33 @@ class phenotypes():
         accuracy = round(float(within_1_tier)/len(targets), 2)
         return accuracy
 
+    def assert_n_splits_cv_outer(self, n_splits_cv_outer, ML_df):
+        if phenotypes.scale == "continuous" and (n_splits_cv_outer > self.no_samples // 2):
+            self.n_splits_cv_outer = self.no_samples // 2
+            sys.stderr.write("\x1b[1;33mWarning! The 'n_splits_cv_outer' parameter is too high to \n" \
+                    "leave the required 2 samples into test set for each split!\x1b[0m\n")
+            sys.stderr.write("\x1b[1;33mSetting number of train/test splits equal to " \
+                + str(self.n_splits_cv_outer) + "!\x1b[0m\n\n")
+        elif phenotypes.scale == "binary" and np.min(np.bincount(ML_df['phenotype'].values)) < n_splits_cv_outer:
+            self.n_splits_cv_outer = np.min(np.bincount(ML_df['phenotype'].values))
+            sys.stderr.write("\x1b[1;33mSetting number of train/test splits \
+                equal to minor phenotype count - " + str(self.n_splits_cv_outer) + "!\x1b[0m\n\n")
+        else self.n_splits_cv_outer = n_splits_cv_outer
+
+    def assert_n_splits_cv_inner(self, n_splits_cv_inner, ML_df, y_train=None):
+        if phenotypes.scale == "continuous":
+            if phenotypes.n_splits_cv_outer:
+                min_cv_inner = self.no_samples - math.ceil(self.no_samples / self.n_splits_cv_outer)
+            else:
+                min_cv_inner = len(y_train)
+        elif phenotypes.scale == "binary":
+            if phenotypes.n_splits_cv_outer:
+                min_class = np.min(np.bincount(ML_df['phenotype'].values))
+                min_cv_inner = (min_class - math.ceil(min_class / self.n_splits_cv_outer))
+            else:
+                min_cv_inner = np.min(np.bincount(y_train))
+        self.n_splits_cv_inner = np.min([min_cv_inner, phenotypes.n_splits_cv_inner])
+
     # Assembly methods
     def ReverseComplement(self, kmer):
         # Returns the reverse complement of kmer
@@ -1681,10 +1681,7 @@ def modeling(args):
         args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to
         )
     Input._get_multithreading_parameters()
-    for phenotype in Input.phenotypes_to_analyse.values():
-        print("no samps4phenotype", phenotype.name, phenotype.no_samples)
-    for sample in Input.samples.values():
-        print(sample.phenotypes)
+
     if not Input.jump_to:
         #  Operations with samples
         sys.stderr.write("\x1b[1;32mGenerating the k-mer lists for input samples:\x1b[0m\n")
