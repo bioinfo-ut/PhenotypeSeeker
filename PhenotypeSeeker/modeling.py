@@ -900,7 +900,7 @@ class phenotypes():
         phenotype = self.name
         nr_of_kmers_tested = float(len(self.pvalues))
         self.get_pvalue_cutoff(self.pvalues, nr_of_kmers_tested)
-        pval_limit = '{:.2e}'.format(self.pvalues[self.kmer_limit])
+        pval_limit = float('{:.2e}'.format(self.pvalues[self.kmer_limit]))
         # while self.pvalues[self.kmer_limit-counter] == reference:
         #     counter +=1
         # pvalues_for_ML_kmers = self.pvalues[:self.kmer_limit]
@@ -923,7 +923,7 @@ class phenotypes():
             kmer, p_val = line_to_list[0], float(line_to_list[2])
             samples_with_kmer = set(line.split("|")[1].split())
             if p_val < self.pvalue_cutoff:
-                outputfile.write(line)               
+                outputfile.write(line)             
                 # if p_val in pvalues_for_ML_kmers:
                 if drop_collinearity:
                     if line.split("|")[1] not in unique_patterns:
