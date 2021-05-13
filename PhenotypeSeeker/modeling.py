@@ -58,6 +58,7 @@ class Input():
 
     samples = OrderedDict()
     phenotypes_to_analyse = OrderedDict()
+    mpheno_to_index = []
     pool = None
     lock = None
 
@@ -65,14 +66,14 @@ class Input():
     num_threads = 8
     
     @classmethod
-    def get_input_data(cls, inputfilename, take_logs):
+    def get_input_data(cls, inputfilename, mpheno, take_logs):
         # Read the data from inputfile into "samples" directory
-        Samples.take_logs = take_logs
         with open(inputfilename) as inputfile:
             header = inputfile.readline().split()
-            Samples.phenotypes = header[2:]
-            Samples.no_phenotypes = len(header)-2
-            for pheno in Samples.phenotypes:
+            phenotypes.phenotype_names = header[2:]
+            phenotypes.no_phenotypes = len(header)-2
+            cls._get_phenotypes_to_analyse(mpheno)
+            for pheno in phenotypes.phenotype_names:
                 try:
                     float(pheno)
                     sys.stderr.write("\x1b[1;33mWarning! It seems that the input file " \
@@ -87,6 +88,8 @@ class Input():
                     cls.samples[sample_name] = (
                         Samples.from_inputfile(line)
                         )
+        cls.get_multithreading_parameters()
+        cls.set_phenotype_values(take_logs)
 
     # ---------------------------------------------------------
     # Set parameters for multithreading
@@ -95,6 +98,25 @@ class Input():
         cls.lock = Manager().Lock()
         cls.pool = Pool(Input.num_threads)
 
+    @classmethod
+    def set_phenotype_values(cls, take_logs):
+        for sample in cls.samples.values():
+            for phenotype in cls.phenotypes_to_analyse.values():
+                if phenotype.scale == "continuous":
+                    try:
+                        sample.phenotypes[phenotype.name] = float(sample.phenotypes[phenotype.name])
+                        if take_logs:
+                            sample.phenotypes[phenotype.name] = math.log(
+                                sample.phenotypes[phenotype.name], 2
+                                )
+                    except:
+                        pass
+                elif phenotype.scale == "binary":
+                    try:
+                        sample.phenotypes[phenotype.name] = int(sample.phenotypes[phenotype.name])
+                    except:
+                        pass
+
     # ---------------------------------------------------------
     # Functions for processing the command line input arguments
 
@@ -102,14 +124,13 @@ class Input():
     def Input_args(
             cls, alphas, alpha_min, alpha_max, n_alphas,
             gammas, gamma_min, gamma_max, n_gammas, 
-            min_samples, max_samples, mpheno, kmer_length,
+            min_samples, max_samples, kmer_length,
             cutoff, num_threads, pvalue_cutoff, kmer_limit,
             FDR, B, binary_classifier, regressor, penalty, max_iter,
             tol, l1_ratio, n_splits_cv_outer, kernel, n_iter,
             n_splits_cv_inner, testset_size, train_on_whole,
             logreg_solver, jump_to
             ):
-        cls._get_phenotypes_to_analyse(mpheno)
         phenotypes.alphas = cls._get_alphas(
             alphas, alpha_min, alpha_max, n_alphas
             )
@@ -258,18 +279,18 @@ class Input():
     @classmethod
     def _get_phenotypes_to_analyse(cls, mpheno):
         if not mpheno:
-            phenotypes_to_analyze = range(Samples.no_phenotypes)
+            mpheno_to_index = range(Samples.no_phenotypes)
         else: 
-            phenotypes_to_analyze = map(lambda x: x-1, mpheno)
-        for item in phenotypes_to_analyze:
-            cls.phenotypes_to_analyse[Samples.phenotypes[item]] = \
-                phenotypes(Samples.phenotypes[item])
+            mpheno_to_index = map(lambda x: x-1, mpheno)
+        for index in mpheno_to_index:
+            cls.phenotypes_to_analyse[phenotypes.phenotype_names[index]] = \
+                phenotypes(phenotypes.phenotype_names[index])
 
 class Samples():
 
     no_samples = 0
-    no_phenoypes = 0
-    phenotypes = []
+    # no_phenoypes = 0
+    # phenotypes = []
     take_logs = None
 
     kmer_length = None
@@ -343,11 +364,11 @@ class Samples():
         sample_phenotypes = {}
         name, address, phenotype_list = \
             line.split()[0], line.split()[1], line.split()[2:]
-        if not all(x == "0" or x == "1" or x == "NA" for x in phenotype_list):
-            phenotypes.scale = "continuous"      
-        for i,j in zip(cls.phenotypes, phenotype_list):
+        for index in cls.mpheno_to_index:
+            if phenotype_list[index] not in ("0", "1", "NA"):
+                cls.phenotypes_to_analyse[phenotypes.phenotype_names[index]].scale = "continuous"
+        for i,j in zip(phenotypes.phenotype_names, phenotype_list):
             sample_phenotypes[i] = j
-        print(phenotypes.scale)
         return cls(name, address, sample_phenotypes)
 
     @classmethod
@@ -530,7 +551,8 @@ class stderr_print():
 
 class phenotypes():
 
-    scale = "binary"
+    phenotype_names = []
+    no_phenotypes = None
 
     model_name_long = None
     model_name_short = None
@@ -564,6 +586,7 @@ class phenotypes():
 
     def __init__(self, name):
         self.name = name
+        self.scale = "binary"
         self.pvalues = None
         self.kmers_for_ML = {}
         self.ML_df = None
@@ -726,10 +749,10 @@ class phenotypes():
             sample_phenotype = sample.phenotypes[self.name]
             if sample_phenotype != "NA":
                 if kmer_presence_vector[index] == "0":
-                    y.append(float(sample_phenotype))
+                    y.append(sample_phenotype)
                     y_weights.append(sample.weight)
                 else:
-                    x.append(float(sample_phenotype))
+                    x.append(sample_phenotype)
                     x_weights.append(sample.weight)
                     samples_w_kmer.append(sample.name)
 
@@ -810,14 +833,14 @@ class phenotypes():
         without_pheno_with_kmer = 0
         without_pheno_without_kmer = 0
         for index, sample in enumerate(samples):
-            if sample.phenotypes[self.name] == "1":
+            if sample.phenotypes[self.name] == 1:
                 if (kmers_presence_vector[index] != "0"):
                     with_pheno_with_kmer += sample.weight 
                     samples_w_kmer.append(sample.name)
                 else:
                     with_pheno_without_kmer += sample.weight
                     no_samples_wo_kmer += 1
-            elif sample.phenotypes[self.name] == "0":
+            elif sample.phenotypes[self.name] == 0:
                 if (kmers_presence_vector[index] != "0"):
                     without_pheno_with_kmer += sample.weight
                     samples_w_kmer.append(sample.name)
@@ -1644,18 +1667,17 @@ def modeling(args):
     sys.stderr.write("\x1b[1;1;101m######                      modeling                       ######\x1b[0m\n\n")
 
     # Processing the input data
-    Input.get_input_data(args.inputfile, args.take_logs)
+    Input.get_input_data(args.inputfile, args.mpheno, args.take_logs)
     Input.Input_args(
         args.alphas, args.alpha_min, args.alpha_max, args.n_alphas,
         args.gammas, args.gamma_min, args.gamma_max, args.n_gammas,
-        args.min, args.max, args.mpheno, args.length, args.cutoff,
+        args.min, args.max, args.length, args.cutoff,
         args.num_threads, args.pvalue, args.n_kmers, args.FDR, 
         args.Bonferroni, args.binary_classifier, args.regressor, 
         args.penalty, args.max_iter, args.tolerance, args.l1_ratio,
         args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner,
         args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to
         )
-    Input.get_multithreading_parameters()
 
     if not Input.jump_to:
         #  Operations with samples
