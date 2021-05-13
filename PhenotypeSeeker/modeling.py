@@ -569,6 +569,7 @@ class phenotypes():
         self.kmers_for_ML = {}
         self.skl_dataset = None
         self.ML_df = pd.DataFrame()
+        self.ML_dict = dict()
         self.ML_df_train = None
         self.ML_df_test = None
         self.X_train = None
@@ -927,11 +928,11 @@ class phenotypes():
                 if drop_collinearity:
                     if line.split("|")[1] not in unique_patterns:
                         unique_patterns.add(line.split("|")[1])
-                        self.ML_df[kmer] = [
+                        self.ML_dict[kmer] = [
                             1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()
                             ] + [p_val]
                 else:
-                    self.ML_df[kmer] = [
+                    self.ML_dict[kmer] = [
                             1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()
                             ] + [p_val]
                 # pvalues_for_ML_kmers.remove(p_val)
@@ -950,7 +951,7 @@ class phenotypes():
             outputfile.write("\nNo k-mers passed the filtration by p-value.\n")
         inputfile.close()
         outputfile.close()
-        print(self.ML_df)
+        print(self.ML_dict)
 
     def get_pvalue_cutoff(self, pvalues, nr_of_kmers_tested):
         if self.B:
