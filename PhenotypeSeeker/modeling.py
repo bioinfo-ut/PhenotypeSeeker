@@ -923,10 +923,10 @@ class phenotypes():
             if p_val < self.pvalue_cutoff:
                 outputfile.write(line)               
                 # if p_val in pvalues_for_ML_kmers:
-                if kmer_presence not in unique_presence:
-                    unique_presence.add(kmer_presence)
+                if samples_with_kmer not in unique_presence:
+                    unique_presence.add(samples_with_kmer)
                     # self.kmers_for_ML[kmer] = p_val
-                    self.ML_df[kmer] = [1 if sample in Input.sampes.keys() else 0 for sample in samples_with_kmer]
+                    self.ML_df[kmer] = [1 if sample in Input.sampes.keys() else 0 for sample in samples_with_kmer.split()]
                 # pvalues_for_ML_kmers.remove(p_val)
             if counter%checkpoint == 0:
                 stderr_print.currentKmerNum.value += checkpoint
