@@ -23,8 +23,6 @@ from Bio.Phylo.TreeConstruction import DistanceTreeConstructor, _DistanceMatrix
 from collections import OrderedDict
 from ete3 import Tree
 from multiprocess import Manager, Pool, Value
-import multiprocess
-multiprocess.set_start_method('fork')
 from scipy import stats
 from sklearn.externals import joblib
 from sklearn.ensemble import RandomForestClassifier
@@ -539,8 +537,7 @@ class phenotypes():
     model_name_short = None
 
     # Multithreading parameters
-    vectors_as_multiple_input = []
-    testlist = None
+    vectors_as_multiple_input = Manager().list()
     progress_checkpoint = Value("i", 0)
     no_kmers_to_analyse = Value("i", 0)
 
@@ -631,13 +628,11 @@ class phenotypes():
                 for i in range(Input.num_threads)
                 ]
                 )
-        cls.testlist = "a"
 
     def test_kmers_association_with_phenotype(self):
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
         print(self.model_name_long)
-        print("testlist", self.testlist)
         print(self.vectors_as_multiple_input)
         pvalues_from_all_threads = Input.pool.map(
                 self.get_kmers_tested, zip(*self.vectors_as_multiple_input)
@@ -651,7 +646,6 @@ class phenotypes():
     def get_kmers_tested(self, split_of_kmer_lists):
         print("modelname", self.model_name_long)
         print(split_of_kmer_lists)
-        print("testlist", self.testlist)
         print(phenotypes.vectors_as_multiple_input)
         pvalues = []
         counter = 0
