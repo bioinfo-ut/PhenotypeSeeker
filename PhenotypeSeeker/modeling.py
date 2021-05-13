@@ -279,10 +279,10 @@ class Input():
     @classmethod
     def _get_phenotypes_to_analyse(cls, mpheno):
         if not mpheno:
-            mpheno_to_index = range(phenotypes.no_phenotypes)
+            cls.mpheno_to_index = range(phenotypes.no_phenotypes)
         else: 
-            mpheno_to_index = map(lambda x: x-1, mpheno)
-        for index in mpheno_to_index:
+            cls.mpheno_to_index = map(lambda x: x-1, mpheno)
+        for index in cls.mpheno_to_index:
             cls.phenotypes_to_analyse[phenotypes.phenotype_names[index]] = \
                 phenotypes(phenotypes.phenotype_names[index])
 
