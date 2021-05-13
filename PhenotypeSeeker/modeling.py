@@ -154,7 +154,7 @@ class Input():
             )
         Samples.kmer_length = kmer_length
         Samples.cutoff = cutoff
-        print(Samples.kmer_length, Samples.cutoff)
+        print("test", Samples.kmer_length, Samples.cutoff)
         Input.num_threads = num_threads
         Input.jump_to = jump_to
         phenotypes.pvalue_cutoff = pvalue_cutoff
