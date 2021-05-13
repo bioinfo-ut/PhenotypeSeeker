@@ -66,7 +66,7 @@ class Input():
     num_threads = 8
     
     @classmethod
-    def get_input_data(cls, inputfilename, take_logs):
+    def get_input_data(cls, inputfilename, take_logs, mpheno):
         # Read the data from inputfile into "samples" directory
         Samples.take_logs = take_logs
         with open(inputfilename) as inputfile:
@@ -88,8 +88,20 @@ class Input():
                     cls.samples[sample_name] = (
                         Samples.from_inputfile(line)
                         )
+        cls._get_phenotypes_to_analyse(mpheno)
         cls._get_multithreading_parameters()
         cls._set_phenotype_values(take_logs)
+
+    @classmethod
+    def _get_phenotypes_to_analyse(cls, mpheno):
+        if not mpheno:
+            cls.mpheno_to_index = range(Samples.no_phenotypes)
+        else: 
+            cls.mpheno_to_index = map(lambda x: x-1, mpheno)
+        for item in cls.mpheno_to_index:
+            cls.phenotypes_to_analyse[Samples.phenotypes[item]] = \
+                phenotypes(Samples.phenotypes[item])
+
     # ---------------------------------------------------------
     # Set parameters for multithreading
     @classmethod
@@ -101,7 +113,7 @@ class Input():
     def _set_phenotype_values(cls, take_logs):
         for sample in cls.samples.values():
             for phenotype in cls.phenotypes_to_analyse.values():
-                if phenotype.scale == "continuous":
+                if phenotypes.scale == "continuous":
                     try:
                         sample.phenotypes[phenotype.name] = float(sample.phenotypes[phenotype.name])
                         if take_logs:
@@ -110,18 +122,12 @@ class Input():
                                 )
                     except:
                         pass
-                elif phenotype.scale == "binary":
+                elif phenotypes.scale == "binary":
                     print(sample.phenotypes[phenotype.name])
                     try:
                         sample.phenotypes[phenotype.name] = int(sample.phenotypes[phenotype.name])
                     except:
                         pass
-    # ---------------------------------------------------------
-    # Set parameters for multithreading
-    @classmethod
-    def get_multithreading_parameters(cls):
-        cls.lock = Manager().Lock()
-        cls.pool = Pool(Input.num_threads)
 
     # ---------------------------------------------------------
     # Functions for processing the command line input arguments
@@ -130,14 +136,13 @@ class Input():
     def Input_args(
             cls, alphas, alpha_min, alpha_max, n_alphas,
             gammas, gamma_min, gamma_max, n_gammas, 
-            min_samples, max_samples, mpheno, kmer_length,
+            min_samples, max_samples, kmer_length,
             cutoff, num_threads, pvalue_cutoff, kmer_limit,
             FDR, B, binary_classifier, regressor, penalty, max_iter,
             tol, l1_ratio, n_splits_cv_outer, kernel, n_iter,
             n_splits_cv_inner, testset_size, train_on_whole,
             logreg_solver, jump_to
             ):
-        cls._get_phenotypes_to_analyse(mpheno)
         phenotypes.alphas = cls._get_alphas(
             alphas, alpha_min, alpha_max, n_alphas
             )
@@ -281,17 +286,6 @@ class Input():
                         raise SystemExit("Logistic Regression with L2 penalty supports only " +
                             "solvers in ['liblinear', 'newton-cg', 'lbfgs', 'sag', 'saga'], " +
                             "got {}.".format(logreg_solver))
-                
-
-    @classmethod
-    def _get_phenotypes_to_analyse(cls, mpheno):
-        if not mpheno:
-            cls.mpheno_to_index = range(Samples.no_phenotypes)
-        else: 
-            cls.mpheno_to_index = map(lambda x: x-1, mpheno)
-        for item in cls.mpheno_to_index:
-            cls.phenotypes_to_analyse[Samples.phenotypes[item]] = \
-                phenotypes(Samples.phenotypes[item])
 
 class Samples():
 
@@ -1676,11 +1670,11 @@ def modeling(args):
     sys.stderr.write("\x1b[1;1;101m######                      modeling                       ######\x1b[0m\n\n")
 
     # Processing the input data
-    Input.get_input_data(args.inputfile, args.take_logs)
+    Input.get_input_data(args.inputfile, args.take_logs, args.mpheno)
     Input.Input_args(
         args.alphas, args.alpha_min, args.alpha_max, args.n_alphas,
         args.gammas, args.gamma_min, args.gamma_max, args.n_gammas,
-        args.min, args.max, args.mpheno, args.length, args.cutoff,
+        args.min, args.max, args.length, args.cutoff,
         args.num_threads, args.pvalue, args.n_kmers, args.FDR, 
         args.Bonferroni, args.binary_classifier, args.regressor, 
         args.penalty, args.max_iter, args.tolerance, args.l1_ratio,
