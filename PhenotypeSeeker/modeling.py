@@ -123,7 +123,7 @@ class Input():
                     except:
                         pass
                 elif phenotypes.scale == "binary":
-                    print(sample.phenotypes[phenotype.name])
+                    print(type(sample.phenotypes[phenotype.name]))
                     try:
                         sample.phenotypes[phenotype.name] = int(sample.phenotypes[phenotype.name])
                     except:
@@ -1681,7 +1681,6 @@ def modeling(args):
         args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner,
         args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to
         )
-    Input.get_multithreading_parameters()
 
     if not Input.jump_to:
         #  Operations with samples
