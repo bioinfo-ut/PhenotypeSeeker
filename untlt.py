@@ -23,8 +23,6 @@ df4 = df3.drop('pval')
 
 print(df4)
 
-d5 = df4[]
-
 # def myfunc():
 # 	print("helo")
 # 	sys.exit()
