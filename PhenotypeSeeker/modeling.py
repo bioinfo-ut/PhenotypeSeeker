@@ -120,13 +120,13 @@ class Input():
                                 sample.phenotypes[phenotype.name], 2
                                 )
                     except:
-                        pass
+                        phenotype.no_samples -= 1
                 elif phenotypes.scale == "binary":
-                    print(type(sample.phenotypes[phenotype.name]))
                     try:
                         sample.phenotypes[phenotype.name] = int(sample.phenotypes[phenotype.name])
                     except:
-                        pass
+                        phenotype.no_samples -= 1
+            print(sample.phenotypes)
 
     # ---------------------------------------------------------
     # Functions for processing the command line input arguments
@@ -584,6 +584,7 @@ class phenotypes():
 
     def __init__(self, name):
         self.name = name
+        self.no_samples = Samples.no_samples
         self.pvalues = None
         self.kmers_for_ML = {}
         self.skl_dataset = None
