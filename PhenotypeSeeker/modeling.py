@@ -916,7 +916,7 @@ class phenotypes():
 
         counter = 0
         unique_patterns = set()
-        drop_collinearity = False
+        drop_collinearity = True
         for line in inputfile:
             counter += 1
             line_to_list = line.split()
