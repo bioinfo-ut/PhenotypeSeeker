@@ -983,8 +983,8 @@ class phenotypes():
         print("Timer will start")
         self.get_ML_dataframe()
         if phenotypes.n_splits_cv_outer:
-            Input.assert_n_splits_cv_outer(phenotypes.n_splits_cv_outer, self.ML_df)
-            Input.assert_n_splits_cv_inner(phenotypes.n_splits_cv_inner, self.ML_df)
+            self.assert_n_splits_cv_outer(phenotypes.n_splits_cv_outer, self.ML_df)
+            self.assert_n_splits_cv_inner(phenotypes.n_splits_cv_inner, self.ML_df)
             if phenotypes.scale == "continuous":
                 kf = KFold(n_splits=self.n_splits_cv_outer)               
             elif phenotypes.scale == "binary":
@@ -1057,7 +1057,7 @@ class phenotypes():
                 self.ML_df_test
                 )
 
-            Input.assert_n_splits_cv_inner(
+            self.assert_n_splits_cv_inner(
                 phenotypes.n_splits_cv_inner, self.ML_df, self.y_train.phenotype.values.tolist() 
                 )
             self.get_best_model()
