@@ -1245,18 +1245,16 @@ class phenotypes():
             self.ML_df = self.ML_df.iloc[:,:self.kmer_limit]
             self.ML_df.drop('p_val', inplace=True)
             print(self.ML_df)
-            # self.ML_df = self.ML_df.astype(bool).astype(int)
-            # self.ML_df['phenotype'] = [
-            #     sample.phenotypes[self.name] for sample in Input.samples.values()
-            #     ]
-            # self.ML_df['weight'] = [
-            #     sample.weight for sample in Input.samples.values()
-            #     ]
-            # self.ML_df.index = list(Input.samples.keys())
-            # self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
+            self.ML_df['phenotype'] = [
+                sample.phenotypes[self.name] for sample in Input.samples.values()
+                ]
+            self.ML_df['weight'] = [
+                sample.weight for sample in Input.samples.values()
+                ]
+            self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
             # self.ML_df = self.ML_df.T.drop_duplicates().T
-            # self.ML_df.to_csv(self.name + "_" + self.model_name_short + "_df.csv")
-
+            self.ML_df.to_csv(self.name + "_" + self.model_name_short + "_df.csv")
+        print(self.ML_df['phenotype'])
         # if phenotypes.scale == "continuous":
         #     self.ML_df['phenotype'] = self.ML_df['phenotype'].astype(float)  
         # elif phenotypes.scale == "binary":
