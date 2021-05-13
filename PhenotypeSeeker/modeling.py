@@ -318,7 +318,7 @@ class Samples():
         # Generates k-mer lists for every sample in names_of_samples variable 
         # (list or dict).
         print(self.address, self.name, self.kmer_length, self.cutoff)
-        print(self.address, self.name, Samples.kmer_length, Samples.cutoff)
+        print("From samples", self.address, self.name, Samples.kmer_length, Samples.cutoff)
         run(["mkdir", "-p", "K-mer_lists"])
         process = run(
             ["glistmaker " + self.address + " -o K-mer_lists/" + 
@@ -1683,7 +1683,6 @@ def modeling(args):
         args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner,
         args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to
         )
-    print("testfrommain", Samples.kmer_length)
 
     if not Input.jump_to:
         #  Operations with samples
