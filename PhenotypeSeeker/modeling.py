@@ -58,6 +58,7 @@ class Input():
 
     samples = OrderedDict()
     phenotypes_to_analyse = OrderedDict()
+    mpheno_to_index = []
     pool = None
     lock = None
 
@@ -88,7 +89,7 @@ class Input():
                         Samples.from_inputfile(line)
                         )
         cls._get_multithreading_parameters()
-        cls._set_phenotype_values()
+        cls._set_phenotype_values(take_logs)
     # ---------------------------------------------------------
     # Set parameters for multithreading
     @classmethod
@@ -284,10 +285,10 @@ class Input():
     @classmethod
     def _get_phenotypes_to_analyse(cls, mpheno):
         if not mpheno:
-            phenotypes_to_analyze = range(Samples.no_phenotypes)
+            cls.mpheno_to_index = range(Samples.no_phenotypes)
         else: 
-            phenotypes_to_analyze = map(lambda x: x-1, mpheno)
-        for item in phenotypes_to_analyze:
+            cls.mpheno_to_index = map(lambda x: x-1, mpheno)
+        for item in cls.mpheno_to_index:
             cls.phenotypes_to_analyse[Samples.phenotypes[item]] = \
                 phenotypes(Samples.phenotypes[item])
 
