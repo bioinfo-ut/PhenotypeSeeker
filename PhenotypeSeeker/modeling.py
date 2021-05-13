@@ -50,7 +50,7 @@ def timer(f):
     def wrapper(*args):
         start = time.time()
         f(*args)
-        with open("log.txt", "w") as log:
+        with open("log.txt", "a") as log:
             log.write(f"Func {f} took {time.time() - start} secs\n")
     return wrapper
 
