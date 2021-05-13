@@ -916,7 +916,7 @@ class phenotypes():
 
         counter = 0
         unique_patterns = set()
-        drop_collinearity = False
+        drop_collinearity = True
         for line in inputfile:
             counter += 1
             line_to_list = line.split()
@@ -1243,7 +1243,7 @@ class phenotypes():
             self.ML_df = pd.DataFrame(self.kmers_for_ML, index=index)
             self.ML_df.sort_values('p_val', axis=1, ascending=True, inplace=True)
             self.ML_df = self.ML_df.iloc[:,:self.kmer_limit]
-            self.ML_df.drop('p_val')
+            self.ML_df.drop('p_val', inplace=True)
             print(self.ML_df)
             # self.ML_df = self.ML_df.astype(bool).astype(int)
             # self.ML_df['phenotype'] = [
