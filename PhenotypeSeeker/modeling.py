@@ -317,7 +317,7 @@ class Samples():
         # Makes "K-mer_lists" directory where all lists are stored.
         # Generates k-mer lists for every sample in names_of_samples variable 
         # (list or dict).
-        print(self.name)
+        print(self.address, self.name, self.kmer_length, self.cutoff)
         run(["mkdir", "-p", "K-mer_lists"])
         process = run(
             ["glistmaker " + self.address + " -o K-mer_lists/" + 
