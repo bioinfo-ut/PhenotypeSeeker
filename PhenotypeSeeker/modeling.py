@@ -280,7 +280,6 @@ class Samples():
     tree = None
 
     mash_distances_args = []
-    vectors_as_multiple_input = Manager().list()
     union_output = Manager().list()
 
     def __init__(self, name, address, phenotypes, weight=1):
@@ -622,7 +621,6 @@ class phenotypes():
         call(["rm K-mer_lists/feature_vector.list"], shell=True)
 
         # Set up split up vectors as multiple input list
-        vectors_as_multiple_input = []
         for i in range(Input.num_threads):
             cls.vectors_as_multiple_input.append(
                 [
@@ -635,7 +633,7 @@ class phenotypes():
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
         pvalues_from_all_threads = Input.pool.map(
-                self.get_kmers_tested, zip(*Samples.vectors_as_multiple_input)
+                self.get_kmers_tested, zip(*self.vectors_as_multiple_input)
             )
         self.pvalues = \
             sorted(list(chain(*pvalues_from_all_threads)))
@@ -813,7 +811,7 @@ class phenotypes():
         without_pheno_with_kmer = 0
         without_pheno_without_kmer = 0
         for index, sample in enumerate(samples):
-            print(sample.name, Samples.vectors_as_multiple_input[index])
+            print(sample.name, self.vectors_as_multiple_input[index])
             if sample.phenotypes[self.name] == "1":
                 if (kmers_presence_vector[index] != "0"):
                     with_pheno_with_kmer += sample.weight 
@@ -1233,7 +1231,7 @@ class phenotypes():
             return
         else:
             counter = 0
-            for split in zip(*Samples.vectors_as_multiple_input):
+            for split in zip(*self.vectors_as_multiple_input):
                 for line in zip(*[open(item) for item in split]):
                     if line[0].split()[0] in self.kmers_for_ML:
                         self.ML_df[line[0].split()[0]] = [int(j.split()[1].strip()) for j in line]
