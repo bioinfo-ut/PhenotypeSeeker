@@ -1681,7 +1681,7 @@ def modeling(args):
         args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to
         )
     Input._get_multithreading_parameters()
-    for phenotype in cls.phenotypes_to_analyse.values():
+    for phenotype in Input.phenotypes_to_analyse.values():
         print("no samps4phenotype", phenotype.no_samples)
     if not Input.jump_to:
         #  Operations with samples
