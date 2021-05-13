@@ -355,6 +355,7 @@ class Samples():
             phenotype_list = [int(pheno) if not "NA" else pheno for pheno in phenotype_list]
         for i,j in zip(cls.phenotypes, phenotype_list):
             sample_phenotypes[i] = j
+        print(phenotypes.scale)
         return cls(name, address, sample_phenotypes)
 
     @classmethod
