@@ -538,7 +538,7 @@ class phenotypes():
 
     # Multithreading parameters
     vectors_as_multiple_input = []
-    testlist = []
+    testlist = None
     progress_checkpoint = Value("i", 0)
     no_kmers_to_analyse = Value("i", 0)
 
@@ -629,7 +629,7 @@ class phenotypes():
                 for i in range(Input.num_threads)
                 ]
                 )
-        cls.testlist.append("a")
+        cls.testlist = "a"
 
     def test_kmers_association_with_phenotype(self):
         stderr_print.currentKmerNum.value = 0
