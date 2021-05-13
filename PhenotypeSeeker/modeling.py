@@ -345,17 +345,10 @@ class Samples():
             line.split()[0], line.split()[1], line.split()[2:]
         if not all(x == "0" or x == "1" or x == "NA" for x in phenotype_list):
             phenotypes.scale = "continuous"
-            phenotype_list = [float(pheno) if not "NA" else pheno for pheno in phenotype_list]
-            if cls.take_logs:
-                phenotype_list = [
-                    math.log(pheno,2) if not "NA" else pheno for pheno in phenotype_list
-                    ]
-        else:
-            phenotypes.scale = "binary"
-            phenotype_list = [int(pheno) if not "NA" else pheno for pheno in phenotype_list]
+        if cls.take_logs:
+            phenotype_list = map(lambda x: math.log(x, 2), phenotype_list)
         for i,j in zip(cls.phenotypes, phenotype_list):
             sample_phenotypes[i] = j
-        print(phenotypes.scale)
         return cls(name, address, sample_phenotypes)
 
     @classmethod
