@@ -1221,6 +1221,7 @@ class phenotypes():
 
     @timer
     def get_ML_dataframe(self):
+        print("Here")
         if Input.jump_to == "modelling":
             self.ML_df = pd.read_csv(
                 self.name + "_" + self.model_name_short + "_df.csv", index_col=0
@@ -1243,12 +1244,7 @@ class phenotypes():
             self.ML_df['weight'] = [
                 sample.weight for sample in Input.samples.values()
                 ]
-            self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
-
-            if phenotypes.scale == "continuous":
-                self.ML_df['phenotype'] = self.ML_df['phenotype'].astype(float)  
-            elif phenotypes.scale == "binary":
-                self.ML_df['phenotype'] = self.ML_df['phenotype'].astype(int)   
+            self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA'] 
 
             # self.summary_file.write("Dataset:\n%s\n\n" % self.skl_dataset) 
             # self.ML_df = self.ML_df.T.drop_duplicates().T
