@@ -143,7 +143,6 @@ class Input():
             n_splits_cv_inner, testset_size, train_on_whole,
             logreg_solver, jump_to
             ):
-        print("kmerlength", kmer_length)
         phenotypes.alphas = cls._get_alphas(
             alphas, alpha_min, alpha_max, n_alphas
             )
@@ -319,6 +318,7 @@ class Samples():
         # Generates k-mer lists for every sample in names_of_samples variable 
         # (list or dict).
         print(self.address, self.name, self.kmer_length, self.cutoff)
+        print(self.address, self.name, Samples.kmer_length, Samples.cutoff)
         run(["mkdir", "-p", "K-mer_lists"])
         process = run(
             ["glistmaker " + self.address + " -o K-mer_lists/" + 
