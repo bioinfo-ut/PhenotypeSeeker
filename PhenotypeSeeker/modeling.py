@@ -143,6 +143,7 @@ class Input():
             n_splits_cv_inner, testset_size, train_on_whole,
             logreg_solver, jump_to
             ):
+        print("kmerlength", kmer_length)
         phenotypes.alphas = cls._get_alphas(
             alphas, alpha_min, alpha_max, n_alphas
             )
