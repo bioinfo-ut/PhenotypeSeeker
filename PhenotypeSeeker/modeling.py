@@ -914,19 +914,19 @@ class phenotypes():
         self.write_headerline(outputfile)
 
         counter = 0
-        unique_presence = set()
+        unique_patterns = set()
         for line in inputfile:
             counter += 1
             line_to_list = line.split()
             kmer, p_val = line_to_list[0], float(line_to_list[2])
-            samples_with_kmer = line.split("|")[1]
+            samples_with_kmer = set(line.split("|")[1].split())
             if p_val < self.pvalue_cutoff:
                 outputfile.write(line)               
                 # if p_val in pvalues_for_ML_kmers:
                 if samples_with_kmer not in unique_presence:
-                    unique_presence.add(samples_with_kmer)
+                    unique_patterns.add(samples_with_kmer)
                     # self.kmers_for_ML[kmer] = p_val
-                    self.ML_df[kmer] = [1 if sample in Input.sampes.keys() else 0 for sample in samples_with_kmer.split()]
+                    self.ML_df[kmer] = [1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()]
                 # pvalues_for_ML_kmers.remove(p_val)
             if counter%checkpoint == 0:
                 stderr_print.currentKmerNum.value += checkpoint
