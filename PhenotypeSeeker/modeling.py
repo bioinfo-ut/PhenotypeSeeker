@@ -1542,7 +1542,8 @@ class phenotypes():
             self.n_splits_cv_outer = np.min(np.bincount(ML_df['phenotype'].values))
             sys.stderr.write("\x1b[1;33mSetting number of train/test splits \
                 equal to minor phenotype count - " + str(self.n_splits_cv_outer) + "!\x1b[0m\n\n")
-        else self.n_splits_cv_outer = n_splits_cv_outer
+        else:
+            self.n_splits_cv_outer = n_splits_cv_outer
 
     def assert_n_splits_cv_inner(self, n_splits_cv_inner, ML_df, y_train=None):
         if phenotypes.scale == "continuous":
