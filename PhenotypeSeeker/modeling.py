@@ -628,6 +628,7 @@ class phenotypes():
                 for sample in Input.samples
                 ]
                 )
+        print(cls.vectors_as_multiple_input)
 
     def test_kmers_association_with_phenotype(self):
         stderr_print.currentKmerNum.value = 0
