@@ -753,10 +753,10 @@ class phenotypes():
             sample_phenotype = sample.phenotypes[self.name]
             if sample_phenotype != "NA":
                 if kmer_presence_vector[index] == "0":
-                    y.append(float(sample_phenotype))
+                    y.append(sample_phenotype)
                     y_weights.append(sample.weight)
                 else:
-                    x.append(float(sample_phenotype))
+                    x.append(sample_phenotype)
                     x_weights.append(sample.weight)
                     samples_w_kmer.append(sample.name)
 
@@ -837,14 +837,14 @@ class phenotypes():
         without_pheno_with_kmer = 0
         without_pheno_without_kmer = 0
         for index, sample in enumerate(samples):
-            if sample.phenotypes[self.name] == "1":
+            if sample.phenotypes[self.name] == 1:
                 if (kmers_presence_vector[index] != "0"):
                     with_pheno_with_kmer += sample.weight 
                     samples_w_kmer.append(sample.name)
                 else:
                     with_pheno_without_kmer += sample.weight
                     no_samples_wo_kmer += 1
-            elif sample.phenotypes[self.name] == "0":
+            elif sample.phenotypes[self.name] == 0:
                 if (kmers_presence_vector[index] != "0"):
                     without_pheno_with_kmer += sample.weight
                     samples_w_kmer.append(sample.name)
