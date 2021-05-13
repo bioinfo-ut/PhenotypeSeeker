@@ -279,7 +279,7 @@ class Input():
     @classmethod
     def _get_phenotypes_to_analyse(cls, mpheno):
         if not mpheno:
-            mpheno_to_index = range(Samples.no_phenotypes)
+            mpheno_to_index = range(phenotypes.no_phenotypes)
         else: 
             mpheno_to_index = map(lambda x: x-1, mpheno)
         for index in mpheno_to_index:
@@ -289,9 +289,6 @@ class Input():
 class Samples():
 
     no_samples = 0
-    # no_phenoypes = 0
-    # phenotypes = []
-    take_logs = None
 
     kmer_length = None
     cutoff = None
