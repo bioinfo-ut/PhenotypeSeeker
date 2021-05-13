@@ -280,7 +280,7 @@ class Samples():
     tree = None
 
     mash_distances_args = []
-    vectors_as_multiple_input = Manager().list()
+    vectors_as_multiple_input = Manager().list(range(self.no_samples))
     union_output = Manager().list()
 
     def __init__(self, name, address, phenotypes, weight=1):

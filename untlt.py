@@ -32,7 +32,15 @@ import sys
 
 # print("ulluuka")
 
-pvals = {"kmer1" : 6.66, "kmer2" : 9.99, "kmer3" : 2}
+# pvals = {"kmer1" : 6.66, "kmer2" : 9.99, "kmer3" : 2}
 
-if "kmer1" in pvals:
-	print("Olemas")
+# if "kmer1" in pvals:
+# 	print("Olemas")
+
+
+listy = ['aba', 'kaba', 'naba']
+listx = list(range(3))
+
+listx[listy.index('aba')] = 'prabla'
+
+print(listx)
