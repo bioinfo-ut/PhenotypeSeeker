@@ -908,7 +908,7 @@ class phenotypes():
 
         counter = 0
         unique_patterns = set()
-        drop_collinearity = True
+        drop_collinearity = False
         for line in inputfile:
             counter += 1
             line_to_list = line.split()
@@ -1221,7 +1221,6 @@ class phenotypes():
 
     @timer
     def get_ML_dataframe(self):
-        print("Here")
         if Input.jump_to == "modelling":
             self.ML_df = pd.read_csv(
                 self.name + "_" + self.model_name_short + "_df.csv", index_col=0
@@ -1249,7 +1248,6 @@ class phenotypes():
             # self.summary_file.write("Dataset:\n%s\n\n" % self.skl_dataset) 
             # self.ML_df = self.ML_df.T.drop_duplicates().T
             self.ML_df.to_csv(self.name + "_" + self.model_name_short + "_df.csv")
-            print(self.ML_df['phenotype']) 
 
     def fit_model(self):
         if self.scale == "continuous":
@@ -1732,7 +1730,7 @@ def modeling(args):
             lambda x: x.machine_learning_modelling(),
             Input.phenotypes_to_analyse.values()
             )
-    exit()
+        
     call(['rm', '-rf', 'K-mer_lists'])
 
     if not args.no_assembly:
