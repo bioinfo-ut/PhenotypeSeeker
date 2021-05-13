@@ -633,6 +633,7 @@ class phenotypes():
 
     @classmethod
     def get_params_for_kmers_testing(cls):
+        cls._splitted_vectors_to_multiple_input()
         # Just removing old stuff
         ps = Popen(('glistquery', 'K-mer_lists/feature_vector.list'), stdout=PIPE)
         output = check_output(('wc', '-l'), stdin=ps.stdout)
