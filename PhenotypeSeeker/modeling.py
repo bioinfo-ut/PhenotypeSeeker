@@ -154,7 +154,6 @@ class Input():
             )
         Samples.kmer_length = kmer_length
         Samples.cutoff = cutoff
-        print("test", Samples.kmer_length, Samples.cutoff)
         Input.num_threads = num_threads
         Input.jump_to = jump_to
         phenotypes.pvalue_cutoff = pvalue_cutoff
@@ -1684,6 +1683,7 @@ def modeling(args):
         args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner,
         args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to
         )
+    print("testfrommain", Samples.kmer_length)
 
     if not Input.jump_to:
         #  Operations with samples
