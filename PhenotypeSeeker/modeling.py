@@ -915,6 +915,7 @@ class phenotypes():
 
         counter = 0
         unique_patterns = set()
+        drop_collinearity = False
         for line in inputfile:
             counter += 1
             line_to_list = line.split()
@@ -923,10 +924,16 @@ class phenotypes():
             if p_val < self.pvalue_cutoff:
                 outputfile.write(line)               
                 # if p_val in pvalues_for_ML_kmers:
-                if line.split("|")[1] not in unique_patterns:
-                    unique_patterns.add(line.split("|")[1])
-                    # self.kmers_for_ML[kmer] = p_val
-                    self.ML_df[kmer] = [1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()] + [p_val]
+                if drop_collinearity:
+                    if line.split("|")[1] not in unique_patterns:
+                        unique_patterns.add(line.split("|")[1])
+                        self.ML_df[kmer] = [
+                            1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()
+                            ] + [p_val]
+                else:
+                    self.ML_df[kmer] = [
+                            1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()
+                            ] + [p_val]
                 # pvalues_for_ML_kmers.remove(p_val)
             if counter%checkpoint == 0:
                 stderr_print.currentKmerNum.value += checkpoint
