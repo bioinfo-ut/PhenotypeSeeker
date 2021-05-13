@@ -231,7 +231,7 @@ class Input():
             min_samples = 2
         max_samples = int(max_samples)
         if max_samples == 0:
-            max_samples = self.no_samples - 2
+            max_samples = no_samples - 2
         return min_samples, max_samples
 
     @staticmethod
