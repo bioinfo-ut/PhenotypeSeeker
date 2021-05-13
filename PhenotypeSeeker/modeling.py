@@ -345,8 +345,6 @@ class Samples():
             line.split()[0], line.split()[1], line.split()[2:]
         if not all(x == "0" or x == "1" or x == "NA" for x in phenotype_list):
             phenotypes.scale = "continuous"      
-        if cls.take_logs:
-            phenotype_list = map(lambda x: math.log(x, 2), phenotype_list)
         for i,j in zip(cls.phenotypes, phenotype_list):
             sample_phenotypes[i] = j
         print(phenotypes.scale)
@@ -568,7 +566,6 @@ class phenotypes():
         self.name = name
         self.pvalues = None
         self.kmers_for_ML = {}
-        self.skl_dataset = None
         self.ML_df = None
         self.ML_dict = dict()
         self.ML_df_train = None
@@ -1258,11 +1255,7 @@ class phenotypes():
                 self.ML_df['phenotype'] = self.ML_df['phenotype'].astype(float)  
             elif phenotypes.scale == "binary":
                 self.ML_df['phenotype'] = self.ML_df['phenotype'].astype(int)   
-
-            # self.summary_file.write("Dataset:\n%s\n\n" % self.skl_dataset) 
-            # self.ML_df = self.ML_df.T.drop_duplicates().T
             self.ML_df.to_csv(self.name + "_" + self.model_name_short + "_df.csv")
-            print(self.ML_df['phenotype']) 
 
     def fit_model(self):
         if self.scale == "continuous":
