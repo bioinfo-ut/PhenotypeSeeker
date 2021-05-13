@@ -58,7 +58,6 @@ class Input():
 
     samples = OrderedDict()
     phenotypes_to_analyse = OrderedDict()
-    mpheno_to_index = []
     pool = None
     lock = None
 
@@ -66,14 +65,14 @@ class Input():
     num_threads = 8
     
     @classmethod
-    def get_input_data(cls, inputfilename, mpheno, take_logs):
+    def get_input_data(cls, inputfilename, take_logs):
         # Read the data from inputfile into "samples" directory
+        Samples.take_logs = take_logs
         with open(inputfilename) as inputfile:
             header = inputfile.readline().split()
-            phenotypes.phenotype_names = header[2:]
-            phenotypes.no_phenotypes = len(header)-2
-            cls._get_phenotypes_to_analyse(mpheno)
-            for pheno in phenotypes.phenotype_names:
+            Samples.phenotypes = header[2:]
+            Samples.no_phenotypes = len(header)-2
+            for pheno in Samples.phenotypes:
                 try:
                     float(pheno)
                     sys.stderr.write("\x1b[1;33mWarning! It seems that the input file " \
@@ -88,18 +87,17 @@ class Input():
                     cls.samples[sample_name] = (
                         Samples.from_inputfile(line)
                         )
-        cls.get_multithreading_parameters()
-        cls.set_phenotype_values(take_logs)
-
+        cls._get_multithreading_parameters()
+        cls._set_phenotype_values()
     # ---------------------------------------------------------
     # Set parameters for multithreading
     @classmethod
-    def get_multithreading_parameters(cls):
+    def _get_multithreading_parameters(cls):
         cls.lock = Manager().Lock()
         cls.pool = Pool(Input.num_threads)
 
     @classmethod
-    def set_phenotype_values(cls, take_logs):
+    def _set_phenotype_values(cls, take_logs):
         for sample in cls.samples.values():
             for phenotype in cls.phenotypes_to_analyse.values():
                 if phenotype.scale == "continuous":
@@ -116,6 +114,12 @@ class Input():
                         sample.phenotypes[phenotype.name] = int(sample.phenotypes[phenotype.name])
                     except:
                         pass
+    # ---------------------------------------------------------
+    # Set parameters for multithreading
+    @classmethod
+    def get_multithreading_parameters(cls):
+        cls.lock = Manager().Lock()
+        cls.pool = Pool(Input.num_threads)
 
     # ---------------------------------------------------------
     # Functions for processing the command line input arguments
@@ -124,13 +128,14 @@ class Input():
     def Input_args(
             cls, alphas, alpha_min, alpha_max, n_alphas,
             gammas, gamma_min, gamma_max, n_gammas, 
-            min_samples, max_samples, kmer_length,
+            min_samples, max_samples, mpheno, kmer_length,
             cutoff, num_threads, pvalue_cutoff, kmer_limit,
             FDR, B, binary_classifier, regressor, penalty, max_iter,
             tol, l1_ratio, n_splits_cv_outer, kernel, n_iter,
             n_splits_cv_inner, testset_size, train_on_whole,
             logreg_solver, jump_to
             ):
+        cls._get_phenotypes_to_analyse(mpheno)
         phenotypes.alphas = cls._get_alphas(
             alphas, alpha_min, alpha_max, n_alphas
             )
@@ -161,6 +166,35 @@ class Input():
         phenotypes.n_splits_cv_inner = n_splits_cv_inner
         phenotypes.logreg_solver = cls.get_logreg_solver(
             logreg_solver)
+
+    @staticmethod
+    def assert_n_splits_cv_outer(n_splits_cv_outer, ML_df):
+        if phenotypes.scale == "continuous" and (n_splits_cv_outer > Samples.no_samples // 2):
+            phenotypes.n_splits_cv_outer = Samples.no_samples // 2
+            sys.stderr.write("\x1b[1;33mWarning! The 'n_splits_cv_outer' parameter is too high to \n" \
+                    "leave the required 2 samples into test set for each split!\x1b[0m\n")
+            sys.stderr.write("\x1b[1;33mSetting number of train/test splits equal to " \
+                + str(phenotypes.n_splits_cv_outer) + "!\x1b[0m\n\n")
+        elif phenotypes.scale == "binary" and np.min(np.bincount(ML_df['phenotype'].values)) < n_splits_cv_outer:
+            phenotypes.n_splits_cv_outer = np.min(np.bincount(ML_df['phenotype'].values))
+            sys.stderr.write("\x1b[1;33mSetting number of train/test splits \
+                equal to minor phenotype count - " + str(phenotypes.n_splits_cv_outer) + "!\x1b[0m\n\n")
+
+
+    @staticmethod
+    def assert_n_splits_cv_inner(n_splits_cv_inner, ML_df, y_train=None):
+        if phenotypes.scale == "continuous":
+            if phenotypes.n_splits_cv_outer:
+                min_cv_inner = Samples.no_samples - math.ceil(Samples.no_samples / phenotypes.n_splits_cv_outer)
+            else:
+                min_cv_inner = len(y_train)
+        elif phenotypes.scale == "binary":
+            if phenotypes.n_splits_cv_outer:
+                min_class = np.min(np.bincount(ML_df['phenotype'].values))
+                min_cv_inner = (min_class - math.ceil(min_class / phenotypes.n_splits_cv_outer))
+            else:
+                min_cv_inner = np.min(np.bincount(y_train))
+        phenotypes.n_splits_cv_inner = np.min([min_cv_inner, phenotypes.n_splits_cv_inner])
 
     @staticmethod
     def get_model_name(regressor, binary_classifier):
@@ -250,16 +284,19 @@ class Input():
     @classmethod
     def _get_phenotypes_to_analyse(cls, mpheno):
         if not mpheno:
-            cls.mpheno_to_index = range(phenotypes.no_phenotypes)
+            phenotypes_to_analyze = range(Samples.no_phenotypes)
         else: 
-            cls.mpheno_to_index = map(lambda x: x-1, mpheno)
-        for index in cls.mpheno_to_index:
-            cls.phenotypes_to_analyse[phenotypes.phenotype_names[index]] = \
-                phenotypes(phenotypes.phenotype_names[index])
+            phenotypes_to_analyze = map(lambda x: x-1, mpheno)
+        for item in phenotypes_to_analyze:
+            cls.phenotypes_to_analyse[Samples.phenotypes[item]] = \
+                phenotypes(Samples.phenotypes[item])
 
 class Samples():
 
     no_samples = 0
+    no_phenoypes = 0
+    phenotypes = []
+    take_logs = None
 
     kmer_length = None
     cutoff = None
@@ -332,10 +369,9 @@ class Samples():
         sample_phenotypes = {}
         name, address, phenotype_list = \
             line.split()[0], line.split()[1], line.split()[2:]
-        for index in Input.mpheno_to_index:
-            if phenotype_list[index] not in ("0", "1", "NA"):
-                Input.phenotypes_to_analyse[phenotypes.phenotype_names[index]].scale = "continuous"
-        for i,j in zip(phenotypes.phenotype_names, phenotype_list):
+        if not all(x == "0" or x == "1" or x == "NA" for x in phenotype_list):
+            phenotypes.scale = "continuous"
+        for i,j in zip(cls.phenotypes, phenotype_list):
             sample_phenotypes[i] = j
         return cls(name, address, sample_phenotypes)
 
@@ -519,8 +555,7 @@ class stderr_print():
 
 class phenotypes():
 
-    phenotype_names = []
-    no_phenotypes = None
+    scale = "binary"
 
     model_name_long = None
     model_name_short = None
@@ -554,9 +589,9 @@ class phenotypes():
 
     def __init__(self, name):
         self.name = name
-        self.scale = "binary"
         self.pvalues = None
         self.kmers_for_ML = {}
+        self.skl_dataset = None
         self.ML_df = None
         self.ML_dict = dict()
         self.ML_df_train = None
@@ -589,11 +624,17 @@ class phenotypes():
         self.coeff_file = None
         self.model_file = None
 
-        self.n_splits_cv_outer = None
-
     # -------------------------------------------------------------------
     # Functions for calculating the association test results for kmers.
-    def kmer_testing_setup(self):
+    @classmethod
+    def kmer_testing_setup(cls):
+        if phenotypes.scale == "continuous":
+            sys.stderr.write("\n\x1b[1;32mConducting the k-mer specific Welch t-tests:\x1b[0m\n")
+            sys.stderr.flush()
+        else:
+            sys.stderr.write("\n\x1b[1;32mConducting the k-mer specific chi-square tests:\x1b[0m\n")
+            sys.stderr.flush()
+
         # Read the numbers of k-mers from feature_vector.list and delete file thereafter
         ps = Popen(('glistquery', 'K-mer_lists/feature_vector.list'), stdout=PIPE)
         output = check_output(('wc', '-l'), stdin=ps.stdout)
@@ -614,12 +655,6 @@ class phenotypes():
                 )
 
     def test_kmers_association_with_phenotype(self):
-        if self.scale == "continuous":
-            sys.stderr.write("\n\x1b[1;32mConducting the k-mer specific Welch t-tests:\x1b[0m\n")
-            sys.stderr.flush()
-        else:
-            sys.stderr.write("\n\x1b[1;32mConducting the k-mer specific chi-square tests:\x1b[0m\n")
-            sys.stderr.flush()
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
         pvalues_from_all_threads = Input.pool.map(
@@ -717,10 +752,10 @@ class phenotypes():
             sample_phenotype = sample.phenotypes[self.name]
             if sample_phenotype != "NA":
                 if kmer_presence_vector[index] == "0":
-                    y.append(sample_phenotype)
+                    y.append(float(sample_phenotype))
                     y_weights.append(sample.weight)
                 else:
-                    x.append(sample_phenotype)
+                    x.append(float(sample_phenotype))
                     x_weights.append(sample.weight)
                     samples_w_kmer.append(sample.name)
 
@@ -801,14 +836,14 @@ class phenotypes():
         without_pheno_with_kmer = 0
         without_pheno_without_kmer = 0
         for index, sample in enumerate(samples):
-            if sample.phenotypes[self.name] == 1:
+            if sample.phenotypes[self.name] == "1":
                 if (kmers_presence_vector[index] != "0"):
                     with_pheno_with_kmer += sample.weight 
                     samples_w_kmer.append(sample.name)
                 else:
                     with_pheno_without_kmer += sample.weight
                     no_samples_wo_kmer += 1
-            elif sample.phenotypes[self.name] == 0:
+            elif sample.phenotypes[self.name] == "0":
                 if (kmers_presence_vector[index] != "0"):
                     without_pheno_with_kmer += sample.weight
                     samples_w_kmer.append(sample.name)
@@ -981,8 +1016,8 @@ class phenotypes():
         self.get_ML_dataframe()
         return
         if self.n_splits_cv_outer:
-            Input.assert_n_splits_cv_outer(cls.n_splits_cv_outer, self.ML_df, self.scale)
-            Input.assert_n_splits_cv_inner(cls.n_splits_cv_inner, self.ML_df)
+            Input.assert_n_splits_cv_outer(self.n_splits_cv_outer, self.ML_df)
+            Input.assert_n_splits_cv_inner(self.n_splits_cv_inner, self.ML_df)
             if phenotypes.scale == "continuous":
                 kf = KFold(n_splits=self.n_splits_cv_outer)               
             elif phenotypes.scale == "binary":
@@ -1056,7 +1091,7 @@ class phenotypes():
                 )
 
             Input.assert_n_splits_cv_inner(
-                cls.n_splits_cv_inner, self.ML_df, self.y_train.phenotype.values.tolist() 
+                self.n_splits_cv_inner, self.ML_df, self.y_train.phenotype.values.tolist() 
                 )
             self.get_best_model()
             self.fit_model()
@@ -1246,7 +1281,11 @@ class phenotypes():
                 self.ML_df['phenotype'] = self.ML_df['phenotype'].astype(float)  
             elif phenotypes.scale == "binary":
                 self.ML_df['phenotype'] = self.ML_df['phenotype'].astype(int)   
+
+            # self.summary_file.write("Dataset:\n%s\n\n" % self.skl_dataset) 
+            # self.ML_df = self.ML_df.T.drop_duplicates().T
             self.ML_df.to_csv(self.name + "_" + self.model_name_short + "_df.csv")
+            print(self.ML_df['phenotype']) 
 
     def fit_model(self):
         if self.scale == "continuous":
@@ -1628,34 +1667,6 @@ class phenotypes():
                 + str(len(item)) + "\n" + item + "\n")
         f1.close()
 
-    def assert_n_splits_cv_outer(self, n_splits_cv_outer, ML_df):
-        if self.scale == "continuous" and (n_splits_cv_outer > Samples.no_samples // 2):
-            self.n_splits_cv_outer = Samples.no_samples // 2
-            sys.stderr.write("\x1b[1;33mWarning! The 'n_splits_cv_outer' parameter is too high to \n" \
-                    "leave the required 2 samples into test set for each split!\x1b[0m\n")
-            sys.stderr.write("\x1b[1;33mSetting number of train/test splits equal to " \
-                + str(self.n_splits_cv_outer) + "!\x1b[0m\n\n")
-        elif self.scale == "binary" and np.min(np.bincount(ML_df['phenotype'].values)) < n_splits_cv_outer:
-            self.n_splits_cv_outer = np.min(np.bincount(ML_df['phenotype'].values))
-            sys.stderr.write("\x1b[1;33mSetting number of train/test splits \
-                equal to minor phenotype count - " + str(self.n_splits_cv_outer) + "!\x1b[0m\n\n")
-        else:
-            self.n_splits_cv_outer = n_splits_cv_outer
-
-    def assert_n_splits_cv_inner(self, n_splits_cv_inner, ML_df, y_train=None):
-        if self.scale == "continuous":
-            if self.n_splits_cv_outer:
-                min_cv_inner = Samples.no_samples - math.ceil(Samples.no_samples / self.n_splits_cv_outer)
-            else:
-                min_cv_inner = len(y_train)
-        elif self.scale == "binary":
-            if self.n_splits_cv_outer:
-                min_class = np.min(np.bincount(ML_df['phenotype'].values))
-                min_cv_inner = (min_class - math.ceil(min_class / self.n_splits_cv_outer))
-            else:
-                min_cv_inner = np.min(np.bincount(y_train))
-        self.n_splits_cv_inner = np.min([min_cv_inner, n_splits_cv_inner])
-
 def modeling(args):
     # The main function of "phenotypeseeker modeling"
 
@@ -1663,17 +1674,18 @@ def modeling(args):
     sys.stderr.write("\x1b[1;1;101m######                      modeling                       ######\x1b[0m\n\n")
 
     # Processing the input data
-    Input.get_input_data(args.inputfile, args.mpheno, args.take_logs)
+    Input.get_input_data(args.inputfile, args.take_logs)
     Input.Input_args(
         args.alphas, args.alpha_min, args.alpha_max, args.n_alphas,
         args.gammas, args.gamma_min, args.gamma_max, args.n_gammas,
-        args.min, args.max, args.length, args.cutoff,
+        args.min, args.max, args.mpheno, args.length, args.cutoff,
         args.num_threads, args.pvalue, args.n_kmers, args.FDR, 
         args.Bonferroni, args.binary_classifier, args.regressor, 
         args.penalty, args.max_iter, args.tolerance, args.l1_ratio,
         args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner,
         args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to
         )
+    Input.get_multithreading_parameters()
 
     if not Input.jump_to:
         #  Operations with samples
