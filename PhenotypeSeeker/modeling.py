@@ -361,9 +361,9 @@ class Samples():
         sample_phenotypes = {}
         name, address, phenotype_list = \
             line.split()[0], line.split()[1], line.split()[2:]
-        for index in cls.mpheno_to_index:
+        for index in Input.mpheno_to_index:
             if phenotype_list[index] not in ("0", "1", "NA"):
-                cls.phenotypes_to_analyse[phenotypes.phenotype_names[index]].scale = "continuous"
+                Input.phenotypes_to_analyse[phenotypes.phenotype_names[index]].scale = "continuous"
         for i,j in zip(phenotypes.phenotype_names, phenotype_list):
             sample_phenotypes[i] = j
         return cls(name, address, sample_phenotypes)
