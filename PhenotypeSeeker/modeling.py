@@ -1683,6 +1683,8 @@ def modeling(args):
     Input._get_multithreading_parameters()
     for phenotype in Input.phenotypes_to_analyse.values():
         print("no samps4phenotype", phenotype.name, phenotype.no_samples)
+    for sample in Input.samples.values():
+        print(sample.phenotypes)
     if not Input.jump_to:
         #  Operations with samples
         sys.stderr.write("\x1b[1;32mGenerating the k-mer lists for input samples:\x1b[0m\n")
