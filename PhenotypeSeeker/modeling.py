@@ -1238,7 +1238,8 @@ class phenotypes():
                 "machine learning modelling.\n")
             return
         else:
-            self.ML_df = pd.DataFrame(self.kmers_for_ML, index=Input.samples.keys() + ['p_val'])
+            index = list(Input.samples.keys()) + ['p_val']
+            self.ML_df = pd.DataFrame(self.kmers_for_ML, index=index)
             print(self.ML_df)
             # self.ML_df.sort_values('p_val', axis=1, ascending=True, inplace=True)
             # print(self.ML_df)
