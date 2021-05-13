@@ -537,7 +537,7 @@ class phenotypes():
     model_name_short = None
 
     # Multithreading parameters
-    vectors_as_multiple_input = Manager().list()
+    vectors_as_multiple_input = []
     progress_checkpoint = Value("i", 0)
     no_kmers_to_analyse = Value("i", 0)
 
@@ -811,7 +811,6 @@ class phenotypes():
         without_pheno_with_kmer = 0
         without_pheno_without_kmer = 0
         for index, sample in enumerate(samples):
-            print(sample.name, self.vectors_as_multiple_input[index])
             if sample.phenotypes[self.name] == "1":
                 if (kmers_presence_vector[index] != "0"):
                     with_pheno_with_kmer += sample.weight 
@@ -893,6 +892,7 @@ class phenotypes():
     # -------------------------------------------------------------------
     # Functions for filtering the k-mers based on the p-values of
     # conducted tests.
+    @timer
     def get_kmers_filtered(self):
         # Filters the k-mers by their p-value achieved in statistical 
         # testing.
@@ -919,20 +919,21 @@ class phenotypes():
             counter += 1
             line_to_list = line.split()
             kmer, p_val = line_to_list[0], float(line_to_list[2])
-            kmer_presence = line.split("|")[1]
+            samples_with_kmer = line.split("|")[1]
             if p_val < self.pvalue_cutoff:
                 outputfile.write(line)               
                 # if p_val in pvalues_for_ML_kmers:
                 if kmer_presence not in unique_presence:
                     unique_presence.add(kmer_presence)
-                    self.kmers_for_ML[kmer] = p_val
+                    # self.kmers_for_ML[kmer] = p_val
+                    self.ML_df[kmer] = [1 if sample in Input.sampes.keys() else 0 for sample in samples_with_kmer]
                 # pvalues_for_ML_kmers.remove(p_val)
             if counter%checkpoint == 0:
                 stderr_print.currentKmerNum.value += checkpoint
                 stderr_print.check_progress(
                     nr_of_kmers_tested, "k-mers filtered.", self.name + ": "
                 )
-
+        print(self.ML_df)
         stderr_print.currentKmerNum.value += counter%checkpoint
         stderr_print.check_progress(
             nr_of_kmers_tested, "k-mers filtered.", self.name + ": "
@@ -1703,6 +1704,7 @@ def modeling(args):
             lambda x:  x.get_kmers_filtered(), 
             Input.phenotypes_to_analyse.values()
             ))
+    exit()
     if not Input.jump_to or ''.join(i for i, _ in groupby(Input.jump_to)) == "modeling":
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
         sys.stderr.flush()
