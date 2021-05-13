@@ -632,8 +632,6 @@ class phenotypes():
     def test_kmers_association_with_phenotype(self):
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
-        print(self.model_name_long)
-        print(self.vectors_as_multiple_input)
         pvalues_from_all_threads = Input.pool.map(
                 self.get_kmers_tested, zip(*self.vectors_as_multiple_input)
             )
@@ -644,9 +642,7 @@ class phenotypes():
         self.concatenate_test_files(self.name)
 
     def get_kmers_tested(self, split_of_kmer_lists):
-        print("modelname", self.model_name_long)
-        print(split_of_kmer_lists)
-        print(phenotypes.vectors_as_multiple_input)
+
         pvalues = []
         counter = 0
 
@@ -815,7 +811,6 @@ class phenotypes():
         without_pheno_with_kmer = 0
         without_pheno_without_kmer = 0
         for index, sample in enumerate(samples):
-            print(self.vectors_as_multiple_input)
             print(sample.name, self.vectors_as_multiple_input[index])
             if sample.phenotypes[self.name] == "1":
                 if (kmers_presence_vector[index] != "0"):
