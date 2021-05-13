@@ -926,7 +926,7 @@ class phenotypes():
                 if line.split("|")[1] not in unique_patterns:
                     unique_patterns.add(line.split("|")[1])
                     # self.kmers_for_ML[kmer] = p_val
-                    self.ML_df[kmer] = [1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()].append(p_val)
+                    self.ML_df[kmer] = [1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()] + [p_val]
                 # pvalues_for_ML_kmers.remove(p_val)
             if counter%checkpoint == 0:
                 stderr_print.currentKmerNum.value += checkpoint
