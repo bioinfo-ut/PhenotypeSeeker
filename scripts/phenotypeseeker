@@ -185,11 +185,11 @@ def Main():
     	)
     regression_models.add_argument(
         '-bc', '--binary_classifier', metavar='', type=str, default='log',
-        choices=["log", "SVM", "RF", "NB", "XGBC"],
+        choices=["log", "SVM", "RF", "NB", "XGBC", "DT"],
         help='The binary classifier to be used. Possible variants are \
         "log" (logistic regression; default), "SVM" (support vector \
-        machine), "RF" (random forest), "NB" (naive bayes) and XGBC \
-        (extreme gradient boost classifier)'
+        machine), "RF" (random forest), "NB" (naive bayes), \
+        "DT" (decision tree) and XGBC (extreme gradient boost classifier)'
         )
     regression_models.add_argument(
         '-reg', '--regressor', metavar='', type=str, default='lin',

@@ -26,6 +26,7 @@ from multiprocess import Manager, Pool, Value
 from scipy import stats
 from sklearn.externals import joblib
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.linear_model import (Lasso, LogisticRegression, Ridge, ElasticNet,
     SGDClassifier)
 from sklearn.naive_bayes import BernoulliNB, GaussianNB
@@ -191,6 +192,9 @@ class Input():
             elif binary_classifier == "RF":
                 phenotypes.model_name_long = "random forest"
                 phenotypes.model_name_short = "RF"
+            elif binary_classifier == "DT":
+                phenotypes.model_name_long = "decision tree"
+                phenotypes.model_name_short = "DT"
             elif binary_classifier == "NB":
                 phenotypes.model_name_long = "Naive Bayes"
                 phenotypes.model_name_short = "NB"
@@ -1142,6 +1146,8 @@ class phenotypes():
                     ) 
             elif self.model_name_long == "random forest":
                 self.model = RandomForestClassifier()
+            elif self.model_name_long == "decision tree":
+                self.model = DecisionTreeClassifier()
             elif self.model_name_long == "Naive Bayes":
                 self.model = BernoulliNB()
             elif self.model_name_short == "XGBC":
@@ -1179,6 +1185,11 @@ class phenotypes():
                         ],
                     'criterion' :['gini', 'entropy']
                     }
+            elif self.model_name_long == "decision tree":
+                self.hyper_parameters = {
+                    'max_depth': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                    'criterion' :['gini', 'entropy']
+                    }
 
     def get_best_model(self):
         if self.scale == "continuous":
@@ -1206,6 +1217,10 @@ class phenotypes():
             elif self.model_name_long == "random forest":
                 self.best_model = RandomizedSearchCV(
                     self.model, self.hyper_parameters, n_iter=self.n_iter, cv=self.n_splits_cv_inner
+                    )
+            elif self.model_name_long == "decision tree":
+                self.best_model = GridSearchCV(
+                    self.model, self.hyper_parameters, cv=self.n_splits_cv_inner
                     )
             elif self.model_name_short in ("NB", "XGBC"):
                 self.best_model = self.model
