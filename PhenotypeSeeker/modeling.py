@@ -1482,7 +1482,7 @@ class phenotypes():
         if self.model_name_short == "linreg":
             df_for_coeffs.loc['coefficient'] = \
                 self.model_fitted.best_estimator_.coef_
-        elif self.model_name_short in ("RF"):
+        elif self.model_name_short in ("RF", "DT"):
             df_for_coeffs.loc['coefficient'] = \
                 self.model_fitted.best_estimator_.feature_importances_
         elif self.model_name_short in ("XGBR", "XGBC"):
