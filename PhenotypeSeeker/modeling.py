@@ -1515,7 +1515,7 @@ class phenotypes():
     def visualize_model(self):
         plt.figure(figsize=(15,10))
         plot = plot_tree(
-            self.model_fitted.best_estimator_, features=self.ML_df.columns,
+            self.model_fitted.best_estimator_, feature_names=self.ML_df.columns,
             filled=True, 
             )
         
