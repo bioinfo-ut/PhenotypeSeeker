@@ -1102,7 +1102,7 @@ class phenotypes():
         joblib.dump(self.model_fitted, self.model_file)
         self.write_model_coefficients_to_file()
 
-        if model_name_long == "decision tree":
+        if phenotypes.model_name_long == "decision tree":
             self.visualize_model()
 
         self.summary_file.close()
