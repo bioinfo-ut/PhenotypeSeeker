@@ -42,7 +42,9 @@ from sklearn.model_selection import (
     )
 from functools import partial
 
-import matlpotlib.pyplot as plt
+import matplotlib
+matpolotlib.use('agg')
+import matplotlib.pyplot as plt
 import xgboost as xgb
 import Bio
 import numpy as np
