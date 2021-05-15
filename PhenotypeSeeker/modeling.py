@@ -26,7 +26,7 @@ from multiprocess import Manager, Pool, Value
 from scipy import stats
 from sklearn.externals import joblib
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import DecisionTreeClassifier, plot_tree
 from sklearn.linear_model import (Lasso, LogisticRegression, Ridge, ElasticNet,
     SGDClassifier)
 from sklearn.naive_bayes import BernoulliNB, GaussianNB
@@ -41,6 +41,8 @@ from sklearn.model_selection import (
     KFold
     )
 from functools import partial
+
+import matlpotlib.pyplot as plt
 import xgboost as xgb
 import Bio
 import numpy as np
@@ -1098,6 +1100,9 @@ class phenotypes():
         joblib.dump(self.model_fitted, self.model_file)
         self.write_model_coefficients_to_file()
 
+        if model_name_long == "decision tree":
+            self.visualize_model()
+
         self.summary_file.close()
         self.coeff_file.close()
         self.model_file.close()
@@ -1272,11 +1277,12 @@ class phenotypes():
                 self.model_fitted = self.best_model.fit(self.X_train.values, self.y_train.values.flatten())
         elif self.scale == "binary":
             if self.model_name_short == "XGBC":
-                self.model_fitted = self.best_model.fit(self.X_train.values, self.y_train.values.flatten())
+                self.model_fitted = self.best_model.fit(
+                    self.X_train.values, self.y_train.values.flatten()
+                    )
             else:
                 self.model_fitted = self.best_model.fit(
-                    self.X_train, self.y_train.values.flatten(),
-                    sample_weight=self.weights_train.values.flatten()
+                    self.X_train, self.y_train.values.flatten()
                     )
 
 
@@ -1503,6 +1509,11 @@ class phenotypes():
                 kmer, kmer_coef,
                 len(samples_with_kmer), " ".join(samples_with_kmer)
                 ))
+
+    def visualize_model(self):
+        plt.figure(figsize=(15,10))
+        plot_tree(self.model_fitted.best_estimator_, filled=True)
+        
 
     # ---------------------------------------------------------
     # Self-implemented performance measure functions
