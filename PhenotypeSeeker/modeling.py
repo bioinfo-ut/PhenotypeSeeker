@@ -1270,6 +1270,9 @@ class phenotypes():
                     self.ML_df['pheno'].sum() < 0.9
                     ):
                     self.ML_df.drop(columns=column, inplace=True)
+                    print(column)
+                    print(((self.ML_df[column] == 1) & (self.ML_df['pheno'] == 1)).sum())
+                    print(self.ML_df['pheno'].sum())
 
             # self.summary_file.write("Dataset:\n%s\n\n" % self.skl_dataset) 
             # self.ML_df = self.ML_df.T.drop_duplicates().T
