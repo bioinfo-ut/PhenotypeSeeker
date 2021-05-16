@@ -1262,7 +1262,14 @@ class phenotypes():
             self.ML_df['weight'] = [
                 sample.weight for sample in Input.samples.values()
                 ]
-            self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA'] 
+            self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
+
+            for column in self.ML_df.columns[:-1]:
+                if (
+                    ((self.ML_df[column] == 1) & (self.ML_df['pheno'] == 1)).sum() / 
+                    self.ML_df['pheno'].sum() < 0.9
+                    ):
+                df.drop(columns=column, inplace=True)
 
             # self.summary_file.write("Dataset:\n%s\n\n" % self.skl_dataset) 
             # self.ML_df = self.ML_df.T.drop_duplicates().T
