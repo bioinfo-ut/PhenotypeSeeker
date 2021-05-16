@@ -1251,6 +1251,7 @@ class phenotypes():
                 "machine learning modelling.\n")
             return
         else:
+            print("Hollaa")
             index = list(Input.samples.keys()) + ['p_val']
             self.ML_df = pd.DataFrame(self.kmers_for_ML, index=index)
             self.ML_df.sort_values('p_val', axis=1, ascending=True, inplace=True)
