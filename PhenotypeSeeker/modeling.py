@@ -1251,7 +1251,6 @@ class phenotypes():
                 "machine learning modelling.\n")
             return
         else:
-            print("Hollaa")
             index = list(Input.samples.keys()) + ['p_val']
             self.ML_df = pd.DataFrame(self.kmers_for_ML, index=index)
             self.ML_df.sort_values('p_val', axis=1, ascending=True, inplace=True)
@@ -1265,12 +1264,12 @@ class phenotypes():
                 ]
             self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
 
-            for column in self.ML_df.columns[:-2]:
-                if (
-                    ((self.ML_df[column] == 1) & (self.ML_df['phenotype'] == 1)).sum() / 
-                    self.ML_df['phenotype'].sum() < 0.9
-                    ):
-                    self.ML_df.drop(columns=column, inplace=True)
+            # for column in self.ML_df.columns[:-2]:
+            #     if (
+            #         ((self.ML_df[column] == 1) & (self.ML_df['phenotype'] == 1)).sum() / 
+            #         self.ML_df['phenotype'].sum() < 0.9
+            #         ):
+            #         self.ML_df.drop(columns=column, inplace=True)
 
             # self.summary_file.write("Dataset:\n%s\n\n" % self.skl_dataset) 
             # self.ML_df = self.ML_df.T.drop_duplicates().T
@@ -1562,6 +1561,9 @@ class phenotypes():
         return accuracy
 
     def assert_n_splits_cv_outer(self, n_splits_cv_outer, ML_df):
+        print(ML_df['phenotype'].values)
+        print(np.bincount(ML_df['phenotype'].values)
+        print(np.min(np.bincount(ML_df['phenotype'].values)))
         if phenotypes.scale == "continuous" and (n_splits_cv_outer > self.no_samples // 2):
             self.n_splits_cv_outer = self.no_samples // 2
             sys.stderr.write("\x1b[1;33mWarning! The 'n_splits_cv_outer' parameter is too high to \n" \
