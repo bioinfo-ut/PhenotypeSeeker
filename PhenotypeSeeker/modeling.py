@@ -1526,7 +1526,7 @@ class phenotypes():
             self.model_fitted.best_estimator_, feature_names=self.ML_df.columns,
             filled=True, 
             )
-        plt.savefig('treePlot.png')
+        plt.savefig(self.model_name_short + "_model_" + self.name + '_plot.png')
 
     # ---------------------------------------------------------
     # Self-implemented performance measure functions
