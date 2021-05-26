@@ -1274,6 +1274,9 @@ class phenotypes():
             # self.summary_file.write("Dataset:\n%s\n\n" % self.skl_dataset) 
             # self.ML_df = self.ML_df.T.drop_duplicates().T
             self.ML_df.to_csv(self.name + "_" + self.model_name_short + "_df.csv")
+            print(self.ML_df['phenotype'])
+            print(self.ML_df['phenotype'].values)
+            print(self.ML_df['phenotype'].values.dtype)
 
     def fit_model(self):
         if self.scale == "continuous":
