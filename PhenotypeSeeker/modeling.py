@@ -1263,6 +1263,7 @@ class phenotypes():
                 sample.weight for sample in Input.samples.values()
                 ]
             self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
+            self.ML_df.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
 
             # for column in self.ML_df.columns[:-2]:
             #     if (
@@ -1274,9 +1275,6 @@ class phenotypes():
             # self.summary_file.write("Dataset:\n%s\n\n" % self.skl_dataset) 
             # self.ML_df = self.ML_df.T.drop_duplicates().T
             self.ML_df.to_csv(self.name + "_" + self.model_name_short + "_df.csv")
-            print(self.ML_df['phenotype'])
-            print(self.ML_df['phenotype'].values)
-            print(self.ML_df['phenotype'].values.dtype)
 
     def fit_model(self):
         if self.scale == "continuous":
@@ -1564,7 +1562,6 @@ class phenotypes():
         return accuracy
 
     def assert_n_splits_cv_outer(self, n_splits_cv_outer, ML_df):
-        print(ML_df['phenotype'].values)
         print(np.bincount(ML_df['phenotype'].values))
         print(np.min(np.bincount(ML_df['phenotype'].values)))
         if phenotypes.scale == "continuous" and (n_splits_cv_outer > self.no_samples // 2):
