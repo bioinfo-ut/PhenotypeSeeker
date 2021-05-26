@@ -1562,7 +1562,7 @@ class phenotypes():
 
     def assert_n_splits_cv_outer(self, n_splits_cv_outer, ML_df):
         print(ML_df['phenotype'].values)
-        print(np.bincount(ML_df['phenotype'].values)
+        print(np.bincount(ML_df['phenotype'].values))
         print(np.min(np.bincount(ML_df['phenotype'].values)))
         if phenotypes.scale == "continuous" and (n_splits_cv_outer > self.no_samples // 2):
             self.n_splits_cv_outer = self.no_samples // 2
