@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 __author__ = "Erki Aun"
-__version__ = "0.7.0"
+__version__ = "0.7.1"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
@@ -10,7 +10,7 @@ import argparse
 import sys
 import math
 
-from PhenotypeSeeker import modeling, prediction
+from PhenotypeSeeker import modeling, prediction, annotation
 
 class _HelpAction(argparse._HelpAction):
 
@@ -30,13 +30,13 @@ class _HelpAction(argparse._HelpAction):
 
 def Main():
     parser = argparse.ArgumentParser(
-    	usage="PhenotypeSeeker {modeling,prediction} <INPUTFILE(S)> [OPTIONS]",
+    	usage="PhenotypeSeeker {modeling,prediction,annotation} <INPUTFILE(S)> [OPTIONS]",
     	add_help=False
     	)
     parser._positionals.title = 'Required option'
 
     other2 = parser.add_argument_group('Other options')
-    other2.add_argument('--version', action='version', version='%(prog)s 0.7.0')
+    other2.add_argument('--version', action='version', version='%(prog)s 0.7.1')
     other2.add_argument(
     	'-h', '--help', action=_HelpAction,
     	help='Show this help message and exit.'
@@ -45,15 +45,21 @@ def Main():
     subparsers = parser.add_subparsers()
 
     parser_a = subparsers.add_parser(
-    	'modeling', help='Generate phenotype prediction regression model',
+    	'modeling', help='Generate phenotype prediction model',
     	usage='PhenotypeSeeker modeling INPUTFILE [OPTIONS]', add_help=False
     	)
     parser_b = subparsers.add_parser(
     	'prediction',
-    	help='Predict phenotypes using the already generated regression model',
+    	help='Use the PhenotypeSeeker model to predict phenotypes from genome data',
     	usage='PhenotypeSeeker prediction INPUTFILE1 INPUTFILE2 [OPTIONS]',
     	add_help=False
     	)
+    parser_c = subparsers.add_parser(
+        'annotation',
+        help='Annotate the k-mers in phenotypeseeker outputfile',
+        usage='PhenotypeSeeker annotation INPUTFILE1 [OPTIONS]',
+        add_help=False
+        )
 
     #Subparser "modeling" options
     required_options = parser_a.add_argument_group('Required options')
@@ -81,7 +87,7 @@ def Main():
     	)
 
     kmer_lists.add_argument(
-    	"-l", '--length', type=str, metavar="", default="13", 
+    	"-l", '--kmer_length', type=str, metavar="", default="13", 
     	help="K-mer length. Must be an integer between (1-32, default = 13)"
     	)
     kmer_lists.add_argument(
@@ -179,11 +185,11 @@ def Main():
     	)
     regression_models.add_argument(
         '-bc', '--binary_classifier', metavar='', type=str, default='log',
-        choices=["log", "SVM", "RF", "NB", "XGBC"],
+        choices=["log", "SVM", "RF", "NB", "XGBC", "DT"],
         help='The binary classifier to be used. Possible variants are \
         "log" (logistic regression; default), "SVM" (support vector \
-        machine), "RF" (random forest), "NB" (naive bayes) and XGBC \
-        (extreme gradient boost classifier)'
+        machine), "RF" (random forest), "NB" (naive bayes), \
+        "DT" (decision tree) and XGBC (extreme gradient boost classifier)'
         )
     regression_models.add_argument(
         '-reg', '--regressor', metavar='', type=str, default='lin',
@@ -296,6 +302,13 @@ def Main():
     	help="Show this help message and exit."
     	)
     parser_b.set_defaults(func=prediction.prediction)
+
+    #Subparser "annotation" options
+    parser_c.add_argument(
+        'inputfile', default=sys.stdin,
+        help='Text file of tab separated list of sample IDs and corresponding \
+        Fasta/Fastq file addresses.')
+    parser_c.set_defaults(func=annotation.annotation)
 
     args = parser.parse_args()
     try:

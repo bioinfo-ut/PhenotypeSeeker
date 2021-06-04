@@ -3,7 +3,7 @@
 from setuptools import setup
 
 setup(name = 'PhenotypeSeeker',
-      version ='0.7.0',
+      version ='0.7.1',
       description = 'Identifies phenotype-specific k-mers, creates phenotype \
           prediction models and using this model predicts phenotype from \
           sequenced bacterial strains',
@@ -12,7 +12,7 @@ setup(name = 'PhenotypeSeeker',
       url = 'https://www.bioinfo.ut.ee/PhenotypeSeeker',
       py_modules = [
           'PhenotypeSeeker/modeling', 'PhenotypeSeeker/prediction',
-          'PhenotypeSeeker/__init__'
+          'PhenotypeSeeker/annotation', 'PhenotypeSeeker/__init__'
           ],
       scripts = ['scripts/phenotypeseeker'],
       install_requires = [
