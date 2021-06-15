@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 __author__ = "Erki Aun"
-__version__ = "0.7.1"
+__version__ = "0.7.2"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
@@ -612,7 +612,7 @@ class phenotypes():
             sys.stderr.flush()
 
         # Read the numbers of k-mers from feature_vector.list and delete file thereafter
-        ps = Popen(("glistquery", 'K-mer_lists/feature_vector.list'), stdout=PIPE)
+        ps = Popen("glistquery K-mer_lists/feature_vector.list", shell=True, stdout=PIPE)
         output = check_output(('wc', '-l'), stdin=ps.stdout)
         ps.wait()
         cls.no_kmers_to_analyse.value = int(output)
