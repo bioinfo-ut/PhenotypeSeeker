@@ -612,7 +612,7 @@ class phenotypes():
             sys.stderr.flush()
 
         # Read the numbers of k-mers from feature_vector.list and delete file thereafter
-        ps = Popen(('glistquery', 'K-mer_lists/feature_vector.list'), stdout=PIPE)
+        ps = Popen(("glistquery", 'K-mer_lists/feature_vector.list'), stdout=PIPE)
         output = check_output(('wc', '-l'), stdin=ps.stdout)
         ps.wait()
         cls.no_kmers_to_analyse.value = int(output)
