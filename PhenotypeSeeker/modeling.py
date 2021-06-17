@@ -952,6 +952,8 @@ class phenotypes():
             outputfile.write("\nNo k-mers passed the filtration by p-value.\n")
         inputfile.close()
         outputfile.close()
+        print(self.kmers_for_ML)
+        print(len(self.kmers_for_ML))
 
     def get_pvalue_cutoff(self, pvalues, nr_of_kmers_tested):
         if self.B:
