@@ -1108,6 +1108,7 @@ class phenotypes():
         self.summary_file.close()
         self.coeff_file.close()
         self.model_file.close()
+        print(self.ML_df.columns)
 
     @classmethod
     def split_df(cls, df):
