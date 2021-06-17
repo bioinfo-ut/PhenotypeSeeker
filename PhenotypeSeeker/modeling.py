@@ -952,8 +952,6 @@ class phenotypes():
             outputfile.write("\nNo k-mers passed the filtration by p-value.\n")
         inputfile.close()
         outputfile.close()
-        print(self.kmers_for_ML)
-        print(len(self.kmers_for_ML))
 
     def get_pvalue_cutoff(self, pvalues, nr_of_kmers_tested):
         if self.B:
@@ -1676,7 +1674,7 @@ class phenotypes():
         # Assembles the input k-mers and writes assembled sequences
         # into "assembled_kmers.txt" file in FastA format.
 
-
+        print(self.ML_df.columns)
         #Open files to write the results of k-mer assembling
         f1 = open("assembled_kmers_" + self.name + ".fasta", "w+")
         sys.stderr.write("\x1b[1;32m\t" + self.name + " data.\x1b[0m\n")
