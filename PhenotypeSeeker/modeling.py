@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 __author__ = "Erki Aun"
-__version__ = "0.7.2"
+__version__ = "0.7.3"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
@@ -916,7 +916,7 @@ class phenotypes():
 
         counter = 0
         unique_patterns = set()
-        drop_collinearity = True
+        drop_collinearity = False
         for line in inputfile:
             counter += 1
             line_to_list = line.split()

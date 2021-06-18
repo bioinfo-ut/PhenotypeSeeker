@@ -22,4 +22,4 @@ echo "Launching the phenotypeseeker modeling:"
 echo "phenotypeseeker modeling PS_modeling_example_files/data.pheno"
 echo
 
-phenotypeseeker modeling PS_modeling_example_files/data.pheno -bc DT -tow
+phenotypeseeker modeling PS_modeling_example_files/data.pheno
