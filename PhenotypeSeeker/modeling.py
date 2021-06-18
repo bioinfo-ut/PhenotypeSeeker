@@ -1108,7 +1108,6 @@ class phenotypes():
         self.summary_file.close()
         self.coeff_file.close()
         self.model_file.close()
-        print(self.ML_df.columns)
 
     @classmethod
     def split_df(cls, df):
@@ -1674,9 +1673,8 @@ class phenotypes():
     def assembling(self):
         # Assembles the input k-mers and writes assembled sequences
         # into "assembled_kmers.txt" file in FastA format.
-
-        print(self.ML_df.columns)
         #Open files to write the results of k-mer assembling
+        
         f1 = open("assembled_kmers_" + self.name + ".fasta", "w+")
         sys.stderr.write("\x1b[1;32m\t" + self.name + " data.\x1b[0m\n")
         sys.stderr.flush()
