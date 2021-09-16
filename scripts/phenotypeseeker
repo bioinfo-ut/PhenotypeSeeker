@@ -225,7 +225,7 @@ def Main():
         specifying method - "-ts", "--testset_size"!'
     	)
     train_test_split.add_argument(
-        '-ts', "--testset_size", metavar="", type=float, default=0.25,
+        '-ts', "--testset_size", metavar="", type=float, default=None,
         help='The size of the test set in 1-fold train/test data splitting. \
         Represents the proportion of the dataset to include in the test split. \
         Should be a float between 0.0 and 1.0 (default 0.25). Train set size is \
