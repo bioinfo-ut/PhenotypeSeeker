@@ -16,7 +16,7 @@ warnings.showwarning = lambda *args, **kwargs: None
 import pkg_resources
 pkg_resources.require(
     "numpy==1.18.1", "Biopython==1.76", "pandas==1.0.1", "xgboost==1.0.1", "scipy==1.4.1",
-    "scikit-learn==0.22.1", "ete3==3.1.1", "multiprocess==0.70.9", "matplotlib==2.1.0"
+    "scikit-learn==0.22.1", "ete3==3.1.1", "multiprocess==0.70.9"
     )
 
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor, _DistanceMatrix
