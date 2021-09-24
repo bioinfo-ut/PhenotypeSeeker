@@ -931,11 +931,14 @@ class phenotypes():
                         self.kmers_for_ML[kmer] = [
                             1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()
                             ] + [p_val]
+                elif self.kmer_limit and (p_val <= pval_limit):
+                    self.kmers_for_ML[kmer] = [
+                            1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()
+                            ] + [p_val]
                 else:
-                    if p_val <= pval_limit:
-                        self.kmers_for_ML[kmer] = [
-                                1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()
-                                ] + [p_val]
+                    self.kmers_for_ML[kmer] = [
+                            1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()
+                            ] + [p_val]
                 # pvalues_for_ML_kmers.remove(p_val)
             if counter%checkpoint == 0:
                 stderr_print.currentKmerNum.value += checkpoint
@@ -1256,8 +1259,9 @@ class phenotypes():
         else:
             index = list(Input.samples.keys()) + ['p_val']
             self.ML_df = pd.DataFrame(self.kmers_for_ML, index=index)
-            self.ML_df.sort_values('p_val', axis=1, ascending=True, inplace=True)
-            self.ML_df = self.ML_df.iloc[:,:self.kmer_limit]
+            if self.kmer_limit:
+                self.ML_df.sort_values('p_val', axis=1, ascending=True, inplace=True)
+                self.ML_df = self.ML_df.iloc[:,:self.kmer_limit]
             self.ML_df.drop('p_val', inplace=True)
             self.ML_df['phenotype'] = [
                 sample.phenotypes[self.name] for sample in Input.samples.values()
