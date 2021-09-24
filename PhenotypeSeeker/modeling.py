@@ -900,7 +900,8 @@ class phenotypes():
         phenotype = self.name
         nr_of_kmers_tested = float(len(self.pvalues))
         self.get_pvalue_cutoff(self.pvalues, nr_of_kmers_tested)
-        pval_limit = float('{:.2e}'.format(self.pvalues[self.kmer_limit]))
+        if self.kmer_limit:
+            pval_limit = float('{:.2e}'.format(self.pvalues[self.kmer_limit]))
         # while self.pvalues[self.kmer_limit-counter] == reference:
         #     counter +=1
         # pvalues_for_ML_kmers = self.pvalues[:self.kmer_limit]
@@ -931,11 +932,14 @@ class phenotypes():
                         self.kmers_for_ML[kmer] = [
                             1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()
                             ] + [p_val]
+                elif self.kmer_limit and (p_val <= pval_limit):
+                    self.kmers_for_ML[kmer] = [
+                            1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()
+                            ] + [p_val]
                 else:
-                    if p_val <= pval_limit:
-                        self.kmers_for_ML[kmer] = [
-                                1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()
-                                ] + [p_val]
+                    self.kmers_for_ML[kmer] = [
+                            1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()
+                            ] + [p_val]                    
                 # pvalues_for_ML_kmers.remove(p_val)
             if counter%checkpoint == 0:
                 stderr_print.currentKmerNum.value += checkpoint
