@@ -119,8 +119,8 @@ def Main():
     	)
     kmer_selection_by_pval.add_argument(
         '--n_kmers', metavar='', type=int, default=1000, 
-        help='The maximum number of (lowest p-valued) k-mers selected for \
-        modelling (default = 1000).'
+        help="The maximum number of (lowest p-valued) k-mers selected for \
+        modelling (default = 1000). Set '0' for no limit"
         )
 
     regression_models.add_argument(
