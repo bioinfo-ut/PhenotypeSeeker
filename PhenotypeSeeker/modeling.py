@@ -901,7 +901,7 @@ class phenotypes():
         nr_of_kmers_tested = float(len(self.pvalues))
         self.get_pvalue_cutoff(self.pvalues, nr_of_kmers_tested)
         if self.kmer_limit:
-            pval_limit = float('{:.2e}'.format(self.pvalues[self.kmer_limit]))
+            pval_limit = float('{:.2e}'.format(self.pvalues[self.kmer_limit] - 1))
         # while self.pvalues[self.kmer_limit-counter] == reference:
         #     counter +=1
         # pvalues_for_ML_kmers = self.pvalues[:self.kmer_limit]
@@ -1261,7 +1261,8 @@ class phenotypes():
             index = list(Input.samples.keys()) + ['p_val']
             self.ML_df = pd.DataFrame(self.kmers_for_ML, index=index)
             self.ML_df.sort_values('p_val', axis=1, ascending=True, inplace=True)
-            self.ML_df = self.ML_df.iloc[:,:self.kmer_limit]
+            if self.kmer_limit:
+                self.ML_df = self.ML_df.iloc[:,:self.kmer_limit]
             self.ML_df.drop('p_val', inplace=True)
             self.ML_df['phenotype'] = [
                 sample.phenotypes[self.name] for sample in Input.samples.values()
