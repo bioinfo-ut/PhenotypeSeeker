@@ -900,7 +900,8 @@ class phenotypes():
         phenotype = self.name
         nr_of_kmers_tested = float(len(self.pvalues))
         self.get_pvalue_cutoff(self.pvalues, nr_of_kmers_tested)
-        pval_limit = float('{:.2e}'.format(self.pvalues[self.kmer_limit]))
+        if self.kmer_limit:
+            pval_limit = float('{:.2e}'.format(self.pvalues[self.kmer_limit]))
         # while self.pvalues[self.kmer_limit-counter] == reference:
         #     counter +=1
         # pvalues_for_ML_kmers = self.pvalues[:self.kmer_limit]
