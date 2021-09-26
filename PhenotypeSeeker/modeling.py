@@ -996,6 +996,7 @@ class phenotypes():
         self.set_hyperparameters()
         self.get_outputfile_names()
         self.get_ML_dataframe()
+        self.PCA_analysis()
         if phenotypes.n_splits_cv_outer:
             self.assert_n_splits_cv_outer(phenotypes.n_splits_cv_outer, self.ML_df)
             self.assert_n_splits_cv_inner(phenotypes.n_splits_cv_inner, self.ML_df)
@@ -1287,6 +1288,7 @@ class phenotypes():
             # self.ML_df = self.ML_df.T.drop_duplicates().T
             self.ML_df.to_csv(self.name + "_" + self.model_name_short + "_df.csv")
 
+    @timer
     def PCA_analysis(self):
         scaler = StandardScaler()
         self.PCA_df = scaler.fit(self.ML_df)
