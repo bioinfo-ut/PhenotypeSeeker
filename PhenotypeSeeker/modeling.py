@@ -1253,7 +1253,7 @@ class phenotypes():
     @timer
     def get_ML_dataframe(self):
         if Input.jump_to == "PCA":
-            return
+            pass
         elif Input.jump_to == "modelling":
             self.ML_df = pd.read_csv(
                 self.name + "_" + self.model_name_short + "_df.csv", index_col=0
