@@ -1293,6 +1293,7 @@ class phenotypes():
     @timer
     def PCA_analysis(self):
         if Input.jump_to == "PCA":
+            print('hakkab lugema')
             self.scaled_df = pd.read_csv(
                 self.name + "_" + self.model_name_short + "_scaled_df.csv", index_col=0
                 )
@@ -1309,7 +1310,7 @@ class phenotypes():
                 self.name + "_" + self.model_name_short + "_scaled_df.csv"
                 )
         from sklearn.decomposition import PCA
-        print('here')
+        print('loetud')
         pca=PCA()
         pca.fit(self.scaled_df)
         pca_df = pca.transform(self.scaled_df)
