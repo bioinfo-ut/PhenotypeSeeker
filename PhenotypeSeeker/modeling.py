@@ -1308,6 +1308,12 @@ class phenotypes():
             self.scaled_df.to_csv(
                 self.name + "_" + self.model_name_short + "_scaled_df.csv"
                 )
+        from sklearn.decomposition import PCA
+        pca=PCA()
+        pca.fit(self.scaled_df)
+        pca_df = pca.transform(self.scaled_df)
+        print(self.scaled_df.shape)
+        print(pca_df.shape)
 
     def fit_model(self):
         if self.scale == "continuous":
