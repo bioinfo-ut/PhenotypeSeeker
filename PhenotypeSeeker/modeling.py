@@ -30,6 +30,7 @@ from sklearn.tree import DecisionTreeClassifier, plot_tree
 from sklearn.linear_model import (Lasso, LogisticRegression, Ridge, ElasticNet,
     SGDClassifier)
 from sklearn.naive_bayes import BernoulliNB, GaussianNB
+from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 from sklearn.metrics import (
     classification_report, r2_score, mean_squared_error, recall_score,
@@ -569,6 +570,8 @@ class phenotypes():
         self.kmers_for_ML = {}
         self.skl_dataset = None
         self.ML_df = None
+        self.PCA_df = None
+        self.scaled_df = None
         self.ML_dict = dict()
         self.ML_df_train = None
         self.ML_df_test = None
@@ -1283,6 +1286,12 @@ class phenotypes():
             # self.summary_file.write("Dataset:\n%s\n\n" % self.skl_dataset) 
             # self.ML_df = self.ML_df.T.drop_duplicates().T
             self.ML_df.to_csv(self.name + "_" + self.model_name_short + "_df.csv")
+
+    def PCA_analysis(self):
+        scaler = StandardScaler()
+        self.PCA_df = scaler.fit(self.ML_df)
+        self.scaled_df=scaler.transform(self.ML_df)
+        self.scaled_df.to_csv(self.name + "_" + self.model_name_short + "_scaled_df.csv")
 
     def fit_model(self):
         if self.scale == "continuous":
