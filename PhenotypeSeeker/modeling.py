@@ -1294,7 +1294,7 @@ class phenotypes():
     def PCA_analysis(self):
         if Input.jump_to == "PCA":
             self.scaled_df = pd.read_csv(
-                self.name + "_" + self.model_name_short + "_df.csv", index_col=0
+                self.name + "_" + self.model_name_short + "_scaled_df.csv", index_col=0
                 )
             self.scaled_df.index = self.scaled_df.index.astype(str)
         else:
