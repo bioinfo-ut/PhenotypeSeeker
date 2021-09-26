@@ -1290,7 +1290,7 @@ class phenotypes():
 
     @timer
     def PCA_analysis(self):
-        df_to_scale = self.ML_df.drop(['p_val', 'phenotype'], axis=1)
+        df_to_scale = self.ML_df.drop(['weight', 'phenotype'], axis=1)
         scaler = StandardScaler()
         scaler.fit(df_to_scale)
         self.scaled_df = pd.DataFrame(
