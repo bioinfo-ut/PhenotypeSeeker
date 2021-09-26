@@ -1253,7 +1253,7 @@ class phenotypes():
     @timer
     def get_ML_dataframe(self):
         if Input.jump_to == "PCA":
-            pass
+            print('Siin')
         elif Input.jump_to == "modelling":
             self.ML_df = pd.read_csv(
                 self.name + "_" + self.model_name_short + "_df.csv", index_col=0
@@ -1309,6 +1309,7 @@ class phenotypes():
                 self.name + "_" + self.model_name_short + "_scaled_df.csv"
                 )
         from sklearn.decomposition import PCA
+        print('here')
         pca=PCA()
         pca.fit(self.scaled_df)
         pca_df = pca.transform(self.scaled_df)
