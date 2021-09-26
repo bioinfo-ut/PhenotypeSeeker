@@ -1290,10 +1290,16 @@ class phenotypes():
 
     @timer
     def PCA_analysis(self):
+        df_to_scale = self.ML_df.drop(['p_val', 'phenotype'], axis=1)
         scaler = StandardScaler()
-        self.PCA_df = scaler.fit(self.ML_df)
-        self.scaled_df=scaler.transform(self.ML_df)
-        self.scaled_df.to_csv(self.name + "_" + self.model_name_short + "_scaled_df.csv")
+        scaler.fit(df_to_scale)
+        self.scaled_df = pd.DataFrame(
+            scaler.transform(df_to_scale), index=df_to_scale.index, 
+            columns=df_to_scale.columns
+            )
+        self.scaled_df.to_csv(
+            self.name + "_" + self.model_name_short + "_scaled_df.csv"
+            )
 
     def fit_model(self):
         if self.scale == "continuous":
