@@ -124,6 +124,10 @@ def Main():
         )
 
     regression_models.add_argument(
+        "--PCA", action="store_true",
+        help="Apply PCA to k-mer features before fitting the model."
+        )
+    regression_models.add_argument(
     	"--alphas", metavar='FLOAT', type=float, nargs='+',
     	help="List of alphas (regularization strengths) where to compute the \
     	models. Must be positive floats. Higher values specify stronger \

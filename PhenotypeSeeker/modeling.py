@@ -997,7 +997,8 @@ class phenotypes():
         self.set_hyperparameters()
         self.get_outputfile_names()
         self.get_ML_dataframe()
-        self.PCA_analysis()
+        if PCA:
+            self.PCA_analysis()
         if phenotypes.n_splits_cv_outer:
             self.assert_n_splits_cv_outer(phenotypes.n_splits_cv_outer, self.ML_df)
             self.assert_n_splits_cv_inner(phenotypes.n_splits_cv_inner, self.ML_df)
@@ -1532,6 +1533,8 @@ class phenotypes():
                 kmer_coef = "NA"
             else:
                 kmer_coef = self.ML_df.loc['coefficient', kmer]
+            if PCA:
+                self.coeff_file.write(f"{kmer}\t{kmer_coef}")
             samples_with_kmer = \
                 self.ML_df.loc[self.ML_df[kmer] == 1].index.tolist()
             self.coeff_file.write("%s\t%s\t%s\t| %s\n" % (
