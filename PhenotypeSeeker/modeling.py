@@ -1269,9 +1269,11 @@ class phenotypes():
             self.ML_df['phenotype'] = [
                 sample.phenotypes[self.name] for sample in Input.samples.values()
                 ]
+            print([sample.weight for sample in Input.samples.values()])
             self.ML_df['weight'] = [
                 sample.weight for sample in Input.samples.values()
                 ]
+            print(self.ML_df['weight'])
             self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
             self.ML_df.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
 
