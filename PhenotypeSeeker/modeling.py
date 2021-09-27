@@ -606,6 +606,7 @@ class phenotypes():
     # Functions for calculating the association test results for kmers.
     @classmethod
     def kmer_testing_setup(cls):
+        print([sample.weight for sample in Input.samples.values()])
         if phenotypes.scale == "continuous":
             sys.stderr.write("\n\x1b[1;32mConducting the k-mer specific Welch t-tests:\x1b[0m\n")
             sys.stderr.flush()
@@ -814,6 +815,7 @@ class phenotypes():
         without_pheno_with_kmer = 0
         without_pheno_without_kmer = 0
         for index, sample in enumerate(samples):
+            print("weight is:" sample.weight)
             if sample.phenotypes[self.name] == 1:
                 if (kmers_presence_vector[index] != "0"):
                     with_pheno_with_kmer += sample.weight 
