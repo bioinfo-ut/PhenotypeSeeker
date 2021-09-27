@@ -1341,7 +1341,7 @@ class phenotypes():
             "Acutal_phenotype Predicted_phenotype\n")
         for index, row in dataset.iterrows():
                 self.summary_file.write('%s %s %s\n' % (
-                    index, labels.loc[index].values[0],
+                    index, labels.loc[index],
                     self.model_fitted.predict(row.values.reshape(1, -1))[0]
                     ))
         self.summary_file.write('\n')
