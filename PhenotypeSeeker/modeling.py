@@ -1292,30 +1292,22 @@ class phenotypes():
 
     @timer
     def PCA_analysis(self):
-        if Input.jump_to == "PCA":
-            print('hakkab lugema')
-            self.scaled_df = pd.read_csv(
-                self.name + "_" + self.model_name_short + "_scaled_df.csv", index_col=0
-                )
-            self.scaled_df.index = self.scaled_df.index.astype(str)
-        else:
-            df_to_scale = self.ML_df.drop(['weight', 'phenotype'], axis=1)
-            scaler = StandardScaler()
-            scaler.fit(df_to_scale)
-            self.scaled_df = pd.DataFrame(
-                scaler.transform(df_to_scale), index=df_to_scale.index, 
-                columns=df_to_scale.columns
-                )
-            self.scaled_df.to_csv(
-                self.name + "_" + self.model_name_short + "_scaled_df.csv"
-                )
+        df_to_scale = self.ML_df.drop(['weight', 'phenotype'], axis=1)
+        scaler = StandardScaler()
+        print('Start scaler fitting')
+        scaler.fit(df_to_scale)
+        print('Start scaling')
+        self.scaled_df = scaler.transform(df_to_scale)
         from sklearn.decomposition import PCA
-        print('loetud')
         pca=PCA()
+        print('Start pca fitting')
         pca.fit(self.scaled_df)
+        print('Start pca transformation')
         pca_df = pca.transform(self.scaled_df)
         print(self.scaled_df.shape)
         print(pca_df.shape)
+        print()
+        print('PCA')
 
     def fit_model(self):
         if self.scale == "continuous":
@@ -1799,7 +1791,7 @@ def modeling(args):
             lambda x:  x.get_kmers_filtered(), 
             Input.phenotypes_to_analyse.values()
             ))
-    if not Input.jump_to or ''.join(i for i, _ in groupby(Input.jump_to)) in ["modeling", "PCA"]:
+    if not Input.jump_to or ''.join(i for i, _ in groupby(Input.jump_to)) in ["modeling"]:
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
         sys.stderr.flush()
         Input.pool.map(
