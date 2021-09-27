@@ -1298,9 +1298,9 @@ class phenotypes():
         pca=PCA()
         self.PCA_df = pca.fit_transform(self.scaled_df)
         print(self.ML_df.shape)
-        print(pca_df.shape)
+        print(self.PCA_df.shape)
         print()
-        print(pca_df)
+        print(self.PCA_df)
 
         self.ML_df = pd.DataFrame(self.PCA_df).concat(self.ML_df['phenotype'])
         print(self.ML_df)
