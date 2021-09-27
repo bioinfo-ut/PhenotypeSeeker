@@ -998,6 +998,7 @@ class phenotypes():
         self.set_hyperparameters()
         self.get_outputfile_names()
         self.get_ML_dataframe()
+        pd.set_option('display.max_rows', 1002)
         print(self.ML_df.weight)
         if self.pca:
             self.PCA_analysis()
