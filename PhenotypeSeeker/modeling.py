@@ -1013,12 +1013,8 @@ class phenotypes():
                 self.ML_df_train, self.ML_df_test = (
                     self.ML_df.iloc[train_index], self.ML_df.iloc[test_index]
                     )
-                self.X_train, self.y_train, self.weights_train = self.split_df(
-                    self.ML_df_train
-                    )
-                self.X_test, self.y_test, self.weights_test = self.split_df(
-                    self.ML_df_test
-                    )
+                self.X_train, self.y_train = self.split_df(self.ML_df_train)
+                self.X_test, self.y_test = self.split_df(self.ML_df_test)
 
                 self.get_best_model()
                 self.fit_model()
@@ -1123,7 +1119,7 @@ class phenotypes():
 
     @classmethod
     def split_df(cls, df):
-        return df.iloc[:,0:-2], df.iloc[:,-2:-1], df.iloc[:,-1:]
+        return df.iloc[:,0:-1], df.iloc[:,-1]
 
     def set_model(self):
         if self.scale == "continuous":
