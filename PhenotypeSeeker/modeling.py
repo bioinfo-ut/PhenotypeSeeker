@@ -1513,25 +1513,25 @@ class phenotypes():
     def write_model_coefficients_to_file(self):
         self.coeff_file.write("K-mer\tcoef._in_" + self.model_name_short + \
             "_model\tNo._of_samples_with_k-mer\tSamples_with_k-mer\n")
-        df_for_coeffs = self.ML_df.iloc[:,0:-1]
+        self.ML_df.drop('phenotype', axis=1, inplace=True)
         if self.model_name_short == "linreg":
-            df_for_coeffs.loc['coefficient'] = \
+            dself.ML_df.loc['coefficient'] = \
                 self.model_fitted.best_estimator_.coef_
         elif self.model_name_short in ("RF", "DT"):
-            df_for_coeffs.loc['coefficient'] = \
+            self.ML_df.loc['coefficient'] = \
                 self.model_fitted.best_estimator_.feature_importances_
         elif self.model_name_short in ("XGBR", "XGBC"):
-            df_for_coeffs.loc['coefficient'] = \
+            self.ML_df.loc['coefficient'] = \
                 self.model_fitted.feature_importances_
         elif self.model_name_short in ("SVM", "log_reg"):
             if self.kernel != "rbf":
-                df_for_coeffs.loc['coefficient'] = \
+                self.ML_df.loc['coefficient'] = \
                     self.model_fitted.best_estimator_.coef_[0]
         for kmer in df_for_coeffs:
             if self.kernel == "rbf" or self.model_name_short == "NB":
                 kmer_coef = "NA"
             else:
-                kmer_coef = df_for_coeffs[kmer].loc['coefficient']
+                kmer_coef = df_for_coeffs.loc['coefficient', kmer]
             samples_with_kmer = \
                 df_for_coeffs.loc[df_for_coeffs[kmer] == 1].index.tolist()
             self.coeff_file.write("%s\t%s\t%s\t| %s\n" % (
