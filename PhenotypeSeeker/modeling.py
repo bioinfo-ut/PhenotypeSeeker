@@ -1065,7 +1065,7 @@ class phenotypes():
             self.X_train, self.y_train= self.split_df(self.ML_df_train)
             self.X_test, self.y_test = self.split_df(self.ML_df_test)
             self.assert_n_splits_cv_inner(
-                phenotypes.n_splits_cv_inner, self.ML_df, self.y_train.phenotype.values.tolist() 
+                phenotypes.n_splits_cv_inner, self.ML_df, self.y_train.values.tolist() 
                 )
             self.get_best_model()
             self.fit_model()
@@ -1086,9 +1086,8 @@ class phenotypes():
                 '\nThe final output model training on the whole dataset:\n'
                 )
             self.X_train, self.y_train = self.split_df(self.ML_df)
-            print(self.y_train)
             self.assert_n_splits_cv_inner(
-                phenotypes.n_splits_cv_inner, self.ML_df, self.y_train.phenotype.values.tolist() 
+                phenotypes.n_splits_cv_inner, self.ML_df, self.y_train.values.tolist() 
                 )
             self.get_best_model()
             self.fit_model()
