@@ -1513,7 +1513,7 @@ class phenotypes():
     def write_model_coefficients_to_file(self):
         self.coeff_file.write("K-mer\tcoef._in_" + self.model_name_short + \
             "_model\tNo._of_samples_with_k-mer\tSamples_with_k-mer\n")
-        df_for_coeffs = self.ML_df.iloc[:,0:-2]
+        df_for_coeffs = self.ML_df.iloc[:,0:-1]
         if self.model_name_short == "linreg":
             df_for_coeffs.loc['coefficient'] = \
                 self.model_fitted.best_estimator_.coef_
