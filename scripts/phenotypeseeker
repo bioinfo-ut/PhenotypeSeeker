@@ -124,7 +124,7 @@ def Main():
         )
 
     regression_models.add_argument(
-        "--PCA", action="store_true",
+        "--pca", action="store_true",
         help="Apply PCA to k-mer features before fitting the model."
         )
     regression_models.add_argument(

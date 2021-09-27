@@ -146,7 +146,7 @@ class Input():
             FDR, B, binary_classifier, regressor, penalty, max_iter,
             tol, l1_ratio, n_splits_cv_outer, kernel, n_iter,
             n_splits_cv_inner, testset_size, train_on_whole,
-            logreg_solver, jump_to
+            logreg_solver, jump_to, pca
             ):
         phenotypes.alphas = cls._get_alphas(
             alphas, alpha_min, alpha_max, n_alphas
@@ -178,6 +178,7 @@ class Input():
         phenotypes.n_splits_cv_inner = n_splits_cv_inner
         phenotypes.logreg_solver = cls.get_logreg_solver(
             logreg_solver)
+        phenotypes.pca = pca
 
     @staticmethod
     def get_model_name(regressor, binary_classifier):
@@ -997,8 +998,8 @@ class phenotypes():
         self.set_hyperparameters()
         self.get_outputfile_names()
         self.get_ML_dataframe()
-        print(PCA)
-        if PCA:
+        print(self.pca)
+        if self.pca:
             self.PCA_analysis()
         if phenotypes.n_splits_cv_outer:
             self.assert_n_splits_cv_outer(phenotypes.n_splits_cv_outer, self.ML_df)
@@ -1731,7 +1732,8 @@ def modeling(args):
         args.Bonferroni, args.binary_classifier, args.regressor, 
         args.penalty, args.max_iter, args.tolerance, args.l1_ratio,
         args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner,
-        args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to
+        args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to,
+        args.pca
         )
     Input._get_multithreading_parameters()
 
