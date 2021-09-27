@@ -24,6 +24,7 @@ from collections import OrderedDict
 from ete3 import Tree
 from multiprocess import Manager, Pool, Value
 from scipy import stats
+from sklearn.decomposition import PCA
 from sklearn.externals import joblib
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier, plot_tree
@@ -1271,9 +1272,6 @@ class phenotypes():
             self.ML_df['phenotype'] = [
                 sample.phenotypes[self.name] for sample in Input.samples.values()
                 ]
-            self.ML_df['weight'] = [
-                sample.weight for sample in Input.samples.values()
-                ]
             self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
             self.ML_df.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
 
@@ -1290,22 +1288,22 @@ class phenotypes():
 
     @timer
     def PCA_analysis(self):
-        df_to_scale = self.ML_df.drop(['weight', 'phenotype'], axis=1)
+
+        # Strandardization
         scaler = StandardScaler()
-        print('Start scaler fitting')
-        scaler.fit(df_to_scale)
-        print('Start scaling')
-        self.scaled_df = scaler.transform(df_to_scale)
-        from sklearn.decomposition import PCA
+        df_to_scale = self.ML_df.drop(['phenotype'], axis=1)
+        self.scaled_df = scaler.fit_transform(df_to_scale)
+
+        # PCA transformation
         pca=PCA()
-        print('Start pca fitting')
-        pca.fit(self.scaled_df)
-        print('Start PCA transformation')
-        pca_df = pca.transform(self.scaled_df)
-        print(self.scaled_df.shape)
+        self.PCA_df = pca.fit_transform(self.scaled_df)
+        print(self.ML_df.shape)
         print(pca_df.shape)
         print()
         print(pca_df)
+
+        self.ML_df = pd.DataFrame(self.PCA_df).concat(self.ML_df['phenotype'])
+        print(self.ML_df)
 
     def fit_model(self):
         if self.scale == "continuous":
