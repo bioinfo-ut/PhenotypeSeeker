@@ -1252,9 +1252,7 @@ class phenotypes():
 
     @timer
     def get_ML_dataframe(self):
-        if Input.jump_to == "PCA":
-            print('Siin')
-        elif Input.jump_to == "modelling":
+        if Input.jump_to == "modelling":
             self.ML_df = pd.read_csv(
                 self.name + "_" + self.model_name_short + "_df.csv", index_col=0
                 )
@@ -1302,12 +1300,12 @@ class phenotypes():
         pca=PCA()
         print('Start pca fitting')
         pca.fit(self.scaled_df)
-        print('Start pca transformation')
+        print('Start PCA transformation')
         pca_df = pca.transform(self.scaled_df)
         print(self.scaled_df.shape)
         print(pca_df.shape)
         print()
-        print('PCA')
+        print(pca_df)
 
     def fit_model(self):
         if self.scale == "continuous":
