@@ -997,6 +997,7 @@ class phenotypes():
         self.set_hyperparameters()
         self.get_outputfile_names()
         self.get_ML_dataframe()
+        print(PCA)
         if PCA:
             self.PCA_analysis()
         if phenotypes.n_splits_cv_outer:
