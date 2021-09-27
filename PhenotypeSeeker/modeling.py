@@ -1527,7 +1527,7 @@ class phenotypes():
             if self.kernel != "rbf":
                 self.ML_df.loc['coefficient'] = \
                     self.model_fitted.best_estimator_.coef_[0]
-        for kmer in df_for_coeffs:
+        for kmer in self.ML_df:
             if self.kernel == "rbf" or self.model_name_short == "NB":
                 kmer_coef = "NA"
             else:
