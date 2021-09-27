@@ -634,7 +634,7 @@ class phenotypes():
                 )
 
     def test_kmers_association_with_phenotype(self):
-        print([sample.weight for sample in Input.samples.values])
+        print([sample.weight for sample in Input.samples.values()])
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
         pvalues_from_all_threads = Input.pool.map(
