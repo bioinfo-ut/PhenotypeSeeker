@@ -769,6 +769,7 @@ class phenotypes():
         samples
         ):
         samples_w_kmer = []
+        print([sample.weight for sample in samples])
         (
         w_pheno_w_kmer, w_pheno_wo_kmer, wo_pheno_w_kmer, wo_pheno_wo_kmer,
         no_samples_wo_kmer
