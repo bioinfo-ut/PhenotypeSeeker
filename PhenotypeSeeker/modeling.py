@@ -465,6 +465,7 @@ class Samples():
             weights[leaf.name] = leaf.NodeWeight
         if normalize == "mean1":
             weights = {k: v*len(weights) for k, v in weights.items()}
+        print(weights)
         return(weights)
 
     @staticmethod
