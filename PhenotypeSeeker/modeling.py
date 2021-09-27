@@ -673,6 +673,7 @@ class phenotypes():
             kmer_presence_vector = [j.split()[1].strip() for j in line]
 
             if phenotypes.scale == "binary":
+                print([sample.weight for sample in Input.samples.values()])
                 pvalue = self.conduct_chi_squared_test(
                     kmer, kmer_presence_vector,
                     test_results_file, Input.samples.values()
