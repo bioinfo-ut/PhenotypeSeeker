@@ -815,7 +815,7 @@ class phenotypes():
         without_pheno_with_kmer = 0
         without_pheno_without_kmer = 0
         for index, sample in enumerate(samples):
-            print("weight is:" sample.weight)
+            print("weight is: " + sample.weight)
             if sample.phenotypes[self.name] == 1:
                 if (kmers_presence_vector[index] != "0"):
                     with_pheno_with_kmer += sample.weight 
@@ -950,6 +950,7 @@ class phenotypes():
                 stderr_print.check_progress(
                     nr_of_kmers_tested, "k-mers filtered.", self.name + ": "
                 )
+        print(len(self.kmers_for_ML))
         stderr_print.currentKmerNum.value += counter%checkpoint
         stderr_print.check_progress(
             nr_of_kmers_tested, "k-mers filtered.", self.name + ": "
