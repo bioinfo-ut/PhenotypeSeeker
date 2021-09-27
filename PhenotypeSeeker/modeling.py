@@ -815,7 +815,7 @@ class phenotypes():
         without_pheno_with_kmer = 0
         without_pheno_without_kmer = 0
         for index, sample in enumerate(samples):
-            print("weight is: " + sample.weight)
+            print("weight is: " + str(sample.weight))
             if sample.phenotypes[self.name] == 1:
                 if (kmers_presence_vector[index] != "0"):
                     with_pheno_with_kmer += sample.weight 
@@ -1264,6 +1264,8 @@ class phenotypes():
             return
         else:
             index = list(Input.samples.keys()) + ['p_val']
+            print(self.kmers_for_ML)
+            print(len(self.kmers_for_ML))
             self.ML_df = pd.DataFrame(self.kmers_for_ML, index=index)
             if self.kmer_limit:
                 self.ML_df.sort_values('p_val', axis=1, ascending=True, inplace=True)
