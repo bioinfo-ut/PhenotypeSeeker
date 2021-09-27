@@ -1062,13 +1062,8 @@ class phenotypes():
             self.ML_df, test_size=self.testset_size, random_state=55,
             stratify=stratify
             )
-            self.X_train, self.y_train, self.weights_train = self.split_df(
-                self.ML_df_train
-                )
-            self.X_test, self.y_test, self.weights_test = self.split_df(
-                self.ML_df_test
-                )
-
+            self.X_train, self.y_train= self.split_df(self.ML_df_train)
+            self.X_test, self.y_test = self.split_df(self.ML_df_test)
             self.assert_n_splits_cv_inner(
                 phenotypes.n_splits_cv_inner, self.ML_df, self.y_train.phenotype.values.tolist() 
                 )
@@ -1090,7 +1085,7 @@ class phenotypes():
                 self.summary_file.write(
                 '\nThe final output model training on the whole dataset:\n'
                 )
-            self.X_train, self.y_train, self.weights_train = self.split_df(self.ML_df)
+            self.X_train, self.y_train= self.split_df(self.ML_df)
             self.assert_n_splits_cv_inner(
                 phenotypes.n_splits_cv_inner, self.ML_df, self.y_train.phenotype.values.tolist() 
                 )
