@@ -1754,7 +1754,7 @@ def modeling(args):
                 lambda x: x.get_mash_sketches(), Input.samples.values()
                 )
             Samples.get_weights()
-
+        print([sample.weight for sample in Input.samples.values])
         # Analyses of phenotypes
         phenotypes.kmer_testing_setup()
         list(map(
