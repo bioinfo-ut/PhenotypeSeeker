@@ -1531,9 +1531,9 @@ class phenotypes():
             if self.kernel == "rbf" or self.model_name_short == "NB":
                 kmer_coef = "NA"
             else:
-                kmer_coef = df_for_coeffs.loc['coefficient', kmer]
+                kmer_coef = self.ML_df.loc['coefficient', kmer]
             samples_with_kmer = \
-                df_for_coeffs.loc[df_for_coeffs[kmer] == 1].index.tolist()
+                self.ML_df.loc[self.ML_df[kmer] == 1].index.tolist()
             self.coeff_file.write("%s\t%s\t%s\t| %s\n" % (
                 kmer, kmer_coef,
                 len(samples_with_kmer), " ".join(samples_with_kmer)
