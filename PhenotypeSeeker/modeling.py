@@ -1301,8 +1301,7 @@ class phenotypes():
         print(self.PCA_df.shape)
         print()
         print(self.PCA_df)
-
-        self.ML_df = pd.DataFrame(self.PCA_df).concat(self.ML_df['phenotype'])
+        self.ML_df = pd.DataFrame(self.PCA_df, index=self.ML_df.index).join(self.ML_df['phenotype'])
         print(self.ML_df)
 
     def fit_model(self):
