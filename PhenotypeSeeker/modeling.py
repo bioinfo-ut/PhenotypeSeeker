@@ -283,11 +283,10 @@ class Samples():
     mash_distances_args = []
     union_output = Manager().list()
 
-    def __init__(self, name, address, phenotypes, weight=1):
+    def __init__(self, name, address, phenotypes):
         self.name = name
         self.address = address
         self.phenotypes = phenotypes
-        self.weight = weight
     
 
         Samples.no_samples += 1
@@ -639,8 +638,8 @@ class phenotypes():
         print("beginnign" + " ".join([str(sample.weight) for sample in Input.samples.values()]))
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
-        pvalues_from_all_threads = Input.pool.map(partial(
-                self.get_kmers_tested, json.loads(json.dumps(Input.samples))),
+        pvalues_from_all_threads = Input.pool.map(
+                self.get_kmers_tested,
                 zip(*self.vectors_as_multiple_input)
             )
         self.pvalues = \
@@ -679,12 +678,12 @@ class phenotypes():
                 print([sample.weight for sample in Input.samples.values()])
                 pvalue = self.conduct_chi_squared_test(
                     kmer, kmer_presence_vector,
-                    test_results_file, samples_data
+                    test_results_file, Input.samples.values()
                     )
             elif phenotypes.scale == "continuous":
                 pvalue = self.conduct_t_test(
                     kmer, kmer_presence_vector,
-                    test_results_file, samples_data
+                    test_results_file, Input.samples.values()
                     )
             if pvalue:
                 pvalues.append(pvalue)
