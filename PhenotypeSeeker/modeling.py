@@ -465,7 +465,6 @@ class Samples():
             weights[leaf.name] = leaf.NodeWeight
         if normalize == "mean1":
             weights = {k: v*len(weights) for k, v in weights.items()}
-        print(weights)
         return(weights)
 
     @staticmethod
@@ -999,8 +998,6 @@ class phenotypes():
         self.set_hyperparameters()
         self.get_outputfile_names()
         self.get_ML_dataframe()
-        pd.set_option('display.max_rows', 1002)
-        print(self.ML_df.weight)
         if self.pca:
             self.PCA_analysis()
         if phenotypes.n_splits_cv_outer:
