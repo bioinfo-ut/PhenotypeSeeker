@@ -283,10 +283,11 @@ class Samples():
     mash_distances_args = []
     union_output = Manager().list()
 
-    def __init__(self, name, address, phenotypes):
+    def __init__(self, name, address, phenotypes, weight=1):
         self.name = name
         self.address = address
         self.phenotypes = phenotypes
+        self.weight = weight
     
 
         Samples.no_samples += 1
@@ -636,6 +637,7 @@ class phenotypes():
 
     def test_kmers_association_with_phenotype(self):
         print("beginnign" + " ".join([str(sample.weight) for sample in Input.samples.values()]))
+        print(os.getpid(Input.samples.values()))
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
         pvalues_from_all_threads = Input.pool.map(
@@ -648,8 +650,9 @@ class phenotypes():
         sys.stderr.flush()
         self.concatenate_test_files(self.name)
 
-    def get_kmers_tested(self, split_of_kmer_lists):
+    def get_kmers_tested(self, split_of_kmer_lists, samples_data):
         print("afterTest" + " ".join([str(sample.weight) for sample in Input.samples.values()]))
+        print(os.getpid(Input.samples.values()))
         pvalues = []
         counter = 0
 
