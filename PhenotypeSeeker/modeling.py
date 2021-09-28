@@ -1779,9 +1779,6 @@ def modeling(args):
                 )
             Samples.get_weights()
 
-        # Update pool
-        Input._get_multithreading_parameters()
-
         # Analyses of phenotypes
         phenotypes.kmer_testing_setup()
         list(map(
