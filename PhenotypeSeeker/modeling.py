@@ -1711,11 +1711,6 @@ class phenotypes():
         f1 = open("assembled_kmers_" + self.name + ".fasta", "w+")
         sys.stderr.write("\x1b[1;32m\t" + self.name + " data.\x1b[0m\n")
         sys.stderr.flush()
-
-        if len(self.kmers_for_ML) == 0:
-            f1.write("No k-mers passed the step of k-mer selection for \
-                assembling.\n")
-            return
         
         assembled_kmers = sorted(
             self.kmer_assembler(), key = len
@@ -1809,7 +1804,7 @@ def modeling(args):
 
     call(['rm', '-rf', 'K-mer_lists'])
 
-    if not args.no_assembly:
+    if args.assembly:
         sys.stderr.write("\x1b[1;32mAssembling the k-mers used in modeling of: \x1b[0m\n")
         sys.stderr.flush()
         with Pool(Input.num_threads) as p:
