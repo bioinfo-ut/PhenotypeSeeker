@@ -638,7 +638,7 @@ class phenotypes():
         print("beginnign" + " ".join([str(sample.weight) for sample in Input.samples.values()]))
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
-        pvalues_from_all_threads = multiprocess.get_context('fork').Input.pool.map(
+        pvalues_from_all_threads = multiprocess.get_context('fork').Pool().map(
                 self.get_kmers_tested,
                 zip(*self.vectors_as_multiple_input)
             )
@@ -1784,7 +1784,7 @@ def modeling(args):
     if not Input.jump_to or ''.join(i for i, _ in groupby(Input.jump_to)) == "modeling":
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
         sys.stderr.flush()
-        Input.pool.map(
+        multiprocess.get_context('fork').Pool(Input.num_threads).map(
             lambda x: x.machine_learning_modelling(),
             Input.phenotypes_to_analyse.values()
             )
