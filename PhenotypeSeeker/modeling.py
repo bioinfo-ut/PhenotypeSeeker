@@ -50,6 +50,7 @@ import Bio
 import numpy as np
 import pandas as pd
 import multiprocess
+multiprocess.set_start_method('fork')
 
 import time
 def timer(f):
@@ -1728,7 +1729,6 @@ def modeling(args):
         args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner,
         args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to
         )
-    multiprocess.set_start_method('fork')
     Input._get_multithreading_parameters()
 
     if not Input.jump_to:
