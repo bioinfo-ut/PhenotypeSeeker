@@ -24,6 +24,7 @@ from collections import OrderedDict
 from ete3 import Tree
 import multiprocess
 from multiprocess import Manager, Pool, Value
+multiprocess.set_start_method('fork')
 from scipy import stats
 from sklearn.externals import joblib
 from sklearn.ensemble import RandomForestClassifier
@@ -1715,7 +1716,6 @@ class phenotypes():
 
 def modeling(args):
 
-    multiprocess.set_start_method('fork')
     # The main function of "phenotypeseeker modeling"
 
     sys.stderr.write("\x1b[1;1;101m######                   PhenotypeSeeker                   ######\x1b[0m\n")
