@@ -1306,6 +1306,7 @@ class phenotypes():
         print(self.PCA_df)
         self.ML_df = pd.DataFrame(self.PCA_df, index=self.ML_df.index).join(self.ML_df['phenotype'])
         print(self.ML_df)
+        print(self.PCA_df.components_)
 
     def fit_model(self):
         if self.scale == "continuous":
@@ -1553,7 +1554,7 @@ class phenotypes():
                 samples_with_kmer = \
                     self.ML_df.loc[self.ML_df[kmer] == 1].index.tolist()
                 self.coeff_file.write(
-                    f"{kmer}\t{kmer_coef}\t{len(samples_with_kmer)}\t| {' '.join(samples_with_kmer)}\n"
+                    f"{PC}\t{kmer_coef}\t{len(samples_with_kmer)}\t| {' '.join(samples_with_kmer)}\n"
                     )
 
     def visualize_model(self):

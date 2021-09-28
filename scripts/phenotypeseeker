@@ -262,8 +262,8 @@ def Main():
     	linear/logistic regression model.'
     	)
     other.add_argument(
-        "-na", "--no_assembly", action='store_true',
-        help='Do not assemble the k-mers used in regression model.'
+        "-a", "--assembly", action='store_true',
+        help='Assemble the k-mers used in regression model.'
         )
     other.add_argument(
         "--take_logs", action='store_true',
