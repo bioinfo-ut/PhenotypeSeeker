@@ -1710,7 +1710,7 @@ class phenotypes():
         f1.close()
 
 def modeling(args):
-    Input._get_multithreading_parameters()
+    
     # The main function of "phenotypeseeker modeling"
 
     sys.stderr.write("\x1b[1;1;101m######                   PhenotypeSeeker                   ######\x1b[0m\n")
@@ -1728,7 +1728,7 @@ def modeling(args):
         args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner,
         args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to
         )
-    
+    Input._get_multithreading_parameters()
 
     if not Input.jump_to:
         #  Operations with samples
