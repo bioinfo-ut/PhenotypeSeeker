@@ -134,7 +134,7 @@ class Input():
 
     @classmethod
     def pop_phenos_out_of_kmers(cls):
-        [(lambda x: Input.phenotypes_to_analyse.pop(x))(pt) for pt in phenotypes.no_results]
+        [Input.phenotypes_to_analyse.pop(pt) for pt in phenotypes.no_results]
         if len(Input.phenotypes_to_analyse) == 0:
             sys.stderr.write("\x1b[1;33mThere are no k-mers left for modelling for any phenotype.\x1b[0m\n")
             sys.stderr.write("\x1b[1;33mExiting PhenotypeSeeker\x1b[0m\n")
