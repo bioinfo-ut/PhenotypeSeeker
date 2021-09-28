@@ -1747,6 +1747,7 @@ def modeling(args):
         p.map(
             lambda x: x.map_samples(), Input.samples.values()
             )
+        p = multiprocess.get_context('fork').Pool(Input.num_threads)
         if not args.no_weights:
             mash_files = ["distances.mat", "reference.msh", "mash_distances.mat"]
             for mash_file in mash_files:
@@ -1759,7 +1760,6 @@ def modeling(args):
                 lambda x: x.get_mash_sketches(), Input.samples.values()
                 )
             Samples.get_weights()
-        p = multiprocess.get_context('fork').Pool(Input.num_threads)
         # Analyses of phenotypes
         phenotypes.kmer_testing_setup()
         list(map(
