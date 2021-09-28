@@ -1710,12 +1710,12 @@ class phenotypes():
         f1.close()
 
 def modeling(args):
-    
+
     # The main function of "phenotypeseeker modeling"
 
     sys.stderr.write("\x1b[1;1;101m######                   PhenotypeSeeker                   ######\x1b[0m\n")
     sys.stderr.write("\x1b[1;1;101m######                      modeling                       ######\x1b[0m\n\n")
-    Input._get_multithreading_parameters()
+
     # Processing the input data
     Input.get_input_data(args.inputfile, args.take_logs, args.mpheno)
     Input.Input_args(
@@ -1728,14 +1728,15 @@ def modeling(args):
         args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner,
         args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to
         )
-    
+    p = Pool()
+    Input._get_multithreading_parameters()
 
     if not Input.jump_to:
         #  Operations with samples
         sys.stderr.write("\x1b[1;32mGenerating the k-mer lists for input samples:\x1b[0m\n")
         sys.stderr.flush()
 
-        Input.pool.map(
+        p.map(
             lambda x: x.get_kmer_lists(), Input.samples.values()
             )
 
