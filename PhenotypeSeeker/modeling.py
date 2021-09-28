@@ -1728,12 +1728,12 @@ def modeling(args):
         args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to
         )
     Input._get_multithreading_parameters()
-    p = Pool(Input.num_threads)
+
     if not Input.jump_to:
         #  Operations with samples
         sys.stderr.write("\x1b[1;32mGenerating the k-mer lists for input samples:\x1b[0m\n")
         sys.stderr.flush()
-
+        p = Pool(Input.num_threads)
         p.map(
             lambda x: x.get_kmer_lists(), Input.samples.values()
             )
@@ -1744,7 +1744,7 @@ def modeling(args):
         sys.stderr.write("\x1b[1;32mMapping samples to the feature vector space:\x1b[0m\n")
         sys.stderr.flush()
         stderr_print.currentSampleNum.value = 0
-        Input.pool.map(
+        p.map(
             lambda x: x.map_samples(), Input.samples.values()
             )
         if not args.no_weights:
