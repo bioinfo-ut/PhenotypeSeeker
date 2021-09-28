@@ -1735,7 +1735,7 @@ def modeling(args):
         sys.stderr.write("\x1b[1;32mGenerating the k-mer lists for input samples:\x1b[0m\n")
         sys.stderr.flush()
 
-        pool.map(
+        Input.pool.map(
             lambda x: x.get_kmer_lists(), Input.samples.values()
             )
 
