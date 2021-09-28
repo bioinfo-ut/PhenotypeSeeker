@@ -348,7 +348,7 @@ class Samples():
         return cls(name, address, sample_phenotypes)
 
     @classmethod
-    def get_feature_vector(cls):
+    def get_feature_vector(cls, p):
         # Feature vector loop
         iterate_to_union = [[x] for x in list(Input.samples.values())]
         for i in range(math.log(cls.no_samples, 2).__trunc__()):
@@ -356,7 +356,7 @@ class Samples():
             iterate_to_union = [
                 iterate_to_union[j: j + 4 if len(iterate_to_union) < j + 4 else j + 2] for j in range(0, len(iterate_to_union), 2) if j + 2 <= len(iterate_to_union)
                 ]
-            Input.pool.map(partial(cls.get_union, round=i), iterate_to_union)
+            p.map(partial(cls.get_union, round=i), iterate_to_union)
         call(["mv %s K-mer_lists/feature_vector.list" % cls.union_output[-1]], shell=True)
         [(lambda x: call(["rm -f {}".format(x)], shell=True))(union) for union in cls.union_output[:-1]]
 
@@ -1725,8 +1725,8 @@ def modeling(args):
         args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner,
         args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to
         )
-    p = Pool(Input.num_threads)
     Input._get_multithreading_parameters()
+    p = Pool(Input.num_threads)
     
     if not Input.jump_to:
         #  Operations with samples
@@ -1739,7 +1739,7 @@ def modeling(args):
 
         sys.stderr.write("\n\x1b[1;32mGenerating the k-mer feature vector.\x1b[0m\n")
         sys.stderr.flush()
-        Samples.get_feature_vector()
+        Samples.get_feature_vector(p)
         sys.stderr.write("\x1b[1;32mMapping samples to the feature vector space:\x1b[0m\n")
         sys.stderr.flush()
         stderr_print.currentSampleNum.value = 0
@@ -1754,7 +1754,7 @@ def modeling(args):
                     sys.stderr.write("\n\x1b[1;32mDeleting the existing " + mash_file + " file...\x1b[0m")
             sys.stderr.write("\n\x1b[1;32mEstimating the Mash distances between samples...\x1b[0m\n")
             sys.stderr.flush()
-            Input.pool.map(
+            p.map(
                 lambda x: x.get_mash_sketches(), Input.samples.values()
                 )
             Samples.get_weights()
@@ -1776,7 +1776,8 @@ def modeling(args):
     if not Input.jump_to or ''.join(i for i, _ in groupby(Input.jump_to)) == "modeling":
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
         sys.stderr.flush()
-        multiprocess.get_context('fork').Pool(Input.num_threads).map(
+        # multiprocess.get_context('fork').Pool(Input.num_threads).map(
+        p.map(
             lambda x: x.machine_learning_modelling(),
             Input.phenotypes_to_analyse.values()
             )
@@ -1786,7 +1787,7 @@ def modeling(args):
     if not args.no_assembly:
         sys.stderr.write("\x1b[1;32mAssembling the k-mers used in modeling of: \x1b[0m\n")
         sys.stderr.flush()
-        Input.pool.map(
+        p.map(
             lambda x: x.assembling(),
             Input.phenotypes_to_analyse.values()
             )
