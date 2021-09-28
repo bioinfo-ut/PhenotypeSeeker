@@ -389,10 +389,8 @@ class Samples():
         cls._phyloxml_to_newick("tree_xml.txt")
         stderr_print("\x1b[1;32mCalculating the GSC weights from mash distance matrix...\x1b[0m")
         weights = cls.GSC_weights_from_newick("tree_newick.txt", normalize="mean1")
-        print(weights)
         for key, value in weights.items():
             Input.samples[key].weight = value
-        print([sample.weight for sample in Input.samples.values()])
 
     @classmethod
     def get_mash_distances(cls):
@@ -607,7 +605,6 @@ class phenotypes():
     # Functions for calculating the association test results for kmers.
     @classmethod
     def kmer_testing_setup(cls):
-        print([sample.weight for sample in Input.samples.values()])
         if phenotypes.scale == "continuous":
             sys.stderr.write("\n\x1b[1;32mConducting the k-mer specific Welch t-tests:\x1b[0m\n")
             sys.stderr.flush()
@@ -635,7 +632,6 @@ class phenotypes():
                 )
 
     def test_kmers_association_with_phenotype(self):
-        print("beginnign" + " ".join([str(sample.weight) for sample in Input.samples.values()]))
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
         pvalues_from_all_threads = multiprocess.get_context('fork').Pool().map(
@@ -649,7 +645,6 @@ class phenotypes():
         self.concatenate_test_files(self.name)
 
     def get_kmers_tested(self, split_of_kmer_lists):
-        print("afterTest" + " ".join([str(sample.weight) for sample in Input.samples.values()]))
         pvalues = []
         counter = 0
 
@@ -675,7 +670,6 @@ class phenotypes():
             kmer_presence_vector = [j.split()[1].strip() for j in line]
 
             if phenotypes.scale == "binary":
-                print([sample.weight for sample in Input.samples.values()])
                 pvalue = self.conduct_chi_squared_test(
                     kmer, kmer_presence_vector,
                     test_results_file, Input.samples.values()
@@ -772,7 +766,6 @@ class phenotypes():
         samples
         ):
         samples_w_kmer = []
-        print([sample.weight for sample in samples])
         (
         w_pheno_w_kmer, w_pheno_wo_kmer, wo_pheno_w_kmer, wo_pheno_wo_kmer,
         no_samples_wo_kmer
@@ -1764,7 +1757,6 @@ def modeling(args):
                 lambda x: x.get_mash_sketches(), Input.samples.values()
                 )
             Samples.get_weights()
-        print([sample.weight for sample in Input.samples.values()])
         # Analyses of phenotypes
         phenotypes.kmer_testing_setup()
         list(map(
