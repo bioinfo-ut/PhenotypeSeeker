@@ -24,7 +24,6 @@ from collections import OrderedDict
 from ete3 import Tree
 import multiprocess
 from multiprocess import Manager, Pool, Value
-multiprocess.set_start_method('fork')
 from scipy import stats
 from sklearn.externals import joblib
 from sklearn.ensemble import RandomForestClassifier
@@ -113,7 +112,7 @@ class Input():
     @classmethod
     def _get_multithreading_parameters(cls):
         cls.lock = Manager().Lock()
-        cls.pool = Pool(Input.num_threads)
+        cls.pool = multiprocessing.get_context('fork').Pool(Input.num_threads)
 
     @classmethod
     def _set_phenotype_values(cls, take_logs):
