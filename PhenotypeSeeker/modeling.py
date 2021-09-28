@@ -1726,8 +1726,8 @@ def modeling(args):
         args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner,
         args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to
         )
-    pool = Pool(Input.num_threads)
     Input._get_multithreading_parameters()
+    pool = Pool(Input.num_threads)
 
 
     if not Input.jump_to:
