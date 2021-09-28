@@ -22,7 +22,7 @@ pkg_resources.require(
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor, _DistanceMatrix
 from collections import OrderedDict
 from ete3 import Tree
-from multiprocess import Manager, Pool, Value
+from multiprocess import Manager, Value
 from scipy import stats
 from sklearn.externals import joblib
 from sklearn.ensemble import RandomForestClassifier
@@ -629,10 +629,10 @@ class phenotypes():
                 ]
                 )
 
-    def test_kmers_association_with_phenotype(self):
+    def test_kmers_association_with_phenotype(self, p):
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
-        pvalues_from_all_threads = multiprocess.get_context('fork').Pool().map(
+        pvalues_from_all_threads = p.map(
                 self.get_kmers_tested,
                 zip(*self.vectors_as_multiple_input)
             )
@@ -810,6 +810,7 @@ class phenotypes():
         with_pheno_without_kmer = 0
         without_pheno_with_kmer = 0
         without_pheno_without_kmer = 0
+        print([sample.weight for sample in Input.samples.values()])
         for index, sample in enumerate(samples):
             if sample.phenotypes[self.name] == 1:
                 if (kmers_presence_vector[index] != "0"):
@@ -1758,10 +1759,11 @@ def modeling(args):
                 lambda x: x.get_mash_sketches(), Input.samples.values()
                 )
             Samples.get_weights()
+        p = multiprocess.get_context('fork').Pool(Input.num_threads)
         # Analyses of phenotypes
         phenotypes.kmer_testing_setup()
         list(map(
-            lambda x:  x.test_kmers_association_with_phenotype(), 
+            lambda x:  x.test_kmers_association_with_phenotype(p), 
             Input.phenotypes_to_analyse.values()
             ))
 
