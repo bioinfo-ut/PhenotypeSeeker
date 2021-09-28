@@ -939,7 +939,7 @@ class phenotypes():
                     self.kmers_for_ML[kmer] = [
                             1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()
                             ] + [p_val]
-                else:
+                elif not self.kmer_limit:
                     self.kmers_for_ML[kmer] = [
                             1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()
                             ] + [p_val]
