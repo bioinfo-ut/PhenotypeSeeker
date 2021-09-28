@@ -112,7 +112,7 @@ class Input():
     @classmethod
     def _get_multithreading_parameters(cls):
         cls.lock = Manager().Lock()
-        cls.pool = Pool(self.num_threads)
+        cls.pool = Pool(cls.num_threads)
 
     @classmethod
     def _set_phenotype_values(cls, take_logs):
