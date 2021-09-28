@@ -1298,7 +1298,7 @@ class phenotypes():
         self.scaled_df = scaler.fit_transform(df_to_scale)
 
         # PCA transformation
-        pca=PCA()
+        pca = PCA()
         self.PCA_df = pca.fit_transform(self.scaled_df)
         print(self.ML_df.shape)
         print(self.PCA_df.shape)
@@ -1306,7 +1306,7 @@ class phenotypes():
         print(self.PCA_df)
         self.ML_df = pd.DataFrame(self.PCA_df, index=self.ML_df.index).join(self.ML_df['phenotype'])
         print(self.ML_df)
-        print(self.pca.components_)
+        print(pca.components_)
 
     def fit_model(self):
         if self.scale == "continuous":
