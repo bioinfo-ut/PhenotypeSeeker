@@ -1711,7 +1711,8 @@ def modeling(args):
     sys.stderr.write("\x1b[1;1;101m######                   PhenotypeSeeker                   ######\x1b[0m\n")
     sys.stderr.write("\x1b[1;1;101m######                      modeling                       ######\x1b[0m\n\n")
 
-    pool = multiprocess.get_context('fork').Pool(Input.num_threads)
+    #pool = multiprocess.get_context('fork').Pool(Input.num_threads)
+    pool = Pool(Input.num_threads)
 
     # Processing the input data
     Input.get_input_data(args.inputfile, args.take_logs, args.mpheno)
@@ -1732,7 +1733,7 @@ def modeling(args):
         sys.stderr.write("\x1b[1;32mGenerating the k-mer lists for input samples:\x1b[0m\n")
         sys.stderr.flush()
 
-        Pool(Input.num_threads).map(
+        pool.map(
             lambda x: x.get_kmer_lists(), Input.samples.values()
             )
 
