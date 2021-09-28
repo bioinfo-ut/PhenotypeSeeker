@@ -22,7 +22,7 @@ pkg_resources.require(
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor, _DistanceMatrix
 from collections import OrderedDict
 from ete3 import Tree
-from multiprocess import Manager, Value
+from multiprocess import Manager, Value, Pool
 from scipy import stats
 from sklearn.externals import joblib
 from sklearn.ensemble import RandomForestClassifier
@@ -1732,7 +1732,7 @@ def modeling(args):
         sys.stderr.write("\x1b[1;32mGenerating the k-mer lists for input samples:\x1b[0m\n")
         sys.stderr.flush()
 
-        pool.map(
+        Pool(Input.num_threads).map(
             lambda x: x.get_kmer_lists(), Input.samples.values()
             )
 
