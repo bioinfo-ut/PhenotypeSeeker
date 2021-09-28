@@ -1553,7 +1553,7 @@ class phenotypes():
                 samples_with_kmer = \
                     self.ML_df.loc[self.ML_df[kmer] == 1].index.tolist()
                 self.coeff_file.write(
-                    f"{kmer}\t{kmer_coef}\t{len(samples_with_kmer)}\t| {" ".join(samples_with_kmer)}\n"
+                    f"{kmer}\t{kmer_coef}\t{len(samples_with_kmer)}\t| {' '.join(samples_with_kmer)}\n"
                     )
 
     def visualize_model(self):
