@@ -1540,18 +1540,21 @@ class phenotypes():
                 self.ML_df.loc['coefficient'] = \
                     self.model_fitted.best_estimator_.coef_[0]
         for kmer in self.ML_df:
+
+            # Get coefficients
             if self.kernel == "rbf" or self.model_name_short == "NB":
                 kmer_coef = "NA"
             else:
                 kmer_coef = self.ML_df.loc['coefficient', kmer]
-            if PCA:
-                self.coeff_file.write(f"{kmer}\t{kmer_coef}")
-            samples_with_kmer = \
-                self.ML_df.loc[self.ML_df[kmer] == 1].index.tolist()
-            self.coeff_file.write("%s\t%s\t%s\t| %s\n" % (
-                kmer, kmer_coef,
-                len(samples_with_kmer), " ".join(samples_with_kmer)
-                ))
+
+            if self.pca:
+                self.coeff_file.write(f"{kmer}\t{kmer_coef}\n")
+            else:
+                samples_with_kmer = \
+                    self.ML_df.loc[self.ML_df[kmer] == 1].index.tolist()
+                self.coeff_file.write(
+                    f"{kmer}\t{kmer_coef}\t{len(samples_with_kmer)}\t| {" ".join(samples_with_kmer)}\n"
+                    )
 
     def visualize_model(self):
         plt.figure(figsize=(15,10))
