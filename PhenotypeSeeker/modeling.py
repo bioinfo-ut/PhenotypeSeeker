@@ -22,7 +22,7 @@ pkg_resources.require(
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor, _DistanceMatrix
 from collections import OrderedDict
 from ete3 import Tree
-from multiprocess import Manager, Value, Pool
+from multiprocess import Manager, Pool, Value
 from scipy import stats
 from sklearn.externals import joblib
 from sklearn.ensemble import RandomForestClassifier
@@ -65,8 +65,8 @@ class Input():
     samples = OrderedDict()
     phenotypes_to_analyse = OrderedDict()
     mpheno_to_index = []
-    lock = None
     pool = None
+    lock = None
 
     jump_to = None
     num_threads = 8
@@ -112,7 +112,7 @@ class Input():
     @classmethod
     def _get_multithreading_parameters(cls):
         cls.lock = Manager().Lock()
-        cls.pool = Pool(cls.num_threads)
+        cls.pool = Pool(Input.num_threads)
 
     @classmethod
     def _set_phenotype_values(cls, take_logs):
@@ -350,7 +350,7 @@ class Samples():
         return cls(name, address, sample_phenotypes)
 
     @classmethod
-    def get_feature_vector(cls, pool):
+    def get_feature_vector(cls):
         # Feature vector loop
         iterate_to_union = [[x] for x in list(Input.samples.values())]
         for i in range(math.log(cls.no_samples, 2).__trunc__()):
@@ -358,7 +358,7 @@ class Samples():
             iterate_to_union = [
                 iterate_to_union[j: j + 4 if len(iterate_to_union) < j + 4 else j + 2] for j in range(0, len(iterate_to_union), 2) if j + 2 <= len(iterate_to_union)
                 ]
-            pool.map(partial(cls.get_union, round=i), iterate_to_union)
+            Input.pool.map(partial(cls.get_union, round=i), iterate_to_union)
         call(["mv %s K-mer_lists/feature_vector.list" % cls.union_output[-1]], shell=True)
         [(lambda x: call(["rm -f {}".format(x)], shell=True))(union) for union in cls.union_output[:-1]]
 
@@ -1263,6 +1263,8 @@ class phenotypes():
             return
         else:
             index = list(Input.samples.keys()) + ['p_val']
+            print(self.kmers_for_ML)
+            print(len(self.kmers_for_ML))
             self.ML_df = pd.DataFrame(self.kmers_for_ML, index=index)
             if self.kmer_limit:
                 self.ML_df.sort_values('p_val', axis=1, ascending=True, inplace=True)
@@ -1713,9 +1715,6 @@ def modeling(args):
     sys.stderr.write("\x1b[1;1;101m######                   PhenotypeSeeker                   ######\x1b[0m\n")
     sys.stderr.write("\x1b[1;1;101m######                      modeling                       ######\x1b[0m\n\n")
 
-    #pool = multiprocess.get_context('fork').Pool(Input.num_threads)
-    pool = Pool(Input.num_threads)
-
     # Processing the input data
     Input.get_input_data(args.inputfile, args.take_logs, args.mpheno)
     Input.Input_args(
@@ -1741,11 +1740,11 @@ def modeling(args):
 
         sys.stderr.write("\n\x1b[1;32mGenerating the k-mer feature vector.\x1b[0m\n")
         sys.stderr.flush()
-        Samples.get_feature_vector(pool)
+        Samples.get_feature_vector()
         sys.stderr.write("\x1b[1;32mMapping samples to the feature vector space:\x1b[0m\n")
         sys.stderr.flush()
         stderr_print.currentSampleNum.value = 0
-        pool.map(
+        Input.pool.map(
             lambda x: x.map_samples(), Input.samples.values()
             )
         if not args.no_weights:
@@ -1756,7 +1755,7 @@ def modeling(args):
                     sys.stderr.write("\n\x1b[1;32mDeleting the existing " + mash_file + " file...\x1b[0m")
             sys.stderr.write("\n\x1b[1;32mEstimating the Mash distances between samples...\x1b[0m\n")
             sys.stderr.flush()
-            pool.map(
+            Input.pool.map(
                 lambda x: x.get_mash_sketches(), Input.samples.values()
                 )
             Samples.get_weights()
@@ -1778,8 +1777,7 @@ def modeling(args):
     if not Input.jump_to or ''.join(i for i, _ in groupby(Input.jump_to)) == "modeling":
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
         sys.stderr.flush()
-        # multiprocess.get_context('fork').Pool(Input.num_threads).map(
-        pool.map(
+        multiprocess.get_context('fork').Pool(Input.num_threads).map(
             lambda x: x.machine_learning_modelling(),
             Input.phenotypes_to_analyse.values()
             )
@@ -1789,7 +1787,7 @@ def modeling(args):
     if not args.no_assembly:
         sys.stderr.write("\x1b[1;32mAssembling the k-mers used in modeling of: \x1b[0m\n")
         sys.stderr.flush()
-        pool.map(
+        Input.pool.map(
             lambda x: x.assembling(),
             Input.phenotypes_to_analyse.values()
             )
