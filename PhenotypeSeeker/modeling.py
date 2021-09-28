@@ -1777,7 +1777,8 @@ def modeling(args):
     if not Input.jump_to or ''.join(i for i, _ in groupby(Input.jump_to)) == "modeling":
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
         sys.stderr.flush()
-        multiprocess.get_context('fork').Pool(Input.num_threads).map(
+        # multiprocess.get_context('fork').Pool(Input.num_threads).map(
+        Input.pool.map(
             lambda x: x.machine_learning_modelling(),
             Input.phenotypes_to_analyse.values()
             )
