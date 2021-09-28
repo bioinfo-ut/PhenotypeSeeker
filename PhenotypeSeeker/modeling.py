@@ -1267,6 +1267,7 @@ class phenotypes():
                 ]
             self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
             self.ML_df.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
+            print(self.ML_df.shape)
 
             # for column in self.ML_df.columns[:-2]:
             #     if (
