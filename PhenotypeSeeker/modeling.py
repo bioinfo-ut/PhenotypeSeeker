@@ -648,7 +648,7 @@ class phenotypes():
         sys.stderr.flush()
         self.concatenate_test_files(self.name)
 
-    def get_kmers_tested(self, split_of_kmer_lists, samples_data):
+    def get_kmers_tested(self, split_of_kmer_lists):
         print("afterTest" + " ".join([str(sample.weight) for sample in Input.samples.values()]))
         pvalues = []
         counter = 0
