@@ -50,6 +50,7 @@ import xgboost as xgb
 import Bio
 import numpy as np
 import pandas as pd
+import json
 
 import time
 def timer(f):
@@ -639,7 +640,7 @@ class phenotypes():
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
         pvalues_from_all_threads = Input.pool.map(partial(
-                self.get_kmers_tested, dict(Input.samples.values())),
+                self.get_kmers_tested, json.loads(json.dumps(Input.samples.values()))),
                 zip(*self.vectors_as_multiple_input)
             )
         self.pvalues = \
