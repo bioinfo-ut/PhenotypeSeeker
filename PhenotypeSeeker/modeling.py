@@ -134,6 +134,14 @@ class Input():
                     except:
                         phenotype.no_samples -= 1
 
+    @classmethod
+    def phenos_with_kmers_left(cls):
+        [(lambda x: Input.phenotypes_to_analyse.pop(x))(pt) for pt in phenotypes.no_results]
+        if len(Input.phenotypes_to_analyse) == 0:
+            sys.stderr.write("\x1b[1;33mThere are no k-mers left for any phenotype to for modelling.\x1b[0m\n")
+            sys.stderr.write("\x1b[1;33mExiting PhenotypeSeeker\x1b[0m\n")
+            sys.stderr.write("\n\x1b[1;1;101m######          PhenotypeSeeker modeling finished          ######\x1b[0m\n")
+
     # ---------------------------------------------------------
     # Functions for processing the command line input arguments
 
@@ -1782,7 +1790,7 @@ def modeling(args):
             ))
 
         # Remove phenotypes with no results
-        [(lambda x: Input.phenotypes_to_analyse.pop(x))(pt) for pt in phenotypes.no_results]
+        Input.phenos_with_kmers_left()
 
         sys.stderr.write("\x1b[1;32mFiltering the k-mers by p-value:\x1b[0m\n")
         sys.stderr.flush()
@@ -1791,8 +1799,8 @@ def modeling(args):
             Input.phenotypes_to_analyse.values()
             ))
         # Remove phenotypes with no results
-        [(lambda x: Input.phenotypes_to_analyse.pop(x))(pt) for pt in phenotypes.no_results]
-        
+        Input.phenos_with_kmers_left()
+
     if not Input.jump_to or ''.join(i for i, _ in groupby(Input.jump_to)) in ["modeling"]:
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
         sys.stderr.flush()
