@@ -1727,8 +1727,9 @@ def modeling(args):
         args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner,
         args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to
         )
-    Input._get_multithreading_parameters()
     p = Pool(Input.num_threads)
+    Input._get_multithreading_parameters()
+    
     if not Input.jump_to:
         #  Operations with samples
         sys.stderr.write("\x1b[1;32mGenerating the k-mer lists for input samples:\x1b[0m\n")
