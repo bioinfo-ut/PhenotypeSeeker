@@ -1715,8 +1715,6 @@ def modeling(args):
     sys.stderr.write("\x1b[1;1;101m######                   PhenotypeSeeker                   ######\x1b[0m\n")
     sys.stderr.write("\x1b[1;1;101m######                      modeling                       ######\x1b[0m\n\n")
 
-    pool = Pool(Input.num_threads)
-
     # Processing the input data
     Input.get_input_data(args.inputfile, args.take_logs, args.mpheno)
     Input.Input_args(
@@ -1735,7 +1733,7 @@ def modeling(args):
         #  Operations with samples
         sys.stderr.write("\x1b[1;32mGenerating the k-mer lists for input samples:\x1b[0m\n")
         sys.stderr.flush()
-
+        pool = Pool(Input.num_threads)
         pool.map(
             lambda x: x.get_kmer_lists(), Input.samples.values()
             )
