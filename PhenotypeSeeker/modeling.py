@@ -1726,7 +1726,7 @@ def modeling(args):
         args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to
         )
     Input._get_multithreading_parameters()
-    p = Pool(Input.num_threads)
+    p = multiprocess.get_context('fork').Pool(Input.num_threads)
     
     if not Input.jump_to:
         #  Operations with samples
