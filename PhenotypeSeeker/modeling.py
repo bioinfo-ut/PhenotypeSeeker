@@ -959,6 +959,7 @@ class phenotypes():
         sys.stderr.flush()
         if len(self.kmers_for_ML) == 0:
             outputfile.write("\nNo k-mers passed the filtration by p-value.\n")
+            self.no_results.append(phenotype)
         inputfile.close()
         outputfile.close()
 
@@ -1782,12 +1783,16 @@ def modeling(args):
 
         # Remove phenotypes with no results
         [(lambda x: Input.phenotypes_to_analyse.pop(x))(pt) for pt in phenotypes.no_results]
+
         sys.stderr.write("\x1b[1;32mFiltering the k-mers by p-value:\x1b[0m\n")
         sys.stderr.flush()
         list(map(
             lambda x:  x.get_kmers_filtered(), 
             Input.phenotypes_to_analyse.values()
             ))
+        # Remove phenotypes with no results
+        [(lambda x: Input.phenotypes_to_analyse.pop(x))(pt) for pt in phenotypes.no_results]
+        
     if not Input.jump_to or ''.join(i for i, _ in groupby(Input.jump_to)) in ["modeling"]:
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
         sys.stderr.flush()
