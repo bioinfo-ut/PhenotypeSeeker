@@ -22,6 +22,7 @@ pkg_resources.require(
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor, _DistanceMatrix
 from collections import OrderedDict
 from ete3 import Tree
+import multiprocess
 from multiprocess import Manager, Pool, Value
 from scipy import stats
 from sklearn.externals import joblib
@@ -49,8 +50,6 @@ import xgboost as xgb
 import Bio
 import numpy as np
 import pandas as pd
-
-multiprocess.set_start_method(fork)
 
 import time
 def timer(f):
@@ -1715,6 +1714,8 @@ class phenotypes():
         f1.close()
 
 def modeling(args):
+
+    multiprocess.set_start_method(fork)
     # The main function of "phenotypeseeker modeling"
 
     sys.stderr.write("\x1b[1;1;101m######                   PhenotypeSeeker                   ######\x1b[0m\n")
