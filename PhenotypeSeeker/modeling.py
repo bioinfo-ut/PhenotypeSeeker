@@ -50,6 +50,8 @@ import Bio
 import numpy as np
 import pandas as pd
 
+multiprocess.set_start_method(fork)
+
 import time
 def timer(f):
     def wrapper(*args):
