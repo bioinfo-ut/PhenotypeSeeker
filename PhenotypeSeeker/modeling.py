@@ -1728,6 +1728,7 @@ def modeling(args):
         args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner,
         args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to
         )
+    multiprocess.set_start_method('fork')
     Input._get_multithreading_parameters()
 
     if not Input.jump_to:
@@ -1760,7 +1761,7 @@ def modeling(args):
                 lambda x: x.get_mash_sketches(), Input.samples.values()
                 )
             Samples.get_weights()
-        multiprocess.set_start_method('fork')
+        
         # Analyses of phenotypes
         phenotypes.kmer_testing_setup()
         list(map(
