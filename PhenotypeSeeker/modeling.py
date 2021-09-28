@@ -1802,4 +1802,7 @@ def modeling(args):
             lambda x: x.assembling(),
             Input.phenotypes_to_analyse.values()
             )
+        
+    Input.pool.close()
+    Input.pool.join()
     sys.stderr.write("\n\x1b[1;1;101m######          PhenotypeSeeker modeling finished          ######\x1b[0m\n")
