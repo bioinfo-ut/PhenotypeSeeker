@@ -65,6 +65,7 @@ class Input():
     samples = OrderedDict()
     phenotypes_to_analyse = OrderedDict()
     mpheno_to_index = []
+    lock = None
 
     jump_to = None
     num_threads = 8
@@ -104,6 +105,12 @@ class Input():
         for item in cls.mpheno_to_index:
             cls.phenotypes_to_analyse[Samples.phenotypes[item]] = \
                 phenotypes(Samples.phenotypes[item])
+
+    # ---------------------------------------------------------
+    # Set parameters for multithreading
+    @classmethod
+    def _get_multithreading_parameters(cls):
+        cls.lock = Manager().Lock()
 
     @classmethod
     def _set_phenotype_values(cls, take_logs):
@@ -1699,15 +1706,12 @@ class phenotypes():
 
 def modeling(args):
 
-    # ---------------------------------------------------------
-    # Set parameters for multithreading
-    lock = Manager().Lock()
-    pool = multiprocess.get_context('fork').Pool(Input.num_threads)
-
     # The main function of "phenotypeseeker modeling"
 
     sys.stderr.write("\x1b[1;1;101m######                   PhenotypeSeeker                   ######\x1b[0m\n")
     sys.stderr.write("\x1b[1;1;101m######                      modeling                       ######\x1b[0m\n\n")
+
+    pool = multiprocess.get_context('fork').Pool(Input.num_threads)
 
     # Processing the input data
     Input.get_input_data(args.inputfile, args.take_logs, args.mpheno)
