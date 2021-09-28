@@ -112,7 +112,6 @@ class Input():
     @classmethod
     def _get_multithreading_parameters(cls):
         cls.lock = Manager().Lock()
-        cls.pool = Pool(Input.num_threads)
 
     @classmethod
     def _set_phenotype_values(cls, take_logs):
@@ -1727,8 +1726,9 @@ def modeling(args):
         args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner,
         args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to
         )
-    Input._get_multithreading_parameters()
     pool = Pool(Input.num_threads)
+    Input._get_multithreading_parameters()
+
 
     if not Input.jump_to:
         #  Operations with samples
