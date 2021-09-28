@@ -639,7 +639,10 @@ class phenotypes():
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
         pvalues_from_all_threads = Input.pool.map(
-                self.get_kmers_tested, zip(*self.vectors_as_multiple_input)
+                partial(
+                    (self.get_kmers_tested, Input.samples.values()
+                ),
+                zip(*self.vectors_as_multiple_input)
             )
         self.pvalues = \
             sorted(list(chain(*pvalues_from_all_threads)))
@@ -647,8 +650,8 @@ class phenotypes():
         sys.stderr.flush()
         self.concatenate_test_files(self.name)
 
-    def get_kmers_tested(self, split_of_kmer_lists):
-        print("afterTest" + " ".join([str(sample.weight) for sample in Input.samples.values()]))
+    def get_kmers_tested(self, split_of_kmer_lists, samples_values):
+        print("afterTest" + " ".join([str(sample.weight) for sample in samples]))
         pvalues = []
         counter = 0
 
@@ -674,15 +677,14 @@ class phenotypes():
             kmer_presence_vector = [j.split()[1].strip() for j in line]
 
             if phenotypes.scale == "binary":
-                print([sample.weight for sample in Input.samples.values()])
                 pvalue = self.conduct_chi_squared_test(
                     kmer, kmer_presence_vector,
-                    test_results_file, Input.samples.values()
+                    test_results_file, samples_values
                     )
             elif phenotypes.scale == "continuous":
                 pvalue = self.conduct_t_test(
                     kmer, kmer_presence_vector,
-                    test_results_file, Input.samples.values()
+                    test_results_file, samples_values
                     )
             if pvalue:
                 pvalues.append(pvalue)
