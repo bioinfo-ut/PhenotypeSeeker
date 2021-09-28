@@ -1760,7 +1760,7 @@ def modeling(args):
                 lambda x: x.get_mash_sketches(), Input.samples.values()
                 )
             Samples.get_weights()
-    multiprocess.set_start_method('fork')
+        multiprocess.set_start_method('fork')
         # Analyses of phenotypes
         phenotypes.kmer_testing_setup()
         list(map(
