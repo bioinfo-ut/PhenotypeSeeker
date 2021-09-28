@@ -138,10 +138,11 @@ class Input():
     def phenos_with_kmers_left(cls):
         [(lambda x: Input.phenotypes_to_analyse.pop(x))(pt) for pt in phenotypes.no_results]
         if len(Input.phenotypes_to_analyse) == 0:
-            sys.stderr.write("\x1b[1;33mThere are no k-mers left for any phenotype to for modelling.\x1b[0m\n")
+            sys.stderr.write("\x1b[1;33mThere are no k-mers left for modelling for any phenotype.\x1b[0m\n")
             sys.stderr.write("\x1b[1;33mExiting PhenotypeSeeker\x1b[0m\n")
             sys.stderr.write("\n\x1b[1;1;101m######          PhenotypeSeeker modeling finished          ######\x1b[0m\n")
-
+            raise SystemExit()
+            
     # ---------------------------------------------------------
     # Functions for processing the command line input arguments
 
