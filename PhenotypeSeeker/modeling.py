@@ -22,7 +22,6 @@ pkg_resources.require(
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor, _DistanceMatrix
 from collections import OrderedDict
 from ete3 import Tree
-import multiprocess
 from multiprocess import Manager, Pool, Value
 from scipy import stats
 from sklearn.externals import joblib
@@ -50,7 +49,7 @@ import xgboost as xgb
 import Bio
 import numpy as np
 import pandas as pd
-import json
+import multiprocess
 
 import time
 def timer(f):
@@ -637,10 +636,9 @@ class phenotypes():
 
     def test_kmers_association_with_phenotype(self):
         print("beginnign" + " ".join([str(sample.weight) for sample in Input.samples.values()]))
-        print(os.getpid(Input.samples.values()))
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
-        pvalues_from_all_threads = Input.pool.map(
+        pvalues_from_all_threads = multiprocess.get_context('fork').Pool().map(
                 self.get_kmers_tested,
                 zip(*self.vectors_as_multiple_input)
             )
@@ -652,7 +650,6 @@ class phenotypes():
 
     def get_kmers_tested(self, split_of_kmer_lists, samples_data):
         print("afterTest" + " ".join([str(sample.weight) for sample in Input.samples.values()]))
-        print(os.getpid(Input.samples.values()))
         pvalues = []
         counter = 0
 
