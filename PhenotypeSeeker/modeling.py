@@ -391,10 +391,8 @@ class Samples():
         cls._phyloxml_to_newick("tree_xml.txt")
         stderr_print("\x1b[1;32mCalculating the GSC weights from mash distance matrix...\x1b[0m")
         weights = cls.GSC_weights_from_newick("tree_newick.txt", normalize="mean1")
-        print(weights)
         for key, value in weights.items():
             Input.samples[key].weight = value
-        print([sample.weight for sample in Input.samples.values()])
 
     @classmethod
     def get_mash_distances(cls):
@@ -944,7 +942,7 @@ class phenotypes():
                     self.kmers_for_ML[kmer] = [
                             1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()
                             ] + [p_val]
-                elif not kmer_limit:
+                elif not self.kmer_limit:
                     self.kmers_for_ML[kmer] = [
                             1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()
                             ] + [p_val]
