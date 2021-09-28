@@ -65,7 +65,6 @@ class Input():
     samples = OrderedDict()
     phenotypes_to_analyse = OrderedDict()
     mpheno_to_index = []
-    pool = None
     lock = None
 
     jump_to = None
@@ -112,7 +111,6 @@ class Input():
     @classmethod
     def _get_multithreading_parameters(cls):
         cls.lock = Manager().Lock()
-        cls.pool = Pool(Input.num_threads)
 
     @classmethod
     def _set_phenotype_values(cls, take_logs):
