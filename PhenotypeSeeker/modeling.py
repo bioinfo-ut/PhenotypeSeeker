@@ -1306,7 +1306,7 @@ class phenotypes():
         print(self.PCA_df)
         self.ML_df = pd.DataFrame(self.PCA_df, index=self.ML_df.index).join(self.ML_df['phenotype'])
         print(self.ML_df)
-        print(self.PCA_df.components_)
+        print(self.pca.components_)
 
     def fit_model(self):
         if self.scale == "continuous":
