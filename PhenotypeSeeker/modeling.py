@@ -112,7 +112,7 @@ class Input():
     @classmethod
     def _get_multithreading_parameters(cls):
         cls.lock = Manager().Lock()
-        cls.pool = Pool(Input.num_threads)
+        cls.pool = multiprocess.get_context('fork').Pool(Input.num_threads)
 
     @classmethod
     def _set_phenotype_values(cls, take_logs):
@@ -1263,8 +1263,6 @@ class phenotypes():
             return
         else:
             index = list(Input.samples.keys()) + ['p_val']
-            print(self.kmers_for_ML)
-            print(len(self.kmers_for_ML))
             self.ML_df = pd.DataFrame(self.kmers_for_ML, index=index)
             if self.kmer_limit:
                 self.ML_df.sort_values('p_val', axis=1, ascending=True, inplace=True)
