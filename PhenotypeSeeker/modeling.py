@@ -820,6 +820,7 @@ class phenotypes():
         without_pheno_with_kmer = 0
         without_pheno_without_kmer = 0
         for index, sample in enumerate(samples):
+            print(sample.weight)
             if sample.phenotypes[self.name] == 1:
                 if (kmers_presence_vector[index] != "0"):
                     with_pheno_with_kmer += sample.weight 
@@ -944,7 +945,7 @@ class phenotypes():
                     self.kmers_for_ML[kmer] = [
                             1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()
                             ] + [p_val]
-                else:
+                elif not kmer_limit:
                     self.kmers_for_ML[kmer] = [
                             1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()
                             ] + [p_val]
@@ -1771,6 +1772,9 @@ def modeling(args):
                 lambda x: x.get_mash_sketches(), Input.samples.values()
                 )
             Samples.get_weights()
+
+        # Update pool
+        Input._get_multithreading_parameters()
 
         # Analyses of phenotypes
         phenotypes.kmer_testing_setup()
