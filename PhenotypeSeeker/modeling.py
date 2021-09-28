@@ -1744,7 +1744,6 @@ def modeling(args):
         args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to,
         args.pca
         )
-    Input._get_multithreading_parameters()
 
     if not Input.jump_to:
         #  Operations with samples
