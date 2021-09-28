@@ -638,7 +638,7 @@ class phenotypes():
         print("beginnign" + " ".join([str(sample.weight) for sample in Input.samples.values()]))
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
-        pvalues_from_all_threads = Input.pool.map(
+        pvalues_from_all_threads = multiprocess.get_context('fork').Pool().map(
                 self.get_kmers_tested,
                 zip(*self.vectors_as_multiple_input)
             )
