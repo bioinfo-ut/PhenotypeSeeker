@@ -1310,7 +1310,8 @@ class phenotypes():
         print(pca.components_)
         print(pca.explained_variance_)
         print(pca.explained_variance_ratio_)
-        self.ML_df.loc['explained_variance'] = pca.explained_variance_
+        self.ML_df.loc['explained_variance'] = pca.explained_variance_ + None
+        print(self.ML_df)
 
     def fit_model(self):
         if self.scale == "continuous":
