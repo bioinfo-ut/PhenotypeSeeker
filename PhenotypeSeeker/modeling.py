@@ -1300,18 +1300,21 @@ class phenotypes():
         # PCA transformation
         pca = PCA()
         self.PCA_df = pd.DataFrame(pca.fit_transform(self.scaled_df),  index=self.ML_df.index)
-        print(self.PCA_df.shape)
-        print()
-        print(self.PCA_df)
         np.set_printoptions(threshold=sys.maxsize)
         pd.set_option('display.max_rows', 1000)
+
         print(pca.components_)
         print(pca.explained_variance_)
         print(pca.explained_variance_ratio_)
-        self.PCA_df.loc['explained_variance'] = pca.explained_variance_ 
+
+        PCs_to_keep = pca.explained_variance_ > 1
         print(self.PCA_df)
-        self.PCA_df = self.PCA_df.loc[:, self.PCA_df.loc['explained_variance'] > 1]
+        self.PCA_df = self.PCA_df.loc[:, PCs_to_keep]
         print(self.PCA_df)
+
+        print(pca.components_[PCs_to_keep])
+        print(pca.explained_variance_[PCs_to_keep])
+        print(pca.explained_variance_ratio_[PCs_to_keep])
 
     def fit_model(self):
         if self.scale == "continuous":
