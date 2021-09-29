@@ -1308,6 +1308,7 @@ class phenotypes():
         print(self.ML_df)
         np.set_printoptions(threshold=sys.maxsize)
         print(pca.components_)
+        print(pca.explained_variance_)
 
     def fit_model(self):
         if self.scale == "continuous":
