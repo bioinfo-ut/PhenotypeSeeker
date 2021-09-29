@@ -1304,10 +1304,13 @@ class phenotypes():
         print()
         print(self.PCA_df)
         np.set_printoptions(threshold=sys.maxsize)
+        pd.set_option('display.max_rows', 1000)
         print(pca.components_)
         print(pca.explained_variance_)
         print(pca.explained_variance_ratio_)
         self.PCA_df.loc['explained_variance'] = pca.explained_variance_ 
+        print(self.PCA_df)
+        self.PCA_df = self.PCA_df.loc[:, (df.explained_variance_ >= 1)]
         print(self.PCA_df)
 
     def fit_model(self):
