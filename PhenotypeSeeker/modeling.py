@@ -1306,6 +1306,7 @@ class phenotypes():
         print(self.PCA_df)
         self.ML_df = pd.DataFrame(self.PCA_df, index=self.ML_df.index).join(self.ML_df['phenotype'])
         print(self.ML_df)
+        np.set_printoptions(threshold=sys.maxsize)
         print(pca.components_)
 
     def fit_model(self):
