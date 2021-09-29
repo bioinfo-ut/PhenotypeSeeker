@@ -1310,7 +1310,7 @@ class phenotypes():
         print(pca.explained_variance_ratio_)
         self.PCA_df.loc['explained_variance'] = pca.explained_variance_ 
         print(self.PCA_df)
-        self.PCA_df = self.PCA_df.loc[:, (df.explained_variance_ >= 1)]
+        self.PCA_df = self.PCA_df.loc[:, self.PCA_df.loc['explained_variance'] > 1]
         print(self.PCA_df)
 
     def fit_model(self):
