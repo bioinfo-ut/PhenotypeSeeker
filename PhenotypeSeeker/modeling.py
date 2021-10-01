@@ -1328,7 +1328,7 @@ class phenotypes():
         self.pca_explained_variance_ratio_ = pca.explained_variance_ratio_[PCs_to_keep]
 
         # Conduct the t-test analysis between PCs and phenotypes
-        PCs_to_keep = np.empty(self.PCA_df.shape[1] ,dtype=bool)
+        PCs_to_keep = np.empty(self.PCA_df.shape[1], dtype=bool)
         for idx, column in enumerate(self.PCA_df):
             x = self.PCA_df[column][self.ML_df.phenotype == 1].values
             y = self.PCA_df[column][self.ML_df.phenotype == 0].values
@@ -1343,11 +1343,11 @@ class phenotypes():
                 PCs_to_keep[idx] = False
 
         # Filter PCs by association with phenotype
-        self.PCA_df = self.PCA_df.loc[:, PCs_to_keep]
-        self.pca_components_ = pca.components_[PCs_to_keep]
-        self.pca_explained_variance_ = pca.explained_variance_[PCs_to_keep]
-        self.pca_explained_variance_ratio_ = pca.explained_variance_ratio_[PCs_to_keep]        
-
+        # self.PCA_df = self.PCA_df.loc[:, PCs_to_keep]
+        # self.pca_components_ = pca.components_[PCs_to_keep]
+        # self.pca_explained_variance_ = pca.explained_variance_[PCs_to_keep]
+        # self.pca_explained_variance_ratio_ = pca.explained_variance_ratio_[PCs_to_keep]        
+        print(PCs_to_keep)
         print(self.PCA_df)
         print(self.pca_components_)
         print(self.pca_explained_variance_)
@@ -1591,7 +1591,7 @@ class phenotypes():
                 self.ML_df.loc['coefficient'] = \
                     self.model_fitted.best_estimator_.coef_[0]
 
-        for kmer in self.ML_df:
+        for predictor in self.ML_df:
             # Get coefficients
             if self.kernel == "rbf" or self.model_name_short == "NB":
                 kmer_coef = "NA"
@@ -1604,7 +1604,7 @@ class phenotypes():
                 samples_with_kmer = \
                     self.ML_df.loc[self.ML_df[kmer] == 1].index.tolist()
                 self.coeff_file.write(
-                    f"{PC}\t{kmer_coef}\t{len(samples_with_kmer)}\t| {' '.join(samples_with_kmer)}\n"
+                    f"{predictor}\t{kmer_coef}\t{len(samples_with_kmer)}\t| {' '.join(samples_with_kmer)}\n"
                     )
 
     def visualize_model(self):
