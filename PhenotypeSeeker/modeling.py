@@ -580,8 +580,6 @@ class phenotypes():
         self.kmers_for_ML = {}
         self.skl_dataset = None
         self.ML_df = None
-        self.PCA_df = None
-        self.scaled_df = None
         self.ML_dict = dict()
         self.ML_df_train = None
         self.ML_df_test = None
@@ -596,6 +594,14 @@ class phenotypes():
         self.weights_dataset = None
         self.model_fitted = None
         self.test_output = None
+
+        #PCA
+        self.PCA_df = None
+        self.scaled_df = None
+        self.pca_components = None
+        self.pca_explained_variance_ = None
+        self.pca_explained_variance_ratio_ = None
+
         self.metrics_dict_train = {
             "MSE": [], "CoD": [], "SpCC": [], "Sp_pval": [], "PeCC": [], "Pe_pval": [],
             "DFA": [], "Acc": [], "Sn": [], "Sp": [], "AUCROC": [], "Pr": [], "MCC": [],
@@ -1295,11 +1301,20 @@ class phenotypes():
         # Strandardization
         scaler = StandardScaler()
         df_to_scale = self.ML_df.drop(['phenotype'], axis=1)
-        self.scaled_df = scaler.fit_transform(df_to_scale)
+        scaled_df = scaler.fit_transform(df_to_scale)
 
         # PCA transformation
         pca = PCA()
-        self.PCA_df = pd.DataFrame(pca.fit_transform(self.scaled_df),  index=self.ML_df.index)
+        self.PCA_df = pd.DataFrame(
+            pca.fit_transform(self.scaled_df),
+            index=self.ML_df.index,
+            columns = ['PC_' + i for i in range() ]
+            )
+        del scaled_df
+
+        self.PCA_df.columns = [
+            'PC_' + i for i in  range(1, 1 + len(self.PCA_df.shape[1]))
+            ]
         np.set_printoptions(threshold=sys.maxsize)
         pd.set_option('display.max_rows', 1000)
 
@@ -1307,14 +1322,21 @@ class phenotypes():
         print(pca.explained_variance_)
         print(pca.explained_variance_ratio_)
 
-        PCs_to_keep = pca.explained_variance_ > 1
+        PCs_to_keep = pca.explained_variance_ > 0.9
         print(self.PCA_df)
         self.PCA_df = self.PCA_df.loc[:, PCs_to_keep]
         print(self.PCA_df)
 
+        self.pca_components = pca.components_[PCs_to_keep]
+        self.pca_explained_variance_ = pca.explained_variance_[PCs_to_keep]
+        self.pca_explained_variance_ratio_ = pca.explained_variance_ratio_[PCs_to_keep]
+
         print(pca.components_[PCs_to_keep])
         print(pca.explained_variance_[PCs_to_keep])
         print(pca.explained_variance_ratio_[PCs_to_keep])
+
+        self.ML_df = self.PCA_df + self.ML_df['phenotype']
+        print(self.ML_df)
 
     def fit_model(self):
         if self.scale == "continuous":
