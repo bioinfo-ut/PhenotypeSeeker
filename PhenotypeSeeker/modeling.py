@@ -1330,12 +1330,13 @@ class phenotypes():
         self.pca_explained_variance_ratio_ = pca.explained_variance_ratio_[PCs_to_keep]
 
         print(self.PCA_df)
-        print(self.pca.components_)
-        print(self.pca.explained_variance_)
-        print(self.pca.explained_variance_ratio_)
+        print(self.pca_components_)
+        print(self.pca_explained_variance_)
+        print(self.pca_explained_variance_ratio_)
 
         # Conduct the t-test analysis between PCs and phenotypes
-
+        for column in self.PCA_df:
+            print(column)
 
         # Plot first two PCs
         plt.figure(figsize=(8,6))
