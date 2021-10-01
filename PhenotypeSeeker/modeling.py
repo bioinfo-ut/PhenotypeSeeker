@@ -1343,7 +1343,7 @@ class phenotypes():
                 PCs_to_keep[idx] = False
 
         # Filter PCs by association with phenotype
-        # self.PCA_df = self.PCA_df.loc[:, PCs_to_keep]
+        self.PCA_df = self.PCA_df.loc[:, PCs_to_keep]
         # self.pca_components_ = pca.components_[PCs_to_keep]
         # self.pca_explained_variance_ = pca.explained_variance_[PCs_to_keep]
         # self.pca_explained_variance_ratio_ = pca.explained_variance_ratio_[PCs_to_keep]        
@@ -1574,8 +1574,12 @@ class phenotypes():
         self.summary_file.write("Major error rate: %s\n" % ME)           
 
     def write_model_coefficients_to_file(self):
-        self.coeff_file.write("K-mer\tcoef._in_" + self.model_name_short + \
-            "_model\tNo._of_samples_with_k-mer\tSamples_with_k-mer\n")
+        if self.pca = True:
+            self.coeff_file.write("PC\tcoef._in_" + self.model_name_short + \
+                "_model\texplained_variance\texplained_variance_ratio\n")
+        else:
+            self.coeff_file.write("K-mer\tcoef._in_" + self.model_name_short + \
+                "_model\tNo._of_samples_with_k-mer\tSamples_with_k-mer\n")
         self.ML_df.drop('phenotype', axis=1, inplace=True)
         if self.model_name_short == "linreg":
             dself.ML_df.loc['coefficient'] = \
@@ -1591,20 +1595,22 @@ class phenotypes():
                 self.ML_df.loc['coefficient'] = \
                     self.model_fitted.best_estimator_.coef_[0]
 
-        for predictor in self.ML_df:
+        for idx, predictor in enumerate(self.ML_df):
             # Get coefficients
             if self.kernel == "rbf" or self.model_name_short == "NB":
-                kmer_coef = "NA"
+                coef = "NA"
             else:
-                kmer_coef = self.ML_df.loc['coefficient', kmer]
+                coef = self.ML_df.loc['coefficient', predictor]
 
             if self.pca:
-                self.coeff_file.write(f"{kmer}\t{kmer_coef}\n")
+                self.coeff_file.write(
+                    f"{predictor}\t{coef}\t{self.pca_explained_variance_[idx]}\t{self.pca_explained_variance_ratio_[idx]}\n"
+                    )
             else:
                 samples_with_kmer = \
-                    self.ML_df.loc[self.ML_df[kmer] == 1].index.tolist()
+                    self.ML_df.loc[self.ML_df[predictor] == 1].index.tolist()
                 self.coeff_file.write(
-                    f"{predictor}\t{kmer_coef}\t{len(samples_with_kmer)}\t| {' '.join(samples_with_kmer)}\n"
+                    f"{predictor}\t{coef}\t{len(samples_with_kmer)}\t| {' '.join(samples_with_kmer)}\n"
                     )
 
     def visualize_model(self):
