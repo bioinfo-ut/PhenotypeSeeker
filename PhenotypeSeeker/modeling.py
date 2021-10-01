@@ -1574,7 +1574,7 @@ class phenotypes():
         self.summary_file.write("Major error rate: %s\n" % ME)           
 
     def write_model_coefficients_to_file(self):
-        if self.pca = True:
+        if self.pca == True:
             self.coeff_file.write("PC\tcoef._in_" + self.model_name_short + \
                 "_model\texplained_variance\texplained_variance_ratio\n")
         else:
