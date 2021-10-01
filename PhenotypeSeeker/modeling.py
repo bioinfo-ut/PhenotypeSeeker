@@ -1308,13 +1308,11 @@ class phenotypes():
         self.PCA_df = pd.DataFrame(
             pca.fit_transform(scaled_df),
             index=self.ML_df.index,
-            columns = ['PC_' + i for i in range() ]
             )
-        del scaled_df
-
         self.PCA_df.columns = [
             'PC_' + i for i in  range(1, 1 + len(self.PCA_df.shape[1]))
             ]
+            
         np.set_printoptions(threshold=sys.maxsize)
         pd.set_option('display.max_rows', 1000)
 
