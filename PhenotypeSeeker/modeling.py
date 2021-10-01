@@ -599,6 +599,8 @@ class phenotypes():
         self.weights_dataset = None
         self.model_fitted = None
         self.test_output = None
+        self.ttest_statistics = []
+        self.ttest_pvalues = []
 
         #PCA
         self.PCA_df = None
@@ -1329,6 +1331,7 @@ class phenotypes():
 
         # Conduct the t-test analysis between PCs and phenotypes
         PCs_to_keep = np.empty(self.PCA_df.shape[1], dtype=bool)
+
         for idx, column in enumerate(self.PCA_df):
             x = self.PCA_df[column][self.ML_df.phenotype == 1].values
             y = self.PCA_df[column][self.ML_df.phenotype == 0].values
@@ -1339,6 +1342,8 @@ class phenotypes():
                 )
             if pvalue < 0.05/self.PCA_df.shape[1]:
                 PCs_to_keep[idx] = True
+                self.ttest_statistics.append(t_statistic)
+                self.ttest_pvalues.append(pvalue)
             else:
                 PCs_to_keep[idx] = False
 
@@ -1604,7 +1609,9 @@ class phenotypes():
 
             if self.pca:
                 self.coeff_file.write(
-                    f"{predictor}\t{coef}\t{self.pca_explained_variance_[idx]}\t{self.pca_explained_variance_ratio_[idx]}\n"
+                    f"""{predictor}\t{coef}\t{self.pca_explained_variance_[idx]}
+                    \t{self.pca_explained_variance_ratio_[idx]}
+                    \t{self.ttest_statistics[idx]}\t{self.ttest_pvalues[idx]}\n"""
                     )
             else:
                 samples_with_kmer = \
