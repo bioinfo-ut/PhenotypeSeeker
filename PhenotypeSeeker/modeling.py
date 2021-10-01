@@ -1285,7 +1285,7 @@ class phenotypes():
                 sample.phenotypes[self.name] for sample in Input.samples.values()
                 ]
             self.ML_df['weights'] = [
-                sample.phenotypes[self.weight] for sample in Input.samples.values()
+                sample.weight for sample in Input.samples.values()
                 ]
             self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
             self.ML_df.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
@@ -1340,7 +1340,11 @@ class phenotypes():
         # Conduct the t-test analysis between PCs and phenotypes
         for column in self.PCA_df:
             print([self.ML_df.pehnotype == 1])
-            self.PCA_df[column][self.ML_df.pehnotype == 1]
+            x = self.PCA_df[column][self.ML_df.pehnotype == 1]
+            y = self.PCA_df[column][self.ML_df.pehnotype == 0]
+            x_weights = self.ML_df['weights'][self.ML_df.pehnotype == 1]
+            y_weights = self.ML_df['weights'][self.ML_df.pehnotype == 0]
+
 
         self.ML_df = self.PCA_df + self.ML_df['phenotype']
         print(self.ML_df)
