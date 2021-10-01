@@ -1302,7 +1302,7 @@ class phenotypes():
         scaler = StandardScaler()
         df_to_scale = self.ML_df.drop(['phenotype'], axis=1)
         scaled_df = scaler.fit_transform(df_to_scale)
-
+        print(scaled_df)
         # PCA transformation
         pca = PCA()
         self.PCA_df = pd.DataFrame(
