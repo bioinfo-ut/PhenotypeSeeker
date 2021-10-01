@@ -1340,13 +1340,16 @@ class phenotypes():
         # Conduct the t-test analysis between PCs and phenotypes
         for column in self.PCA_df:
             print([self.ML_df.phenotype == 1])
-            x = self.PCA_df[column][self.ML_df.phenotype == 1]
-            y = self.PCA_df[column][self.ML_df.phenotype == 0]
-            x_weights = self.ML_df['weights'][self.ML_df.phenotype == 1]
-            y_weights = self.ML_df['weights'][self.ML_df.phenotype == 0]
+            x = self.PCA_df[column][self.ML_df.phenotype == 1].values
+            print(x)
+            y = self.PCA_df[column][self.ML_df.phenotype == 0].values
+            x_weights = self.ML_df['weights'][self.ML_df.phenotype == 1].values
+            y_weights = self.ML_df['weights'][self.ML_df.phenotype == 0].values
+            t_statistic, pvalue, mean_x, mean_y =Samples.t_test(
+                    x, y, x_weights, y_weights
+                )
 
-
-        self.ML_df = self.PCA_df + self.ML_df['phenotype']
+        self.ML_df = self.PCA_df.assign(self.ML_df['phenotype'])
         print(self.ML_df)
 
     def fit_model(self):
