@@ -1299,14 +1299,16 @@ class phenotypes():
     def PCA_analysis(self):
 
         # Strandardization
-        scaler = StandardScaler()
         df_to_scale = self.ML_df.drop(['phenotype'], axis=1)
-        scaled_df = scaler.fit_transform(df_to_scale)
+        scaler = StandardScaler()
+        scaler.fit(df_to_scale)
+        scaled_data = scaler.transform(df_to_scale)
 
         # PCA transformation
         pca = PCA()
-        self.PCA_df = pd.DataFrame(
-            pca.fit_transform(scaled_df),
+        pca.fit(scaled_data)
+        PCA_df = pd.DataFrame(
+            pca.transform(scaled_df),
             index=self.ML_df.index,
             )
         self.PCA_df.columns = [
@@ -1316,22 +1318,17 @@ class phenotypes():
         np.set_printoptions(threshold=sys.maxsize)
         pd.set_option('display.max_rows', 1000)
 
-        print(pca.components_)
-        print(pca.explained_variance_)
-        print(pca.explained_variance_ratio_)
-
+        # Filter PCs by explained variance
         PCs_to_keep = pca.explained_variance_ > 0.9
-        print(self.PCA_df)
         self.PCA_df = self.PCA_df.loc[:, PCs_to_keep]
-        print(self.PCA_df)
-
         self.pca_components = pca.components_[PCs_to_keep]
         self.pca_explained_variance_ = pca.explained_variance_[PCs_to_keep]
         self.pca_explained_variance_ratio_ = pca.explained_variance_ratio_[PCs_to_keep]
 
-        print(pca.components_[PCs_to_keep])
-        print(pca.explained_variance_[PCs_to_keep])
-        print(pca.explained_variance_ratio_[PCs_to_keep])
+        print(self.PCA_df)
+        print(self.pca.components_)
+        print(self.pca.explained_variance_)
+        print(self.pca.explained_variance_ratio_)
 
         self.ML_df = self.PCA_df + self.ML_df['phenotype']
         print(self.ML_df)
