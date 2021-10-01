@@ -1310,7 +1310,7 @@ class phenotypes():
             index=self.ML_df.index,
             )
         self.PCA_df.columns = [
-            'PC_' + i for i in  range(1, 1 + self.PCA_df.shape[1])
+            'PC_' + str(i) for i in  range(1, 1 + self.PCA_df.shape[1])
             ]
 
         np.set_printoptions(threshold=sys.maxsize)
