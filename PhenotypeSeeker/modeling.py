@@ -1333,11 +1333,9 @@ class phenotypes():
         self.pca_explained_variance_ratio_ = pca.explained_variance_ratio_[PCs_to_keep]
 
         # Conduct the t-test analysis between PCs and phenotypes
-        PCs_to_keep = np.array()
+        PCs_to_keep = np.empty(self.PCA_df.shape[1])
         for column in self.PCA_df:
-            print([self.ML_df.phenotype == 1])
             x = self.PCA_df[column][self.ML_df.phenotype == 1].values
-            print(x)
             y = self.PCA_df[column][self.ML_df.phenotype == 0].values
             x_weights = self.ML_df['weights'][self.ML_df.phenotype == 1].values
             y_weights = self.ML_df['weights'][self.ML_df.phenotype == 0].values
@@ -1359,7 +1357,7 @@ class phenotypes():
         print(self.pca_components_)
         print(self.pca_explained_variance_)
         print(self.pca_explained_variance_ratio_)
-        
+
         self.ML_df = self.PCA_df.assign(phenotype=self.ML_df['phenotype'])
         print(self.ML_df)
 
