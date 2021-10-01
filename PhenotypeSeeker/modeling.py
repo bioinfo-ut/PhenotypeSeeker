@@ -1126,6 +1126,7 @@ class phenotypes():
                 )
 
         self.model_package['model'] = self.model_fitted
+        joblib.dump(self.model_file
         self.write_model_coefficients_to_file()
 
         if phenotypes.model_name_long == "decision tree":
@@ -1326,7 +1327,7 @@ class phenotypes():
         self.pca_explained_variance_ratio_ = pca.explained_variance_ratio_[PCs_to_keep]
 
         # Conduct the t-test analysis between PCs and phenotypes
-        PCs_to_keep = []
+        PCs_to_keep = np.empty(self.ML_df.shape[1] ,dtype=bool)
         for idx, column in enumerate(self.PCA_df):
             x = self.PCA_df[column][self.ML_df.phenotype == 1].values
             y = self.PCA_df[column][self.ML_df.phenotype == 0].values
