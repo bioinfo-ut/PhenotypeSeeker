@@ -1328,7 +1328,7 @@ class phenotypes():
         self.pca_explained_variance_ratio_ = pca.explained_variance_ratio_[PCs_to_keep]
 
         # Conduct the t-test analysis between PCs and phenotypes
-        PCs_to_keep = np.empty(self.ML_df.shape[1] ,dtype=bool)
+        PCs_to_keep = np.empty(self.PCA_df.shape[1] ,dtype=bool)
         for idx, column in enumerate(self.PCA_df):
             x = self.PCA_df[column][self.ML_df.phenotype == 1].values
             y = self.PCA_df[column][self.ML_df.phenotype == 0].values
@@ -1590,8 +1590,8 @@ class phenotypes():
             if self.kernel != "rbf":
                 self.ML_df.loc['coefficient'] = \
                     self.model_fitted.best_estimator_.coef_[0]
-        for kmer in self.ML_df:
 
+        for kmer in self.ML_df:
             # Get coefficients
             if self.kernel == "rbf" or self.model_name_short == "NB":
                 kmer_coef = "NA"
