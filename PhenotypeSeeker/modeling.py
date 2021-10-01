@@ -1126,7 +1126,8 @@ class phenotypes():
                 )
 
         self.model_package['model'] = self.model_fitted
-        joblib.dump(self.model_file
+        self.model_package['pca'] = self.pca
+        joblib.dump(self.model_package, self.model_file)
         self.write_model_coefficients_to_file()
 
         if phenotypes.model_name_long == "decision tree":
