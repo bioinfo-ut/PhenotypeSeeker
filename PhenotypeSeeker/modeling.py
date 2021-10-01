@@ -1353,13 +1353,8 @@ class phenotypes():
         self.pca_explained_variance_ = self.pca_explained_variance_[PCs_to_keep]
         self.pca_explained_variance_ratio_ = self.pca_explained_variance_ratio_[PCs_to_keep]        
 
-        print(self.PCA_df)
-        print(self.pca_components_)
-        print(self.pca_explained_variance_)
-        print(self.pca_explained_variance_ratio_)
-
+        # Set up the outputs
         self.ML_df = self.PCA_df.assign(phenotype=self.ML_df['phenotype'])
-        print(self.ML_df)
         self.model_package['scaler'] = scaler
         self.model_package['PCA'] = pca
 
