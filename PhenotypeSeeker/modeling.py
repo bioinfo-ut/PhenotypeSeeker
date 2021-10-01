@@ -1284,6 +1284,9 @@ class phenotypes():
             self.ML_df['phenotype'] = [
                 sample.phenotypes[self.name] for sample in Input.samples.values()
                 ]
+            self.ML_df['weights'] = [
+                sample.phenotypes[self.weight] for sample in Input.samples.values()
+                ]
             self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
             self.ML_df.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
 
@@ -1302,7 +1305,7 @@ class phenotypes():
     def PCA_analysis(self):
 
         # Strandardization
-        df_to_scale = self.ML_df.drop(['phenotype'], axis=1)
+        df_to_scale = self.ML_df.drop(['phenotype', 'weights'], axis=1)
         scaler = StandardScaler()
         scaler.fit(df_to_scale)
         scaled_data = scaler.transform(df_to_scale)
@@ -1336,13 +1339,8 @@ class phenotypes():
 
         # Conduct the t-test analysis between PCs and phenotypes
         for column in self.PCA_df:
-            pass
-
-        # Plot first two PCs
-        plt.figure(figsize=(8,6))
-        plt.scatter(self.PCA_df["PC_1"], self.PCA_df["PC_2"], 'o')
-        plt.xlabel('PC_1')
-        plt.ylabel('PC_2')
+            print([self.ML_df.pehnotype == 1])
+            self.PCA_df[column][self.ML_df.pehnotype == 1]
 
         self.ML_df = self.PCA_df + self.ML_df['phenotype']
         print(self.ML_df)
