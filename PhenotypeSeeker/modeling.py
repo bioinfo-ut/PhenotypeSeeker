@@ -1348,8 +1348,9 @@ class phenotypes():
             t_statistic, pvalue, mean_x, mean_y = self.t_test(
                     x, y, x_weights, y_weights
                 )
+            print(t_statistic, pvalue)
 
-        self.ML_df = self.PCA_df.assign(self.ML_df['phenotype'])
+        self.ML_df = self.PCA_df.assign('phenotype'=self.ML_df['phenotype'])
         print(self.ML_df)
 
     def fit_model(self):
