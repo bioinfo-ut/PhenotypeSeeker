@@ -1325,7 +1325,7 @@ class phenotypes():
         # Filter PCs by explained variance
         PCs_to_keep = pca.explained_variance_ > 0.9
         self.PCA_df = self.PCA_df.loc[:, PCs_to_keep]
-        self.pca_components = pca.components_[PCs_to_keep]
+        self.pca_components_ = pca.components_[PCs_to_keep]
         self.pca_explained_variance_ = pca.explained_variance_[PCs_to_keep]
         self.pca_explained_variance_ratio_ = pca.explained_variance_ratio_[PCs_to_keep]
 
@@ -1336,7 +1336,7 @@ class phenotypes():
 
         # Conduct the t-test analysis between PCs and phenotypes
         for column in self.PCA_df:
-            print(column)
+            
 
         # Plot first two PCs
         plt.figure(figsize=(8,6))
