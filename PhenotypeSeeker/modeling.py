@@ -539,7 +539,7 @@ class stderr_print():
 
 class phenotypes():
 
-    model_package = []
+    model_package = {}
 
     scale = "binary"
 
@@ -1125,7 +1125,7 @@ class phenotypes():
                 '\n### Outputting the model to a model file! ###\n'
                 )
 
-        self.model_package.append(self.model_fitted)
+        self.model_package['model'] = self.model_fitted
         self.write_model_coefficients_to_file()
 
         if phenotypes.model_name_long == "decision tree":
@@ -1291,16 +1291,6 @@ class phenotypes():
                 ]
             self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
             self.ML_df.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
-
-            # for column in self.ML_df.columns[:-2]:
-            #     if (
-            #         ((self.ML_df[column] == 1) & (self.ML_df['phenotype'] == 1)).sum() / 
-            #         self.ML_df['phenotype'].sum() < 0.9
-            #         ):
-            #         self.ML_df.drop(columns=column, inplace=True)
-
-            # self.summary_file.write("Dataset:\n%s\n\n" % self.skl_dataset) 
-            # self.ML_df = self.ML_df.T.drop_duplicates().T
             self.ML_df.to_csv(self.name + "_" + self.model_name_short + "_df.csv")
 
     @timer
@@ -1336,7 +1326,7 @@ class phenotypes():
 
         # Conduct the t-test analysis between PCs and phenotypes
         PCs_to_keep = np.empty(self.PCA_df.shape[1])
-        for column in self.PCA_df:
+        for idx, column in enumerate(self.PCA_df):
             x = self.PCA_df[column][self.ML_df.phenotype == 1].values
             y = self.PCA_df[column][self.ML_df.phenotype == 0].values
             x_weights = self.ML_df['weights'][self.ML_df.phenotype == 1].values
@@ -1345,9 +1335,9 @@ class phenotypes():
                     x, y, x_weights, y_weights
                 )
             if pvalue < 0.05/self.PCA_df.shape[1]:
-                PCs_to_keep.append(True)
+                PCs_to_keep[idx] = True
             else:
-                PCs_to_keep.append(True)
+                PCs_to_keep[idx] = False
 
         # Filter PCs by association with phenotype
         self.PCA_df = self.PCA_df.loc[:, PCs_to_keep]
