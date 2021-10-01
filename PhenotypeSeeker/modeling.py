@@ -569,6 +569,9 @@ class phenotypes():
     n_splits_cv_inner = None
     testset_size = None
 
+    # PCA
+    pca = None
+
     no_results = []
 
     def __init__(self, name):
@@ -1330,6 +1333,9 @@ class phenotypes():
         print(self.pca.components_)
         print(self.pca.explained_variance_)
         print(self.pca.explained_variance_ratio_)
+
+        # Conduct the t-test analysis between PCs and phenotypes
+
 
         # Plot first two PCs
         plt.figure(figsize=(8,6))
