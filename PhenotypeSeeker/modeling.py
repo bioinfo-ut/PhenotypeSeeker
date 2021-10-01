@@ -1312,7 +1312,7 @@ class phenotypes():
             index=self.ML_df.index,
             )
         self.PCA_df.columns = [
-            'PC_' + str(i) for i in  range(1, 1 + self.PCA_df.shape[1])
+            'PC_' + str(i) for i in  range(1, 1 + PCA_df.shape[1])
             ]
 
         del scaled_data
@@ -1330,6 +1330,12 @@ class phenotypes():
         print(self.pca.components_)
         print(self.pca.explained_variance_)
         print(self.pca.explained_variance_ratio_)
+
+        # plot first three
+        plt.figure(figsize=(8,6))
+        plt.scatter(self.PCA_df["PC_1"], self.PCA_df["PC_2"], 'o')
+        plt.xlabel('PC_1')
+        plt.ylabel('PC_2')
 
         self.ML_df = self.PCA_df + self.ML_df['phenotype']
         print(self.ML_df)
