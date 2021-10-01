@@ -1336,7 +1336,7 @@ class phenotypes():
 
         # Conduct the t-test analysis between PCs and phenotypes
         for column in self.PCA_df:
-            
+            pass
 
         # Plot first two PCs
         plt.figure(figsize=(8,6))
