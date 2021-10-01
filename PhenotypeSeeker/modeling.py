@@ -1344,10 +1344,10 @@ class phenotypes():
 
         # Filter PCs by association with phenotype
         self.PCA_df = self.PCA_df.loc[:, PCs_to_keep]
-        # self.pca_components_ = pca.components_[PCs_to_keep]
-        self.pca_explained_variance_ = pca.explained_variance_[PCs_to_keep]
-        self.pca_explained_variance_ratio_ = pca.explained_variance_ratio_[PCs_to_keep]        
-        print(PCs_to_keep)
+        self.pca_components_ = self.pca.components_[PCs_to_keep]
+        self.pca_explained_variance_ = self.pca.explained_variance_[PCs_to_keep]
+        self.pca_explained_variance_ratio_ = self.pca.explained_variance_ratio_[PCs_to_keep]        
+
         print(self.PCA_df)
         print(self.pca_components_)
         print(self.pca_explained_variance_)
