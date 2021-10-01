@@ -1345,7 +1345,7 @@ class phenotypes():
             y = self.PCA_df[column][self.ML_df.phenotype == 0].values
             x_weights = self.ML_df['weights'][self.ML_df.phenotype == 1].values
             y_weights = self.ML_df['weights'][self.ML_df.phenotype == 0].values
-            t_statistic, pvalue, mean_x, mean_y =Samples.t_test(
+            t_statistic, pvalue, mean_x, mean_y = self.t_test(
                     x, y, x_weights, y_weights
                 )
 
