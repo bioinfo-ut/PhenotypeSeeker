@@ -539,6 +539,8 @@ class stderr_print():
 
 class phenotypes():
 
+    model_package = []
+
     scale = "binary"
 
     model_name_long = None
@@ -1123,7 +1125,7 @@ class phenotypes():
                 '\n### Outputting the model to a model file! ###\n'
                 )
 
-        joblib.dump(self.model_fitted, self.model_file)
+        self.model_package.append(self.model_fitted)
         self.write_model_coefficients_to_file()
 
         if phenotypes.model_name_long == "decision tree":
@@ -1342,7 +1344,7 @@ class phenotypes():
             t_statistic, pvalue, mean_x, mean_y = self.t_test(
                     x, y, x_weights, y_weights
                 )
-            if pvalue < 0.05/self.PCA.df.shape[1]:
+            if pvalue < 0.05/self.PCA_df.shape[1]:
                 PCs_to_keep.append(True)
             else:
                 PCs_to_keep.append(True)
