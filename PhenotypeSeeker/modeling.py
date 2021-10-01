@@ -1292,6 +1292,7 @@ class phenotypes():
             self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
             self.ML_df.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
             self.ML_df.to_csv(self.name + "_" + self.model_name_short + "_df.csv")
+            self.model_package['kmers'] = self.ML_df.columns[:-2]
 
     @timer
     def PCA_analysis(self):
@@ -1338,7 +1339,7 @@ class phenotypes():
                 PCs_to_keep[idx] = True
             else:
                 PCs_to_keep[idx] = False
-
+        print(PCs_to_keep)
         # Filter PCs by association with phenotype
         self.PCA_df = self.PCA_df.loc[:, PCs_to_keep]
         self.pca_components_ = pca.components_[PCs_to_keep]
@@ -1352,6 +1353,8 @@ class phenotypes():
 
         self.ML_df = self.PCA_df.assign(phenotype=self.ML_df['phenotype'])
         print(self.ML_df)
+        self.model_package['scaler'] = scaler
+        self.model_package['PCA'] = pca
 
     def fit_model(self):
         if self.scale == "continuous":
