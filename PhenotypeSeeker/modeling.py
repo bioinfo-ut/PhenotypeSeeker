@@ -1339,11 +1339,11 @@ class phenotypes():
 
         # Conduct the t-test analysis between PCs and phenotypes
         for column in self.PCA_df:
-            print([self.ML_df.pehnotype == 1])
-            x = self.PCA_df[column][self.ML_df.pehnotype == 1]
-            y = self.PCA_df[column][self.ML_df.pehnotype == 0]
-            x_weights = self.ML_df['weights'][self.ML_df.pehnotype == 1]
-            y_weights = self.ML_df['weights'][self.ML_df.pehnotype == 0]
+            print([self.ML_df.phenotype == 1])
+            x = self.PCA_df[column][self.ML_df.phenotype == 1]
+            y = self.PCA_df[column][self.ML_df.phenotype == 0]
+            x_weights = self.ML_df['weights'][self.ML_df.phenotype == 1]
+            y_weights = self.ML_df['weights'][self.ML_df.phenotype == 0]
 
 
         self.ML_df = self.PCA_df + self.ML_df['phenotype']
