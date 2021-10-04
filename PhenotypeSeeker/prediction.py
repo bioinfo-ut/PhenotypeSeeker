@@ -119,11 +119,13 @@ class Phenotypes():
         model = model_pkg['model']
         kmers = model_pkg['kmers']
 
+        pca = False
         pca_model = None
         scaler = None
         if model_pkg['pca']:
             pca_model = model_pkg['pca_model']
             scaler = model_pkg['scaler']
+            pca = True
         return cls(name, model, kmers, pca, pca_model, scaler)
 
     def set_kmer_db(self):
