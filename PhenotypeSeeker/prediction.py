@@ -156,7 +156,7 @@ class Phenotypes():
         
         with open("predictions_" + self.name + ".txt", "w+") as out:
             if self.pred_scale == "binary":
-                predict_proba = model.predict_proba(self.kmer_matrix)
+                predict_proba = self.model.predict_proba(self.kmer_matrix)
                 f1.write("Sample_ID\tpredicted_phenotype\t" \
                     "probability_for_predicted_class\n")
                 for sample, prediction, proba in zip(
