@@ -99,11 +99,12 @@ class Phenotypes():
     cutoff = 1
     no_phenotypes = 0
 
-    def __init__(self, name, model, kmers, pca_model, scaler):
+    def __init__(self, name, model, kmers, pca, pca_model, scaler):
         self.name = name
         self.model = model
         self.kmers = kmers
-        self.pca_model pca_model
+        self.pca = pca
+        self.pca_model = pca_model
         self.scaler = scaler
         self.kmer_matrix = None
 
@@ -115,14 +116,13 @@ class Phenotypes():
         model_pkg = joblib.load(model_adre)
         model = model_pkg['model']
         kmers = model_pkg['kmers']
-        kmers = model_pkg['kmers']
 
         pca_model = None
         scaler = None
         if model_pkg['pca']:
             pca_model = model_pkg['pca_model']
             scaler = model_pkg['scaler']
-        return cls(name, model, kmers, pca_model, scaler)
+        return cls(name, model, kmers, pca, pca_model, scaler)
 
     def set_kmer_db(self):
         with open("K-mer_lists/k-mer_db_" + self.name + ".txt", "w+") as db:
