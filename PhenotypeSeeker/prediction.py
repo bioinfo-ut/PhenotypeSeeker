@@ -102,7 +102,7 @@ class Phenotypes():
         self.pca = pca
         self.pca_model = pca_model
         self.scaler = scaler
-        self.kmer_matrix = None
+        self.matrix = None
 
         Phenotypes.no_phenotypes += 1
 
@@ -136,16 +136,16 @@ class Phenotypes():
             + ".txt" for sample in Input.samples.keys()
             ]
         for idx, line in enumerate(zip(*[open(counts) for counts in kmer_counts])):
-            self.pred_matrix[idx] = np.array([j.split()[2].strip() for j in line]).transpose()
+            self.matrix[idx] = np.array([j.split()[2].strip() for j in line]).transpose()
         if self.pca:
             self.scaled_matrix = self.scaler.transform(self.pred_matrix)
-            self.pred_matrix = self.pca_model.transform(self.scaled_matrix)
+            self.matrix = self.pca_model.transform(self.scaled_matrix)
 
     def predict(self):
 
         #Loading regression model
         model = joblib.load(self.model)
-        predictions = model.predict(self.kmer_matrix)
+        predictions = model.predict(self.matrix)
         
         with open("predictions_" + phenotype + ".txt", "w+") as out:
             if self.pred_type == "binary":
