@@ -139,7 +139,7 @@ class Phenotypes():
         if self.pca:            
             self.scaled_matrix = self.scaler.transform(self.matrix)
             self.matrix = self.pca_model.transform(self.scaled_matrix)
-            self.matrix = self.matrix.loc[:, self.PCs_to_keep]
+            self.matrix = self.matrix[:, self.PCs_to_keep]
 
     def predict(self):
 
