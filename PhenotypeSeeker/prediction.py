@@ -16,7 +16,7 @@ import joblib
 pkg_resources.require("numpy==1.18.1", "scikit-learn==0.22.1")
 warnings.showwarning = lambda *args, **kwargs: None
 
-class Input()
+class Input():
     
     samples = OrderedDict()
     phenos = OrderedDict()
