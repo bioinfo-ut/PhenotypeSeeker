@@ -27,7 +27,7 @@ class Input():
     def get_samples(cls, inputfile):
         # Parses info from tabulated input file into    samples directory.
         # Stores the order of samples in "samples_order" list.
-        with open(input_adre) as inp:
+        with open(inputfile) as inp:
             for line in inp:
                 if line.strip():
                     sample_name = line.split()[0]
