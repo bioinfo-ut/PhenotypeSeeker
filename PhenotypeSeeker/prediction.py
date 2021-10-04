@@ -100,7 +100,7 @@ class Phenotypes():
         self.pca = pca
         self.pca_model = pca_model
         self.scaler = scaler
-        self.matrix = np.empty(shape=(kmers.shape[0], Samples.no_samples))
+        self.matrix = np.empty(shape=(Samples.no_samples, kmers.shape[0]))
 
         Phenotypes.no_phenotypes += 1
 
@@ -134,10 +134,8 @@ class Phenotypes():
             + ".txt" for sample in Input.samples.keys()
             ]
         for idx, line in enumerate(zip(*[open(counts) for counts in kmer_counts])):
-            self.matrix[idx] = np.array([j.split()[2].strip() for j in line]).transpose()
-        if self.pca:
-            print(self.matrix.shape)
-            self.scaled_matrix = self.scaler.transform(self.matrix)
+            self.matrix[:, idx] = np.array([j.split()[2].strip() for j in line])
+        if self.pca:            self.scaled_matrix = self.scaler.transform(self.matrix)
             self.matrix = self.pca_model.transform(self.scaled_matrix)
 
     def predict(self):
