@@ -44,13 +44,6 @@ class Input():
                     pheno = line.split()[0]
                     cls.phenos[pheno] = Phenotypes.from_inputfile(line)
 
-    # ---------------------------------------------------------
-    # Functions for processing the command line input arguments
-
-    @classmethod
-    def Input_args(cutoff):
-        phenotypes.cutoff = cutoff
-
 class Samples():
 
     no_samples = 0
@@ -170,10 +163,11 @@ def prediction(args):
     sys.stderr.write("\x1b[1;1;101m######                   PhenotypeSeeker                   ######\x1b[0m\n")
     sys.stderr.write("\x1b[1;1;101m######                      prediction                       ######\x1b[0m\n\n")
 
+    phenotypes.cufoff = args.c
     call(["mkdir", "-p", "K-mer_lists"])
     Input.get_samples(args.inputfile1)
     Input.get_phenos(args.inputfile2)
-    Input.Input_args(args.c)
+
     
     for pheno in Input.phenos.values():
         sys.stderr.write(f"\x1b[1;32mPredicting the phenotypes for {pheno.name}.\x1b[0m\n")
