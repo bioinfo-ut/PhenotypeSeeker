@@ -125,7 +125,7 @@ class Phenotypes():
     def set_kmer_db(self):
         with open("K-mer_lists/k-mer_db_" + self.name + ".txt", "w+") as db:
             for kmer in self.kmers:
-                db.write(f"{kmer}\t1\t{kmer}")
+                db.write(f"{kmer}\t1\t{kmer}\n")
 
     def get_inp_matrix(self):
         # Takes all vectors with k-mer frequency information and inserts 
