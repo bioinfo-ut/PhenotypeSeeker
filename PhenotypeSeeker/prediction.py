@@ -139,7 +139,9 @@ class Phenotypes():
             + ".txt" for sample in Input.samples.keys()
             ]
         for line in zip(*[open(counts) for count in kmer_counts]):
-            kmer_matrix = np.array([j.split()[2].strip() for j in line]).transpose()
+            self.kmer_matrix = np.array([j.split()[2].strip() for j in line]).transpose()
+        if self.pca:
+            km
 
     def predict(self):
 
