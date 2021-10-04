@@ -83,7 +83,7 @@ class Samples():
                 counts.readline()
                 for line in counts:
                     splitted = line.split()
-                    if splitted[2] >= pheno.cutoff:
+                    if splitted[2] >= Phenotypes.cutoff:
                         splitted[2] = "1"
                         counts_filtered.write("\t".join(splitted)+"\n")
                     else:
@@ -162,7 +162,7 @@ class Phenotypes():
 
 def prediction(args):
     sys.stderr.write("\x1b[1;1;101m######                   PhenotypeSeeker                   ######\x1b[0m\n")
-    sys.stderr.write("\x1b[1;1;101m######                      prediction                       ######\x1b[0m\n\n")
+    sys.stderr.write("\x1b[1;1;101m######                     prediction                      ######\x1b[0m\n\n")
 
     Phenotypes.cufoff = args.c
     call(["mkdir", "-p", "K-mer_lists"])
