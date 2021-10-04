@@ -1358,7 +1358,7 @@ class phenotypes():
         self.pca_explained_variance_ratio_ = self.pca_explained_variance_ratio_[PCs_to_keep]        
 
         # Set up the outputs
-        self.ML_df = self.PCA_df.merge(self.ML_df[-2:])
+        self.ML_df = self.PCA_df.merge(self.ML_df[-2:], on='label')
         self.model_package['scaler'] = scaler
         self.model_package['pca_model'] = pca
 
