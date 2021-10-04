@@ -95,7 +95,7 @@ class Phenotypes():
 
     def __init__(
                 self, name, model, kmers, pca, pca_model, scaler,
-                PCs_to_keep, pred_type
+                PCs_to_keep, pred_scale
             ):
         self.name = name
         self.model = model
@@ -104,7 +104,7 @@ class Phenotypes():
         self.pca_model = pca_model
         self.scaler = scaler
         self.PCs_to_keep = PCs_to_keep
-        self.pred_type = pred_type
+        self.pred_scale = pred_scale
         self.matrix = np.empty(shape=(Samples.no_samples, kmers.shape[0]))
 
         Phenotypes.no_phenotypes += 1
@@ -123,10 +123,10 @@ class Phenotypes():
             pca_model = model_pkg['pca_model']
             scaler = model_pkg['scaler']
             PCs_to_keep = model_pkg['PCs_to_keep']
-            pred_type = model_pkg['pred_type']
+            pred_scale = model_pkg['pred_scale']
             pca = True
         return cls(
-                name, model, kmers, pca, pca_model, scaler, PCs_to_keep, pred_type
+                name, model, kmers, pca, pca_model, scaler, PCs_to_keep, pred_scale
             )
 
     def set_kmer_db(self):
@@ -155,7 +155,7 @@ class Phenotypes():
         predictions = self.model.predict(self.matrix)
         
         with open("predictions_" + self.name + ".txt", "w+") as out:
-            if self.pred_type == "binary":
+            if self.pred_scale == "binary":
                 predict_proba = model.predict_proba(self.kmer_matrix)
                 f1.write("Sample_ID\tpredicted_phenotype\t" \
                     "probability_for_predicted_class\n")
