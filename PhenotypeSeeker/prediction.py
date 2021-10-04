@@ -93,13 +93,14 @@ class Phenotypes():
     cutoff = 1
     no_phenotypes = 0
 
-    def __init__(self, name, model, kmers, pca, pca_model, scaler):
+    def __init__(self, name, model, kmers, pca, pca_model, scaler, PCs_to_keep):
         self.name = name
         self.model = model
         self.kmers = kmers
         self.pca = pca
         self.pca_model = pca_model
         self.scaler = scaler
+        self.PCs_to_keep = PCs_to_keep
         self.matrix = np.empty(shape=(Samples.no_samples, kmers.shape[0]))
 
         Phenotypes.no_phenotypes += 1
@@ -119,7 +120,7 @@ class Phenotypes():
             scaler = model_pkg['scaler']
             PCs_to_keep = model_pkg['PCs_to_keep']
             pca = True
-        return cls(name, model, kmers, pca, pca_model, scaler)
+        return cls(name, model, kmers, pca, pca_model, scaler, PCs_to_keep)
 
     def set_kmer_db(self):
         with open("K-mer_lists/k-mer_db_" + self.name + ".txt", "w+") as db:
