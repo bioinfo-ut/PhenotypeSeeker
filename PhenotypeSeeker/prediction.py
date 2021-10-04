@@ -37,8 +37,6 @@ class Input():
     @classmethod
     def get_phenos(cls, inputfile):
         # Parses info from tabulated input file into    samples directory.
-        # Stores the order of samples in "samples_order" list.
-        n_o_s = 0
         with open(inputfile) as inp:
             for line in inp:
                 if line.strip():
@@ -102,7 +100,7 @@ class Phenotypes():
         self.pca = pca
         self.pca_model = pca_model
         self.scaler = scaler
-        self.matrix = None
+        self.matrix = np.empty(shape=(kmers, Samples.no_samples))
 
         Phenotypes.no_phenotypes += 1
 
