@@ -20,6 +20,15 @@ import warnings
 pkg_resources.require("numpy==1.18.1", "scikit-learn==0.22.1")
 warnings.showwarning = lambda *args, **kwargs: None
 
+import time
+def timer(f):
+    def wrapper(*args):
+        start = time.time()
+        f(*args)
+        with open("log.txt", "a") as log:
+            log.write(f"Func {f} took {time.time() - start} secs\n")
+    return wrapper
+
 class Input():
     
     samples = OrderedDict()
@@ -60,6 +69,7 @@ class Samples():
             line.split()[0], line.split()[1]
         return cls(name, address)
 
+    @timer
     def map_samples(self, pheno):
         # Takes k-mers of model as feature space and maps input samples 
         # k-mer lists to that feature space. A vector of k-mers frequency 
@@ -71,7 +81,9 @@ class Samples():
             + "_k-mer_counts_" + pheno  + ".txt"], shell=True
             )
 
+    @timer
     def kmer_counts(self, pheno):
+        print(self.name)
         with open(
                 "K-mer_lists/" + self.name +
                 "_k-mer_counts_"+ pheno  + ".txt"
