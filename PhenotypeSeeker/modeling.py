@@ -1331,8 +1331,6 @@ class phenotypes():
         self.pca_explained_variance_ratio_ = pca.explained_variance_ratio_[PCs_to_keep]
 
         # Conduct the t-test analysis between PCs and phenotypes
-        PCs_to_keep = np.empty(self.PCA_df.shape[1], dtype=bool)
-
         for idx, column in enumerate(self.PCA_df):
             x = self.PCA_df[column][self.ML_df.phenotype == 1].values
             y = self.PCA_df[column][self.ML_df.phenotype == 0].values
@@ -1347,8 +1345,10 @@ class phenotypes():
                 self.ttest_pvalues.append(pvalue)
             else:
                 PCs_to_keep[idx] = False
+        self.model_package['PCs_to_keep'] = PCs_to_keep
 
         # Filter PCs by association with phenotype
+        PCs_to_keep = PCs_to_keep[:self.PCA_df.shape[1]]
         self.PCA_df = self.PCA_df.loc[:, PCs_to_keep]
         self.pca_components_ = self.pca_components_[PCs_to_keep]
         self.pca_explained_variance_ = self.pca_explained_variance_[PCs_to_keep]
