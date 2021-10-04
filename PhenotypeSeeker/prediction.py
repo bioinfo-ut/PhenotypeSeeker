@@ -147,7 +147,7 @@ class Phenotypes():
         #Loading regression model
         predictions = self.model.predict(self.matrix)
         
-        with open("predictions_" + phenotype + ".txt", "w+") as out:
+        with open("predictions_" + self.name + ".txt", "w+") as out:
             if self.pred_type == "binary":
                 predict_proba = model.predict_proba(self.kmer_matrix)
                 f1.write("Sample_ID\tpredicted_phenotype\t" \
