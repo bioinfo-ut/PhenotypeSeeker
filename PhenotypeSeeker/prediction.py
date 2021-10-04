@@ -41,7 +41,7 @@ class Input():
         with open(inputfile) as inp:
             for line in inp:
                 if line.strip():
-                    sample_name = line.split()[0]
+                    pheno = line.split()[0]
                     cls.phenos[pheno] = Phenotypes.from_inputfile(line)
 
     # ---------------------------------------------------------
