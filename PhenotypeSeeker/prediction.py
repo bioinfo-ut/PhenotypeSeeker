@@ -5,6 +5,7 @@ __version__ = "0.7.3"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
+from functools import partial
 from subprocess import call
 from collections import OrderedDict
 import math
