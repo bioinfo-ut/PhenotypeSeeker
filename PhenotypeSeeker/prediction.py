@@ -69,7 +69,6 @@ class Samples():
             line.split()[0], line.split()[1]
         return cls(name, address)
 
-    @timer
     def map_samples(self, pheno):
         # Takes k-mers of model as feature space and maps input samples 
         # k-mer lists to that feature space. A vector of k-mers frequency 
@@ -81,7 +80,6 @@ class Samples():
             + "_k-mer_counts_" + pheno  + ".txt"], shell=True
             )
 
-    @timer
     def kmer_counts(self, pheno):
         print(self.name)
         with open(
@@ -182,6 +180,7 @@ class Phenotypes():
                 for sample, prediction in zip(Input.samples.keys(), predictions):
                     out.write(sample + "\t" + str(prediction) + "\n")
 
+@timer
 def prediction(args):
     sys.stderr.write("\x1b[1;1;101m######                   PhenotypeSeeker                   ######\x1b[0m\n")
     sys.stderr.write("\x1b[1;1;101m######                     prediction                      ######\x1b[0m\n\n")
