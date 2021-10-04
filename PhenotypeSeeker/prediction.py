@@ -142,8 +142,7 @@ class Phenotypes():
     def predict(self):
 
         #Loading regression model
-        model = joblib.load(self.model)
-        predictions = model.predict(self.matrix)
+        predictions = self.model.predict(self.matrix)
         
         with open("predictions_" + phenotype + ".txt", "w+") as out:
             if self.pred_type == "binary":
