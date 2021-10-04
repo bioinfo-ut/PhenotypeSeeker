@@ -6,6 +6,7 @@ __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
 from subprocess import call
+from collections import OrderedDict
 import math
 
 import warnings
