@@ -1356,9 +1356,29 @@ class phenotypes():
         self.pca_explained_variance_ratio_ = self.pca_explained_variance_ratio_[PCs_to_keep]        
 
         # Set up the outputs
-        self.ML_df = pd.concat([self.PCA_df, self.ML_df.iloc[:,-2:]], axis=1)
+        self.ML_df = pd.concat([self.PCA_df, self.ML_df.iloc[:,-2:]])
         self.model_package['scaler'] = scaler
         self.model_package['pca_model'] = pca
+
+    def fit_model(self):
+        if self.pred_scale == "continuous":
+            if self.model_name_short == "linreg":
+                if self.penalty in ("L1", "elasticnet"):
+                    self.model_fitted = self.best_model.fit(self.X_train.values, self.y_train.values.flatten())
+                elif self.penalty == "L2":
+                    self.model_fitted = self.best_model.fit(self.X_train.values, self.y_train.values.flatten())
+            elif self.model_name_short == "XGBR":
+                self.model_fitted = self.best_model.fit(self.X_train.values, self.y_train.values.flatten())
+        elif self.pred_scale == "binary":
+            if self.model_name_short == "XGBC":
+                self.model_fitted = self.best_model.fit(
+                    self.X_train.values, self.y_train.values.flatten()
+                    )
+            else:
+                self.model_fitted = self.best_model.fit(
+                    self.X_train, self.y_train.values.flatten()
+                    )
+
 
     def cross_validation_results(self):
         if self.model_name_short not in ("NB", "XGBC", "XGBR"):
