@@ -8,6 +8,7 @@ __email__ = "erki.aun@ut.ee"
 from functools import partial
 from subprocess import call
 from collections import OrderedDict
+from multiprocess import Pool
 import math
 
 import joblib
@@ -181,8 +182,10 @@ def prediction(args):
     for pheno in Input.phenos.values():
         sys.stderr.write(f"\x1b[1;32mPredicting the phenotypes for {pheno.name}.\x1b[0m\n")
         pheno.set_kmer_db()
-        [x.map_samples(pheno.name) for x in Input.samples.values()]
-        [x.kmer_counts(pheno.name) for x in Input.samples.values()]
+        # [x.map_samples(pheno.name) for x in Input.samples.values()]
+        # [x.kmer_counts(pheno.name) for x in Input.samples.values()]
+        with Pool(args.num_threads) as p:
+            p.map(lambda x: x.map_samples(pheno.name), Input.samples.values())
         pheno.get_inp_matrix()
         pheno.predict()
 

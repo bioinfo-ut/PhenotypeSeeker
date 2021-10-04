@@ -302,6 +302,10 @@ def Main():
     	help="K-mer frequency cut-off. Must be an integer (default = 1)."
     	)
     parser_b.add_argument(
+        "-nt", "--num_threads", type=int, metavar='INT', default=8,
+        help='Specify the number of threads the program is run on (default 8).'
+        )
+    parser_b.add_argument(
     	"-h", "--help", action="help",
     	help="Show this help message and exit."
     	)
