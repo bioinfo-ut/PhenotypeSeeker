@@ -1358,8 +1358,7 @@ class phenotypes():
         self.pca_explained_variance_ratio_ = self.pca_explained_variance_ratio_[PCs_to_keep]        
 
         # Set up the outputs
-        self.ML_df = self.PCA_df.merge(self.ML_df[-2:], left_index=True, right_index=True)
-        self.model_package['scaler'] = scaler
+        self.ML_df = pd.concat(self.PCA_df, self.ML_df[-2:])
         self.model_package['pca_model'] = pca
 
     def fit_model(self):
