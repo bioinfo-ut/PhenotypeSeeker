@@ -1109,8 +1109,6 @@ class phenotypes():
                 '\nThe final output model training on the whole dataset:\n'
                 )
             self.X_train, self.y_train = self.split_df(self.ML_df)
-            print(self.ML_df.head)
-            print(self.y_train)
             self.assert_n_splits_cv_inner(
                 phenotypes.n_splits_cv_inner, self.ML_df, self.y_train
                 )
@@ -1359,27 +1357,8 @@ class phenotypes():
 
         # Set up the outputs
         self.ML_df = pd.concat([self.PCA_df, self.ML_df.iloc[:,-2:]], axis=1)
+        self.model_package['scaler'] = scaler
         self.model_package['pca_model'] = pca
-
-    def fit_model(self):
-        if self.pred_scale == "continuous":
-            if self.model_name_short == "linreg":
-                if self.penalty in ("L1", "elasticnet"):
-                    self.model_fitted = self.best_model.fit(self.X_train.values, self.y_train.values.flatten())
-                elif self.penalty == "L2":
-                    self.model_fitted = self.best_model.fit(self.X_train.values, self.y_train.values.flatten())
-            elif self.model_name_short == "XGBR":
-                self.model_fitted = self.best_model.fit(self.X_train.values, self.y_train.values.flatten())
-        elif self.pred_scale == "binary":
-            if self.model_name_short == "XGBC":
-                self.model_fitted = self.best_model.fit(
-                    self.X_train.values, self.y_train.values.flatten()
-                    )
-            else:
-                self.model_fitted = self.best_model.fit(
-                    self.X_train, self.y_train.values.flatten()
-                    )
-
 
     def cross_validation_results(self):
         if self.model_name_short not in ("NB", "XGBC", "XGBR"):
