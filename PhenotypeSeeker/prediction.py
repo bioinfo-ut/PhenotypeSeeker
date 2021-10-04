@@ -135,7 +135,7 @@ class Phenotypes():
             ]
         for idx, line in enumerate(zip(*[open(counts) for counts in kmer_counts])):
             self.matrix[:, idx] = np.array([j.split()[2].strip() for j in line])
-        print(self.matrix)
+        print(self.matrix.shape)
         if self.pca:            
             self.scaled_matrix = self.scaler.transform(self.matrix)
             self.matrix = self.pca_model.transform(self.scaled_matrix)
