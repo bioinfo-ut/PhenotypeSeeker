@@ -65,8 +65,6 @@ class Samples():
         # Takes k-mers of model as feature space and maps input samples 
         # k-mer lists to that feature space. A vector of k-mers frequency 
         # information is created for every sample.
-        print("Hola")
-        print(self.name)
         call(
             ["gmer_counter -db K-mer_lists/k-mer_db_" + pheno
             + ".txt " + self.address + " > K-mer_lists/" + self.name 
@@ -175,9 +173,7 @@ def prediction(args):
     for pheno in Input.phenos.values():
         sys.stderr.write(f"\x1b[1;32mPredicting the phenotypes for {pheno.name}.\x1b[0m\n")
         pheno.set_kmer_db()
-        list(map(partial(
-            lambda x: x.map_samples(), pheno.name),
-            Input.samples.values()))
+        [lambda x: x.map_samples(pheno) for x in Input.samples.values()]
         list(map(partial(
             lambda x: x.kmer_counts(), pheno.name),
             Input.samples.values()))
