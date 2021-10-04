@@ -1277,6 +1277,7 @@ class phenotypes():
                 self.name + "_" + self.model_name_short + "_df.csv", index_col=0
                 )
             self.ML_df.index = self.ML_df.index.astype(str)
+            self.model_package['kmers'] = self.ML_df.columns[:-2]
         elif len(self.kmers_for_ML) == 0:
             self.summary_file.write("No k-mers passed the step of k-mer filtering for " \
                 "machine learning modelling.\n")
@@ -1688,7 +1689,6 @@ class phenotypes():
                 min_class = np.min(np.bincount(ML_df['phenotype'].values))
                 min_cv_inner = (min_class - math.ceil(min_class / self.n_splits_cv_outer))
             else:
-                print(y_train)
                 min_cv_inner = np.min(np.bincount(y_train))
         self.n_splits_cv_inner = np.min([min_cv_inner, n_splits_cv_inner])
 
