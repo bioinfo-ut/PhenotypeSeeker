@@ -157,16 +157,16 @@ class Phenotypes():
         with open("predictions_" + self.name + ".txt", "w+") as out:
             if self.pred_scale == "binary":
                 predict_proba = self.model.predict_proba(self.matrix)
-                f1.write("Sample_ID\tpredicted_phenotype\t" \
+                out.write("Sample_ID\tpredicted_phenotype\t" \
                     "probability_for_predicted_class\n")
                 for sample, prediction, proba in zip(
                         Input.samples.keys(), predictions, predict_proba
                         ): 
-                    f1.write(f"{sample}\t{str(prediction)}\t{str(round(proba[1], 2))}\n")
+                    out.write(f"{sample}\t{str(prediction)}\t{str(round(proba[1], 2))}\n")
             else:
-                f1.write("Sample_ID\tpredicted_phenotype\n")
+                out.write("Sample_ID\tpredicted_phenotype\n")
                 for sample, prediction in zip(Input.samples.keys(), predictions):
-                    f1.write(sample + "\t" + str(prediction) + "\n")
+                    out.write(sample + "\t" + str(prediction) + "\n")
 
 def prediction(args):
     sys.stderr.write("\x1b[1;1;101m######                   PhenotypeSeeker                   ######\x1b[0m\n")
