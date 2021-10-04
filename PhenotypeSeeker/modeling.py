@@ -1677,12 +1677,12 @@ class phenotypes():
             self.n_splits_cv_outer = n_splits_cv_outer
 
     def assert_n_splits_cv_inner(self, n_splits_cv_inner, ML_df, y_train=None):
-        if self.scale == "continuous":
+        if self.pred_scale == "continuous":
             if self.n_splits_cv_outer:
                 min_cv_inner = self.no_samples - math.ceil(self.no_samples / self.n_splits_cv_outer)
             else:
                 min_cv_inner = len(y_train)
-        elif self.scale == "binary":
+        elif self.pred_scale == "binary":
             if self.n_splits_cv_outer:
                 min_class = np.min(np.bincount(ML_df['phenotype'].values))
                 min_cv_inner = (min_class - math.ceil(min_class / self.n_splits_cv_outer))
