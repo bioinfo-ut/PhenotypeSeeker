@@ -1142,7 +1142,7 @@ class phenotypes():
 
     @classmethod
     def split_df(cls, df):
-        return df.iloc[:,0:-2], df.iloc[:,-2:-1]
+        return df.iloc[:,0:-2], df.iloc[:,-1]
 
     def set_model(self):
         if self.pred_scale == "continuous":
@@ -1288,11 +1288,11 @@ class phenotypes():
                 self.ML_df.sort_values('p_val', axis=1, ascending=True, inplace=True)
                 self.ML_df = self.ML_df.iloc[:,:self.kmer_limit]
             self.ML_df.drop('p_val', inplace=True)
-            self.ML_df['phenotype'] = [
-                sample.phenotypes[self.name] for sample in Input.samples.values()
-                ]
             self.ML_df['weights'] = [
                 sample.weight for sample in Input.samples.values()
+                ]
+            self.ML_df['phenotype'] = [
+                sample.phenotypes[self.name] for sample in Input.samples.values()
                 ]
             self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
             self.ML_df.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
@@ -1355,6 +1355,7 @@ class phenotypes():
         self.pca_explained_variance_ratio_ = self.pca_explained_variance_ratio_[PCs_to_keep]        
 
         # Set up the outputs
+        self.ML_df = self.PCA_df.assign(phenotype=self.ML_df['weights'])
         self.ML_df = self.PCA_df.assign(phenotype=self.ML_df['phenotype'])
         self.model_package['scaler'] = scaler
         self.model_package['pca_model'] = pca
