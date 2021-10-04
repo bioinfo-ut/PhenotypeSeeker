@@ -34,11 +34,11 @@ class Input():
                     cls.samples[sample_name] = Samples.from_inputfile(line)
 
     @classmethod
-    def get_phenos(cls, inputfil):
+    def get_phenos(cls, inputfile):
         # Parses info from tabulated input file into    samples directory.
         # Stores the order of samples in "samples_order" list.
         n_o_s = 0
-        with open(inputfilename) as inp:
+        with open(inputfile) as inp:
             for line in inp:
                 if line.strip():
                     sample_name = line.split()[0]
