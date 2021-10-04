@@ -1109,6 +1109,7 @@ class phenotypes():
                 '\nThe final output model training on the whole dataset:\n'
                 )
             self.X_train, self.y_train = self.split_df(self.ML_df)
+            print(self.y_train)
             self.assert_n_splits_cv_inner(
                 phenotypes.n_splits_cv_inner, self.ML_df, self.y_train
                 )
