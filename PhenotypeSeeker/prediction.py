@@ -135,7 +135,7 @@ class Phenotypes():
             "K-mer_lists/" + sample + "_k-mer_counts_filtered_" + self.name
             + ".txt" for sample in Input.samples.keys()
             ]
-        for line in zip(*[open(counts) for count in kmer_counts]):
+        for line in zip(*[open(counts) for counts in kmer_counts]):
             self.kmer_matrix = np.array([j.split()[2].strip() for j in line]).transpose()
         if self.pca:
             km
