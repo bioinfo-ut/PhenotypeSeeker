@@ -11,13 +11,14 @@ import math
 import os
 import sys
 import warnings
-warnings.showwarning = lambda *args, **kwargs: None
-
 import pkg_resources
-pkg_resources.require(
-    "numpy==1.18.1", "Biopython==1.76", "pandas==1.0.1", "xgboost==1.0.1", "scipy==1.4.1",
-    "scikit-learn==0.22.1", "ete3==3.1.1", "multiprocess==0.70.9"
-    )
+import joblib
+import matplotlib
+import matplotlib.pyplot as plt
+import xgboost as xgb
+import Bio
+import numpy as np
+import pandas as pd
 
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor, _DistanceMatrix
 from collections import OrderedDict
@@ -25,7 +26,6 @@ from ete3 import Tree
 from multiprocess import Manager, Pool, Value
 from scipy import stats
 from sklearn.decomposition import PCA
-from sklearn.externals import joblib
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier, plot_tree
 from sklearn.linear_model import (Lasso, LogisticRegression, Ridge, ElasticNet,
@@ -44,13 +44,12 @@ from sklearn.model_selection import (
     )
 from functools import partial
 
-import matplotlib
 matplotlib.use('agg')
-import matplotlib.pyplot as plt
-import xgboost as xgb
-import Bio
-import numpy as np
-import pandas as pd
+warnings.showwarning = lambda *args, **kwargs: None
+pkg_resources.require(
+    "numpy==1.18.1", "Biopython==1.76", "pandas==1.0.1", "xgboost==1.0.1", "scipy==1.4.1",
+    "scikit-learn==0.22.1", "ete3==3.1.1", "multiprocess==0.70.9"
+    )
 
 import time
 def timer(f):
@@ -117,7 +116,7 @@ class Input():
     def _set_phenotype_values(cls, take_logs):
         for sample in cls.samples.values():
             for phenotype in cls.phenotypes_to_analyse.values():
-                if phenotypes.scale == "continuous":
+                if phenotypes.pred_scale == "continuous":
                     try:
                         sample.phenotypes[phenotype.name] = float(sample.phenotypes[phenotype.name])
                         if take_logs:
@@ -126,7 +125,7 @@ class Input():
                                 )
                     except:
                         phenotype.no_samples -= 1
-                elif phenotypes.scale == "binary":
+                elif phenotypes.pred_scale == "binary":
                     try:
                         sample.phenotypes[phenotype.name] = int(sample.phenotypes[phenotype.name])
                     except:
@@ -189,14 +188,14 @@ class Input():
 
     @staticmethod
     def get_model_name(regressor, binary_classifier):
-        if phenotypes.scale == "continuous":
+        if phenotypes.pred_scale == "continuous":
             if regressor == "lin":
                 phenotypes.model_name_long = "linear regression"
                 phenotypes.model_name_short = "linreg"
             elif regressor == "XGBR":
                 phenotypes.model_name_long = "XGBRegressor"
                 phenotypes.model_name_short = "XGBR"
-        elif phenotypes.scale == "binary":
+        elif phenotypes.pred_scale == "binary":
             if binary_classifier == "log":
                 phenotypes.model_name_long = "logistic regression"
                 phenotypes.model_name_short = "log_reg"
@@ -254,7 +253,7 @@ class Input():
 
     @staticmethod
     def get_logreg_solver(logreg_solver):
-        if phenotypes.scale == "binary":
+        if phenotypes.pred_scale == "binary":
             if phenotypes.model_name_short == "log_reg":
                 if phenotypes.penalty == "L1":
                     if logreg_solver == None:
@@ -296,9 +295,19 @@ class Samples():
         self.address = address
         self.phenotypes = phenotypes
         self.weight = weight
-    
 
         Samples.no_samples += 1
+
+    @classmethod
+    def from_inputfile(cls, line):
+        sample_phenotypes = {}
+        name, address, phenotype_list = \
+            line.split()[0], line.split()[1], line.split()[2:]
+        if not all(x == "0" or x == "1" or x == "NA" for x in phenotype_list):
+            phenotypes.pred_scale = "continuous"
+        for i,j in zip(cls.phenotypes, phenotype_list):
+            sample_phenotypes[i] = j
+        return cls(name, address, sample_phenotypes)
 
     def get_kmer_lists(self):
         # Makes "K-mer_lists" directory where all lists are stored.
@@ -346,17 +355,6 @@ class Samples():
         stderr_print.currentSampleNum.value += 1
         Input.lock.release()
         stderr_print.print_progress("samples mapped.")
-
-    @classmethod
-    def from_inputfile(cls, line):
-        sample_phenotypes = {}
-        name, address, phenotype_list = \
-            line.split()[0], line.split()[1], line.split()[2:]
-        if not all(x == "0" or x == "1" or x == "NA" for x in phenotype_list):
-            phenotypes.scale = "continuous"
-        for i,j in zip(cls.phenotypes, phenotype_list):
-            sample_phenotypes[i] = j
-        return cls(name, address, sample_phenotypes)
 
     @classmethod
     def get_feature_vector(cls):
@@ -541,7 +539,7 @@ class phenotypes():
 
     model_package = {}
 
-    scale = "binary"
+    pred_scale = "binary"
 
     model_name_long = None
     model_name_short = None
@@ -630,7 +628,7 @@ class phenotypes():
     # Functions for calculating the association test results for kmers.
     @classmethod
     def kmer_testing_setup(cls):
-        if phenotypes.scale == "continuous":
+        if phenotypes.pred_scale == "continuous":
             sys.stderr.write("\n\x1b[1;32mConducting the k-mer specific Welch t-tests:\x1b[0m\n")
             sys.stderr.flush()
         else:
@@ -675,7 +673,7 @@ class phenotypes():
         counter = 0
 
         mt_code = split_of_kmer_lists[0][-5:]
-        if phenotypes.scale == "continuous":
+        if phenotypes.pred_scale == "continuous":
             test_results_file = open(
                 "t-test_results_" + self.name + "_" + mt_code + ".txt", "w"
                 )
@@ -695,12 +693,12 @@ class phenotypes():
             kmer = line[0].split()[0]
             kmer_presence_vector = [j.split()[1].strip() for j in line]
 
-            if phenotypes.scale == "binary":
+            if phenotypes.pred_scale == "binary":
                 pvalue = self.conduct_chi_squared_test(
                     kmer, kmer_presence_vector,
                     test_results_file, Input.samples.values()
                     )
-            elif phenotypes.scale == "continuous":
+            elif phenotypes.pred_scale == "continuous":
                 pvalue = self.conduct_t_test(
                     kmer, kmer_presence_vector,
                     test_results_file, Input.samples.values()
@@ -890,7 +888,7 @@ class phenotypes():
             )
 
     def concatenate_test_files(self, phenotype):
-        if phenotypes.scale == "continuous":
+        if phenotypes.pred_scale == "continuous":
             test_results = "t-test_results_"
         else:
             test_results = "chi-squared_test_results_"
@@ -1002,13 +1000,13 @@ class phenotypes():
 
     @staticmethod
     def write_headerline(outputfile):
-        if phenotypes.scale == "continuous":
+        if phenotypes.pred_scale == "continuous":
             outputfile.write(
                 "K-mer\tWelch's_t-statistic\tp-value\t+_group_mean\
                 \t-_group_mean\tNo._of_samples_with_k-mer\
                 \tSamples_with_k-mer\n"
                 )
-        elif phenotypes.scale == "binary":
+        elif phenotypes.pred_scale == "binary":
             outputfile.write(
                 "K-mer\tChi-square_statistic\tp-value\
                 \tNo._of_samples_with_k-mer\tSamples_with_k-mer\n"
@@ -1026,9 +1024,9 @@ class phenotypes():
         if phenotypes.n_splits_cv_outer:
             self.assert_n_splits_cv_outer(phenotypes.n_splits_cv_outer, self.ML_df)
             self.assert_n_splits_cv_inner(phenotypes.n_splits_cv_inner, self.ML_df)
-            if phenotypes.scale == "continuous":
+            if phenotypes.pred_scale == "continuous":
                 kf = KFold(n_splits=self.n_splits_cv_outer)               
-            elif phenotypes.scale == "binary":
+            elif phenotypes.pred_scale == "binary":
                 kf = StratifiedKFold(n_splits=self.n_splits_cv_outer)
             fold = 0
             for train_index, test_index in kf.split(
@@ -1057,7 +1055,7 @@ class phenotypes():
                 '''\n### Outputting the last model to a model file! ###\n'''
                 )
 
-            if self.scale == "continuous":
+            if self.pred_scale == "continuous":
                 self.summary_file.write(
                     "\nMean performance metrics over all train splits: \n\n"
                     )
@@ -1066,7 +1064,7 @@ class phenotypes():
                     "\nMean performance metrics over all test splits: \n\n"
                     )
                 self.mean_model_performance_regressor(self.metrics_dict_test)
-            elif self.scale == "binary":
+            elif self.pred_scale == "binary":
                 self.summary_file.write(
                     "\nMean performance metrics over all train splits: \n\n"
                     )
@@ -1077,9 +1075,9 @@ class phenotypes():
                 self.mean_model_performance_classifier(self.metrics_dict_test)
 
         elif self.testset_size:
-            if phenotypes.scale == "continuous":
+            if phenotypes.pred_scale == "continuous":
                 stratify = None
-            elif phenotypes.scale == "binary":
+            elif phenotypes.pred_scale == "binary":
                 stratify = self.ML_df['phenotype'].values
             (
             self.ML_df_train, self.ML_df_test
@@ -1127,9 +1125,12 @@ class phenotypes():
                 '\n### Outputting the model to a model file! ###\n'
                 )
 
+        # Set and dump model package
         self.model_package['model'] = self.model_fitted
         self.model_package['pca'] = self.pca
+        self.model_package['pred_scale'] = self.pred_scale
         joblib.dump(self.model_package, self.model_file)
+
         self.write_model_coefficients_to_file()
 
         if phenotypes.model_name_long == "decision tree":
@@ -1144,7 +1145,7 @@ class phenotypes():
         return df.iloc[:,0:-1], df.iloc[:,-1]
 
     def set_model(self):
-        if self.scale == "continuous":
+        if self.pred_scale == "continuous":
             if self.model_name_short == "linreg":
                 # Defining linear regression parameters
 
@@ -1158,7 +1159,7 @@ class phenotypes():
                         )
             elif self.model_name_short == "XGBR":
                 self.model = xgb.XGBRegressor()
-        elif self.scale == "binary":
+        elif self.pred_scale == "binary":
             if self.model_name_long == "logistic regression":
                 #Defining logistic regression parameters
                 if self.penalty == "L1":
@@ -1191,11 +1192,11 @@ class phenotypes():
                 self.model = xgb.XGBClassifier()
 
     def set_hyperparameters(self):
-        if self.scale == "continuous":
+        if self.pred_scale == "continuous":
             if self.model_name_short == "linreg":
                 # Defining linear regression parameters    
                 self.hyper_parameters = {'alpha': self.alphas}
-        elif self.scale == "binary":
+        elif self.pred_scale == "binary":
             if self.model_name_long == "logistic regression":
                 #Defining logistic regression parameters
                 if self.penalty == "L1" or "L2":
@@ -1229,14 +1230,14 @@ class phenotypes():
                     }
 
     def get_best_model(self):
-        if self.scale == "continuous":
+        if self.pred_scale == "continuous":
             if self.model_name_short == "linreg":
                 self.best_model = GridSearchCV(
                     self.model, self.hyper_parameters, cv=self.n_splits_cv_inner
                     )
             elif self.model_name_short == "XGBR":
                 self.best_model = self.model
-        elif self.scale == "binary":
+        elif self.pred_scale == "binary":
             if self.model_name_long == "logistic regression":
                 self.best_model = GridSearchCV(
                     self.model, self.hyper_parameters, cv=self.n_splits_cv_inner
@@ -1356,10 +1357,10 @@ class phenotypes():
         # Set up the outputs
         self.ML_df = self.PCA_df.assign(phenotype=self.ML_df['phenotype'])
         self.model_package['scaler'] = scaler
-        self.model_package['PCA'] = pca
+        self.model_package['pca_model'] = pca
 
     def fit_model(self):
-        if self.scale == "continuous":
+        if self.pred_scale == "continuous":
             if self.model_name_short == "linreg":
                 if self.penalty in ("L1", "elasticnet"):
                     self.model_fitted = self.best_model.fit(self.X_train.values, self.y_train.values.flatten())
@@ -1367,7 +1368,7 @@ class phenotypes():
                     self.model_fitted = self.best_model.fit(self.X_train.values, self.y_train.values.flatten())
             elif self.model_name_short == "XGBR":
                 self.model_fitted = self.best_model.fit(self.X_train.values, self.y_train.values.flatten())
-        elif self.scale == "binary":
+        elif self.pred_scale == "binary":
             if self.model_name_short == "XGBC":
                 self.model_fitted = self.best_model.fit(
                     self.X_train.values, self.y_train.values.flatten()
@@ -1381,9 +1382,9 @@ class phenotypes():
     def cross_validation_results(self):
         if self.model_name_short not in ("NB", "XGBC", "XGBR"):
             self.summary_file.write('Parameters:\n%s\n\n' % self.model)
-            if self.scale == "continuous":
+            if self.pred_scale == "continuous":
                 self.summary_file.write("Grid scores (R2 score) on development set: \n")
-            elif self.scale == "binary":
+            elif self.pred_scale == "binary":
                 self.summary_file.write("Grid scores (mean accuracy) on development set: \n")
             means = self.model_fitted.cv_results_['mean_test_score']
             stds = self.model_fitted.cv_results_['std_test_score']
@@ -1409,9 +1410,9 @@ class phenotypes():
                     ))
         self.summary_file.write('\n')
 
-        if self.scale == "continuous":
+        if self.pred_scale == "continuous":
             self.model_performance_regressor(dataset, labels.values.flatten(), predictions, metrics_dict)
-        elif self.scale == "binary":
+        elif self.pred_scale == "binary":
             self.model_performance_classifier(dataset, labels.values.flatten(), predictions, metrics_dict)
 
     def model_performance_regressor(self, dataset, labels, predictions, metrics_dict):
@@ -1575,11 +1576,16 @@ class phenotypes():
 
     def write_model_coefficients_to_file(self):
         if self.pca == True:
-            self.coeff_file.write("PC\tcoef._in_" + self.model_name_short + \
-                "_model\texplained_variance\texplained_variance_ratio\n")
+            self.coeff_file.write(
+                "PC\tcoef._in_" + self.model_name_short + \
+                "_model\texplained_variance\texplained_variance_ratio" + \
+                "\tt-test_statistic\tt-test_pvalue\n"
+                )
         else:
-            self.coeff_file.write("K-mer\tcoef._in_" + self.model_name_short + \
-                "_model\tNo._of_samples_with_k-mer\tSamples_with_k-mer\n")
+            self.coeff_file.write(
+                "K-mer\tcoef._in_" + self.model_name_short + \
+                "_model\tNo._of_samples_with_k-mer\tSamples_with_k-mer\n"
+                )
         self.ML_df.drop('phenotype', axis=1, inplace=True)
         if self.model_name_short == "linreg":
             dself.ML_df.loc['coefficient'] = \
@@ -1604,9 +1610,9 @@ class phenotypes():
 
             if self.pca:
                 self.coeff_file.write(
-                    f"""{predictor}\t{coef}\t{self.pca_explained_variance_[idx]}
-                    \t{self.pca_explained_variance_ratio_[idx]}
-                    \t{self.ttest_statistics[idx]}\t{self.ttest_pvalues[idx]}\n"""
+                    f"{predictor}\t{coef}\t{self.pca_explained_variance_[idx]}" + \
+                    f"\t{self.pca_explained_variance_ratio_[idx]}" + \
+                    f"\t{self.ttest_statistics[idx]}\t{self.ttest_pvalues[idx]}\n"
                     )
             else:
                 samples_with_kmer = \
@@ -1657,13 +1663,13 @@ class phenotypes():
         return accuracy
 
     def assert_n_splits_cv_outer(self, n_splits_cv_outer, ML_df):
-        if phenotypes.scale == "continuous" and (n_splits_cv_outer > self.no_samples // 2):
+        if self.pred_scale == "continuous" and (n_splits_cv_outer > self.no_samples // 2):
             self.n_splits_cv_outer = self.no_samples // 2
             sys.stderr.write("\x1b[1;33mWarning! The 'n_splits_cv_outer' parameter is too high to \n" \
                     "leave the required 2 samples into test set for each split!\x1b[0m\n")
             sys.stderr.write("\x1b[1;33mSetting number of train/test splits equal to " \
                 + str(self.n_splits_cv_outer) + "!\x1b[0m\n\n")
-        elif phenotypes.scale == "binary" and np.min(np.bincount(ML_df['phenotype'].values)) < n_splits_cv_outer:
+        elif self.pred_scale == "binary" and np.min(np.bincount(ML_df['phenotype'].values)) < n_splits_cv_outer:
             self.n_splits_cv_outer = np.min(np.bincount(ML_df['phenotype'].values))
             sys.stderr.write("\x1b[1;33mSetting number of train/test splits \
                 equal to minor phenotype count - " + str(self.n_splits_cv_outer) + "!\x1b[0m\n\n")
@@ -1671,18 +1677,18 @@ class phenotypes():
             self.n_splits_cv_outer = n_splits_cv_outer
 
     def assert_n_splits_cv_inner(self, n_splits_cv_inner, ML_df, y_train=None):
-        if phenotypes.scale == "continuous":
-            if phenotypes.n_splits_cv_outer:
+        if self.scale == "continuous":
+            if self.n_splits_cv_outer:
                 min_cv_inner = self.no_samples - math.ceil(self.no_samples / self.n_splits_cv_outer)
             else:
                 min_cv_inner = len(y_train)
-        elif phenotypes.scale == "binary":
-            if phenotypes.n_splits_cv_outer:
+        elif self.scale == "binary":
+            if self.n_splits_cv_outer:
                 min_class = np.min(np.bincount(ML_df['phenotype'].values))
                 min_cv_inner = (min_class - math.ceil(min_class / self.n_splits_cv_outer))
             else:
                 min_cv_inner = np.min(np.bincount(y_train))
-        self.n_splits_cv_inner = np.min([min_cv_inner, phenotypes.n_splits_cv_inner])
+        self.n_splits_cv_inner = np.min([min_cv_inner, self.n_splits_cv_inner])
 
     # Assembly methods
     def ReverseComplement(self, kmer):
