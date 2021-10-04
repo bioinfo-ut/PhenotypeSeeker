@@ -1688,6 +1688,7 @@ class phenotypes():
                 min_cv_inner = (min_class - math.ceil(min_class / self.n_splits_cv_outer))
             else:
                 min_cv_inner = np.min(np.bincount(y_train))
+        print(min_cv_inner, n_splits_cv_inner)
         self.n_splits_cv_inner = np.min([min_cv_inner, n_splits_cv_inner])
 
     # Assembly methods
