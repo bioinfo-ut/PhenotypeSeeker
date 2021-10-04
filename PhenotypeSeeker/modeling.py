@@ -1587,7 +1587,7 @@ class phenotypes():
                 "K-mer\tcoef._in_" + self.model_name_short + \
                 "_model\tNo._of_samples_with_k-mer\tSamples_with_k-mer\n"
                 )
-        self.ML_df.drop('phenotype', axis=1, inplace=True)
+        self.ML_df.drop(['phenotype', 'weights'], axis=1, inplace=True)
         if self.model_name_short == "linreg":
             dself.ML_df.loc['coefficient'] = \
                 self.model_fitted.best_estimator_.coef_
@@ -1690,7 +1690,6 @@ class phenotypes():
             else:
                 print(y_train)
                 min_cv_inner = np.min(np.bincount(y_train))
-        print(min_cv_inner, n_splits_cv_inner)
         self.n_splits_cv_inner = np.min([min_cv_inner, n_splits_cv_inner])
 
     # Assembly methods
