@@ -174,6 +174,7 @@ def prediction(args):
     for pheno in Input.phenos.values():
         sys.stderr.write(f"\x1b[1;32mPredicting the phenotypes for {pheno.name}.\x1b[0m\n")
         pheno.set_kmer_db()
+        print(Input.samples.values())
         map(partial(
             lambda x: x.map_samples(), pheno.name),
             Input.samples.values())
