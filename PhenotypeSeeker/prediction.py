@@ -83,7 +83,7 @@ class Samples():
                 counts.readline()
                 for line in counts:
                     splitted = line.split()
-                    if splitted[2] >= Phenotypes.cutoff:
+                    if int(splitted[2]) >= Phenotypes.cutoff:
                         splitted[2] = "1"
                         counts_filtered.write("\t".join(splitted)+"\n")
                     else:
