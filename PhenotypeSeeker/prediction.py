@@ -100,7 +100,7 @@ class Phenotypes():
         self.pca = pca
         self.pca_model = pca_model
         self.scaler = scaler
-        self.matrix = np.empty(shape=(kmers, Samples.no_samples))
+        self.matrix = np.empty(shape=(kmers.shape, Samples.no_samples))
 
         Phenotypes.no_phenotypes += 1
 
