@@ -110,7 +110,7 @@ class Phenotypes():
         self.scaler = scaler
         self.kmer_matrix = None
 
-        Phenos_no_phenotypes += 1
+        Phenotypes.no_phenotypes += 1
 
     @classmethod
     def from_inputfile(cls, line):
