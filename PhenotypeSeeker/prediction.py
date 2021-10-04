@@ -64,6 +64,7 @@ class Samples():
         # Takes k-mers of model as feature space and maps input samples 
         # k-mer lists to that feature space. A vector of k-mers frequency 
         # information is created for every sample.
+        print(self.name)
         call(
             ["gmer_counter -db K-mer_lists/k-mer_db_" + pheno
             + ".txt " + self.address + " > K-mer_lists/" + self.name 
