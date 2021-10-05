@@ -1109,7 +1109,6 @@ class phenotypes():
                 '\nThe final output model training on the whole dataset:\n'
                 )
             self.X_train, self.y_train = self.split_df(self.ML_df)
-            print(self.y_train)
             self.assert_n_splits_cv_inner(
                 phenotypes.n_splits_cv_inner, self.ML_df, self.y_train
                 )
@@ -1617,8 +1616,7 @@ class phenotypes():
                     f"\t{self.ttest_statistics[idx]}\t{self.ttest_pvalues[idx]}\n"
                     )
             else:
-                samples_with_kmer = \
-                    self.ML_df.loc[self.ML_df[predictor] == 1].index.tolist()
+                samples_with_kmer = self.ML_df.index[self.ML_df[predictor] == 1].tolist()
                 self.coeff_file.write(
                     f"{predictor}\t{coef}\t{len(samples_with_kmer)}\t| {' '.join(samples_with_kmer)}\n"
                     )
