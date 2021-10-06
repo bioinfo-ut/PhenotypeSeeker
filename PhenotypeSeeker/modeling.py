@@ -1340,15 +1340,13 @@ class phenotypes():
             t_statistic, pvalue, mean_x, mean_y = self.t_test(
                     x, y, x_weights, y_weights
                 )
-            self.ttest_statistics.append(t_statistic)
-            self.ttest_pvalues.append(pvalue)
             # if pvalue < 0.05/self.PCA_df.shape[1]:
-            # if pvalue < 0.05:
-            #     PCs_to_keep[idx] = True
-            #     self.ttest_statistics.append(t_statistic)
-            #     self.ttest_pvalues.append(pvalue)
-            # else:
-            #     PCs_to_keep[idx] = False
+            if pvalue < 0.01:
+                PCs_to_keep[idx] = True
+                self.ttest_statistics.append(t_statistic)
+                self.ttest_pvalues.append(pvalue)
+            else:
+                PCs_to_keep[idx] = False
         self.model_package['PCs_to_keep'] = PCs_to_keep
 
         # Filter PCs by association with phenotype
