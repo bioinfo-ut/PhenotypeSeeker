@@ -1280,7 +1280,7 @@ class phenotypes():
     def get_outputfile_names(self, features):
         self.summary_file = open("summary_of_" + self.model_name_short + "_analysis_" \
             + self.name + ".txt", "w")
-        self.coeff_file = open("{features}_and_coefficients_in_" + self.model_name_short \
+        self.coeff_file = open(f"{features}_and_coefficients_in_" + self.model_name_short \
             + "_model_" + self.name + ".txt", "w")
         self.model_file = open(self.model_name_short + "_model_" + self.name + ".pkl", "wb")
 
@@ -1652,9 +1652,7 @@ class phenotypes():
                     f"\t{self.ttest_statistics[idx]}\t{self.ttest_pvalues[idx]}\n"
                     )
             else:
-                samples_with_kmer = self.ML_df.index[self.ML_df[predictor] != "0"].tolist()
-                print(self.ML_df[predictor])
-                print(self.ML_df[predictor] == 1)
+                samples_with_kmer = self.ML_df.index[:-1][self.ML_df[predictor][:-1] != "0"].tolist()
                 self.coeff_file.write(
                     f"{predictor}\t{coef}\t{len(samples_with_kmer)}\t| {' '.join(samples_with_kmer)}\n"
                     )
