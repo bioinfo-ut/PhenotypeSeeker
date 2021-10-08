@@ -698,20 +698,19 @@ class phenotypes():
             kmer_presence_vector = [j.split()[1].strip() for j in line]
 
             if phenotypes.pred_scale == "binary":
-                kmer, chisquare, pvalue, kmer_presence = self.conduct_chi_squared_test(
-                    kmer, kmer_presence_vector,
-                    Input.samples.values()
+                test_results = self.conduct_chi_squared_test(
+                        kmer, kmer_presence_vector,
+                        Input.samples.values()
                     )
                 if pvalue:
                     kmer_matrix[kmer] = [chisquare, pvalue] + kmer_presence
             elif phenotypes.pred_scale == "continuous":
-                kmer, t_statistic, pvalue, mean_x, mean_y, kmer_presence = self.conduct_t_test(
-                    kmer, kmer_presence_vector,
-                    Input.samples.values()
+                test_results = self.conduct_t_test(
+                        kmer, kmer_presence_vector,
+                        Input.samples.values()
                     )
-                if pvalue:
-                    kmer_matrix[kmer] = [t_statistic, pvalue, mean_x, mean_y] + kmer_presence
-
+            if test_results:
+                kmer_matrix[test_results[0]] = test_results[1:]
         Input.lock.acquire()
         stderr_print.currentKmerNum.value += counter%self.progress_checkpoint
         Input.lock.release()
@@ -736,7 +735,7 @@ class phenotypes():
             )
 
         if len(x) < Samples.min_samples or len(y) < 2 or len(x) > Samples.max_samples:
-            return [None]*7
+            return None
 
         t_statistic, pvalue, mean_x, mean_y = self.t_test(
             x, y, x_weights, y_weights
@@ -748,13 +747,12 @@ class phenotypes():
         #     str(round(mean_y,2)) + "\t" + str(len(samples_w_kmer)) + "\t| " + \
         #     " ".join(samples_w_kmer) + "\n"
         #     )
-        return pvalue
         if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
-            return kmer, t_statistic, pvalue, mean_x, mean_y, kmer_presence, len(samples_w_kmer)
+            return [kmer, t_statistic, pvalue, mean_x, mean_y, len(samples_w_kmer)] + [kmer_presence]
         elif pvalue < self.pvalue_cutoff:
-            return kmer, t_statistic, pvalue, mean_x, mean_y, kmer_presence, len(samples_w_kmer)
+            return [kmer, t_statistic, pvalue, mean_x, mean_y, len(samples_w_kmer)] + [kmer_presence]
         else:
-            return [None]*7
+            return None
 
     def get_samples_distribution_for_ttest(
             self, x, y, x_weights, y_weights,
@@ -810,7 +808,7 @@ class phenotypes():
         no_samples_w_kmer = len(samples_w_kmer)
         if no_samples_w_kmer < Samples.min_samples or no_samples_wo_kmer < 2 \
             or no_samples_w_kmer > Samples.max_samples:
-            return [None]*5
+            return None
         (w_pheno, wo_pheno, w_kmer, wo_kmer, total) = self.get_totals_in_classes(
             w_pheno_w_kmer, w_pheno_wo_kmer, wo_pheno_w_kmer, wo_pheno_wo_kmer
             )
@@ -837,11 +835,11 @@ class phenotypes():
         #     )
         chisquare, pvalue = chisquare_results
         if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
-            return kmer, round(chisquare,2), round(pvalue,2), no_samples_w_kmer, kmer_presence
+            return [kmer, round(chisquare,2), round(pvalue,2), no_samples_w_kmer] + kmer_presence
         elif pvalue < self.pvalue_cutoff:
-            return kmer, round(chisquare,2), round(pvalue,2), no_samples_w_kmer, kmer_presence
+            return [kmer, round(chisquare,2), round(pvalue,2), no_samples_w_kmer] + kmer_presence
         else:
-            return [None]*5
+            return None
 
     def get_samples_distribution_for_chisquared(
             self, kmers_presence_vector, samples_w_kmer,
