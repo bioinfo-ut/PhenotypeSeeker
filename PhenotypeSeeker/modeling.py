@@ -658,7 +658,7 @@ class phenotypes():
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
         with Pool(Input.num_threads) as p:
-            pvalues_from_all_threads = p.map(
+            results_from_threads = p.map(
                 self.get_kmers_tested, zip(*self.vectors_as_multiple_input)
             )
         # self.pvalues = \
@@ -666,7 +666,7 @@ class phenotypes():
         sys.stderr.write("\n")
         sys.stderr.flush()
         # self.concatenate_test_files(self.name)
-        self.ML_df = pd.concat(pvalues_from_all_threads, axis=1)
+        self.ML_df = pd.concat(results_from_threads, axis=1)
         del pvalues_from_all_threads
         if self.ML_df.shape[0] == 0:
             self.no_results.append(phenotype)
@@ -702,8 +702,6 @@ class phenotypes():
                         kmer, kmer_presence_vector,
                         Input.samples.values()
                     )
-                if pvalue:
-                    kmer_matrix[kmer] = [chisquare, pvalue] + kmer_presence
             elif phenotypes.pred_scale == "continuous":
                 test_results = self.conduct_t_test(
                         kmer, kmer_presence_vector,
