@@ -670,7 +670,7 @@ class phenotypes():
 
     def get_kmers_tested(self, split_of_kmer_lists):
 
-        pvalues = pd.DataFrame()
+        kmer_matrix = pd.DataFrame()
         counter = 0
 
         mt_code = split_of_kmer_lists[0][-5:]
@@ -695,7 +695,7 @@ class phenotypes():
             kmer_presence_vector = [j.split()[1].strip() for j in line]
 
             if phenotypes.pred_scale == "binary":
-                kmer, kmer_presence, pvalue = self.conduct_chi_squared_test(
+                kmer, chisquare, pvalue, kmer_presence = self.conduct_chi_squared_test(
                     kmer, kmer_presence_vector,
                     test_results_file, Input.samples.values()
                     )
@@ -705,7 +705,7 @@ class phenotypes():
                     test_results_file, Input.samples.values()
                     )
             if pvalue:
-                pvalues[kmer] = kmer_presence + [pvalue]
+                pvalues[kmer] = [chisquare] + [pvalue] + kmer_presence
         Input.lock.acquire()
         stderr_print.currentKmerNum.value += counter%self.progress_checkpoint
         Input.lock.release()
@@ -822,15 +822,15 @@ class phenotypes():
             ],
             1
             )
-        test_results_file.write(
-            kmer + "\t%.2f\t%.2E\t" % chisquare_results 
-            + str(no_samples_w_kmer)  +"\t| " + " ".join(samples_w_kmer) + "\n"
-            )
-        pvalue = chisquare_results[1]
+        # test_results_file.write(
+        #     kmer + "\t%.2f\t%.2E\t" % chisquare_results 
+        #     + str(no_samples_w_kmer)  +"\t| " + " ".join(samples_w_kmer) + "\n"
+        #     )
+        chisquare, pvalue = chisquare_results
         if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
-            return kmer, kmer_presence, pvalue
+            return kmer, chisquare, pvalue, kmer_presence
         elif pvalue < self.pvalue_cutoff:
-            return kmer, kmer_presence, pvalue
+            return kmer, chisquare, pvalue, kmer_presence
         else:
             return None, None, None
 
