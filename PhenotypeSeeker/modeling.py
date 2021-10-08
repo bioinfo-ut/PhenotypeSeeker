@@ -1313,7 +1313,7 @@ class phenotypes():
                 self.ML_df.T.to_csv(
                     f'chi2_results_top{self.kmer_limit}.tsv', sep='\t'
                     )
-            self.ML_df.drop(['p_value', 'chi2'], inplace=True)
+            self.ML_df.drop(['p-value', 'chi2'], inplace=True)
             self.ML_df['weights'] = [
                 sample.weight for sample in Input.samples.values()
                 ]
