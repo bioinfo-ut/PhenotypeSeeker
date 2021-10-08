@@ -1625,7 +1625,7 @@ class phenotypes():
                 )
         self.ML_df.drop(['phenotype', 'weights'], axis=1, inplace=True)
         if self.model_name_short == "linreg":
-            dself.ML_df.loc['coefficient'] = \
+            self.ML_df.loc['coefficient'] = \
                 self.model_fitted.best_estimator_.coef_
         elif self.model_name_short in ("RF", "DT"):
             self.ML_df.loc['coefficient'] = \
