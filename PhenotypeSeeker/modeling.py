@@ -663,11 +663,12 @@ class phenotypes():
             )
         # self.pvalues = \
         #     sorted(list(chain(*pvalues_from_all_threads)))
-        self.ML_df = pd.concat(pvalues_from_all_threads, axis=1)
         sys.stderr.write("\n")
         sys.stderr.flush()
         # self.concatenate_test_files(self.name)
-        print(self.ML_df)
+        self.ML_df = pd.concat(pvalues_from_all_threads, axis=1)
+        self.ML_df.index = ['chi-square statistic', 'p-value'] + Input.samples.keys()
+        print(ML_df.T)
         print(sys.getsizeof(self.ML_df))
 
     def get_kmers_tested(self, split_of_kmer_lists):
