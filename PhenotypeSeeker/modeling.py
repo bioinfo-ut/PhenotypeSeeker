@@ -1652,7 +1652,7 @@ class phenotypes():
                     f"\t{self.ttest_statistics[idx]}\t{self.ttest_pvalues[idx]}\n"
                     )
             else:
-                samples_with_kmer = self.ML_df.index[self.ML_df[predictor] == "1"].tolist()
+                samples_with_kmer = self.ML_df.index[self.ML_df[predictor] != "0"].tolist()
                 print(self.ML_df[predictor])
                 print(self.ML_df[predictor] == 1)
                 self.coeff_file.write(
