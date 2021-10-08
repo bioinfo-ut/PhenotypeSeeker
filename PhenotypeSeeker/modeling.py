@@ -15,7 +15,6 @@ import pkg_resources
 import joblib
 import matplotlib
 import matplotlib.pyplot as plt
-import xgboost as xgb
 import Bio
 import numpy as np
 import pandas as pd
@@ -47,7 +46,7 @@ from functools import partial
 matplotlib.use('agg')
 warnings.showwarning = lambda *args, **kwargs: None
 pkg_resources.require(
-    "numpy==1.18.1", "Biopython==1.76", "pandas==1.0.1", "xgboost==1.0.1", "scipy==1.4.1",
+    "numpy==1.18.1", "Biopython==1.76", "pandas==1.0.1", "scipy==1.4.1",
     "scikit-learn==0.22.1", "ete3==3.1.1", "multiprocess==0.70.9"
     )
 
@@ -192,9 +191,6 @@ class Input():
             if regressor == "lin":
                 phenotypes.model_name_long = "linear regression"
                 phenotypes.model_name_short = "linreg"
-            elif regressor == "XGBR":
-                phenotypes.model_name_long = "XGBRegressor"
-                phenotypes.model_name_short = "XGBR"
         elif phenotypes.pred_scale == "binary":
             if binary_classifier == "log":
                 phenotypes.model_name_long = "logistic regression"
@@ -211,9 +207,6 @@ class Input():
             elif binary_classifier == "NB":
                 phenotypes.model_name_long = "Naive Bayes"
                 phenotypes.model_name_short = "NB"
-            elif binary_classifier == "XGBC":
-                phenotypes.model_name_long = "XGBClassifier"
-                phenotypes.model_name_short = "XGBC"
         
     @staticmethod
     def _get_alphas(alphas, alpha_min, alpha_max, n_alphas):       
@@ -746,9 +739,9 @@ class phenotypes():
         #     " ".join(samples_w_kmer) + "\n"
         #     )
         if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
-            return [kmer, t_statistic, "%.2E" % pvalue, mean_x, mean_y, len(samples_w_kmer)] + kmer_vector
+            return [kmer, round(t_statistic, 2), "%.2E" % pvalue, round(mean_x, 2), round(mean_y, 2), len(samples_w_kmer)] + kmer_vector
         elif pvalue < self.pvalue_cutoff:
-            return [kmer, t_statistic, "%.2E" % pvalue, mean_x, mean_y, len(samples_w_kmer)] + kmer_vector
+            return [kmer, round(t_statistic, 2), "%.2E" % pvalue, round(mean_x, 2), round(mean_y, 2), len(samples_w_kmer)] + kmer_vector
         else:
             return None
 
@@ -1171,8 +1164,6 @@ class phenotypes():
                     self.model = ElasticNet(
                         l1_ratio=self.l1_ratio, max_iter=self.max_iter, tol=self.tol
                         )
-            elif self.model_name_short == "XGBR":
-                self.model = xgb.XGBRegressor()
         elif self.pred_scale == "binary":
             if self.model_name_long == "logistic regression":
                 #Defining logistic regression parameters
@@ -1202,8 +1193,6 @@ class phenotypes():
                 self.model = DecisionTreeClassifier()
             elif self.model_name_long == "Naive Bayes":
                 self.model = BernoulliNB()
-            elif self.model_name_short == "XGBC":
-                self.model = xgb.XGBClassifier()
 
     def set_hyperparameters(self):
         if self.pred_scale == "continuous":
@@ -1249,8 +1238,6 @@ class phenotypes():
                 self.best_model = GridSearchCV(
                     self.model, self.hyper_parameters, cv=self.n_splits_cv_inner
                     )
-            elif self.model_name_short == "XGBR":
-                self.best_model = self.model
         elif self.pred_scale == "binary":
             if self.model_name_long == "logistic regression":
                 self.best_model = GridSearchCV(
@@ -1274,8 +1261,6 @@ class phenotypes():
                 self.best_model = GridSearchCV(
                     self.model, self.hyper_parameters, cv=self.n_splits_cv_inner
                     )
-            elif self.model_name_short in ("NB", "XGBC"):
-                self.best_model = self.model
 
     def get_outputfile_names(self, features):
         self.summary_file = open("summary_of_" + self.model_name_short + "_analysis_" \
@@ -1403,21 +1388,12 @@ class phenotypes():
                     self.model_fitted = self.best_model.fit(self.X_train.values, self.y_train.values.flatten())
                 elif self.penalty == "L2":
                     self.model_fitted = self.best_model.fit(self.X_train.values, self.y_train.values.flatten())
-            elif self.model_name_short == "XGBR":
-                self.model_fitted = self.best_model.fit(self.X_train.values, self.y_train.values.flatten())
         elif self.pred_scale == "binary":
-            if self.model_name_short == "XGBC":
-                self.model_fitted = self.best_model.fit(
-                    self.X_train.values, self.y_train.values.flatten()
-                    )
-            else:
-                self.model_fitted = self.best_model.fit(
-                    self.X_train, self.y_train.values.flatten()
-                    )
+            self.model_fitted = self.best_model.fit(self.X_train, self.y_train.values.flatten())
 
 
     def cross_validation_results(self):
-        if self.model_name_short not in ("NB", "XGBC", "XGBR"):
+        if self.model_name_short != "NB":
             self.summary_file.write('Parameters:\n%s\n\n' % self.model)
             if self.pred_scale == "continuous":
                 self.summary_file.write("Grid scores (R2 score) on development set: \n")
@@ -1630,9 +1606,6 @@ class phenotypes():
         elif self.model_name_short in ("RF", "DT"):
             self.ML_df.loc['coefficient'] = \
                 self.model_fitted.best_estimator_.feature_importances_
-        elif self.model_name_short in ("XGBR", "XGBC"):
-            self.ML_df.loc['coefficient'] = \
-                self.model_fitted.feature_importances_
         elif self.model_name_short in ("SVM", "log_reg"):
             if self.kernel != "rbf":
                 self.ML_df.loc['coefficient'] = \
