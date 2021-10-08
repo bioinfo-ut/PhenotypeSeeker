@@ -668,6 +668,8 @@ class phenotypes():
         # self.concatenate_test_files(self.name)
         self.ML_df = pd.concat(pvalues_from_all_threads, axis=1)
         del pvalues_from_all_threads
+        if self.kmers_for_ML.shape[0] == 0:
+            self.no_results.append(phenotype)
 
     def get_kmers_tested(self, split_of_kmer_lists):
 
@@ -675,14 +677,14 @@ class phenotypes():
         counter = 0
 
         mt_code = split_of_kmer_lists[0][-5:]
-        if phenotypes.pred_scale == "continuous":
-            test_results_file = open(
-                "t-test_results_" + self.name + "_" + mt_code + ".txt", "w"
-                )
-        else:
-            test_results_file = open(
-                "chi-squared_test_results_" + self.name + "_" + mt_code + ".txt", "w"
-                )
+        # if phenotypes.pred_scale == "continuous":
+        #     test_results_file = open(
+        #         "t-test_results_" + self.name + "_" + mt_code + ".txt", "w"
+        #         )
+        # else:
+        #     test_results_file = open(
+        #         "chi-squared_test_results_" + self.name + "_" + mt_code + ".txt", "w"
+        #         )
         for line in zip(*[open(item) for item in split_of_kmer_lists]):
             counter += 1
             if counter%self.progress_checkpoint == 0:
@@ -713,7 +715,7 @@ class phenotypes():
         stderr_print.check_progress(
             self.no_kmers_to_analyse, "tests conducted.", self.name + ": "
         )
-        test_results_file.close()
+        # test_results_file.close()
         return(kmer_matrix)
 
     def conduct_t_test(
@@ -1279,33 +1281,29 @@ class phenotypes():
 
     @timer
     def get_ML_dataframe(self):
-        # if Input.jump_to == "modelling":
-        #     self.ML_df = pd.read_csv(
-        #         self.name + "_" + self.model_name_short + "_df.csv", index_col=0
-        #         )
-        #     self.ML_df.index = self.ML_df.index.astype(str)
-        #     self.model_package['kmers'] = self.ML_df.columns[:-2]
-        # elif len(self.kmers_for_ML) == 0:
-        #     self.summary_file.write("No k-mers passed the step of k-mer filtering for " \
-        #         "machine learning modelling.\n")
-        #     return
-        # else:
-        #     index = list(Input.samples.keys()) + ['p_val']
-        #     self.ML_df = pd.DataFrame(self.kmers_for_ML, index=index)
-        #     if self.kmer_limit:
-        #         self.ML_df.sort_values('p_val', axis=1, ascending=True, inplace=True)
-        #         self.ML_df = self.ML_df.iloc[:,:self.kmer_limit]
-        #     self.ML_df.drop('p_val', inplace=True)
-        #     self.ML_df['weights'] = [
-        #         sample.weight for sample in Input.samples.values()
-        #         ]
-        #     self.ML_df['phenotype'] = [
-        #         sample.phenotypes[self.name] for sample in Input.samples.values()
-        #         ]
-        #     self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
-        #     self.ML_df.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
-        #     self.ML_df.to_csv(self.name + "_" + self.model_name_short + "_df.csv")
-        #     self.model_package['kmers'] = self.ML_df.columns[:-2]
+        if Input.jump_to == "modelling":
+            self.ML_df = pd.read_csv(
+                self.name + "_MLdf.csv", index_col=0
+                )
+            self.ML_df.index = self.ML_df.index.astype(str)
+            self.model_package['kmers'] = self.ML_df.columns[:-2]
+        else:
+            # index = list(Input.samples.keys()) + ['p_val']
+            # self.ML_df = pd.DataFrame(self.kmers_for_ML, index=index)
+            # if self.kmer_limit:
+            #     self.ML_df.sort_values('p_val', axis=1, ascending=True, inplace=True)
+            #     self.ML_df = self.ML_df.iloc[:,:self.kmer_limit]
+            # self.ML_df.drop('p_val', inplace=True)
+            # self.ML_df['weights'] = [
+            #     sample.weight for sample in Input.samples.values()
+            #     ]
+            # self.ML_df['phenotype'] = [
+            #     sample.phenotypes[self.name] for sample in Input.samples.values()
+            #     ]
+            # self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
+            # self.ML_df.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
+            # self.ML_df.to_csv(self.name + "_" + self.model_name_short + "_df.csv")
+            # self.model_package['kmers'] = self.ML_df.columns[:-2]
 
             self.ML_df.columns.name = "k-mer"
             self.ML_df.index = ['chi2', 'p-value'] + list(Input.samples.keys())
@@ -1316,6 +1314,17 @@ class phenotypes():
                 self.ML_df.T.to_csv(
                     f'chi2_results_top{self.kmer_limit}.tsv', sep='\t'
                     )
+            self.ML_df.drop(['p_value', 'chi2'], inplace=True)
+            self.ML_df['weights'] = [
+                sample.weight for sample in Input.samples.values()
+                ]
+            self.ML_df['phenotype'] = [
+                sample.phenotypes[self.name] for sample in Input.samples.values()
+                ]
+            self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
+            self.ML_df.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
+            self.ML_df.to_csv(self.name + "_MLdf.csv")
+            self.model_package['kmers'] = self.ML_df.columns[:-2]
 
     @timer
     def PCA_analysis(self):
