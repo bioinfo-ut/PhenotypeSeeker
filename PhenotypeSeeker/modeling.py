@@ -695,11 +695,11 @@ class phenotypes():
                     self.no_kmers_to_analyse, "tests conducted.", self.name + ": "
                 )
             kmer = line[0].split()[0]
-            kmer_presence_vector = [j.split()[1].strip() for j in line]
+            kmer_vector = [j.split()[1].strip() for j in line]
 
             if phenotypes.pred_scale == "binary":
                 test_results = self.conduct_chi_squared_test(
-                        kmer, kmer_presence_vector,
+                        kmer, kmer_vector,
                         Input.samples.values()
                     )
             elif phenotypes.pred_scale == "continuous":
@@ -794,14 +794,14 @@ class phenotypes():
         return t, pvalue, wtd_mean_x, wtd_mean_y
 
     def conduct_chi_squared_test(
-        self, kmer, kmer_presence, samples
+        self, kmer, kmer_vector, samples
         ):
         samples_w_kmer = []
         (
         w_pheno_w_kmer, w_pheno_wo_kmer, wo_pheno_w_kmer, wo_pheno_wo_kmer,
         no_samples_wo_kmer
         ) = self.get_samples_distribution_for_chisquared(
-            kmer_presence, samples_w_kmer, samples
+            kmer_vector, samples_w_kmer, samples
             )
         no_samples_w_kmer = len(samples_w_kmer)
         if no_samples_w_kmer < Samples.min_samples or no_samples_wo_kmer < 2 \
@@ -833,9 +833,9 @@ class phenotypes():
         #     )
         chisquare, pvalue = chisquare_results
         if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
-            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_presence
+            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
         elif pvalue < self.pvalue_cutoff:
-            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_presence
+            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
         else:
             return None
 
