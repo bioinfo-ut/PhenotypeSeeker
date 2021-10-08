@@ -810,7 +810,7 @@ class phenotypes():
         no_samples_w_kmer = len(samples_w_kmer)
         if no_samples_w_kmer < Samples.min_samples or no_samples_wo_kmer < 2 \
             or no_samples_w_kmer > Samples.max_samples:
-            return None, None, None, None
+            return [None]*5
         (w_pheno, wo_pheno, w_kmer, wo_kmer, total) = self.get_totals_in_classes(
             w_pheno_w_kmer, w_pheno_wo_kmer, wo_pheno_w_kmer, wo_pheno_wo_kmer
             )
@@ -841,7 +841,7 @@ class phenotypes():
         elif pvalue < self.pvalue_cutoff:
             return kmer, round(chisquare,2), round(pvalue,2), no_samples_w_kmer, kmer_presence
         else:
-            return None, None, None, None
+            return [None]*5
 
     def get_samples_distribution_for_chisquared(
             self, kmers_presence_vector, samples_w_kmer,
