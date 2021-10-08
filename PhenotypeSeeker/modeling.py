@@ -736,7 +736,7 @@ class phenotypes():
             )
 
         if len(x) < Samples.min_samples or len(y) < 2 or len(x) > Samples.max_samples:
-            return None, None, None, None, None, None
+            return [None]*7
 
         t_statistic, pvalue, mean_x, mean_y = self.t_test(
             x, y, x_weights, y_weights
@@ -750,11 +750,11 @@ class phenotypes():
         #     )
         return pvalue
         if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
-            return kmer, t_statistic, pvalue, mean_x, mean_y, kmer_presence
+            return kmer, t_statistic, pvalue, mean_x, mean_y, kmer_presence, len(samples_w_kmer)
         elif pvalue < self.pvalue_cutoff:
-            return kmer, t_statistic, pvalue, mean_x, mean_y, kmer_presence
+            return kmer, t_statistic, pvalue, mean_x, mean_y, kmer_presence, len(samples_w_kmer)
         else:
-            return None, None, None, None, None, None
+            return [None]*7
 
     def get_samples_distribution_for_ttest(
             self, x, y, x_weights, y_weights,
@@ -837,9 +837,9 @@ class phenotypes():
         #     )
         chisquare, pvalue = chisquare_results
         if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
-            return kmer, round(chisquare,2), round(pvalue,2), kmer_presence
+            return kmer, round(chisquare,2), round(pvalue,2), no_samples_w_kmer, kmer_presence
         elif pvalue < self.pvalue_cutoff:
-            return kmer, round(chisquare,2), round(pvalue,2), kmer_presence
+            return kmer, round(chisquare,2), round(pvalue,2), no_samples_w_kmer, kmer_presence
         else:
             return None, None, None, None
 
@@ -903,33 +903,33 @@ class phenotypes():
             wo_pheno_w_kmer_expected, wo_pheno_wo_kmer_expected
             )
 
-    def concatenate_test_files(self, phenotype):
-        if phenotypes.pred_scale == "continuous":
-            test_results = "t-test_results_"
-        else:
-            test_results = "chi-squared_test_results_"
-        self.test_output = test_results + phenotype + ".txt"
-        call(
-            [
-            "cat " + test_results + phenotype + "_* > " +
-            self.test_output
-            ],
-            shell=True
-            )
-        if not int(check_output(["wc", "-l", self.test_output]).split()[0].decode()):
-            with open(self.test_output, "w+") as test_out:
-                test_out.write(
-                    "No k-mer had a suitable distribution to conduct the test."
-                    )
-            self.no_results.append(phenotype)
-        for l in range(Input.num_threads):
-            call(
-                [
-                "rm " + test_results + phenotype +
-                "_%05d.txt" % l
-                ],
-                shell=True
-                )
+    # def concatenate_test_files(self, phenotype):
+    #     if phenotypes.pred_scale == "continuous":
+    #         test_results = "t-test_results_"
+    #     else:
+    #         test_results = "chi-squared_test_results_"
+    #     self.test_output = test_results + phenotype + ".txt"
+    #     call(
+    #         [
+    #         "cat " + test_results + phenotype + "_* > " +
+    #         self.test_output
+    #         ],
+    #         shell=True
+    #         )
+    #     if not int(check_output(["wc", "-l", self.test_output]).split()[0].decode()):
+    #         with open(self.test_output, "w+") as test_out:
+    #             test_out.write(
+    #                 "No k-mer had a suitable distribution to conduct the test."
+    #                 )
+    #         self.no_results.append(phenotype)
+    #     for l in range(Input.num_threads):
+    #         call(
+    #             [
+    #             "rm " + test_results + phenotype +
+    #             "_%05d.txt" % l
+    #             ],
+    #             shell=True
+    #             )
 
     # # -------------------------------------------------------------------
     # # Functions for filtering the k-mers based on the p-values of
@@ -999,34 +999,34 @@ class phenotypes():
     #     inputfile.close()
     #     outputfile.close()
 
-    def get_pvalue_cutoff(self, pvalues, nr_of_kmers_tested):
-        if self.B:
-            self.pvalue_cutoff = (self.pvalue_cutoff/nr_of_kmers_tested)
-        elif self.FDR:
-            pvalue_cutoff_by_FDR = 0
-            for index, pvalue in enumerate(pvalues):
-                if  (pvalue  < (
-                        (index+1) 
-                        / nr_of_kmers_tested) * self.pvalue_cutoff
-                        ):
-                    pvalue_cutoff_by_FDR = pvalue
-                elif pvalue > self.pvalue_cutoff:
-                    break
-            self.pvalue_cutoff = pvalue_cutoff_by_FDR
+    # def get_pvalue_cutoff(self, pvalues, nr_of_kmers_tested):
+    #     if self.B:
+    #         self.pvalue_cutoff = (self.pvalue_cutoff/nr_of_kmers_tested)
+    #     elif self.FDR:
+    #         pvalue_cutoff_by_FDR = 0
+    #         for index, pvalue in enumerate(pvalues):
+    #             if  (pvalue  < (
+    #                     (index+1) 
+    #                     / nr_of_kmers_tested) * self.pvalue_cutoff
+    #                     ):
+    #                 pvalue_cutoff_by_FDR = pvalue
+    #             elif pvalue > self.pvalue_cutoff:
+    #                 break
+    #         self.pvalue_cutoff = pvalue_cutoff_by_FDR
 
-    @staticmethod
-    def write_headerline(outputfile):
-        if phenotypes.pred_scale == "continuous":
-            outputfile.write(
-                "K-mer\tWelch's_t-statistic\tp-value\t+_group_mean\
-                \t-_group_mean\tNo._of_samples_with_k-mer\
-                \tSamples_with_k-mer\n"
-                )
-        elif phenotypes.pred_scale == "binary":
-            outputfile.write(
-                "K-mer\tChi-square_statistic\tp-value\
-                \tNo._of_samples_with_k-mer\tSamples_with_k-mer\n"
-                )
+    # @staticmethod
+    # def write_headerline(outputfile):
+    #     if phenotypes.pred_scale == "continuous":
+    #         outputfile.write(
+    #             "K-mer\tWelch's_t-statistic\tp-value\t+_group_mean\
+    #             \t-_group_mean\tNo._of_samples_with_k-mer\
+    #             \tSamples_with_k-mer\n"
+    #             )
+    #     elif phenotypes.pred_scale == "binary":
+    #         outputfile.write(
+    #             "K-mer\tChi-square_statistic\tp-value\
+    #             \tNo._of_samples_with_k-mer\tSamples_with_k-mer\n"
+    #             )
 
     def machine_learning_modelling(self):
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
@@ -1312,16 +1312,21 @@ class phenotypes():
             # self.ML_df.to_csv(self.name + "_" + self.model_name_short + "_df.csv")
             # self.model_package['kmers'] = self.ML_df.columns[:-2]
 
+            if self.pred_scale == "binary":
+                test =  'chi2'
+                test_ass_cols = ['chi2', 'p-value', 'num_samples_w_kmer']
+            else:
+                test_ass_cols = ['t-test', 'p-value', '+_group_mean', '-_group_mean', 'num_samples_w_kmer']
             self.ML_df.columns.name = "k-mer"
-            self.ML_df.index = ['chi2', 'p-value'] + list(Input.samples.keys())
+            self.ML_df.index = [test, 'p-value'] + list(Input.samples.keys())
             self.ML_df = self.ML_df.sort_values('p-value', axis=1)
-            self.ML_df.T.to_csv(f'chi2_results_{self.name}.tsv', sep='\t')
+            self.ML_df.T.to_csv(f'{chi2}_results_{self.name}.tsv', sep='\t')
             if self.kmer_limit:
                 self.ML_df = self.ML_df.iloc[:,:self.kmer_limit]
                 self.ML_df.T.to_csv(
-                    f'chi2_results_top{self.kmer_limit}.tsv', sep='\t'
+                    f'{test_ass_cols[0]}_results_top{self.kmer_limit}.tsv', sep='\t'
                     )
-            self.ML_df.drop(['p-value', 'chi2'], inplace=True)
+            self.ML_df.drop(test_ass_cols, inplace=True)
             self.ML_df['weights'] = [
                 sample.weight for sample in Input.samples.values()
                 ]
