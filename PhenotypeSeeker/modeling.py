@@ -1027,12 +1027,14 @@ class phenotypes():
     def machine_learning_modelling(self):
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
         sys.stderr.flush()
+        features='k-mers'
         self.set_model()
         self.set_hyperparameters()
-        self.get_outputfile_names()
         self.get_ML_df()
         if self.pca:
             self.PCA_analysis()
+            features = 'PCs'
+        self.get_outputfile_names(features)
         if phenotypes.n_splits_cv_outer:
             self.assert_n_splits_cv_outer(phenotypes.n_splits_cv_outer, self.ML_df)
             self.assert_n_splits_cv_inner(phenotypes.n_splits_cv_inner, self.ML_df)
