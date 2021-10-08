@@ -705,7 +705,7 @@ class phenotypes():
                     test_results_file, Input.samples.values()
                     )
             if pvalue:
-                pvalues[kmer] = [chisquare] + [pvalue] + kmer_presence
+                kmer_matrix[kmer] = [chisquare] + [pvalue] + kmer_presence
         Input.lock.acquire()
         stderr_print.currentKmerNum.value += counter%self.progress_checkpoint
         Input.lock.release()
