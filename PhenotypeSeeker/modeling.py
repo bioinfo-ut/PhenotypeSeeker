@@ -667,7 +667,7 @@ class phenotypes():
         sys.stderr.flush()
         # self.concatenate_test_files(self.name)
         self.ML_df = pd.concat(results_from_threads, axis=1)
-        del pvalues_from_all_threads
+        del results_from_threads
         if self.ML_df.shape[0] == 0:
             self.no_results.append(phenotype)
 
@@ -1030,7 +1030,7 @@ class phenotypes():
         self.set_model()
         self.set_hyperparameters()
         self.get_outputfile_names()
-        self.get_ML_dataframe()
+        self.get_ML_df()
         if self.pca:
             self.PCA_analysis()
         if phenotypes.n_splits_cv_outer:
@@ -1283,7 +1283,7 @@ class phenotypes():
         self.model_file = open(self.model_name_short + "_model_" + self.name + ".pkl", "wb")
 
     @timer
-    def get_ML_dataframe(self):
+    def get_ML_df(self):
         if Input.jump_to == "modelling":
             self.ML_df = pd.read_csv(
                 self.name + "_MLdf.csv", index_col=0
@@ -1309,20 +1309,19 @@ class phenotypes():
             # self.model_package['kmers'] = self.ML_df.columns[:-2]
 
             if self.pred_scale == "binary":
-                test =  'chi2'
-                test_ass_cols = ['chi2', 'p-value', 'num_samples_w_kmer']
+                test_cols = ['chi2', 'p-value', 'num_samples_w_kmer']
             else:
-                test_ass_cols = ['t-test', 'p-value', '+_group_mean', '-_group_mean', 'num_samples_w_kmer']
+                test_cols = ['t-test', 'p-value', '+_group_mean', '-_group_mean', 'num_samples_w_kmer']
             self.ML_df.columns.name = "k-mer"
-            self.ML_df.index = [test, 'p-value'] + list(Input.samples.keys())
+            self.ML_df.index = test_cols + list(Input.samples.keys())
             self.ML_df = self.ML_df.sort_values('p-value', axis=1)
-            self.ML_df.T.to_csv(f'{chi2}_results_{self.name}.tsv', sep='\t')
+            self.ML_df.T.to_csv(f'{test_cols[0]}_results_{self.name}.tsv', sep='\t')
             if self.kmer_limit:
                 self.ML_df = self.ML_df.iloc[:,:self.kmer_limit]
                 self.ML_df.T.to_csv(
-                    f'{test_ass_cols[0]}_results_top{self.kmer_limit}.tsv', sep='\t'
+                    f'{test_cols[0]}_results_top{self.kmer_limit}.tsv', sep='\t'
                     )
-            self.ML_df.drop(test_ass_cols, inplace=True)
+            self.ML_df.drop(test_cols, inplace=True)
             self.ML_df['weights'] = [
                 sample.weight for sample in Input.samples.values()
                 ]
