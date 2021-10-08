@@ -718,7 +718,7 @@ class phenotypes():
         return(kmer_matrix)
 
     def conduct_t_test(
-        self, kmer, kmer_presence_vector,
+        self, kmer, kmer_vector,
         samples
         ):
         samples_w_kmer = []
@@ -728,7 +728,7 @@ class phenotypes():
         y_weights = []
         
         self.get_samples_distribution_for_ttest(
-            x, y, x_weights, y_weights, kmer_presence_vector,
+            x, y, x_weights, y_weights, kmer_vector,
             samples_w_kmer, samples
             )
 
@@ -746,9 +746,9 @@ class phenotypes():
         #     " ".join(samples_w_kmer) + "\n"
         #     )
         if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
-            return [kmer, t_statistic, "%.2E" % pvalue, mean_x, mean_y, len(samples_w_kmer)] + [kmer_presence]
+            return [kmer, t_statistic, "%.2E" % pvalue, mean_x, mean_y, len(samples_w_kmer)] + [kmer_vector]
         elif pvalue < self.pvalue_cutoff:
-            return [kmer, t_statistic, "%.2E" % pvalue, mean_x, mean_y, len(samples_w_kmer)] + [kmer_presence]
+            return [kmer, t_statistic, "%.2E" % pvalue, mean_x, mean_y, len(samples_w_kmer)] + [kmer_vector]
         else:
             return None
 
