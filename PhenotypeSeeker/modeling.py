@@ -667,7 +667,9 @@ class phenotypes():
         sys.stderr.flush()
         # self.concatenate_test_files(self.name)
         self.ML_df = pd.concat(pvalues_from_all_threads, axis=1)
-        self.ML_df.index = ['chi-square statistic', 'p-value'] + Input.samples.keys()
+        del pvalues_from_all_threads
+        self.ML_df.columns.name = "K-mer"
+        self.ML_df.index = ['chi-square statistic', 'p-value'] + list(Input.samples.keys())
         print(ML_df.T)
         print(sys.getsizeof(self.ML_df))
 
