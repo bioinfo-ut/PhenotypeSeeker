@@ -676,7 +676,7 @@ class phenotypes():
         kmer_matrix = pd.DataFrame()
         counter = 0
 
-        mt_code = split_of_kmer_lists[0][-5:]
+        # mt_code = split_of_kmer_lists[0][-5:]
         # if phenotypes.pred_scale == "continuous":
         #     test_results_file = open(
         #         "t-test_results_" + self.name + "_" + mt_code + ".txt", "w"
@@ -702,20 +702,22 @@ class phenotypes():
                     kmer, kmer_presence_vector,
                     Input.samples.values()
                     )
+                if pvalue:
+                    kmer_matrix[kmer] = [chisquare, pvalue] + kmer_presence
             elif phenotypes.pred_scale == "continuous":
-                pvalue = self.conduct_t_test(
+                kmer, t_statistic, pvalue, mean_x, mean_y, kmer_presence = self.conduct_t_test(
                     kmer, kmer_presence_vector,
                     Input.samples.values()
                     )
-            if pvalue:
-                kmer_matrix[kmer] = [chisquare] + [pvalue] + kmer_presence
+                if pvalue:
+                    kmer_matrix[kmer] = [t_statistic, pvalue, mean_x, mean_y] + kmer_presence
+
         Input.lock.acquire()
         stderr_print.currentKmerNum.value += counter%self.progress_checkpoint
         Input.lock.release()
         stderr_print.check_progress(
             self.no_kmers_to_analyse, "tests conducted.", self.name + ": "
         )
-        # test_results_file.close()
         return(kmer_matrix)
 
     def conduct_t_test(
@@ -734,7 +736,7 @@ class phenotypes():
             )
 
         if len(x) < Samples.min_samples or len(y) < 2 or len(x) > Samples.max_samples:
-            return None
+            return None, None, None, None, None, None
 
         t_statistic, pvalue, mean_x, mean_y = self.t_test(
             x, y, x_weights, y_weights
@@ -747,6 +749,12 @@ class phenotypes():
         #     " ".join(samples_w_kmer) + "\n"
         #     )
         return pvalue
+        if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
+            return kmer, t_statistic, pvalue, mean_x, mean_y, kmer_presence
+        elif pvalue < self.pvalue_cutoff:
+            return kmer, t_statistic, pvalue, mean_x, mean_y, kmer_presence
+        else:
+            return None, None, None, None, None, None
 
     def get_samples_distribution_for_ttest(
             self, x, y, x_weights, y_weights,
