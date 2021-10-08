@@ -674,7 +674,7 @@ class phenotypes():
         print(sys.getsizeof(self.ML_df))
         self.ML_df.T.to_csv('pd_matrix.tsv', sep='\t')
         if self.kmer_limit:
-            self.ML_df = self.ML_df.sort_values('p-value', axis=1).iloc[:,self.kmer_limit]
+            self.ML_df = self.ML_df.sort_values('p-value', axis=1).iloc[:,:self.kmer_limit]
             self.ML_df.T.to_csv('pd_matrix_limited.tsv', sep='\t')
 
     def get_kmers_tested(self, split_of_kmer_lists):
