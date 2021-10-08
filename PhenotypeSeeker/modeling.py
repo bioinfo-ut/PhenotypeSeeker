@@ -700,12 +700,12 @@ class phenotypes():
             if phenotypes.pred_scale == "binary":
                 kmer, chisquare, pvalue, kmer_presence = self.conduct_chi_squared_test(
                     kmer, kmer_presence_vector,
-                    test_results_file, Input.samples.values()
+                    Input.samples.values()
                     )
             elif phenotypes.pred_scale == "continuous":
                 pvalue = self.conduct_t_test(
                     kmer, kmer_presence_vector,
-                    test_results_file, Input.samples.values()
+                    Input.samples.values()
                     )
             if pvalue:
                 kmer_matrix[kmer] = [chisquare] + [pvalue] + kmer_presence
@@ -720,7 +720,7 @@ class phenotypes():
 
     def conduct_t_test(
         self, kmer, kmer_presence_vector,
-        test_results_file, samples
+        samples
         ):
         samples_w_kmer = []
         x = []
@@ -740,12 +740,12 @@ class phenotypes():
             x, y, x_weights, y_weights
             )
 
-        test_results_file.write(
-            kmer + "\t" + str(round(t_statistic, 2)) + "\t" + \
-            "%.2E" % pvalue + "\t" + str(round(mean_x, 2)) + "\t" + \
-            str(round(mean_y,2)) + "\t" + str(len(samples_w_kmer)) + "\t| " + \
-            " ".join(samples_w_kmer) + "\n"
-            )
+        # test_results_file.write(
+        #     kmer + "\t" + str(round(t_statistic, 2)) + "\t" + \
+        #     "%.2E" % pvalue + "\t" + str(round(mean_x, 2)) + "\t" + \
+        #     str(round(mean_y,2)) + "\t" + str(len(samples_w_kmer)) + "\t| " + \
+        #     " ".join(samples_w_kmer) + "\n"
+        #     )
         return pvalue
 
     def get_samples_distribution_for_ttest(
@@ -790,8 +790,7 @@ class phenotypes():
         return t, pvalue, wtd_mean_x, wtd_mean_y
 
     def conduct_chi_squared_test(
-        self, kmer, kmer_presence, test_results_file,
-        samples
+        self, kmer, kmer_presence, samples
         ):
         samples_w_kmer = []
         (
