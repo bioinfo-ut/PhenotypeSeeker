@@ -746,9 +746,9 @@ class phenotypes():
         #     " ".join(samples_w_kmer) + "\n"
         #     )
         if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
-            return [kmer, t_statistic, pvalue, mean_x, mean_y, len(samples_w_kmer)] + [kmer_presence]
+            return [kmer, t_statistic, "%.2E" % pvalue, mean_x, mean_y, len(samples_w_kmer)] + [kmer_presence]
         elif pvalue < self.pvalue_cutoff:
-            return [kmer, t_statistic, pvalue, mean_x, mean_y, len(samples_w_kmer)] + [kmer_presence]
+            return [kmer, t_statistic, "%.2E" % pvalue, mean_x, mean_y, len(samples_w_kmer)] + [kmer_presence]
         else:
             return None
 
@@ -833,9 +833,9 @@ class phenotypes():
         #     )
         chisquare, pvalue = chisquare_results
         if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
-            return [kmer, round(chisquare,2), round(pvalue,2), no_samples_w_kmer] + kmer_presence
+            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_presence
         elif pvalue < self.pvalue_cutoff:
-            return [kmer, round(chisquare,2), round(pvalue,2), no_samples_w_kmer] + kmer_presence
+            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_presence
         else:
             return None
 
