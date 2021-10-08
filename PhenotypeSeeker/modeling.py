@@ -829,7 +829,7 @@ class phenotypes():
         pvalue = chisquare_results[1]
         if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
             return (kmer, kmer_presence.append(pvalue))
-        elif pvalue < self.p:
+        elif pvalue < self.pvalue_cutoff:
             return (kmer, kmer_presence.append(pvalue))
         else:
             return (None, None)
