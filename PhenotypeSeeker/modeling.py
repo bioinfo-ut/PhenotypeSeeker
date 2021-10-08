@@ -704,7 +704,7 @@ class phenotypes():
                     )
             elif phenotypes.pred_scale == "continuous":
                 test_results = self.conduct_t_test(
-                        kmer, kmer_presence_vector,
+                        kmer, kmer_vector,
                         Input.samples.values()
                     )
             if test_results:
@@ -746,9 +746,9 @@ class phenotypes():
         #     " ".join(samples_w_kmer) + "\n"
         #     )
         if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
-            return [kmer, t_statistic, "%.2E" % pvalue, mean_x, mean_y, len(samples_w_kmer)] + [kmer_vector]
+            return [kmer, t_statistic, "%.2E" % pvalue, mean_x, mean_y, len(samples_w_kmer)] + kmer_vector
         elif pvalue < self.pvalue_cutoff:
-            return [kmer, t_statistic, "%.2E" % pvalue, mean_x, mean_y, len(samples_w_kmer)] + [kmer_vector]
+            return [kmer, t_statistic, "%.2E" % pvalue, mean_x, mean_y, len(samples_w_kmer)] + kmer_vector
         else:
             return None
 
