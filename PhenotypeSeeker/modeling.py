@@ -670,7 +670,7 @@ class phenotypes():
         del pvalues_from_all_threads
         self.ML_df.columns.name = "K-mer"
         self.ML_df.index = ['chi-square statistic', 'p-value'] + list(Input.samples.keys())
-        print(ML_df.T)
+        print(self.ML_df.T)
         print(sys.getsizeof(self.ML_df))
         self.ML_df.to_csv('pd_matrix.tsv', sep='\t')
 
