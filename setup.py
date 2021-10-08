@@ -15,10 +15,6 @@ setup(name = 'PhenotypeSeeker',
           'PhenotypeSeeker/annotation', 'PhenotypeSeeker/__init__'
           ],
       scripts = ['scripts/phenotypeseeker'],
-      install_requires = [
-          'numpy==1.18.1', 'scipy==1.4.1', 'Biopython==1.76', 'scikit-learn==0.22.1',
-          'multiprocess==0.70.9', 'pandas==1.0.1', 'ete3==3.1.1', 'joblib'
-          ],
       )
 
 
