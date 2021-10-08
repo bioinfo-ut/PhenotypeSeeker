@@ -669,7 +669,7 @@ class phenotypes():
         self.ML_df = pd.concat(results_from_threads, axis=1)
         del results_from_threads
         if self.ML_df.shape[0] == 0:
-            self.no_results.append(phenotype)
+            self.no_results.append(self.name)
 
     def get_kmers_tested(self, split_of_kmer_lists):
 
