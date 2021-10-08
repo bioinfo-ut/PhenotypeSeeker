@@ -1275,10 +1275,10 @@ class phenotypes():
             elif self.model_name_short in ("NB", "XGBC"):
                 self.best_model = self.model
 
-    def get_outputfile_names(self):
+    def get_outputfile_names(self, features):
         self.summary_file = open("summary_of_" + self.model_name_short + "_analysis_" \
             + self.name + ".txt", "w")
-        self.coeff_file = open("k-mers_and_coefficients_in_" + self.model_name_short \
+        self.coeff_file = open("{features}_and_coefficients_in_" + self.model_name_short \
             + "_model_" + self.name + ".txt", "w")
         self.model_file = open(self.model_name_short + "_model_" + self.name + ".pkl", "wb")
 
@@ -1319,7 +1319,7 @@ class phenotypes():
             if self.kmer_limit:
                 self.ML_df = self.ML_df.iloc[:,:self.kmer_limit]
                 self.ML_df.T.to_csv(
-                    f'{test_cols[0]}_results_top{self.kmer_limit}.tsv', sep='\t'
+                    f'{test_cols[0]}_results_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
                     )
             self.ML_df.drop(test_cols, inplace=True)
             self.ML_df['weights'] = [
@@ -1651,6 +1651,7 @@ class phenotypes():
                     )
             else:
                 samples_with_kmer = self.ML_df.index[self.ML_df[predictor] == 1].tolist()
+                print(self.ML_df[predictor] == 1)
                 self.coeff_file.write(
                     f"{predictor}\t{coef}\t{len(samples_with_kmer)}\t| {' '.join(samples_with_kmer)}\n"
                     )
