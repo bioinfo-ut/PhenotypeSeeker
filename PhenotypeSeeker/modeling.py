@@ -713,7 +713,6 @@ class phenotypes():
             self.no_kmers_to_analyse, "tests conducted.", self.name + ": "
         )
         test_results_file.close()
-        print(pvalues)
         return(pvalues)
 
     def conduct_t_test(
@@ -801,7 +800,7 @@ class phenotypes():
         no_samples_w_kmer = len(samples_w_kmer)
         if no_samples_w_kmer < Samples.min_samples or no_samples_wo_kmer < 2 \
             or no_samples_w_kmer > Samples.max_samples:
-            return None, None, None
+            return None, None, None, None
         (w_pheno, wo_pheno, w_kmer, wo_kmer, total) = self.get_totals_in_classes(
             w_pheno_w_kmer, w_pheno_wo_kmer, wo_pheno_w_kmer, wo_pheno_wo_kmer
             )
@@ -832,7 +831,7 @@ class phenotypes():
         elif pvalue < self.pvalue_cutoff:
             return kmer, chisquare, pvalue, kmer_presence
         else:
-            return None, None, None
+            return None, None, None, None
 
     def get_samples_distribution_for_chisquared(
             self, kmers_presence_vector, samples_w_kmer,
