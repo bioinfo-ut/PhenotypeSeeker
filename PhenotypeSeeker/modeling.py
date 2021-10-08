@@ -672,7 +672,7 @@ class phenotypes():
         self.ML_df.index = ['chi-square statistic', 'p-value'] + list(Input.samples.keys())
         print(self.ML_df.T)
         print(sys.getsizeof(self.ML_df))
-        self.ML_df.to_csv('pd_matrix.tsv', sep='\t')
+        self.ML_df.T.to_csv('pd_matrix.tsv', sep='\t')
 
     def get_kmers_tested(self, split_of_kmer_lists):
 
