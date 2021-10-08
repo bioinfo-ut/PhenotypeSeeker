@@ -546,8 +546,8 @@ class phenotypes():
 
     # Multithreading parameters
     vectors_as_multiple_input = []
-    progress_checkpoint = Value("i", 0)
-    no_kmers_to_analyse = Value("i", 0)
+    progress_checkpoint = int()
+    no_kmers_to_analyse = int()
 
     # Filtering parameters
     pvalue_cutoff = None
@@ -639,9 +639,9 @@ class phenotypes():
         ps = Popen("glistquery K-mer_lists/feature_vector.list", shell=True, stdout=PIPE)
         output = check_output(('wc', '-l'), stdin=ps.stdout)
         ps.wait()
-        cls.no_kmers_to_analyse.value = int(output)
-        cls.progress_checkpoint.value = int(
-            math.ceil(cls.no_kmers_to_analyse.value/(100*Input.num_threads))
+        cls.no_kmers_to_analyse = int(output)
+        cls.progress_checkpoint = int(
+            math.ceil(cls.no_kmers_to_analyse/(100*Input.num_threads))
             )
         call(["rm K-mer_lists/feature_vector.list"], shell=True)
 
@@ -661,15 +661,16 @@ class phenotypes():
             pvalues_from_all_threads = p.map(
                 self.get_kmers_tested, zip(*self.vectors_as_multiple_input)
             )
-        self.pvalues = \
-            sorted(list(chain(*pvalues_from_all_threads)))
+        # self.pvalues = \
+        #     sorted(list(chain(*pvalues_from_all_threads)))
+        self.pvalues = pd.concat(pvalues_from_all_threads, axis=1)
         sys.stderr.write("\n")
         sys.stderr.flush()
         self.concatenate_test_files(self.name)
 
     def get_kmers_tested(self, split_of_kmer_lists):
 
-        pvalues = []
+        pvalues = pd.DataFrame()
         counter = 0
 
         mt_code = split_of_kmer_lists[0][-5:]
@@ -683,18 +684,18 @@ class phenotypes():
                 )
         for line in zip(*[open(item) for item in split_of_kmer_lists]):
             counter += 1
-            if counter%self.progress_checkpoint.value == 0:
+            if counter%self.progress_checkpoint == 0:
                 Input.lock.acquire()
-                stderr_print.currentKmerNum.value += self.progress_checkpoint.value
+                stderr_print.currentKmerNum.value += self.progress_checkpoint
                 Input.lock.release()
                 stderr_print.check_progress(
-                    self.no_kmers_to_analyse.value, "tests conducted.", self.name + ": "
+                    self.no_kmers_to_analyse, "tests conducted.", self.name + ": "
                 )
             kmer = line[0].split()[0]
             kmer_presence_vector = [j.split()[1].strip() for j in line]
 
             if phenotypes.pred_scale == "binary":
-                pvalue = self.conduct_chi_squared_test(
+                kmer, pvalue = self.conduct_chi_squared_test(
                     kmer, kmer_presence_vector,
                     test_results_file, Input.samples.values()
                     )
@@ -704,14 +705,15 @@ class phenotypes():
                     test_results_file, Input.samples.values()
                     )
             if pvalue:
-                pvalues.append(pvalue)
+                pvalues[kmer] = pvalue
         Input.lock.acquire()
-        stderr_print.currentKmerNum.value += counter%self.progress_checkpoint.value
+        stderr_print.currentKmerNum.value += counter%self.progress_checkpoint
         Input.lock.release()
         stderr_print.check_progress(
-            self.no_kmers_to_analyse.value, "tests conducted.", self.name + ": "
+            self.no_kmers_to_analyse, "tests conducted.", self.name + ": "
         )
         test_results_file.close()
+        print(pvalues)
         return(pvalues)
 
     def conduct_t_test(
@@ -825,7 +827,12 @@ class phenotypes():
             + str(no_samples_w_kmer)  +"\t| " + " ".join(samples_w_kmer) + "\n"
             )
         pvalue = chisquare_results[1]
-        return pvalue
+        if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
+            return (kmer, kmer_presence.append(pvalue))
+        elif pvalue < self.p:
+            return (kmer, kmer_presence.append(pvalue))
+        else:
+            return (None, None)
 
     def get_samples_distribution_for_chisquared(
             self, kmers_presence_vector, samples_w_kmer,
