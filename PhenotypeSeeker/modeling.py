@@ -1653,6 +1653,7 @@ class phenotypes():
                     )
             else:
                 samples_with_kmer = self.ML_df.index[self.ML_df[predictor] == 1].tolist()
+                print(self.ML_df[predictor])
                 print(self.ML_df[predictor] == 1)
                 self.coeff_file.write(
                     f"{predictor}\t{coef}\t{len(samples_with_kmer)}\t| {' '.join(samples_with_kmer)}\n"
