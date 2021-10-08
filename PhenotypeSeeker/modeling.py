@@ -695,7 +695,7 @@ class phenotypes():
             kmer_presence_vector = [j.split()[1].strip() for j in line]
 
             if phenotypes.pred_scale == "binary":
-                kmer, pvalue = self.conduct_chi_squared_test(
+                kmer, kmer_presence, pvalue = self.conduct_chi_squared_test(
                     kmer, kmer_presence_vector,
                     test_results_file, Input.samples.values()
                     )
@@ -705,7 +705,7 @@ class phenotypes():
                     test_results_file, Input.samples.values()
                     )
             if pvalue:
-                pvalues[kmer] = pvalue
+                pvalues[kmer] = kmer_presence + [pvalue]
         Input.lock.acquire()
         stderr_print.currentKmerNum.value += counter%self.progress_checkpoint
         Input.lock.release()
@@ -828,11 +828,11 @@ class phenotypes():
             )
         pvalue = chisquare_results[1]
         if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
-            return (kmer, kmer_presence.append(pvalue))
+            return (kmer, kmer_presence, pvalue)
         elif pvalue < self.pvalue_cutoff:
-            return (kmer, kmer_presence.append(pvalue))
+            return (kmer, kmer_presence, pvalue)
         else:
-            return (None, None)
+            return (None, None, None)
 
     def get_samples_distribution_for_chisquared(
             self, kmers_presence_vector, samples_w_kmer,
