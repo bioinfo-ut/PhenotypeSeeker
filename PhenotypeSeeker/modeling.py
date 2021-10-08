@@ -673,6 +673,7 @@ class phenotypes():
         print(self.ML_df.T)
         print(sys.getsizeof(self.ML_df))
         self.ML_df.T.to_csv('pd_matrix.tsv', sep='\t')
+        if 
 
     def get_kmers_tested(self, split_of_kmer_lists):
 
@@ -833,9 +834,9 @@ class phenotypes():
         #     )
         chisquare, pvalue = chisquare_results
         if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
-            return kmer, chisquare, pvalue, kmer_presence
+            return kmer, round(chisquare,2), round(pvalue,2), kmer_presence
         elif pvalue < self.pvalue_cutoff:
-            return kmer, chisquare, pvalue, kmer_presence
+            return kmer, round(chisquare,2), round(pvalue,2), kmer_presence
         else:
             return None, None, None, None
 
