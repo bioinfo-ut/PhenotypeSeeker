@@ -29,7 +29,7 @@ This installs PhenotypeSeeker and all its dependencies into virtual environment.
 . .PSenv/bin/activate
 phenotypeseeker --version
 ```
-To exit this virtualenvironment type:
+To exit this virtualenvironment simply type in:
 ```
 deactivate
 ```
