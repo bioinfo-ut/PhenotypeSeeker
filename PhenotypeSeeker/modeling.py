@@ -679,7 +679,10 @@ class phenotypes():
                     self.no_kmers_to_analyse, "tests conducted.", self.name + ": "
                 )
             kmer = line[0].split()[0]
-            kmer_vector = [j.split()[1].strip() for j in line]
+
+            if Input.real_counts:
+                kmer_vector = [j.split()[1].strip() for j in line]
+            else:
 
             if phenotypes.pred_scale == "binary":
                 test_results = self.conduct_chi_squared_test(
@@ -1677,7 +1680,7 @@ def modeling(args):
             p.map(
                 lambda x: x.map_samples(), Input.samples.values()
             )
-        if not args.no_weights:
+        if args.weights:
             mash_files = ["distances.mat", "reference.msh", "mash_distances.mat"]
             for mash_file in mash_files:
                 if os.path.exists(mash_file):

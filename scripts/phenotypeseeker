@@ -257,9 +257,8 @@ def Main():
     	(default = all phenotype columns)'
     	)
     other.add_argument(
-    	"-nw", "--no_weights", action='store_true',
-    	help='Do not use samples GSC weights in statistical testing and \
-    	linear/logistic regression model.'
+    	"-w", "--weights", action='store_true',
+    	help='Use samples GSC weights in statistical testing of k-mers (and PCs).'
     	)
     other.add_argument(
         "-a", "--assembly", action='store_true',
