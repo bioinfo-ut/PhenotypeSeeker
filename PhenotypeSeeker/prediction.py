@@ -1,164 +1,203 @@
 #!/usr/bin/env python3
 
 __author__ = "Erki Aun"
-__version__ = "0.7.3"
+__version__ = "1.0.0"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
+from functools import partial
 from subprocess import call
+from collections import OrderedDict
+from multiprocess import Pool
 import math
+
+import joblib
+import pkg_resources
+import numpy as np
+import sys
 import warnings
+
+pkg_resources.require("numpy==1.18.1", "scikit-learn==0.22.1")
 warnings.showwarning = lambda *args, **kwargs: None
 
-import pkg_resources
-pkg_resources.require("numpy==1.18.1", "scikit-learn==0.22.1")
+import time
+def timer(f):
+    def wrapper(*args):
+        start = time.time()
+        f(*args)
+        with open("log.txt", "a") as log:
+            log.write(f"Func {f} took {time.time() - start} secs\n")
+    return wrapper
 
-import numpy as np
-from sklearn.externals import joblib
-
-def get_kmers(phenotypes_to_predict):
-    call(["mkdir", "-p", "K-mer_lists"])
-    for phenotype in phenotypes_to_predict:
-        k_mer_list_2_allocate_from = phenotypes_to_predict[phenotype][1]
-        outname = "K-mer_lists/k-mers_" + phenotype + ".txt"
-        with open(outname, "w+") as f1:
-            call(
-            	["cut -f1 "  + str(k_mer_list_2_allocate_from) 
-            	+ " | tail -n +2"], 
-            	shell=True, stdout=f1
-            	)
-
-def format_kmer_db(phenotypes_to_predict):
-    for phenotype in phenotypes_to_predict:
-        with open("K-mer_lists/k-mers_" + phenotype + ".txt") as f1:
-            with open(
-            	    "K-mer_lists/k-mer_db_" + phenotype + ".txt", "w+"
-            	    ) as f2:
-                counter = 1 
-                for line in f1:
-                    line = str(counter) + "\t1\t" + line
-                    f2.write(line)
-                    counter += 1
-
-def kmer_filtering_by_freq_cutoff_in_sample(
-        samples_info, min_freq, phenotypes_to_predict
-        ):
-    for phenotype in phenotypes_to_predict:
-        for ID in samples_info:
-            with open(
-                    "K-mer_lists/" + ID + "_k-mer_counts_"
-                    + phenotype  + ".txt"
-                    ) as f1:
-                with open(
-                        "K-mer_lists/" + ID + "_k-mer_counts_filtered_"
-                        + phenotype + ".txt", "w+"
-                        ) as f2:
-                    for line in f1:
-                        if "#TextDatabase" in line:
-                            continue
-                        list1 = line.strip().split()
-                        if len(list1) == 2 or list1[2] >= min_freq:
-                            f2.write(line)
-                        else:
-                            list1[2] = "0"
-                            f2.write("\t".join(list1)+"\n")
-
-def map_samples_prediction(samples_info, phenotypes_to_predict):
-    # Takes k-mers of model as feature space and maps input samples 
-    # k-mer lists to that feature space. A vector of k-mers frequency 
-    # information is created for every sample.
-    for phenotype in phenotypes_to_predict:
-        for ID in samples_info:
-            call(
-            	["gmer_counter -db K-mer_lists/k-mer_db_" + phenotype 
-            	+ ".txt " +  samples_info[ID][0] + " > K-mer_lists/" + ID 
-            	+ "_k-mer_counts_" + phenotype  + ".txt"], 
-            	shell=True
-            	)
-
-def parse_prediction_input_file1(inputfilename):
-    # Parses info from tabulated input file into    samples directory.
-    # Stores the order of samples in "samples_order" list.
-    samples = {}
-    samples_order = []
-    n_o_s = 0
-    with open(inputfilename) as f1:
-        for line in f1:
-            if line == "\n":
-                break
-            line = line.strip()
-            list1 = line.split()
-            samples[list1[0]] = list1[1:]
-            samples_order.append(list1[0])
-            n_o_s += 1
-    return(samples, samples_order, n_o_s)
-
-def parse_prediction_input_file2(inputfilename):
-    # Parses info from tabulated input file into phenotypes_to_predict 
-    # directory.
-    phenotypes_to_predict = {}
-    with open(inputfilename) as f1:
-        for line in f1:
-            if line == "\n":
-                break
-            line = line.strip()
-            list1 = line.split()
-            phenotypes_to_predict[list1[0]] = list1[1:]
-    return(phenotypes_to_predict)
-
-def vectors_to_matrix_prediction(samples_order, phenotypes_to_predict):
-    # Takes all vectors with k-mer frequency information and inserts 
-    # them into matrix of dimensions "number of samples" x "number of 
-    # k-mers (features).
-    for phenotype in phenotypes_to_predict:
-        kmer_matrix = open("K-mer_lists/k-mer_matrix_" + phenotype  + ".txt", "w")
-        kmer_list_files = [
-            "K-mer_lists/" + item + "_k-mer_counts_filtered_" + phenotype
-            + ".txt" for item in samples_order
-            ]
-        for line in zip(*[open(item) for item in kmer_list_files]):
-            kmer_matrix.write('\t'.join([j.split()[2].strip() for j in line]) + "\n")
-
-def predict(samples_order, phenotypes_to_predict):
-    # Generating a binary k-mer presence matrix
-    for phenotype in phenotypes_to_predict:
-        kmers_presence_matrix = []
-        with open("K-mer_lists/k-mer_matrix_" + phenotype  + ".txt") as f1:
-            for line in f1:
-                kmers_presence_matrix.append([0 if int(x) == 0 else 1 for x in line.split()])
-        kmers_presence_matrix = np.array(kmers_presence_matrix).transpose()
-        
-        #Loading regression model
-        model = joblib.load(phenotypes_to_predict[phenotype][0])
-        predictions = model.predict(kmers_presence_matrix)
-        
-        with open("predictions_" + phenotype + ".txt", "w+") as f1:
-            model_name_short = phenotypes_to_predict[phenotype][0].split("/")[-1].split("_model")[0]
-            if model_name_short in ("log_reg", "NB", "RF", "SVM", "XGBC"):
-                predict_proba = model.predict_proba(kmers_presence_matrix)
-                f1.write("Sample_ID\tpredicted_phenotype\t" \
-                    "probability_for_predicted_class\n")
-                for ID, prediction, proba in zip(
-                        samples_order, predictions, predict_proba
-                        ): 
-                    f1.write(ID + "\t" + str(prediction) 
-                        + "\t" + str(round(proba[1], 2))  + "\n")
-            else:
-                f1.write("Sample_ID\tpredicted_phenotype\n")
-                for ID, prediction in zip(samples_order, predictions):
-                    f1.write(ID + "\t" + str(prediction) + "\n")
-
-def prediction(args):
-    samples, samples_order, n_o_s = parse_prediction_input_file1(
-        args.inputfile1
-        )
-    phenotypes_to_predict = parse_prediction_input_file2(args.inputfile2)
+class Input():
     
-    get_kmers(phenotypes_to_predict)
-    format_kmer_db(phenotypes_to_predict)
-    map_samples_prediction(samples, phenotypes_to_predict)
-    kmer_filtering_by_freq_cutoff_in_sample(
-        samples, args.c, phenotypes_to_predict)
-    vectors_to_matrix_prediction(samples_order, phenotypes_to_predict
-        )
-    predict(samples_order, phenotypes_to_predict)            
+    samples = OrderedDict()
+    phenos = OrderedDict()
+
+    @classmethod
+    def get_samples(cls, inputfile):
+        # Parses info from tabulated input file into    samples directory.
+        # Stores the order of samples in "samples_order" list.
+        with open(inputfile) as inp:
+            for line in inp:
+                if line.strip():
+                    sample_name = line.split()[0]
+                    cls.samples[sample_name] = Samples.from_inputfile(line)
+
+    @classmethod
+    def get_phenos(cls, inputfile):
+        # Parses info from tabulated input file into    samples directory.
+        with open(inputfile) as inp:
+            for line in inp:
+                if line.strip():
+                    pheno = line.split()[0]
+                    cls.phenos[pheno] = Phenotypes.from_inputfile(line)
+
+class Samples():
+
+    no_samples = 0
+
+    def __init__(self, name, address):
+        self.name = name
+        self.address = address
+
+        Samples.no_samples += 1
+
+    @classmethod
+    def from_inputfile(cls, line):
+        name, address = \
+            line.split()[0], line.split()[1]
+        return cls(name, address)
+
+    def map_samples(self, pheno):
+        # Takes k-mers of model as feature space and maps input samples 
+        # k-mer lists to that feature space. A vector of k-mers frequency 
+        # information is created for every sample.
+        call(
+            ["gmer_counter -db K-mer_lists/k-mer_db_" + pheno
+            + ".txt " + self.address + " > K-mer_lists/" + self.name 
+            + "_k-mer_counts_" + pheno  + ".txt"], shell=True
+            )
+
+    def kmer_counts(self, pheno):
+        with open(
+                "K-mer_lists/" + self.name +
+                "_k-mer_counts_"+ pheno  + ".txt"
+            ) as counts:
+            with open(
+                    "K-mer_lists/" + self.name + "_k-mer_counts_filtered_"
+                    + pheno + ".txt", "w+"
+                    ) as counts_filtered:
+                counts.readline()
+                for line in counts:
+                    splitted = line.split()
+                    if int(splitted[2]) >= Phenotypes.cutoff:
+                        splitted[2] = "1"
+                        counts_filtered.write("\t".join(splitted)+"\n")
+                    else:
+                        splitted[2] = "0"
+                        counts_filtered.write("\t".join(splitted)+"\n")
+
+class Phenotypes():
+
+    cutoff = 1
+    no_phenotypes = 0
+
+    def __init__(
+                self, name, model, kmers, pca, pca_model, scaler,
+                PCs_to_keep, pred_scale
+            ):
+        self.name = name
+        self.model = model
+        self.kmers = kmers
+        self.pca = pca
+        self.pca_model = pca_model
+        self.scaler = scaler
+        self.PCs_to_keep = PCs_to_keep
+        self.pred_scale = pred_scale
+        self.matrix = np.empty(shape=(Samples.no_samples, kmers.shape[0]))
+
+        Phenotypes.no_phenotypes += 1
+
+    @classmethod
+    def from_inputfile(cls, line):
+        name, model_adre = line.split()[0], line.split()[1] 
+        model_pkg = joblib.load(model_adre)
+        model = model_pkg['model']
+        kmers = model_pkg['kmers']
+
+        pca = False
+        pca_model = None
+        scaler = None
+        PCs_to_keep = None
+        pred_scale = None
+        if model_pkg['pca']:
+            pca_model = model_pkg['pca_model']
+            scaler = model_pkg['scaler']
+            PCs_to_keep = model_pkg['PCs_to_keep']
+            pred_scale = model_pkg['pred_scale']
+            pca = True
+        return cls(
+                name, model, kmers, pca, pca_model, scaler, PCs_to_keep, pred_scale
+            )
+
+    def set_kmer_db(self):
+        with open("K-mer_lists/k-mer_db_" + self.name + ".txt", "w+") as db:
+            for kmer in self.kmers:
+                db.write(f"{kmer}\t1\t{kmer}\n")
+
+    def get_inp_matrix(self):
+        # Takes all vectors with k-mer frequency information and inserts 
+        # them into matrix of dimensions "number of samples" x "number of 
+        # k-mers (features).
+        kmer_counts = [
+            "K-mer_lists/" + sample + "_k-mer_counts_filtered_" + self.name
+            + ".txt" for sample in Input.samples.keys()
+            ]
+        for idx, line in enumerate(zip(*[open(counts) for counts in kmer_counts])):
+            self.matrix[:, idx] = np.array([j.split()[2].strip() for j in line])
+        if self.pca:            
+            self.scaled_matrix = self.scaler.transform(self.matrix)
+            self.matrix = self.pca_model.transform(self.scaled_matrix)
+            self.matrix = self.matrix[:, self.PCs_to_keep]
+
+    def predict(self):
+
+        #Loading regression model
+        predictions = self.model.predict(self.matrix)
+        
+        with open("predictions_" + self.name + ".txt", "w+") as out:
+            if self.pred_scale == "binary":
+                predict_proba = self.model.predict_proba(self.matrix)
+                out.write("Sample_ID\tpredicted_phenotype\t" \
+                    "probability_for_predicted_class\n")
+                for sample, prediction, proba in zip(
+                        Input.samples.keys(), predictions, predict_proba
+                        ): 
+                    out.write(f"{sample}\t{str(prediction)}\t{str(round(proba[1], 2))}\n")
+            else:
+                out.write("Sample_ID\tpredicted_phenotype\n")
+                for sample, prediction in zip(Input.samples.keys(), predictions):
+                    out.write(sample + "\t" + str(prediction) + "\n")
+
+@timer
+def prediction(args):
+    sys.stderr.write("\x1b[1;1;101m######                   PhenotypeSeeker                   ######\x1b[0m\n")
+    sys.stderr.write("\x1b[1;1;101m######                     prediction                      ######\x1b[0m\n\n")
+
+    Phenotypes.cufoff = args.c
+    call(["mkdir", "-p", "K-mer_lists"])
+    Input.get_samples(args.inputfile1)
+    Input.get_phenos(args.inputfile2)
+
+    
+    for pheno in Input.phenos.values():
+        sys.stderr.write(f"\x1b[1;32mPredicting the phenotypes for {pheno.name}.\x1b[0m\n")
+        pheno.set_kmer_db()
+        with Pool(args.num_threads) as p:
+            p.map(lambda x: x.map_samples(pheno.name), Input.samples.values())
+            p.map(lambda x: x.kmer_counts(pheno.name), Input.samples.values())
+        pheno.get_inp_matrix()
+        pheno.predict()
+
+    sys.stderr.write("\n\x1b[1;1;101m######          PhenotypeSeeker prediction finished          ######\x1b[0m\n")         

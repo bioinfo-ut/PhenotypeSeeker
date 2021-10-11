@@ -1,10 +1,12 @@
 #!/bin/bash
 
-sudo apt-get update
-sudo apt-get install python3 python3-pip python3-setuptools
+if [ $1 != "--user" ]; then
+  sudo apt-get update --assume-yes
+  sudo apt-get install --assume-yes python3 python3-pip virtualenv
+fi
 
-sudo python3 -m pip install --upgrade pip
+virtualenv -p python3 .PSenv --system-site-packages
+source .PSenv/bin/activate
 
-sudo cp bin/* /usr/local/bin
-sudo python3.6 -m pip install .
-
+cp bin/* ./.PSenv/bin
+yes | python3 -m pip install -r pkgs_to_inst.txt

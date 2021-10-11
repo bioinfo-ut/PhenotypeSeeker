@@ -1,5 +1,5 @@
 __author__ = "Erki Aun"
-__version__ = "0.7.3"
+__version__ = "1.0.0"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 

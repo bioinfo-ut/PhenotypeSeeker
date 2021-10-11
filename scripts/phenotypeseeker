@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 __author__ = "Erki Aun"
-__version__ = "0.7.3"
+__version__ = "1.0.0"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
@@ -36,7 +36,7 @@ def Main():
     parser._positionals.title = 'Required option'
 
     other2 = parser.add_argument_group('Other options')
-    other2.add_argument('--version', action='version', version='%(prog)s 0.7.3')
+    other2.add_argument('--version', action='version', version='%(prog)s 1.0.0')
     other2.add_argument(
     	'-h', '--help', action=_HelpAction,
     	help='Show this help message and exit.'
@@ -123,6 +123,10 @@ def Main():
         modelling (default = 1000). Set '0' for no limit"
         )
 
+    regression_models.add_argument(
+        "--pca", action="store_true",
+        help="Apply PCA to k-mer features before fitting the model."
+        )
     regression_models.add_argument(
     	"--alphas", metavar='FLOAT', type=float, nargs='+',
     	help="List of alphas (regularization strengths) where to compute the \
@@ -258,8 +262,8 @@ def Main():
     	linear/logistic regression model.'
     	)
     other.add_argument(
-        "-na", "--no_assembly", action='store_true',
-        help='Do not assemble the k-mers used in regression model.'
+        "-a", "--assembly", action='store_true',
+        help='Assemble the k-mers used in regression model.'
         )
     other.add_argument(
         "--take_logs", action='store_true',
@@ -272,7 +276,7 @@ def Main():
         )
     other.add_argument(
         "-jt", "--jump_to", type=str, metavar='', default=None,
-        choices=["modelling"],
+        choices=["modelling", "PCA"],
         help='Continue a discontinued process and skip the steps, which output \
         files exist already in the correct paths.'
         )
@@ -297,6 +301,10 @@ def Main():
     	"-c", type=str, metavar="INT", default="1",
     	help="K-mer frequency cut-off. Must be an integer (default = 1)."
     	)
+    parser_b.add_argument(
+        "-nt", "--num_threads", type=int, metavar='INT', default=8,
+        help='Specify the number of threads the program is run on (default 8).'
+        )
     parser_b.add_argument(
     	"-h", "--help", action="help",
     	help="Show this help message and exit."
