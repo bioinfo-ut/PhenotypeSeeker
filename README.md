@@ -21,22 +21,30 @@ To install the PhenotypeSeeker, open the command-line and type in the following 
 sudo apt-get install git
 git clone http://github.com/bioinfo-ut/PhenotypeSeeker.git
 cd PhenotypeSeeker
-sh install.sh
+./install.sh
+```
 
+This installs PhenotypeSeeker and all its dependencies into virtual environment. To activate this virtual environment and use PhenotypeSeeker change to PhenotypeSeeker's directory and type:
+```
+. .PSenv/bin/activate
 phenotypeseeker --version
+```
+To exit this virtualenvironment simply type in:
+```
+deactivate
 ```
 
 ### Install locally without sudo privileges
 
-Python3, python3-pip, python3-dev and git must be installed to install PhenotypeSeeker locally without sudo rights!
-
-To install the PhenotypeSeeker locally, open the command-line and type in the following commands:
+If you do not have sudo rights, but have Python3, python3-pip, virtualenv and git installed, just add --user flag for install.sh.
 ```
 git clone http://github.com/bioinfo-ut/PhenotypeSeeker.git
 cd PhenotypeSeeker
-sh local_install.sh
+./install.sh
 
-~/.local/bin/phenotypeseeker --version
+. .PSenv/bin/activate   # activate virtualenv
+phenotypeseeker --version
+deactivate  # exit virtualenv
 ```
 
 That's it with PhenotypeSeeker!
