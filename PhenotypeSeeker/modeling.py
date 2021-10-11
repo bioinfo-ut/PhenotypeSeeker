@@ -684,7 +684,7 @@ class phenotypes():
 
             kmer_vector = [int(j.split()[1].strip()) for j in line]
             if not self.real_counts:
-                kmer_vector = [1 if x > 0 else 0 for count in kmer_vector]
+                kmer_vector = [1 if count > 0 else 0 for count in kmer_vector]
 
             if phenotypes.pred_scale == "binary":
                 test_results = self.conduct_chi_squared_test(
