@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ $1 != "--user" ]; then
+if [ "$1" != "--user" ]; then
   sudo apt-get update --assume-yes
   sudo apt-get install --assume-yes python3 python3-pip virtualenv
 fi
