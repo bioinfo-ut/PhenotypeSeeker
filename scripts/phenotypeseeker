@@ -261,7 +261,7 @@ def Main():
     	help='Use samples GSC weights in statistical testing of k-mers (and PCs).'
     	)
     other.add_argument(
-        "-rc", "--real_counts", action='store_true'
+        "-rc", "--real_counts", action='store_true',
         help='Use the real counts of k-mers in the samples instead of \
         presence=1/absence=0 conversion.'
         )
