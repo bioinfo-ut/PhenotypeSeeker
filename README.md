@@ -36,11 +36,11 @@ deactivate
 
 ### Install locally without sudo privileges
 
-If you do not have sudo rights, but have Python3, python3-pip, virtualenv and git installed, just add --user flag for install.sh.
+If you do not have sudo rights, but have Python3, python3-pip, virtualenv and git installed, just could install PhenotypeSeeker with --user flag.
 ```
 git clone http://github.com/bioinfo-ut/PhenotypeSeeker.git
 cd PhenotypeSeeker
-./install.sh
+./install.sh --user
 
 . .PSenv/bin/activate   # activate virtualenv
 phenotypeseeker --version
