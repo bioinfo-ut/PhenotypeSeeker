@@ -680,9 +680,9 @@ class phenotypes():
                 )
             kmer = line[0].split()[0]
 
-            if Input.real_counts:
-                kmer_vector = [j.split()[1].strip() for j in line]
-            else:
+            kmer_vector = [int(j.split()[1].strip()) for j in line]
+            if not Input.real_counts:
+                kmer_vector = [1 if x > 0 else 0 for count in kmer_vector]
 
             if phenotypes.pred_scale == "binary":
                 test_results = self.conduct_chi_squared_test(
@@ -741,7 +741,7 @@ class phenotypes():
         for index, sample in enumerate(samples):
             sample_phenotype = sample.phenotypes[self.name]
             if sample_phenotype != "NA":
-                if kmer_presence_vector[index] == "0":
+                if kmer_presence_vector[index] == 0:
                     y.append(sample_phenotype)
                     y_weights.append(sample.weight)
                 else:
@@ -828,14 +828,14 @@ class phenotypes():
         without_pheno_without_kmer = 0
         for index, sample in enumerate(samples):
             if sample.phenotypes[self.name] == 1:
-                if (kmers_presence_vector[index] != "0"):
+                if (kmers_presence_vector[index] != 0):
                     with_pheno_with_kmer += sample.weight 
                     samples_w_kmer.append(sample.name)
                 else:
                     with_pheno_without_kmer += sample.weight
                     no_samples_wo_kmer += 1
             elif sample.phenotypes[self.name] == 0:
-                if (kmers_presence_vector[index] != "0"):
+                if (kmers_presence_vector[index] != 0):
                     without_pheno_with_kmer += sample.weight
                     samples_w_kmer.append(sample.name)
                 else:
