@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 __author__ = "Erki Aun"
-__version__ = "0.7.3"
+__version__ = "1.0.0"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
@@ -36,7 +36,7 @@ def Main():
     parser._positionals.title = 'Required option'
 
     other2 = parser.add_argument_group('Other options')
-    other2.add_argument('--version', action='version', version='%(prog)s 0.7.3')
+    other2.add_argument('--version', action='version', version='%(prog)s 1.0.0')
     other2.add_argument(
     	'-h', '--help', action=_HelpAction,
     	help='Show this help message and exit.'

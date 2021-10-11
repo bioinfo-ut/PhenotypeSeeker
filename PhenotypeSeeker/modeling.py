@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 __author__ = "Erki Aun"
-__version__ = "0.7.3"
+__version__ = "1.0.0"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
@@ -669,15 +669,6 @@ class phenotypes():
         kmer_matrix = pd.DataFrame()
         counter = 0
 
-        # mt_code = split_of_kmer_lists[0][-5:]
-        # if phenotypes.pred_scale == "continuous":
-        #     test_results_file = open(
-        #         "t-test_results_" + self.name + "_" + mt_code + ".txt", "w"
-        #         )
-        # else:
-        #     test_results_file = open(
-        #         "chi-squared_test_results_" + self.name + "_" + mt_code + ".txt", "w"
-        #         )
         for line in zip(*[open(item) for item in split_of_kmer_lists]):
             counter += 1
             if counter%self.progress_checkpoint == 0:
@@ -732,12 +723,6 @@ class phenotypes():
             x, y, x_weights, y_weights
             )
 
-        # test_results_file.write(
-        #     kmer + "\t" + str(round(t_statistic, 2)) + "\t" + \
-        #     "%.2E" % pvalue + "\t" + str(round(mean_x, 2)) + "\t" + \
-        #     str(round(mean_y,2)) + "\t" + str(len(samples_w_kmer)) + "\t| " + \
-        #     " ".join(samples_w_kmer) + "\n"
-        #     )
         if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
             return [kmer, round(t_statistic, 2), "%.2E" % pvalue, round(mean_x, 2), round(mean_y, 2), len(samples_w_kmer)] + kmer_vector
         elif pvalue < self.pvalue_cutoff:
@@ -820,10 +805,7 @@ class phenotypes():
             ],
             1
             )
-        # test_results_file.write(
-        #     kmer + "\t%.2f\t%.2E\t" % chisquare_results 
-        #     + str(no_samples_w_kmer)  +"\t| " + " ".join(samples_w_kmer) + "\n"
-        #     )
+
         chisquare, pvalue = chisquare_results
         if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
             return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
@@ -891,131 +873,6 @@ class phenotypes():
             w_pheno_w_kmer_expected, w_pheno_wo_kmer_expected,
             wo_pheno_w_kmer_expected, wo_pheno_wo_kmer_expected
             )
-
-    # def concatenate_test_files(self, phenotype):
-    #     if phenotypes.pred_scale == "continuous":
-    #         test_results = "t-test_results_"
-    #     else:
-    #         test_results = "chi-squared_test_results_"
-    #     self.test_output = test_results + phenotype + ".txt"
-    #     call(
-    #         [
-    #         "cat " + test_results + phenotype + "_* > " +
-    #         self.test_output
-    #         ],
-    #         shell=True
-    #         )
-    #     if not int(check_output(["wc", "-l", self.test_output]).split()[0].decode()):
-    #         with open(self.test_output, "w+") as test_out:
-    #             test_out.write(
-    #                 "No k-mer had a suitable distribution to conduct the test."
-    #                 )
-    #         self.no_results.append(phenotype)
-    #     for l in range(Input.num_threads):
-    #         call(
-    #             [
-    #             "rm " + test_results + phenotype +
-    #             "_%05d.txt" % l
-    #             ],
-    #             shell=True
-    #             )
-
-    # # -------------------------------------------------------------------
-    # # Functions for filtering the k-mers based on the p-values of
-    # # conducted tests.
-    # @timer
-    # def get_kmers_filtered(self):
-    #     # Filters the k-mers by their p-value achieved in statistical 
-    #     # testing.
-    #     phenotype = self.name
-    #     nr_of_kmers_tested = float(len(self.pvalues))
-    #     self.get_pvalue_cutoff(self.pvalues, nr_of_kmers_tested)
-    #     if self.kmer_limit:
-    #         pval_limit = float('{:.2e}'.format(self.pvalues[self.kmer_limit]))
-    #     # while self.pvalues[self.kmer_limit-counter] == reference:
-    #     #     counter +=1
-    #     # pvalues_for_ML_kmers = self.pvalues[:self.kmer_limit]
-    #     # pvalues_for_ML_kmers = [float("%.2E" % x) for x in pvalues_for_ML_kmers]
-    #     del self.pvalues
-
-    #     stderr_print.currentKmerNum.value = 0
-    #     stderr_print.previousPercent.value = 0
-    #     checkpoint = int(math.ceil(nr_of_kmers_tested/100))
-    #     inputfile = open(self.test_output)
-    #     outputfile = open("k-mers_filtered_by_pvalue_" + self.name + ".txt", "w")
-    #     self.write_headerline(outputfile)
-
-    #     counter = 0
-    #     unique_patterns = set()
-    #     drop_collinearity = False
-    #     for line in inputfile:
-    #         counter += 1
-    #         line_to_list = line.split()
-    #         kmer, p_val = line_to_list[0], float(line_to_list[2])
-    #         samples_with_kmer = set(line.split("|")[1].split())
-    #         if p_val < self.pvalue_cutoff:
-    #             outputfile.write(line)             
-    #             # if p_val in pvalues_for_ML_kmers:
-    #             if drop_collinearity:
-    #                 if line.split("|")[1] not in unique_patterns:
-    #                     unique_patterns.add(line.split("|")[1])
-    #                     self.kmers_for_ML[kmer] = [
-    #                         1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()
-    #                         ] + [p_val]
-    #             elif self.kmer_limit and (p_val <= pval_limit):
-    #                 self.kmers_for_ML[kmer] = [
-    #                         1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()
-    #                         ] + [p_val]
-    #             elif not self.kmer_limit:
-    #                 self.kmers_for_ML[kmer] = [
-    #                         1 if sample in samples_with_kmer else 0 for sample in Input.samples.keys()
-    #                         ] + [p_val]
-    #             # pvalues_for_ML_kmers.remove(p_val)
-    #         if counter%checkpoint == 0:
-    #             stderr_print.currentKmerNum.value += checkpoint
-    #             stderr_print.check_progress(
-    #                 nr_of_kmers_tested, "k-mers filtered.", self.name + ": "
-    #             )
-    #     stderr_print.currentKmerNum.value += counter%checkpoint
-    #     stderr_print.check_progress(
-    #         nr_of_kmers_tested, "k-mers filtered.", self.name + ": "
-    #         )
-    #     sys.stderr.write("\n")
-    #     sys.stderr.flush()
-    #     if len(self.kmers_for_ML) == 0:
-    #         outputfile.write("\nNo k-mers passed the filtration by p-value.\n")
-    #         self.no_results.append(phenotype)
-    #     inputfile.close()
-    #     outputfile.close()
-
-    # def get_pvalue_cutoff(self, pvalues, nr_of_kmers_tested):
-    #     if self.B:
-    #         self.pvalue_cutoff = (self.pvalue_cutoff/nr_of_kmers_tested)
-    #     elif self.FDR:
-    #         pvalue_cutoff_by_FDR = 0
-    #         for index, pvalue in enumerate(pvalues):
-    #             if  (pvalue  < (
-    #                     (index+1) 
-    #                     / nr_of_kmers_tested) * self.pvalue_cutoff
-    #                     ):
-    #                 pvalue_cutoff_by_FDR = pvalue
-    #             elif pvalue > self.pvalue_cutoff:
-    #                 break
-    #         self.pvalue_cutoff = pvalue_cutoff_by_FDR
-
-    # @staticmethod
-    # def write_headerline(outputfile):
-    #     if phenotypes.pred_scale == "continuous":
-    #         outputfile.write(
-    #             "K-mer\tWelch's_t-statistic\tp-value\t+_group_mean\
-    #             \t-_group_mean\tNo._of_samples_with_k-mer\
-    #             \tSamples_with_k-mer\n"
-    #             )
-    #     elif phenotypes.pred_scale == "binary":
-    #         outputfile.write(
-    #             "K-mer\tChi-square_statistic\tp-value\
-    #             \tNo._of_samples_with_k-mer\tSamples_with_k-mer\n"
-    #             )
 
     def machine_learning_modelling(self):
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
@@ -1278,23 +1135,6 @@ class phenotypes():
             self.ML_df.index = self.ML_df.index.astype(str)
             self.model_package['kmers'] = self.ML_df.columns[:-2]
         else:
-            # index = list(Input.samples.keys()) + ['p_val']
-            # self.ML_df = pd.DataFrame(self.kmers_for_ML, index=index)
-            # if self.kmer_limit:
-            #     self.ML_df.sort_values('p_val', axis=1, ascending=True, inplace=True)
-            #     self.ML_df = self.ML_df.iloc[:,:self.kmer_limit]
-            # self.ML_df.drop('p_val', inplace=True)
-            # self.ML_df['weights'] = [
-            #     sample.weight for sample in Input.samples.values()
-            #     ]
-            # self.ML_df['phenotype'] = [
-            #     sample.phenotypes[self.name] for sample in Input.samples.values()
-            #     ]
-            # self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
-            # self.ML_df.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
-            # self.ML_df.to_csv(self.name + "_" + self.model_name_short + "_df.csv")
-            # self.model_package['kmers'] = self.ML_df.columns[:-2]
-
             if self.pred_scale == "binary":
                 test_cols = ['chi2', 'p-value', 'num_samples_w_kmer']
             else:
