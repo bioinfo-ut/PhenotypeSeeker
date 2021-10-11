@@ -1702,15 +1702,6 @@ def modeling(args):
         Input.pop_phenos_out_of_kmers()
         sys.stderr.flush()
 
-        # sys.stderr.write("\x1b[1;32mFiltering the k-mers by p-value:\x1b[0m\n")
-        # 
-        # list(map(
-        #     lambda x:  x.get_kmers_filtered(), 
-        #     Input.phenotypes_to_analyse.values()
-        #     ))
-        # Remove phenotypes with no results
-        # Input.pop_phenos_out_of_kmers()
-
     if not Input.jump_to or ''.join(i for i, _ in groupby(Input.jump_to)) in ["modeling"]:
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
         sys.stderr.flush()
