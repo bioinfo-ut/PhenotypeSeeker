@@ -7,4 +7,4 @@ virtualenv -p python3 .PSenv
 source .PSenv/bin/activate
 
 cp bin/* ./.PSenv/bin
-yes | python3 -m pip install -r pkgs_to_inst.txt
+yes | python3 -m pip install -r pkgs_to_inst.txt --use-feature=in-tree-build
