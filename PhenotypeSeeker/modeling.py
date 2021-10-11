@@ -151,7 +151,7 @@ class Input():
             FDR, B, binary_classifier, regressor, penalty, max_iter,
             tol, l1_ratio, n_splits_cv_outer, kernel, n_iter,
             n_splits_cv_inner, testset_size, train_on_whole,
-            logreg_solver, jump_to, pca
+            logreg_solver, jump_to, pca, real_counts
             ):
         phenotypes.alphas = cls._get_alphas(
             alphas, alpha_min, alpha_max, n_alphas
@@ -184,6 +184,7 @@ class Input():
         phenotypes.logreg_solver = cls.get_logreg_solver(
             logreg_solver)
         phenotypes.pca = pca
+        phenotypes.real_counts = real_counts
 
     @staticmethod
     def get_model_name(regressor, binary_classifier):
@@ -533,6 +534,7 @@ class phenotypes():
     model_package = {}
 
     pred_scale = "binary"
+    real_counts = False
 
     model_name_long = None
     model_name_short = None
@@ -681,7 +683,7 @@ class phenotypes():
             kmer = line[0].split()[0]
 
             kmer_vector = [int(j.split()[1].strip()) for j in line]
-            if not Input.real_counts:
+            if not self.real_counts:
                 kmer_vector = [1 if x > 0 else 0 for count in kmer_vector]
 
             if phenotypes.pred_scale == "binary":
@@ -1657,7 +1659,7 @@ def modeling(args):
         args.penalty, args.max_iter, args.tolerance, args.l1_ratio,
         args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner,
         args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to,
-        args.pca
+        args.pca, args.real_counts
         )
 
     if not Input.jump_to:
