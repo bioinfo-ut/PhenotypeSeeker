@@ -1,6 +1,6 @@
 #!/bin/bash
 
-/usr/bin/python3.6 -m pip install --user --upgrade pip
+#/usr/bin/python3.6 -m pip install --user --upgrade pip
 
 cp bin/* ~/.local/bin/
 
@@ -13,4 +13,4 @@ sed -i "s:gmer_counter:~/.local/bin/gmer_counter:g" PhenotypeSeeker/prediction.p
 sed -i "s:^phenotypeseeker:~/.local/bin/phenotypeseeker:" example/test_PS_modeling.sh
 sed -i "s:^phenotypeseeker:~/.local/bin/phenotypeseeker:" example/test_PS_prediction.sh
 
-/usr/bin/python3.6 -m pip install --user .
+pip install --user depends.txt
