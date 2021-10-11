@@ -21,10 +21,19 @@ To install the PhenotypeSeeker, open the command-line and type in the following 
 sudo apt-get install git
 git clone http://github.com/bioinfo-ut/PhenotypeSeeker.git
 cd PhenotypeSeeker
-sh install.sh
+./install.sh
+```
 
+This installs PhenotypeSeeker and all its dependencies into virtual environment. To activate this virtual environment and use PhenotypeSeeker change to PhenotypeSeeker's directory and type:
+```
+. .PSenv/bin/activate
 phenotypeseeker --version
 ```
+To exit this virtualenvironment simply type in:
+```
+deactivate
+```
+
 
 ### Install locally without sudo privileges
 
