@@ -807,7 +807,8 @@ class phenotypes():
             )
 
         chisquare, pvalue = chisquare_results
-        return "aa"
+        print("B")
+        return("aa")
         # if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
         #    return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
         #     # return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
