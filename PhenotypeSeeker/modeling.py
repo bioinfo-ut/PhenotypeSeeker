@@ -804,11 +804,11 @@ class phenotypes():
 
         chisquare, pvalue = chisquare_results
         if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
-           # return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
-            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
+           return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
+            # return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
         elif pvalue < self.pvalue_cutoff:
-           # return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
-            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
+           return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
+            # return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
         else:
             return None
 
@@ -1134,10 +1134,10 @@ class phenotypes():
             self.model_package['kmers'] = self.ML_df.columns[:-2]
         else:
             if self.pred_scale == "binary":
-                out_cols = ['chi2', 'p-value', 'num_samples_w_kmer']#, 'samples_with_kmer']
+                out_cols = ['chi2', 'p-value', 'num_samples_w_kmer', 'samples_with_kmer']
             else:
                 out_cols = ['t-test', 'p-value', '+_group_mean', '-_group_mean', \
-                    'num_samples_w_kmer'] #, 'samples_with_kmer']
+                    'num_samples_w_kmer', 'samples_with_kmer']
             self.ML_df.columns.name = "k-mer"
             self.ML_df.index = out_cols + list(Input.samples.keys())
             self.ML_df = self.ML_df.sort_values('p-value', axis=1)
