@@ -681,11 +681,14 @@ class phenotypes():
                 kmer_vector = [1 if count > 0 else 0 for count in kmer_vector]
 
             if phenotypes.pred_scale == "binary":
-                test_results = self.conduct_chi_squared_test(
+                # test_results = self.conduct_chi_squared_test(
+                #         kmer, kmer_vector,
+                #         Input.samples.values()
+                #     )
+                print(self.conduct_chi_squared_test(
                         kmer, kmer_vector,
                         Input.samples.values()
-                    )
-                print(test_results)
+                    ))
             elif phenotypes.pred_scale == "continuous":
                 test_results = self.conduct_t_test(
                         kmer, kmer_vector,
@@ -693,7 +696,6 @@ class phenotypes():
                     )
             if test_results:
                 kmer_matrix[test_results[0]] = test_results[1:]
-                print(kmer_matrix)
         Input.lock.acquire()
         stderr_print.currentKmerNum.value += counter%self.progress_checkpoint
         Input.lock.release()
@@ -814,7 +816,6 @@ class phenotypes():
             return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
         elif pvalue < self.pvalue_cutoff:
 #            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
-            print([kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector)
             return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
         else:
             return None
