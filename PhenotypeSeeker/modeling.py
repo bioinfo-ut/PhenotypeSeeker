@@ -681,14 +681,11 @@ class phenotypes():
                 kmer_vector = [1 if count > 0 else 0 for count in kmer_vector]
 
             if phenotypes.pred_scale == "binary":
-                # test_results = self.conduct_chi_squared_test(
-                #         kmer, kmer_vector,
-                #         Input.samples.values()
-                #     )
-                print(self.conduct_chi_squared_test(
+                test_results = self.conduct_chi_squared_test(
                         kmer, kmer_vector,
                         Input.samples.values()
-                    ))
+                    )
+                print(test_results)
             elif phenotypes.pred_scale == "continuous":
                 test_results = self.conduct_t_test(
                         kmer, kmer_vector,
