@@ -105,12 +105,6 @@ class Input():
             cls.phenotypes_to_analyse[Samples.phenotypes[item]] = \
                 phenotypes(Samples.phenotypes[item])
 
-    # # ---------------------------------------------------------
-    # # Set parameters for multithreading
-    # @classmethod
-    # def _get_multithreading_parameters(cls):
-    #     cls.lock = Manager().Lock()
-
     @classmethod
     def _set_phenotype_values(cls, take_logs):
         for sample in cls.samples.values():
@@ -776,6 +770,7 @@ class phenotypes():
 
         return t, pvalue, wtd_mean_x, wtd_mean_y
 
+    @timer
     def conduct_chi_squared_test(
         self, kmer, kmer_vector, samples
         ):
@@ -813,9 +808,11 @@ class phenotypes():
 
         chisquare, pvalue = chisquare_results
         if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
-            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
+#            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
+            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
         elif pvalue < self.pvalue_cutoff:
-            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
+#            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
+            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
         else:
             return None
 
