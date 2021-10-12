@@ -679,7 +679,6 @@ class phenotypes():
             kmer_vector = [int(j.split()[1].strip()) for j in line]
             if not self.real_counts:
                 kmer_vector = [1 if count > 0 else 0 for count in kmer_vector]
-
             if phenotypes.pred_scale == "binary":
                 test_results = self.conduct_chi_squared_test(
                         kmer, kmer_vector,
@@ -807,14 +806,15 @@ class phenotypes():
             )
 
         chisquare, pvalue = chisquare_results
-        if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
-           return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
-            # return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
-        elif pvalue < self.pvalue_cutoff:
-           return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
-            # return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
-        else:
-            return None
+        return "aa"
+        # if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
+        #    return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
+        #     # return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
+        # elif pvalue < self.pvalue_cutoff:
+        #    return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
+        #     # return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
+        # else:
+        #     return None
 
     def get_samples_distribution_for_chisquared(
             self, kmers_presence_vector, samples_w_kmer,
