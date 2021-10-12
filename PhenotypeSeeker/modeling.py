@@ -689,7 +689,8 @@ class phenotypes():
                     )
             if test_results:
                 kmer_matrix[test_results[0]] = test_results[1:]
-                print(kmer_matrix)
+                print(pvalue)
+                print([kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector)
         Input.lock.acquire()
         stderr_print.currentKmerNum.value += counter%self.progress_checkpoint
         Input.lock.release()
@@ -810,6 +811,7 @@ class phenotypes():
             return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
         elif pvalue < self.pvalue_cutoff:
             print(pvalue)
+            print([kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector)
 #            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
             return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
         else:
