@@ -727,6 +727,7 @@ class phenotypes():
             return [kmer, round(t_statistic, 2), "%.2E" % pvalue, round(mean_x, 2), round(mean_y, 2), len(samples_w_kmer), " ".join(["|"] + samples_w_kmer)] + kmer_vector
         elif pvalue < self.pvalue_cutoff:
             # return [kmer, round(t_statistic, 2), "%.2E" % pvalue, round(mean_x, 2), round(mean_y, 2), len(samples_w_kmer), " ".join(["|"] + samples_w_kmer)] + kmer_vector
+            print(kmer)
             return kmer
         else:
             return None
