@@ -769,7 +769,6 @@ class phenotypes():
 
         return t, pvalue, wtd_mean_x, wtd_mean_y
 
-    @timer
     def conduct_chi_squared_test(
         self, kmer, kmer_vector, samples
         ):
