@@ -650,8 +650,11 @@ class phenotypes():
             results_from_threads = p.map(
                 self.get_kmers_tested, zip(*self.vectors_as_multiple_input)
             )
+        # self.pvalues = \
+        #     sorted(list(chain(*pvalues_from_all_threads)))
         sys.stderr.write("\n")
         sys.stderr.flush()
+        # self.concatenate_test_files(self.name)
         self.ML_df = pd.concat(results_from_threads, axis=1)
         del results_from_threads
         if self.ML_df.shape[0] == 0:
@@ -689,7 +692,7 @@ class phenotypes():
                     )
             if test_results:
                 kmer_matrix[test_results[0]] = test_results[1:]
-                print(test_results)
+                print(test_results[2])
         Input.lock.acquire()
         stderr_print.currentKmerNum.value += counter%self.progress_checkpoint
         Input.lock.release()
@@ -806,14 +809,17 @@ class phenotypes():
 
         chisquare, pvalue = chisquare_results
         if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
+#            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
             return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
         elif pvalue < self.pvalue_cutoff:
+#            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
+            print(pvalue)
             return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
         else:
             return None
 
     def get_samples_distribution_for_chisquared(
-            self, kmers_vector, samples_w_kmer,
+            self, kmers_presence_vector, samples_w_kmer,
             samples
             ):
         no_samples_wo_kmer = 0
@@ -823,14 +829,14 @@ class phenotypes():
         without_pheno_without_kmer = 0
         for index, sample in enumerate(samples):
             if sample.phenotypes[self.name] == 1:
-                if (kmers_vector[index] != 0):
+                if (kmers_presence_vector[index] != 0):
                     with_pheno_with_kmer += sample.weight 
                     samples_w_kmer.append(sample.name)
                 else:
                     with_pheno_without_kmer += sample.weight
                     no_samples_wo_kmer += 1
             elif sample.phenotypes[self.name] == 0:
-                if (kmers_vector[index] != 0):
+                if (kmers_presence_vector[index] != 0):
                     without_pheno_with_kmer += sample.weight
                     samples_w_kmer.append(sample.name)
                 else:
