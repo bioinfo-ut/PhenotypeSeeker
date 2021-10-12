@@ -807,16 +807,14 @@ class phenotypes():
             )
 
         chisquare, pvalue = chisquare_results
-        print("B")
-        return("aa")
-        # if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
-        #    return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
-        #     # return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
-        # elif pvalue < self.pvalue_cutoff:
-        #    return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
-        #     # return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
-        # else:
-        #     return None
+        if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
+           # return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
+            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
+        elif pvalue < self.pvalue_cutoff:
+           # return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
+            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
+        else:
+            return None
 
     def get_samples_distribution_for_chisquared(
             self, kmers_presence_vector, samples_w_kmer,
