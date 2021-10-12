@@ -772,6 +772,7 @@ class phenotypes():
     def conduct_chi_squared_test(
         self, kmer, kmer_vector, samples
         ):
+        print(kmer_vector)
         samples_w_kmer = []
         (
         w_pheno_w_kmer, w_pheno_wo_kmer, wo_pheno_w_kmer, wo_pheno_wo_kmer,
@@ -815,7 +816,7 @@ class phenotypes():
             return None
 
     def get_samples_distribution_for_chisquared(
-            self, kmers_presence_vector, samples_w_kmer,
+            self, kmers_vector, samples_w_kmer,
             samples
             ):
         no_samples_wo_kmer = 0
@@ -825,14 +826,14 @@ class phenotypes():
         without_pheno_without_kmer = 0
         for index, sample in enumerate(samples):
             if sample.phenotypes[self.name] == 1:
-                if (kmers_presence_vector[index] != 0):
+                if (kmers_vector[index] != 0):
                     with_pheno_with_kmer += sample.weight 
                     samples_w_kmer.append(sample.name)
                 else:
                     with_pheno_without_kmer += sample.weight
                     no_samples_wo_kmer += 1
             elif sample.phenotypes[self.name] == 0:
-                if (kmers_presence_vector[index] != 0):
+                if (kmers_vector[index] != 0):
                     without_pheno_with_kmer += sample.weight
                     samples_w_kmer.append(sample.name)
                 else:
