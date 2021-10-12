@@ -684,7 +684,6 @@ class phenotypes():
                         kmer, kmer_vector,
                         Input.samples.values()
                     )
-                print(test_results)
             elif phenotypes.pred_scale == "continuous":
                 test_results = self.conduct_t_test(
                         kmer, kmer_vector,
