@@ -692,7 +692,7 @@ class phenotypes():
                     )
             if test_results:
                 kmer_matrix[test_results[0]] = test_results[1:]
-                print(test_results[2])
+                print(test_results[1:3])
         Input.lock.acquire()
         stderr_print.currentKmerNum.value += counter%self.progress_checkpoint
         Input.lock.release()
