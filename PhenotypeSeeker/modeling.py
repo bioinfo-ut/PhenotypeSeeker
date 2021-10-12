@@ -643,6 +643,7 @@ class phenotypes():
                 ]
                 )
 
+    @timer
     def test_kmers_association_with_phenotype(self):
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
@@ -650,11 +651,8 @@ class phenotypes():
             results_from_threads = p.map(
                 self.get_kmers_tested, zip(*self.vectors_as_multiple_input)
             )
-        # self.pvalues = \
-        #     sorted(list(chain(*pvalues_from_all_threads)))
         sys.stderr.write("\n")
         sys.stderr.flush()
-        # self.concatenate_test_files(self.name)
         self.ML_df = pd.concat(results_from_threads, axis=1)
         del results_from_threads
         if self.ML_df.shape[0] == 0:
@@ -1136,10 +1134,10 @@ class phenotypes():
             self.model_package['kmers'] = self.ML_df.columns[:-2]
         else:
             if self.pred_scale == "binary":
-                out_cols = ['chi2', 'p-value', 'num_samples_w_kmer', 'samples_with_kmer']
+                out_cols = ['chi2', 'p-value', 'num_samples_w_kmer']#, 'samples_with_kmer']
             else:
                 out_cols = ['t-test', 'p-value', '+_group_mean', '-_group_mean', \
-                    'num_samples_w_kmer', 'samples_with_kmer']
+                    'num_samples_w_kmer'] #, 'samples_with_kmer']
             self.ML_df.columns.name = "k-mer"
             self.ML_df.index = out_cols + list(Input.samples.keys())
             self.ML_df = self.ML_df.sort_values('p-value', axis=1)
