@@ -689,6 +689,7 @@ class phenotypes():
                     )
             if test_results:
                 kmer_matrix[test_results[0]] = test_results[1:]
+            print(test_results[2])
             print(kmer_matrix)
         Input.lock.acquire()
         stderr_print.currentKmerNum.value += counter%self.progress_checkpoint
@@ -772,7 +773,6 @@ class phenotypes():
     def conduct_chi_squared_test(
         self, kmer, kmer_vector, samples
         ):
-        print(kmer_vector)
         samples_w_kmer = []
         (
         w_pheno_w_kmer, w_pheno_wo_kmer, wo_pheno_w_kmer, wo_pheno_wo_kmer,
