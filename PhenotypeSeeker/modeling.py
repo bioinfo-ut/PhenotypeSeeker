@@ -650,11 +650,8 @@ class phenotypes():
             results_from_threads = p.map(
                 self.get_kmers_tested, zip(*self.vectors_as_multiple_input)
             )
-        # self.pvalues = \
-        #     sorted(list(chain(*pvalues_from_all_threads)))
         sys.stderr.write("\n")
         sys.stderr.flush()
-        # self.concatenate_test_files(self.name)
         self.ML_df = pd.concat(results_from_threads, axis=1)
         del results_from_threads
         if self.ML_df.shape[0] == 0:
@@ -692,6 +689,7 @@ class phenotypes():
                     )
             if test_results:
                 kmer_matrix[test_results[0]] = test_results[1:]
+            print(kmer_matrix)
         Input.lock.acquire()
         stderr_print.currentKmerNum.value += counter%self.progress_checkpoint
         Input.lock.release()
@@ -807,7 +805,6 @@ class phenotypes():
             )
 
         chisquare, pvalue = chisquare_results
-        print(pvalue)
         if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
 #            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
             return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
