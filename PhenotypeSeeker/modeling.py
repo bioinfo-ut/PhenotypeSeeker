@@ -730,7 +730,7 @@ class phenotypes():
             print(kmer)
             return kmer
         else:
-            return None
+            return 6
 
     def get_samples_distribution_for_ttest(
             self, x, y, x_weights, y_weights,
