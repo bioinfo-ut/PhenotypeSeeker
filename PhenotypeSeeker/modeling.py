@@ -653,7 +653,7 @@ class phenotypes():
             )
         sys.stderr.write("\n")
         sys.stderr.flush()
-        self.ML_df = pd.concat(results_from_threads)
+        self.ML_df = pd.DataFrame(results_from_threads)
         del results_from_threads
         if self.ML_df.shape[0] == 0:
             self.no_results.append(self.name)
