@@ -653,6 +653,7 @@ class phenotypes():
             )
         sys.stderr.write("\n")
         sys.stderr.flush()
+        print(results_from_threads)
         self.ML_df = pd.DataFrame(results_from_threads)
         del results_from_threads
         if self.ML_df.shape[0] == 0:
