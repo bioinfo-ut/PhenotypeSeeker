@@ -653,14 +653,14 @@ class phenotypes():
             )
         sys.stderr.write("\n")
         sys.stderr.flush()
-        self.ML_df = pd.concat(results_from_threads, axis=1)
+        self.ML_df = pd.concat(results_from_threads)
         del results_from_threads
         if self.ML_df.shape[0] == 0:
             self.no_results.append(self.name)
 
     def get_kmers_tested(self, split_of_kmer_lists):
 
-        kmer_matrix = pd.DataFrame()
+        kmer_dict = dict()
         counter = 0
 
         for line in zip(*[open(item) for item in split_of_kmer_lists]):
@@ -688,14 +688,14 @@ class phenotypes():
                         Input.samples.values()
                     )
             if test_results:
-                kmer_matrix[test_results[0]] = test_results[1:]
+                kmer_dict[test_results[0]] = test_results[1:]
         Input.lock.acquire()
         stderr_print.currentKmerNum.value += counter%self.progress_checkpoint
         Input.lock.release()
         stderr_print.check_progress(
             self.no_kmers_to_analyse, "tests conducted.", self.name + ": "
         )
-        return(kmer_matrix)
+        return(kmer_dict)
 
     def conduct_t_test(
         self, kmer, kmer_vector,
