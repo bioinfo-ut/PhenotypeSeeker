@@ -653,11 +653,11 @@ class phenotypes():
             )
         sys.stderr.write("\n")
         sys.stderr.flush()
-        print(results_from_threads)
         self.ML_df = pd.DataFrame(results_from_threads)
         del results_from_threads
         if self.ML_df.shape[0] == 0:
             self.no_results.append(self.name)
+        print(self.ML_df)
 
     def get_kmers_tested(self, split_of_kmer_lists):
 
