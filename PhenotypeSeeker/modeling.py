@@ -652,10 +652,7 @@ class phenotypes():
         sys.stderr.write("\n")
         sys.stderr.flush()
         uniondict = {k: v for d in results_from_threads for k, v in d.items()}
-        print(uniondict)
-        self.ML_df = pd.DataFrame.from_dict(
-            uniondict
-            )
+        self.ML_df = pd.DataFrame.concat([pd.DataFrame.from_dict(x) for x in results_from_threads])
         del results_from_threads
         if self.ML_df.shape[0] == 0:
             self.no_results.append(self.name)
