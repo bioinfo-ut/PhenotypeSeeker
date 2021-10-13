@@ -142,7 +142,7 @@ class Input():
             gammas, gamma_min, gamma_max, n_gammas, 
             min_samples, max_samples, kmer_length,
             cutoff, num_threads, pvalue_cutoff, kmer_limit,
-            FDR, B, binary_classifier, regressor, penalty, max_iter,
+            binary_classifier, regressor, penalty, max_iter,
             tol, l1_ratio, n_splits_cv_outer, kernel, n_iter,
             n_splits_cv_inner, testset_size, train_on_whole,
             logreg_solver, jump_to, pca, real_counts
@@ -162,8 +162,6 @@ class Input():
         Input.jump_to = jump_to
         phenotypes.pvalue_cutoff = pvalue_cutoff
         phenotypes.kmer_limit = kmer_limit
-        phenotypes.FDR = FDR
-        phenotypes.B = B
         phenotypes.penalty = penalty.upper()
         phenotypes.max_iter = max_iter
         phenotypes.tol = tol
@@ -723,9 +721,7 @@ class phenotypes():
             x, y, x_weights, y_weights
             )
 
-        if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
-            return [kmer, round(t_statistic, 2), "%.2E" % pvalue, round(mean_x, 2), round(mean_y, 2), len(samples_w_kmer), " ".join(["|"] + samples_w_kmer)] + kmer_vector
-        elif pvalue < self.pvalue_cutoff:
+        if pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
             return [kmer, round(t_statistic, 2), "%.2E" % pvalue, round(mean_x, 2), round(mean_y, 2), len(samples_w_kmer), " ".join(["|"] + samples_w_kmer)] + kmer_vector
         else:
             return None
@@ -807,12 +803,8 @@ class phenotypes():
             )
 
         chisquare, pvalue = chisquare_results
-        if self.B and pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
+        if pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
-            # return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
-        elif pvalue < self.pvalue_cutoff:
-           return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
-            # return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
         else:
             return None
 
@@ -1652,8 +1644,8 @@ def modeling(args):
         args.alphas, args.alpha_min, args.alpha_max, args.n_alphas,
         args.gammas, args.gamma_min, args.gamma_max, args.n_gammas,
         args.min, args.max, args.kmer_length, args.cutoff,
-        args.num_threads, args.pvalue, args.n_kmers, args.FDR, 
-        args.Bonferroni, args.binary_classifier, args.regressor, 
+        args.num_threads, args.pvalue, args.n_kmers,
+        args.binary_classifier, args.regressor, 
         args.penalty, args.max_iter, args.tolerance, args.l1_ratio,
         args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner,
         args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to,

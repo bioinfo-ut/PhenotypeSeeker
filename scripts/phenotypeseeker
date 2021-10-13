@@ -108,15 +108,6 @@ def Main():
     	'--pvalue', metavar='', type=float, default=0.05,
     	help='P-value cut-off for k-mer filtering (default = 0.05)'
     	)
-    B_or_FDR.add_argument(
-    	'-B', '--Bonferroni', action="store_true",
-    	help="Apply the Bonferroni multiple testing correction in k-mer \
-        filtering"
-    	)
-    B_or_FDR.add_argument(
-    	'-F', '--FDR', action="store_true",
-    	help="Apply False Discovery Rate (FDR) correction in k-mer filtering"
-    	)
     kmer_selection_by_pval.add_argument(
         '--n_kmers', metavar='', type=int, default=1000, 
         help="The maximum number of (lowest p-valued) k-mers selected for \
