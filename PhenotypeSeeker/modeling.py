@@ -35,7 +35,7 @@ from sklearn.svm import SVC
 from sklearn.metrics import (
     classification_report, r2_score, mean_squared_error, recall_score,
     roc_auc_score, average_precision_score, matthews_corrcoef, cohen_kappa_score,
-    confusion_matrix, accuracy_score, f1_score
+    confusion_matrix, accuracy_score, f1_score, log_loss
     )
 from sklearn.model_selection import (
     RandomizedSearchCV, GridSearchCV, train_test_split, StratifiedKFold,
@@ -874,6 +874,8 @@ class phenotypes():
         self.set_model()
         self.set_hyperparameters()
         self.get_ML_df()
+        if self.LR_feature_selection:
+            self.LR_feature_selection()
         if self.pca:
             self.PCA_analysis()
             features = 'PCs'
@@ -1214,6 +1216,40 @@ class phenotypes():
         self.ML_df = pd.concat([self.PCA_df, self.ML_df.iloc[:,-2:]], axis=1)
         self.model_package['scaler'] = scaler
         self.model_package['pca_model'] = pca
+
+    def LR_feature_selection():
+
+        kmers_to_test = self.ML_df.iloc[:-2].shape[1]
+        selected = []
+
+        # Strandardization
+        scaled_data = StandardScaler().fit_transform(self.ML_df.iloc[:-2])
+
+        # PCA transformation
+        PCs = pd.DataFrame(
+            PCA().fit_transform(scaled_data, n_components=2),
+            index=self.ML_df.index,
+            columns=['PC_1', 'PC_2']
+            )
+
+        model = LogisticRegression()  
+        model.fit(PCs, self.ML_df['phenotype'])
+        probs_base = model.predict_proba(PCs)
+        logloss_base = log_loss(self.ML_df['phenotype'], probs_base, normalize=False)
+
+        for kmer in self.ML_df[:-2]:
+            model.fit(pd.concat([PCs, self.ML_df[kmer]], axis=1), self.ML_df['phenotype'])
+            probs_alt = model.predict_proba([PCs, self.ML_df[kmer]])
+            logloss_alt = log_loss(self.ML_df['phenotype'], probs_base, normalize=False)
+
+            LR = 2*(logloss_base - logloss_alt)
+            p_value = stats.chi2.sf(LR, 1)
+
+            if p_value < 0.05/kmers_to_test:
+                selected.append(kmer)
+
+        self.ML_df = self.ML_df[[selected] + ['weights', 'phenotype']]
+
 
     def fit_model(self):
         if self.pred_scale == "continuous":
