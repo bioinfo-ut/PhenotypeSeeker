@@ -1219,7 +1219,9 @@ class phenotypes():
         self.model_package['scaler'] = scaler
         self.model_package['pca_model'] = pca
 
-    def LR_feature_selection():
+    def LR_feature_selection(self):
+
+        LR_out = open('likelihood_tests.txt' , "w")
 
         kmers_to_test = self.ML_df.iloc[:-2].shape[1]
         selected = []
@@ -1249,6 +1251,12 @@ class phenotypes():
 
             if p_value < 0.05/kmers_to_test:
                 selected.append(kmer)
+
+                LR_out.write(f"K-mer: {kmer}")
+                LR_out.write(f"Logloss base: {logloss_base}")
+                LR_out.write(f"Logloss alt: {logloss_alt}")
+                LR_out.write(f"Likelihood ratio: {LR}")
+                LR_out.write(f"p-value: {p_value}\n\n\n")
 
         self.ML_df = self.ML_df[[selected] + ['weights', 'phenotype']]
 
