@@ -1249,7 +1249,7 @@ class phenotypes():
             LR = 2*(logloss_base - logloss_alt)
             p_value = stats.chi2.sf(LR, 1)
 
-            if p_value < 0.05/kmers_to_test:
+            if p_value < 0.05:
                 selected.append(kmer)
 
                 LR_out.write(f"K-mer: {kmer}")
@@ -1258,8 +1258,8 @@ class phenotypes():
                 LR_out.write(f"Likelihood ratio: {LR}")
                 LR_out.write(f"p-value: {p_value}\n\n\n")
 
-        print([selected] + ['weights', 'phenotype'])
-        #self.ML_df = self.ML_df[[selected] + ['weights', 'phenotype']]
+        print(selected + ['weights', 'phenotype'])
+        self.ML_df = self.ML_df[selected + ['weights', 'phenotype']]
 
 
     def fit_model(self):
