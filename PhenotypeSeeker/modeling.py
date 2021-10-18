@@ -876,7 +876,7 @@ class phenotypes():
         self.set_model()
         self.set_hyperparameters()
         self.get_ML_df()
-        if self.LR_feature_selection:
+        if self.LR:
             self.LR_feature_selection()
         if self.pca:
             self.PCA_analysis()
@@ -1512,7 +1512,7 @@ class phenotypes():
                     f"\t{self.ttest_statistics[idx]}\t{self.ttest_pvalues[idx]}\n"
                     )
             else:
-                samples_with_kmer = self.ML_df.index[:-1][self.ML_df[predictor][:-1] != "0"].tolist()
+                samples_with_kmer = self.ML_df.index[:-1][self.ML_df[predictor][:-1] != 0].tolist()
                 self.coeff_file.write(
                     f"{predictor}\t{coef}\t{len(samples_with_kmer)}\t| {' '.join(samples_with_kmer)}\n"
                     )
