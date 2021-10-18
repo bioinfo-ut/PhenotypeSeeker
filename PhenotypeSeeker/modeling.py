@@ -1244,7 +1244,7 @@ class phenotypes():
         for kmer in self.ML_df[:-2]:
             model.fit(pd.concat([PCs, self.ML_df[kmer]], axis=1), self.ML_df['phenotype'])
             probs_alt = model.predict_proba(pd.concat([PCs, self.ML_df[kmer]], axis=1))
-            logloss_alt = log_loss(self.ML_df['phenotype'].values, probs_base, normalize=False)
+            logloss_alt = log_loss(self.ML_df['phenotype'].values, probs_alt, normalize=False)
 
             LR = 2*(logloss_base - logloss_alt)
             p_value = stats.chi2.sf(LR, 1)
