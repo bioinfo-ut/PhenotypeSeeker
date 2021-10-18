@@ -1258,6 +1258,7 @@ class phenotypes():
                 LR_out.write(f"Likelihood ratio: {LR}")
                 LR_out.write(f"p-value: {p_value}\n\n\n")
 
+        print([selected] + ['weights', 'phenotype'])
         self.ML_df = self.ML_df[[selected] + ['weights', 'phenotype']]
 
 
