@@ -1231,7 +1231,7 @@ class phenotypes():
 
         # PCA transformation
         PCs = pd.DataFrame(
-            PCA().fit_transform(scaled_data, n_components=2),
+            PCA(n_components=2).fit_transform(scaled_data),
             index=self.ML_df.index,
             columns=['PC_1', 'PC_2']
             )
