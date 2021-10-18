@@ -1249,7 +1249,7 @@ class phenotypes():
             LR = 2*(logloss_base - logloss_alt)
             p_value = stats.chi2.sf(LR, 1)
 
-            if p_value < 0.05:
+            if p_value < 0.05/(ML_df.shape[1]-2):
                 selected.append(kmer)
 
                 print(f"K-mer: {kmer}")
