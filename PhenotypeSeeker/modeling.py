@@ -1249,6 +1249,12 @@ class phenotypes():
             LR = 2*(logloss_base - logloss_alt)
             p_value = stats.chi2.sf(LR, 1)
 
+            print(f"K-mer: {kmer}")
+            print(f"Logloss base: {logloss_base}")
+            print(f"Logloss alt: {logloss_alt}")
+            print(f"Likelihood ratio: {LR}")
+            print(f"p-value: {p_value}\n\n\n")
+
             if p_value < 0.05:
                 selected.append(kmer)
 
