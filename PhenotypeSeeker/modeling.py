@@ -1241,7 +1241,7 @@ class phenotypes():
         probs_base = model.predict_proba(PCs)
         logloss_base = log_loss(self.ML_df['phenotype'].values, probs_base, normalize=False)
 
-        for kmer in self.ML_df[:-2]:
+        for kmer in self.ML_df.iloc[:, :-2]:
             model.fit(pd.concat([PCs, self.ML_df[kmer]], axis=1), self.ML_df['phenotype'])
             probs_alt = model.predict_proba(pd.concat([PCs, self.ML_df[kmer]], axis=1))
             logloss_alt = log_loss(self.ML_df['phenotype'].values, probs_alt, normalize=False)
@@ -1249,14 +1249,14 @@ class phenotypes():
             LR = 2*(logloss_base - logloss_alt)
             p_value = stats.chi2.sf(LR, 1)
 
-            print(f"K-mer: {kmer}")
-            print(f"Logloss base: {logloss_base}")
-            print(f"Logloss alt: {logloss_alt}")
-            print(f"Likelihood ratio: {LR}")
-            print(f"p-value: {p_value}\n\n\n")
-
             if p_value < 0.05:
                 selected.append(kmer)
+
+                print(f"K-mer: {kmer}")
+                print(f"Logloss base: {logloss_base}")
+                print(f"Logloss alt: {logloss_alt}")
+                print(f"Likelihood ratio: {LR}")
+                print(f"p-value: {p_value}\n\n\n")
 
                 LR_out.write(f"K-mer: {kmer}")
                 LR_out.write(f"Logloss base: {logloss_base}")
