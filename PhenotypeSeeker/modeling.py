@@ -145,7 +145,7 @@ class Input():
             binary_classifier, regressor, penalty, max_iter,
             tol, l1_ratio, n_splits_cv_outer, kernel, n_iter,
             n_splits_cv_inner, testset_size, train_on_whole,
-            logreg_solver, jump_to, pca, real_counts
+            logreg_solver, jump_to, pca, real_counts, LR
             ):
         phenotypes.alphas = cls._get_alphas(
             alphas, alpha_min, alpha_max, n_alphas
@@ -177,6 +177,7 @@ class Input():
             logreg_solver)
         phenotypes.pca = pca
         phenotypes.real_counts = real_counts
+        phenotypes.LR = LR
 
     @staticmethod
     def get_model_name(regressor, binary_classifier):
@@ -527,6 +528,7 @@ class phenotypes():
 
     pred_scale = "binary"
     real_counts = False
+    LR = None
 
     model_name_long = None
     model_name_short = None
@@ -1684,7 +1686,7 @@ def modeling(args):
         args.penalty, args.max_iter, args.tolerance, args.l1_ratio,
         args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner,
         args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to,
-        args.pca, args.real_counts
+        args.pca, args.real_counts, args.LR
         )
 
     if not Input.jump_to:
