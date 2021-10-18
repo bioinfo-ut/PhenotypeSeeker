@@ -138,9 +138,9 @@ VL_0155	PS_prediction_example_files/VL_0155.fasta
 VL_0145	PS_prediction_example_files/VL_0145.fasta
 ```
 
-"inputfile2" is a text file containing the tab separated list of (1) the name of the phenotype to predict, (2) corresponding model ("log_reg_model_Azithromycin.pkl") address and (3) corresponding k-mer list ("k-mers_and_coefficients_in_log_reg_model_Azithromycin.txt") address.
+"inputfile2" is a text file containing the tab separated list of (1) the name of the phenotype to predict and (2) corresponding model ("log_reg_model_Azithromycin.pkl") address.
 ```
-Azithromycin	PS_prediction_example_files/log_reg_model_Azithromycin.pkl	PS_prediction_example_files/k-mers_and_coefficients_in_log_reg_model_Azithromycin.txt
+Azithromycin	PS_prediction_example_files/log_reg_model_Azithromycin.pkl
 ```
 
 #### Outputfiles of PhenotypeSeeker prediction
