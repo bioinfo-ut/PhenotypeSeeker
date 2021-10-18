@@ -1227,7 +1227,7 @@ class phenotypes():
         selected = []
 
         # Strandardization
-        scaled_data = StandardScaler().fit_transform(self.ML_df.iloc[:-2])
+        scaled_data = StandardScaler().fit_transform(self.ML_df.iloc[:, :-2])
 
         # PCA transformation
         PCs = pd.DataFrame(
