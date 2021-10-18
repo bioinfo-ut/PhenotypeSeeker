@@ -1263,9 +1263,9 @@ class phenotypes():
                 LR_out.write(f"Logloss alt: {logloss_alt}")
                 LR_out.write(f"Likelihood ratio: {LR}")
                 LR_out.write(f"p-value: {p_value}\n\n\n")
-        print(self.ML_df)
+
         self.ML_df = self.ML_df[selected + ['weights', 'phenotype']]
-        print(self.ML_df)
+        self.model_package['kmers'] = self.ML_df.columns[:-2]
 
 
     def fit_model(self):
