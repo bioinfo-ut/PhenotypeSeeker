@@ -1252,16 +1252,10 @@ class phenotypes():
             if p_value < 0.05/(self.ML_df.shape[1]-2):
                 selected.append(kmer)
 
-                print(f"K-mer: {kmer}")
-                print(f"Logloss base: {logloss_base}")
-                print(f"Logloss alt: {logloss_alt}")
-                print(f"Likelihood ratio: {LR}")
-                print(f"p-value: {p_value}\n\n\n")
-
                 LR_out.write(f"K-mer: {kmer}\n")
                 LR_out.write(f"Logloss base: {logloss_base}\n")
                 LR_out.write(f"Logloss alt: {logloss_alt}\n")
-                LR_out.write(f"Likelihood ratio: {LR}\n")
+                LR_out.write(f"Likelihood ratio statistic: {LR}\n")
                 LR_out.write(f"p-value: {p_value}\n\n\n")
 
         self.ML_df = self.ML_df[selected + ['weights', 'phenotype']]
