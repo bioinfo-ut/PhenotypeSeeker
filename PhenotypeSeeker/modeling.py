@@ -1190,21 +1190,21 @@ class phenotypes():
         self.pca_explained_variance_ratio_ = pca.explained_variance_ratio_[PCs_to_keep]
 
         # Conduct the t-test analysis between PCs and phenotypes
-        for idx, column in enumerate(self.PCA_df):
-            x = self.PCA_df[column][self.ML_df.phenotype == 1].values
-            y = self.PCA_df[column][self.ML_df.phenotype == 0].values
-            x_weights = self.ML_df['weights'][self.ML_df.phenotype == 1].values
-            y_weights = self.ML_df['weights'][self.ML_df.phenotype == 0].values
-            t_statistic, pvalue, mean_x, mean_y = self.t_test(
-                    x, y, x_weights, y_weights
-                )
-            # if pvalue < 0.05/self.PCA_df.shape[1]:
-            if pvalue < 0.05:
-                PCs_to_keep[idx] = True
-                self.ttest_statistics.append(t_statistic)
-                self.ttest_pvalues.append(pvalue)
-            else:
-                PCs_to_keep[idx] = False
+        # for idx, column in enumerate(self.PCA_df):
+        #     x = self.PCA_df[column][self.ML_df.phenotype == 1].values
+        #     y = self.PCA_df[column][self.ML_df.phenotype == 0].values
+        #     x_weights = self.ML_df['weights'][self.ML_df.phenotype == 1].values
+        #     y_weights = self.ML_df['weights'][self.ML_df.phenotype == 0].values
+        #     t_statistic, pvalue, mean_x, mean_y = self.t_test(
+        #             x, y, x_weights, y_weights
+        #         )
+        #     # if pvalue < 0.05/self.PCA_df.shape[1]:
+        #     if pvalue < 0.10:
+        #         PCs_to_keep[idx] = True
+        #         self.ttest_statistics.append(t_statistic)
+        #         self.ttest_pvalues.append(pvalue)
+        #     else:
+        #         PCs_to_keep[idx] = False
         self.model_package['PCs_to_keep'] = PCs_to_keep
 
         # Filter PCs by association with phenotype
