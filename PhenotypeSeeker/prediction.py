@@ -167,6 +167,7 @@ class Phenotypes():
         predictions = self.model.predict(self.matrix)
         
         with open("predictions_" + self.name + ".txt", "w+") as out:
+            print(self.pred_scale)
             if self.pred_scale == "binary":
                 predict_proba = self.model.predict_proba(self.matrix)
                 out.write("Sample_ID\tpredicted_phenotype\t" \
