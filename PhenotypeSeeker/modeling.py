@@ -1231,9 +1231,9 @@ class phenotypes():
 
         # PCA transformation
         PCs = pd.DataFrame(
-            PCA(n_components=2).fit_transform(scaled_data),
+            PCA(n_components=1).fit_transform(scaled_data),
             index=self.ML_df.index,
-            columns=['PC_1', 'PC_2']
+            columns=['PC_1']
             )
 
         model = LogisticRegression()  
