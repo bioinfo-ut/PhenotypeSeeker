@@ -125,6 +125,7 @@ class Phenotypes():
         model_pkg = joblib.load(model_adre)
         model = model_pkg['model']
         kmers = model_pkg['kmers']
+        pred_scale = model_pkg['pred_scale']
 
         pca = False
         pca_model = None
@@ -135,7 +136,6 @@ class Phenotypes():
             pca_model = model_pkg['pca_model']
             scaler = model_pkg['scaler']
             PCs_to_keep = model_pkg['PCs_to_keep']
-            pred_scale = model_pkg['pred_scale']
             pca = True
         return cls(
                 name, model, kmers, pca, pca_model, scaler, PCs_to_keep, pred_scale
