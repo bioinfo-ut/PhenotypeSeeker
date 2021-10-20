@@ -1502,8 +1502,8 @@ class phenotypes():
             if self.pca:
                 self.coeff_file.write(
                     f"{predictor}\t{coef}\t{self.pca_explained_variance_[idx]}" + \
-                    f"\t{self.pca_explained_variance_ratio_[idx]}" + \
-                    f"\t{self.ttest_statistics[idx]}\t{self.ttest_pvalues[idx]}\n"
+                    f"\t{self.pca_explained_variance_ratio_[idx]}"
+                    # f"\t{self.ttest_statistics[idx]}\t{self.ttest_pvalues[idx]}\n"
                     )
             else:
                 samples_with_kmer = self.ML_df.index[:-1][self.ML_df[predictor][:-1] != 0].tolist()
