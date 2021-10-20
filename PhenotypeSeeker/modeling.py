@@ -1472,8 +1472,8 @@ class phenotypes():
         if self.pca == True:
             self.coeff_file.write(
                 "PC\tcoef._in_" + self.model_name_short + \
-                "_model\texplained_variance\texplained_variance_ratio" + \
-                "\tt-test_statistic\tt-test_pvalue\n"
+                "_model\texplained_variance\texplained_variance_ratio\n" 
+                # "\tt-test_statistic\tt-test_pvalue\n"
                 )
         else:
             self.coeff_file.write(
@@ -1502,7 +1502,7 @@ class phenotypes():
             if self.pca:
                 self.coeff_file.write(
                     f"{predictor}\t{coef}\t{self.pca_explained_variance_[idx]}" + \
-                    f"\t{self.pca_explained_variance_ratio_[idx]}"
+                    f"\t{self.pca_explained_variance_ratio_[idx]}\n"
                     # f"\t{self.ttest_statistics[idx]}\t{self.ttest_pvalues[idx]}\n"
                     )
             else:
