@@ -1259,7 +1259,7 @@ class phenotypes():
                 LR_out.write(f"p-value: {p_value}\n\n\n")
 
         self.ML_df = pd.concat(
-                PCs, self.ML_df[selected + ['weights', 'phenotype']], axis=1
+                [PCs, self.ML_df[selected + ['weights', 'phenotype']]], axis=1
             )
 
     def fit_model(self):
