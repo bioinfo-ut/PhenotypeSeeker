@@ -678,11 +678,12 @@ class phenotypes():
                 stderr_print.check_progress(
                     self.no_kmers_to_analyse, "tests conducted.", self.name + ": "
                 )
-            kmer = line[0].split()[0]
-
-            kmer_vector = [int(j.split()[1].strip()) for j in line]
-            if not self.real_counts:
-                kmer_vector = [1 if count > 0 else 0 for count in kmer_vector]
+            if counter%500 == 0:
+                kmer = line[0].split()[0]
+                kmer_vector = [int(j.split()[1].strip()) for j in line]
+                if not self.real_counts:
+                    kmer_vector = [1 if count > 0 else 0 for count in kmer_vector]
+                kmers4pca.append(kmer_vector)
             # if phenotypes.pred_scale == "binary":
             #     test_results = self.conduct_chi_squared_test(
             #             kmer, kmer_vector,
@@ -695,8 +696,6 @@ class phenotypes():
             #         )
             # if test_results:
             #     kmer_dict[test_results[0]] = test_results[1:]
-            if counter%500 == 0:
-                kmers4pca.append(kmer_vector)
         Input.lock.acquire()
         stderr_print.currentKmerNum.value += counter%self.progress_checkpoint
         Input.lock.release()
@@ -887,7 +886,8 @@ class phenotypes():
         import plotly.express as px
         pheno = [
                 sample.phenotypes[self.name] for sample in Input.samples.values()
-                ].map({0 : 'sens', 1:'res'})
+                ]
+        pheno = ['sens' if x == 0 else 'res' for x in pheno]
         fig = px.scatter(PCA_df, x='PC 1', y='PC 2',
             color=pheno, symbol_sequence=[50,100])
         fig.show()
