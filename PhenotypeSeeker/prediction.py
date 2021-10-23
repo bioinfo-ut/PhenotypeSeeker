@@ -104,7 +104,7 @@ class Phenotypes():
     no_phenotypes = 0
 
     def __init__(
-                self, name, model, kmers, pca, pca_model, scaler,
+                self, name, model, kmers, pca, lr, pca_model, scaler,
                 PCs_to_keep, pred_scale
             ):
         self.name = name
@@ -136,8 +136,9 @@ class Phenotypes():
             scaler = model_pkg['scaler']
             PCs_to_keep = model_pkg['PCs_to_keep']
             pca = True
+            lr = True
         return cls(
-                name, model, kmers, pca, pca_model, scaler, PCs_to_keep, pred_scale
+                name, model, kmers, pca, lr, pca_model, scaler, PCs_to_keep, pred_scale
             )
 
     def set_kmer_db(self):
@@ -158,7 +159,7 @@ class Phenotypes():
         if self.pca:            
             self.scaled_matrix = self.scaler.transform(self.matrix)
             PCs = self.pca_model.transform(self.scaled_matrix)
-            if model_pkg['LR']:
+            if self.lr:
                 self.matrix = pd.concat(
                     [PCs, self.ML_df[selected]], axis=1
                 )
