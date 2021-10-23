@@ -683,19 +683,19 @@ class phenotypes():
             kmer_vector = [int(j.split()[1].strip()) for j in line]
             if not self.real_counts:
                 kmer_vector = [1 if count > 0 else 0 for count in kmer_vector]
-            if phenotypes.pred_scale == "binary":
-                test_results = self.conduct_chi_squared_test(
-                        kmer, kmer_vector,
-                        Input.samples.values()
-                    )
-            elif phenotypes.pred_scale == "continuous":
-                test_results = self.conduct_t_test(
-                        kmer, kmer_vector,
-                        Input.samples.values()
-                    )
-            if test_results:
-                kmer_dict[test_results[0]] = test_results[1:]
-            if counter%1000 == 0:
+            # if phenotypes.pred_scale == "binary":
+            #     test_results = self.conduct_chi_squared_test(
+            #             kmer, kmer_vector,
+            #             Input.samples.values()
+            #         )
+            # elif phenotypes.pred_scale == "continuous":
+            #     test_results = self.conduct_t_test(
+            #             kmer, kmer_vector,
+            #             Input.samples.values()
+            #         )
+            # if test_results:
+            #     kmer_dict[test_results[0]] = test_results[1:]
+            if counter%500 == 0:
                 kmers4pca.append(kmer_vector)
         Input.lock.acquire()
         stderr_print.currentKmerNum.value += counter%self.progress_checkpoint
@@ -1765,21 +1765,21 @@ def modeling(args):
         sys.stderr.write("\x1b[1;32mGenerating the k-mer lists for input samples:\x1b[0m\n")
         sys.stderr.flush()
 
-        with Pool(Input.num_threads) as p:
-            p.map(
-                lambda x: x.get_kmer_lists(), Input.samples.values()
-            )
+        # with Pool(Input.num_threads) as p:
+        #     p.map(
+        #         lambda x: x.get_kmer_lists(), Input.samples.values()
+        #     )
 
-        sys.stderr.write("\n\x1b[1;32mGenerating the k-mer feature vector.\x1b[0m\n")
-        sys.stderr.flush()
-        Samples.get_feature_vector()
-        sys.stderr.write("\x1b[1;32mMapping samples to the feature vector space:\x1b[0m\n")
-        sys.stderr.flush()
-        stderr_print.currentSampleNum.value = 0
-        with Pool(Input.num_threads) as p:
-            p.map(
-                lambda x: x.map_samples(), Input.samples.values()
-            )
+        # sys.stderr.write("\n\x1b[1;32mGenerating the k-mer feature vector.\x1b[0m\n")
+        # sys.stderr.flush()
+        # Samples.get_feature_vector()
+        # sys.stderr.write("\x1b[1;32mMapping samples to the feature vector space:\x1b[0m\n")
+        # sys.stderr.flush()
+        # stderr_print.currentSampleNum.value = 0
+        # with Pool(Input.num_threads) as p:
+        #     p.map(
+        #         lambda x: x.map_samples(), Input.samples.values()
+        #     )
         if args.weights:
             mash_files = ["distances.mat", "reference.msh", "mash_distances.mat"]
             for mash_file in mash_files:
