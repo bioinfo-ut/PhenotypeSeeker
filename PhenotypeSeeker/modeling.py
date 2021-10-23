@@ -657,6 +657,7 @@ class phenotypes():
         self.ML_df = pd.concat(
             [pd.DataFrame.from_dict(x) for x in results_from_threads],
             axis=1)
+        print(kmers4pca)
         self.kmers4pca = np.concatenate(kmers4pca, axis=1)
         del results_from_threads
         if self.ML_df.shape[0] == 0:
