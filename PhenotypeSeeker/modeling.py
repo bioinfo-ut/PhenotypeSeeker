@@ -22,7 +22,7 @@ import pandas as pd
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor, _DistanceMatrix
 from collections import OrderedDict
 from ete3 import Tree
-from process import Manager, Pool, Value
+from multiprocess import Manager, Pool, Value
 from scipy import stats
 from sklearn.decomposition import PCA
 from sklearn.ensemble import RandomForestClassifier
