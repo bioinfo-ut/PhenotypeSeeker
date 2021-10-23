@@ -702,8 +702,7 @@ class phenotypes():
         stderr_print.check_progress(
             self.no_kmers_to_analyse, "tests conducted.", self.name + ": "
         )
-        print((kmer_dict, kmers4pca))
-        return(kmer_dict, kmers4pca)
+        return kmer_dict, kmers4pca
 
     def conduct_t_test(
         self, kmer, kmer_vector,
