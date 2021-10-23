@@ -885,7 +885,11 @@ class phenotypes():
             )
 
         import plotly.express as px
-        fig = px.scatter(PCA_df, x='PC 1', y='PC 2', symbol_sequence=[50,100])
+        pheno = [
+                sample.phenotypes[self.name] for sample in Input.samples.values()
+                ]
+        fig = px.scatter(PCA_df, x='PC 1', y='PC 2',
+            color=pheno, symbol_sequence=[50,100])
         fig.show()
         fig.write_html("PC_pheno_species_kmers.html")
 
