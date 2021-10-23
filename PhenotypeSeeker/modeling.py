@@ -645,11 +645,26 @@ class phenotypes():
 
     @timer
     def test_kmers_association_with_phenotype(self):
+        # stderr_print.currentKmerNum.value = 0
+        # stderr_print.previousPercent.value = 0
+        # with Pool(Input.num_threads) as p:
+        #     results_from_threads = p.map(
+        #        self.get_kmers_tested, zip(*self.vectors_as_multiple_input)
+        #     )
+        # sys.stderr.write("\n")
+        # sys.stderr.flush()
+        # # uniondict = {k: v for d in results_from_threads for k, v in d.items()}
+        # self.ML_df = pd.concat(
+        #     [pd.DataFrame.from_dict(x) for x in results_from_threads],
+        #     axis=1)
+        # del results_from_threads
+        # if self.ML_df.shape[0] == 0:
+        #     self.no_results.append(self.name)
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
         with Pool(Input.num_threads) as p:
             results_from_threads = p.map(
-                self.get_kmers_tested, zip(*self.vectors_as_multiple_input)
+               self.get_kmers4pca, zip(*self.vectors_as_multiple_input)
             )
         sys.stderr.write("\n")
         sys.stderr.flush()
@@ -660,6 +675,28 @@ class phenotypes():
         del results_from_threads
         if self.ML_df.shape[0] == 0:
             self.no_results.append(self.name)
+
+    def get_kmers4pca(self, split_of_kmer_lists):
+        kmer_dict = dict()
+        counter = 0   
+        for line in zip(*[open(item) for item in split_of_kmer_lists]):
+            counter += 1
+            if counter%self.progress_checkpoint == 0:
+                Input.lock.acquire()
+                stderr_print.currentKmerNum.value += self.progress_checkpoint
+                Input.lock.release()
+                stderr_print.check_progress(
+                    self.no_kmers_to_analyse, "tests conducted.", self.name + ": "
+                )
+            kmer = line[0].split()[0]
+
+            kmer_vector = [int(j.split()[1].strip()) for j in line]
+            if not self.real_counts:
+                kmer_vector = [1 if count > 0 else 0 for count in kmer_vector]
+            if len(kmer_dict) < 1000:
+                kmer_dict.append(kmer_vector)
+            else:
+                return(kmer_dict)
 
     def get_kmers_tested(self, split_of_kmer_lists):
 
@@ -1158,6 +1195,30 @@ class phenotypes():
             self.ML_df.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
             self.ML_df.to_csv(self.name + "_MLdf.csv")
             self.model_package['kmers'] = self.ML_df.columns[:-2]
+
+    def PCA_from_random_kmers(self):
+        # Strandardization
+        df_to_scale = self.ML_df
+        scaler = StandardScaler()
+        scaler.fit(df_to_scale)
+        scaled_data = scaler.transform(df_to_scale)
+
+        # PCA transformation
+        pca = PCA(n_components=2)
+        pca.fit(scaled_data)
+        self.PCA_df = pd.DataFrame(
+            pca.transform(scaled_data),
+            index=self.ML_df.index,
+            )
+        self.PCA_df.columns = [
+            'PC_' + str(i) for i in  range(1, 1 + self.PCA_df.shape[1])
+            ]
+
+        import plotly.express as px
+        fig = px.scatter(PCA_df, x='PC 1', y='PC 2')
+        fig.write_html("/Users/macpro/Desktop/PC1,2_pheno_species_8000kmers.html")
+
+
 
     @timer
     def PCA_analysis(self):
@@ -1755,7 +1816,11 @@ def modeling(args):
         # Remove phenotypes with no results
         Input.pop_phenos_out_of_kmers()
         sys.stderr.flush()
-
+        with Pool(Input.num_threads) as p:
+            p.map(
+                lambda x: x.get_kmers4pca(),
+                Input.phenotypes_to_analyse.values()
+            )       
     if not Input.jump_to or ''.join(i for i, _ in groupby(Input.jump_to)) in ["modeling"]:
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
         sys.stderr.flush()
