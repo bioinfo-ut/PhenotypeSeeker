@@ -887,7 +887,7 @@ class phenotypes():
         import plotly.express as px
         pheno = [
                 sample.phenotypes[self.name] for sample in Input.samples.values()
-                ]
+                ].map({0 : 'sens', 1:'res'})
         fig = px.scatter(PCA_df, x='PC 1', y='PC 2',
             color=pheno, symbol_sequence=[50,100])
         fig.show()
