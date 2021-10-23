@@ -1260,7 +1260,7 @@ class phenotypes():
             LR = 2*(logloss_base - logloss_alt)
             p_value = stats.chi2.sf(LR, 1)
 
-            if p_value < 0.05:
+            if p_value < 0.05/kmers_to_test:
                 kmers_to_keep.append(True)
 
                 LR_out.write(f"K-mer: {kmer}\n")
