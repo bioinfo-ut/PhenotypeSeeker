@@ -1271,7 +1271,7 @@ class phenotypes():
             else:
                 kmers_to_keep.append(False)
 
-        self.model_package['kmers_to_keep'] = kmers_to_keep
+        self.model_package['kmers_to_keep'] = kmers_to_keep + [False, False]
         self.ML_df = pd.concat(
                 [PCs, self.ML_df.loc[:, kmers_to_keep], self.ML_df['weights', 'phenotype']], axis=1
             )
