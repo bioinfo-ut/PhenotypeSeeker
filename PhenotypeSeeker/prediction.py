@@ -161,7 +161,7 @@ class Phenotypes():
             self.scaled_matrix = self.scaler.transform(self.matrix)
             PCs = self.pca_model.transform(self.scaled_matrix)
             if self.lr:
-                self.matrix = pd.concat(
+                self.matrix = np.concat(
                     [PCs, self.ML_df[selected]], axis=1
                 )
             else:
