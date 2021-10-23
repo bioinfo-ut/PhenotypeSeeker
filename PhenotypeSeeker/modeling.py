@@ -22,7 +22,7 @@ import pandas as pd
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor, _DistanceMatrix
 from collections import OrderedDict
 from ete3 import Tree
-from multiprocess import Manager, Pool, Value
+from process import Manager, Pool, Value
 from scipy import stats
 from sklearn.decomposition import PCA
 from sklearn.ensemble import RandomForestClassifier
@@ -657,8 +657,8 @@ class phenotypes():
         self.ML_df = pd.concat(
             [pd.DataFrame.from_dict(x) for x in results_from_threads],
             axis=1)
-        print(kmers4pca)
-        self.kmers4pca = np.concatenate(kmers4pca, axis=1)
+        self.kmers4pca = np.concatenate([np.array(x.T) for x kmers4pca], axis=1)
+        print(self.kmers4pca)
         del results_from_threads
         if self.ML_df.shape[0] == 0:
             self.no_results.append(self.name)
@@ -666,7 +666,7 @@ class phenotypes():
     def get_kmers_tested(self, split_of_kmer_lists):
 
         kmer_dict = dict()
-        kmers4pca = dict()
+        kmers4pca = list()
         counter = 0
 
         for line in zip(*[open(item) for item in split_of_kmer_lists]):
@@ -696,7 +696,7 @@ class phenotypes():
             if test_results:
                 kmer_dict[test_results[0]] = test_results[1:]
             if counter%1000 == 0:
-                kmers4pca[kmer] = kmer_vector
+                kmers4pca.append(kmer_vector)
         Input.lock.acquire()
         stderr_print.currentKmerNum.value += counter%self.progress_checkpoint
         Input.lock.release()
