@@ -166,14 +166,14 @@ class Phenotypes():
         for idx, line in enumerate(zip(*[open(counts) for counts in kmer_counts])):
             self.matrix[:, idx] = np.array([j.split()[2].strip() for j in line])
         if self.pca:            
-            self.scaled_matrix = self.scaler.transform(self.matrix)
-            PCs = self.pca_model.transform(self.scaled_matrix)
+            scaled_matrix = self.scaler.transform(self.matrix)
+            PCs = self.pca_model.transform(scaled_matrix)
             if self.lr:
                 self.matrix = np.concatenate(
                     [PCs, self.matrix[:, self.kmers_to_keep]], axis=1
                 )
             else:
-                self.matrix = self.PCs[:, self.PCs_to_keep]
+                self.matrix = PCs[:, self.PCs_to_keep]
 
     def predict(self):
 
