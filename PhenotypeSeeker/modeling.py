@@ -989,6 +989,7 @@ class phenotypes():
         # Set and dump model package
         self.model_package['model'] = self.model_fitted
         self.model_package['pca'] = self.pca
+        self.model_package['LR'] = self.LR
         self.model_package['pred_scale'] = self.pred_scale
         joblib.dump(self.model_package, self.model_file)
 
@@ -1235,6 +1236,9 @@ class phenotypes():
             index=self.ML_df.index,
             columns=['PC_1', 'PC_2']
             )
+        self.model_package['scaler'] = scaler
+        self.model_package['pca_model'] = pca
+        self.model_package['PCs_to_keep'] = ['PC_1', 'PC_2']
 
         model = LogisticRegression()  
         model.fit(PCs, self.ML_df['phenotype'])
