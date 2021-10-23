@@ -157,8 +157,13 @@ class Phenotypes():
             self.matrix[:, idx] = np.array([j.split()[2].strip() for j in line])
         if self.pca:            
             self.scaled_matrix = self.scaler.transform(self.matrix)
-            self.matrix = self.pca_model.transform(self.scaled_matrix)
-            self.matrix = self.matrix[:, self.PCs_to_keep]
+            PCs = self.pca_model.transform(self.scaled_matrix)
+            if model_pkg['LR']:
+                self.matrix = pd.concat(
+                    [PCs, self.ML_df[selected]], axis=1
+                )
+            else:
+                self.matrix = self.PCs[:, self.PCs_to_keep]
 
     def predict(self):
 

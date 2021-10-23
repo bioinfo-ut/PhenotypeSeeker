@@ -1269,6 +1269,7 @@ class phenotypes():
                 LR_out.write(f"Likelihood ratio statistic: {LR}\n")
                 LR_out.write(f"p-value: {p_value}\n\n\n")
 
+        self.model_package['selected'] = selected
         self.ML_df = pd.concat(
                 [PCs, self.ML_df[selected + ['weights', 'phenotype']]], axis=1
             )
