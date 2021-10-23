@@ -702,6 +702,7 @@ class phenotypes():
         stderr_print.check_progress(
             self.no_kmers_to_analyse, "tests conducted.", self.name + ": "
         )
+        print((kmer_dict, kmers4pca))
         return(kmer_dict, kmers4pca)
 
     def conduct_t_test(
@@ -899,8 +900,8 @@ class phenotypes():
         features='k-mers'
         self.set_model()
         self.set_hyperparameters()
-        self.getPCA()
         self.get_ML_df()
+        self.getPCA()
         if self.LR:
             self.LR_feature_selection()
         if self.pca:
