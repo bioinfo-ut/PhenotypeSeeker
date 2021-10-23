@@ -877,9 +877,6 @@ class phenotypes():
     def getPCA(self):
         scaled_data = StandardScaler().fit_transform(self.kmers4pca)
 
-        pca = PCA(n_components=s).fit_transform(scaled_data)
-        pca.fit(scaled_data)
-
         total_var = pca.explained_variance_ratio_.sum() * 100
 
         n_compo = 2
