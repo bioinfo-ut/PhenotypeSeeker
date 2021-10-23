@@ -141,8 +141,9 @@ class Phenotypes():
             PCs_to_keep = model_pkg['PCs_to_keep']
             if model_pkg['LR']:
                 kmers_to_keep = model_pkg['kmers_to_keep']
+                lr = True
             pca = True
-            lr = True
+            
         return cls(
                 name, model, kmers, pca, lr, pca_model, scaler, PCs_to_keep, pred_scale,
                 kmers_to_keep
