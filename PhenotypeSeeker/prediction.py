@@ -111,6 +111,7 @@ class Phenotypes():
         self.model = model
         self.kmers = kmers
         self.pca = pca
+        self.lr = lr
         self.pca_model = pca_model
         self.scaler = scaler
         self.PCs_to_keep = PCs_to_keep
