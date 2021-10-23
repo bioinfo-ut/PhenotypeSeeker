@@ -1231,9 +1231,9 @@ class phenotypes():
 
         # PCA transformation
         PCs = pd.DataFrame(
-            PCA(n_components=1).fit_transform(scaled_data),
+            PCA(n_components=2).fit_transform(scaled_data),
             index=self.ML_df.index,
-            columns=['PC_1']
+            columns=['PC_1', 'PC_2']
             )
 
         model = LogisticRegression()  
@@ -1258,9 +1258,9 @@ class phenotypes():
                 LR_out.write(f"Likelihood ratio statistic: {LR}\n")
                 LR_out.write(f"p-value: {p_value}\n\n\n")
 
-        self.ML_df = self.ML_df[selected + ['weights', 'phenotype']]
-        self.model_package['kmers'] = self.ML_df.columns[:-2]
-
+        self.ML_df = pd.concat(
+                PCs, self.ML_df[selected + ['weights', 'phenotype']], axis=1
+            )
 
     def fit_model(self):
         if self.pred_scale == "continuous":
