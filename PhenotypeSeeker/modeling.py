@@ -1225,7 +1225,7 @@ class phenotypes():
         LR_out = open('likelihood_tests.txt' , "w")
 
         kmers_to_test = self.ML_df.iloc[:-2].shape[1]
-        selected = []
+        kmers_to_keep = []
 
         # Strandardization
         df_to_scale = self.ML_df.drop(['phenotype', 'weights'], axis=1)
@@ -1261,13 +1261,15 @@ class phenotypes():
             p_value = stats.chi2.sf(LR, 1)
 
             if p_value < 0.05:
-                selected.append(kmer)
+                kmers_to_keep.append(True)
 
                 LR_out.write(f"K-mer: {kmer}\n")
                 LR_out.write(f"Logloss base: {logloss_base}\n")
                 LR_out.write(f"Logloss alt: {logloss_alt}\n")
                 LR_out.write(f"Likelihood ratio statistic: {LR}\n")
                 LR_out.write(f"p-value: {p_value}\n\n\n")
+            else:
+                kmers_to_keep.append(False)
 
         self.model_package['selected'] = selected
         self.ML_df = pd.concat(
