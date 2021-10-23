@@ -877,8 +877,6 @@ class phenotypes():
     def getPCA(self):
         scaled_data = StandardScaler().fit_transform(self.kmers4pca)
 
-        total_var = pca.explained_variance_ratio_.sum() * 100
-
         n_compo = 2
         labels = [f"PC {i+1}" for i in range(n_compo)]
         PCA_df = pd.DataFrame(
