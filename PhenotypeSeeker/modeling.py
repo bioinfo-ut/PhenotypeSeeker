@@ -1245,7 +1245,6 @@ class phenotypes():
             )
         self.model_package['scaler'] = scaler
         self.model_package['pca_model'] = pca
-        self.model_package['PCs_to_keep'] = [True, True]
 
         model = LogisticRegression()  
         model.fit(PCs, self.ML_df['phenotype'])
