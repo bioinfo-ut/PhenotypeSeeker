@@ -897,8 +897,8 @@ class phenotypes():
         features='k-mers'
         self.set_model()
         self.set_hyperparameters()
-        self.get_ML_df()
         self.getPCA()
+        self.get_ML_df()
         if self.LR:
             self.LR_feature_selection()
         if self.pca:
