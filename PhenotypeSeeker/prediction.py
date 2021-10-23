@@ -105,7 +105,7 @@ class Phenotypes():
 
     def __init__(
                 self, name, model, kmers, pca, lr, pca_model, scaler,
-                PCs_to_keep, pred_scale
+                PCs_to_keep, pred_scale, selected
             ):
         self.name = name
         self.model = model
@@ -117,6 +117,7 @@ class Phenotypes():
         self.PCs_to_keep = PCs_to_keep
         self.pred_scale = pred_scale
         self.matrix = np.empty(shape=(Samples.no_samples, kmers.shape[0]))
+        self.selected = selected
 
         Phenotypes.no_phenotypes += 1
 
@@ -129,17 +130,21 @@ class Phenotypes():
         pred_scale = model_pkg['pred_scale']
 
         pca = False
+        lr = False
         pca_model = None
         scaler = None
         PCs_to_keep = None
+        selected = None
         if model_pkg['pca'] or model_pkg['LR']:
             pca_model = model_pkg['pca_model']
             scaler = model_pkg['scaler']
             PCs_to_keep = model_pkg['PCs_to_keep']
+            selected = model_pkg['selected']
             pca = True
             lr = True
         return cls(
-                name, model, kmers, pca, lr, pca_model, scaler, PCs_to_keep, pred_scale
+                name, model, kmers, pca, lr, pca_model, scaler, PCs_to_keep, pred_scale,
+                selected
             )
 
     def set_kmer_db(self):
@@ -162,7 +167,7 @@ class Phenotypes():
             PCs = self.pca_model.transform(self.scaled_matrix)
             if self.lr:
                 self.matrix = np.concatenate(
-                    [PCs, self.ML_df[selected]], axis=1
+                    [PCs, self.matrix[self.selected]], axis=1
                 )
             else:
                 self.matrix = self.PCs[:, self.PCs_to_keep]
