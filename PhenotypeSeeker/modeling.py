@@ -1800,8 +1800,8 @@ def modeling(args):
             ))
         
         # Remove phenotypes with no results
-        Input.pop_phenos_out_of_kmers()
-        sys.stderr.flush()
+        # Input.pop_phenos_out_of_kmers()
+        # sys.stderr.flush()
       
     if not Input.jump_to or ''.join(i for i, _ in groupby(Input.jump_to)) in ["modeling"]:
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
