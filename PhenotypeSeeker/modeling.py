@@ -694,7 +694,7 @@ class phenotypes():
             if not self.real_counts:
                 kmer_vector = [1 if count > 0 else 0 for count in kmer_vector]
             if len(kmer_dict) < 1000:
-                kmer_dict.append(kmer_vector)
+                kmer_dict[kmer] = kmer_vector
             else:
                 return(kmer_dict)
 
