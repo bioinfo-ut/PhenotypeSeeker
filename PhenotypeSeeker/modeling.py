@@ -889,7 +889,7 @@ class phenotypes():
         import plotly.express as px
         fig = px.scatter(PCA_df, x='PC 1', y='PC 2', symbol_sequence=[50,100])
         fig.show()
-        fig.write_html("/Users/macpro/Desktop/PC_pheno_species_kmers.html")
+        fig.write_html("PC_pheno_species_kmers.html")
 
     def machine_learning_modelling(self):
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
