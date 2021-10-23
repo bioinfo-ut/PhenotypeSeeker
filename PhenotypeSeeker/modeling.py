@@ -1271,9 +1271,9 @@ class phenotypes():
             else:
                 kmers_to_keep.append(False)
 
-        self.model_package['selected'] = selected
+        self.model_package['kmers_to_keep'] = kmers_to_keep
         self.ML_df = pd.concat(
-                [PCs, self.ML_df[selected + ['weights', 'phenotype']]], axis=1
+                [PCs, self.ML_df.loc[:, selected], self.ML_df['weights', 'phenotype']], axis=1
             )
 
     def fit_model(self):
