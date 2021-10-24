@@ -628,7 +628,7 @@ class phenotypes():
         ps = Popen("glistquery K-mer_lists/feature_vector.list", shell=True, stdout=PIPE)
         output = check_output(('wc', '-l'), stdin=ps.stdout)
         ps.wait()
-        cls.no_kmers_to_analyse = 1410823 #int(output)
+        cls.no_kmers_to_analyse = 11286584 #int(output)
         cls.progress_checkpoint = int(
             math.ceil(cls.no_kmers_to_analyse/(100*Input.num_threads))
             )
@@ -888,7 +888,10 @@ class phenotypes():
                 sample.phenotypes[self.name] for sample in Input.samples.values()
                 ]
         pheno = ['sens' if x == 0 else 'res' for x in pheno]
+        species = list(Input.samples.keys())
+        species = [x.split("_")[-1] for x in species]
         fig = px.scatter(PCA_df, x='PC 1', y='PC 2',
+            symbol=mydf['species'],
             color=pheno, symbol_sequence=[50,100])
         fig.show()
         fig.write_html("PC_pheno_species_kmers.html")
