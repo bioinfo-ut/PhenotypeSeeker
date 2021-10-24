@@ -678,7 +678,7 @@ class phenotypes():
                 stderr_print.check_progress(
                     self.no_kmers_to_analyse, "tests conducted.", self.name + ": "
                 )
-            if counter%500 == 0:
+            if counter%250 == 0:
                 kmer = line[0].split()[0]
                 kmer_vector = [int(j.split()[1].strip()) for j in line]
                 if not self.real_counts:
