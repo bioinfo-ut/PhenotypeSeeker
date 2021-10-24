@@ -891,7 +891,7 @@ class phenotypes():
         species = list(Input.samples.keys())
         species = [x.split("_")[-1] for x in species]
         fig = px.scatter(PCA_df, x='PC 1', y='PC 2',
-            symbol=mydf['species'],
+            symbol=species,
             color=pheno, symbol_sequence=[50,100])
         fig.show()
         fig.write_html("PC_pheno_species_kmers.html")
