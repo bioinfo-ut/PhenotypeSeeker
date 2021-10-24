@@ -632,7 +632,7 @@ class phenotypes():
         cls.progress_checkpoint = int(
             math.ceil(cls.no_kmers_to_analyse/(100*Input.num_threads))
             )
-        call(["rm K-mer_lists/feature_vector.list"], shell=True)
+        # call(["rm K-mer_lists/feature_vector.list"], shell=True)
 
         # Set up split up vectors as multiple input list
         for sample in Input.samples:
