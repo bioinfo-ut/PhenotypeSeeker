@@ -678,12 +678,11 @@ class phenotypes():
                 stderr_print.check_progress(
                     self.no_kmers_to_analyse, "tests conducted.", self.name + ": "
                 )
-            if counter%10 == 0:
-                kmer = line[0].split()[0]
-                kmer_vector = [int(j.split()[1].strip()) for j in line]
-                if not self.real_counts:
-                    kmer_vector = [1 if count > 0 else 0 for count in kmer_vector]
-                kmers4pca.append(kmer_vector)
+            kmer = line[0].split()[0]
+            kmer_vector = [int(j.split()[1].strip()) for j in line]
+            if not self.real_counts:
+                kmer_vector = [1 if count > 0 else 0 for count in kmer_vector]
+            kmers4pca.append(kmer_vector)
             # if phenotypes.pred_scale == "binary":
             #     test_results = self.conduct_chi_squared_test(
             #             kmer, kmer_vector,
