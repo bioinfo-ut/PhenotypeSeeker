@@ -628,7 +628,7 @@ class phenotypes():
         ps = Popen("glistquery K-mer_lists/feature_vector.list", shell=True, stdout=PIPE)
         output = check_output(('wc', '-l'), stdin=ps.stdout)
         ps.wait()
-        cls.no_kmers_to_analyse = int(output)
+        cls.no_kmers_to_analyse = 1410823 #int(output)
         cls.progress_checkpoint = int(
             math.ceil(cls.no_kmers_to_analyse/(100*Input.num_threads))
             )
