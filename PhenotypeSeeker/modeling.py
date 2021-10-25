@@ -697,14 +697,14 @@ class phenotypes():
         pheno = [
                 sample.phenotypes[self.name] for sample in Input.samples.values()
                 ]
-        pheno = ['sens' if x == 0 else 'res' for x in pheno]
+        PCA_df['pheno'] = ['sens' if x == 0 else 'res' for x in pheno]
         strainID = list(Input.samples.keys())
-        country = [x.split("_")[-1] for x in strainID]
-        species = [x.split("_")[-2] for x in strainID]
+        PCA_df['country'] = [x.split("_")[-1] for x in strainID]
+        PCA_df['species'] = [x.split("_")[-2] for x in strainID]
         fig = px.scatter(
             PCA_df, x='PC 1', y='PC 2',
-            symbol=country, symbol_sequence=[50,100],
-            color=pheno, hover_data=species
+            symbol='country', symbol_sequence=[50,100],
+            color='pheno', hover_data=['species']
             )
         fig.show()
         fig.write_html("PC_pheno_species_kmers.html")
