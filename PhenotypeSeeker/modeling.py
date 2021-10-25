@@ -628,7 +628,7 @@ class phenotypes():
         ps = Popen("glistquery K-mer_lists/feature_vector.list", shell=True, stdout=PIPE)
         output = check_output(('wc', '-l'), stdin=ps.stdout)
         ps.wait()
-        cls.no_kmers_to_analyse = 11286584 #int(output)
+        cls.no_kmers_to_analyse = int(output)
         cls.progress_checkpoint = int(
             math.ceil(cls.no_kmers_to_analyse/(100*Input.num_threads))
             )
@@ -653,19 +653,14 @@ class phenotypes():
             ))
         sys.stderr.write("\n")
         sys.stderr.flush()
-        # uniondict = {k: v for d in results_from_threads for k, v in d.items()}
         self.ML_df = pd.concat(
             [pd.DataFrame.from_dict(x) for x in results_from_threads],
             axis=1)
-        self.kmers4pca = np.concatenate([np.array(x).T for x in kmers4pca], axis=1)
-        print(self.kmers4pca.shape)
         del results_from_threads
         if self.ML_df.shape[0] == 0:
             self.no_results.append(self.name)
 
-    def get_kmers_tested(self, split_of_kmer_lists):
-
-        kmer_dict = dict()
+    def sample4pca(self):
         kmers4pca = list()
         counter = 0
 
@@ -684,25 +679,53 @@ class phenotypes():
                 if not self.real_counts:
                     kmer_vector = [1 if count > 0 else 0 for count in kmer_vector]
                 kmers4pca.append(kmer_vector)
-            # if phenotypes.pred_scale == "binary":
-            #     test_results = self.conduct_chi_squared_test(
-            #             kmer, kmer_vector,
-            #             Input.samples.values()
-            #         )
-            # elif phenotypes.pred_scale == "continuous":
-            #     test_results = self.conduct_t_test(
-            #             kmer, kmer_vector,
-            #             Input.samples.values()
-            #         )
-            # if test_results:
-            #     kmer_dict[test_results[0]] = test_results[1:]
         Input.lock.acquire()
         stderr_print.currentKmerNum.value += counter%self.progress_checkpoint
         Input.lock.release()
         stderr_print.check_progress(
             self.no_kmers_to_analyse, "tests conducted.", self.name + ": "
         )
-        return kmer_dict, kmers4pca
+        return kmers4pca
+
+    def get_kmers_tested(self, split_of_kmer_lists):
+
+        kmer_dict = dict()
+        kmers4pca = list()
+        counter = 0
+
+        for line in zip(*[open(item) for item in split_of_kmer_lists]):
+            counter += 1
+            if counter%self.progress_checkpoint == 0:
+                Input.lock.acquire()
+                stderr_print.currentKmerNum.value += self.progress_checkpoint
+                Input.lock.release()
+                stderr_print.check_progress(
+                    self.no_kmers_to_analyse, "tests conducted.", self.name + ": "
+                )
+            kmer = line[0].split()[0]
+            kmer_vector = [int(j.split()[1].strip()) for j in line]
+            if not self.real_counts:
+                kmer_vector = [1 if count > 0 else 0 for count in kmer_vector]
+
+            if phenotypes.pred_scale == "binary":
+                test_results = self.conduct_chi_squared_test(
+                        kmer, kmer_vector,
+                        Input.samples.values()
+                    )
+            elif phenotypes.pred_scale == "continuous":
+                test_results = self.conduct_t_test(
+                        kmer, kmer_vector,
+                        Input.samples.values()
+                    )
+            if test_results:
+                kmer_dict[test_results[0]] = test_results[1:]
+        Input.lock.acquire()
+        stderr_print.currentKmerNum.value += counter%self.progress_checkpoint
+        Input.lock.release()
+        stderr_print.check_progress(
+            self.no_kmers_to_analyse, "tests conducted.", self.name + ": "
+        )
+        return kmer_dict
 
     def conduct_t_test(
         self, kmer, kmer_vector,
@@ -888,11 +911,14 @@ class phenotypes():
                 sample.phenotypes[self.name] for sample in Input.samples.values()
                 ]
         pheno = ['sens' if x == 0 else 'res' for x in pheno]
-        species = list(Input.samples.keys())
-        species = [x.split("_")[-1] for x in species]
-        fig = px.scatter(PCA_df, x='PC 1', y='PC 2',
-            symbol=species,
-            color=pheno, symbol_sequence=[50,100])
+        strainID = list(Input.samples.keys())
+        country = [x.split("_")[-1] for x in strainID]
+        species = [x.split("_")[-2] for x in strainID]
+        fig = px.scatter(
+            PCA_df, x='PC 1', y='PC 2',
+            symbol=country, symbol_sequence=[50,100],
+            color=pheno, hover_data=species
+            )
         fig.show()
         fig.write_html("PC_pheno_species_kmers.html")
 
@@ -1797,6 +1823,13 @@ def modeling(args):
                 )
             Samples.get_weights()
 
+    if not Input.jump_to or Input.jump_to == "testing":
+        with Pool(Input.num_threads) as p:
+            kmers4pca = zip(*p.map(
+               self.sample4pca, zip(*self.vectors_as_multiple_input)
+            ))
+        kmers4pca = np.concatenate([np.array(x).T for x in kmers4pca], axis=1)
+        print(kmers4pca.shape)
         # Analyses of phenotypes
         phenotypes.kmer_testing_setup()
         list(map(
@@ -1808,7 +1841,7 @@ def modeling(args):
         # Input.pop_phenos_out_of_kmers()
         # sys.stderr.flush()
       
-    if not Input.jump_to or ''.join(i for i, _ in groupby(Input.jump_to)) in ["modeling"]:
+    if not Input.jump_to or Input.jump_to in ["modeling", "modelling", "testing"]:
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
         sys.stderr.flush()
         with Pool(Input.num_threads) as p:
