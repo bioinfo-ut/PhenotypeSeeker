@@ -1742,7 +1742,7 @@ class phenotypes():
                 + str(len(item)) + "\n" + item + "\n")
         f1.close()
 
-def sample4pca(self, split_of_kmer_lists):
+def sample4pca(split_of_kmer_lists):
     kmers4pca = list()
     counter = 0
 
