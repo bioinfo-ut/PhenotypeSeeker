@@ -1815,18 +1815,18 @@ def modeling(args):
     if not Input.jump_to or Input.jump_to == "testing":
         # Analyses of phenotypes
         phenotypes.kmer_testing_setup()
-        list(map(
-            lambda x:  x.getPCAmatrix(), 
-            Input.phenotypes_to_analyse.values()
-            ))
+        # list(map(
+        #     lambda x:  x.getPCAmatrix(), 
+        #     Input.phenotypes_to_analyse.values()
+        #     ))
         list(map(
             lambda x:  x.test_kmers_association_with_phenotype(), 
             Input.phenotypes_to_analyse.values()
             ))
         
-        # Remove phenotypes with no results
-        # Input.pop_phenos_out_of_kmers()
-        # sys.stderr.flush()
+        Remove phenotypes with no results
+        Input.pop_phenos_out_of_kmers()
+        sys.stderr.flush()
       
     if not Input.jump_to or Input.jump_to in ["modeling", "modelling", "testing"]:
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
