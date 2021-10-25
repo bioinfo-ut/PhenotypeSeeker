@@ -896,8 +896,8 @@ class phenotypes():
             wo_pheno_w_kmer_expected, wo_pheno_wo_kmer_expected
             )
 
-    def getPCA(self):
-        scaled_data = StandardScaler().fit_transform(self.kmers4pca)
+    def getPCA(self, kmers4pca):
+        scaled_data = StandardScaler().fit_transform(kmers4pca)
 
         n_compo = 2
         labels = [f"PC {i+1}" for i in range(n_compo)]
@@ -1826,10 +1826,12 @@ def modeling(args):
     if not Input.jump_to or Input.jump_to == "testing":
         with Pool(Input.num_threads) as p:
             kmers4pca = zip(*p.map(
-               self.sample4pca, zip(*self.vectors_as_multiple_input)
+               phenotypes.sample4pca, zip(*phenotypes.vectors_as_multiple_input)
             ))
         kmers4pca = np.concatenate([np.array(x).T for x in kmers4pca], axis=1)
         print(kmers4pca.shape)
+        phenotypes.getPCA(kmers4pca)
+
         # Analyses of phenotypes
         phenotypes.kmer_testing_setup()
         list(map(
