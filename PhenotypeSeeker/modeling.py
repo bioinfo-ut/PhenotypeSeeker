@@ -643,6 +643,72 @@ class phenotypes():
                 ]
                 )
 
+    def getPCAmatrix(self):
+        stderr_print.currentKmerNum.value = 0
+        stderr_print.previousPercent.value = 0
+        with Pool(Input.num_threads) as p:
+            kmers4pca = zip(*p.map(
+               self.sample4pca, zip(*self.vectors_as_multiple_input)
+            ))
+        sys.stderr.write("\n")
+        sys.stderr.flush()
+        kmers4pca = np.concatenate([np.array(x).T for x in kmers4pca], axis=1)
+        print(kmers4pca.shape)
+        self.getPCA(kmers4pca)
+
+    def sample4pca(self, split_of_kmer_lists):
+        kmers4pca = list()
+        counter = 0
+
+        for line in zip(*[open(item) for item in split_of_kmer_lists]):
+            counter += 1
+            if counter%self.progress_checkpoint == 0:
+                Input.lock.acquire()
+                stderr_print.currentKmerNum.value += self.progress_checkpoint
+                Input.lock.release()
+                stderr_print.check_progress(
+                    self.no_kmers_to_analyse, "tests conducted.", self.name + ": "
+                )
+            if counter%100 == 0:
+                kmer = line[0].split()[0]
+                kmer_vector = [int(j.split()[1].strip()) for j in line]
+                if not self.real_counts:
+                    kmer_vector = [1 if count > 0 else 0 for count in kmer_vector]
+                kmers4pca.append(kmer_vector)
+        Input.lock.acquire()
+        stderr_print.currentKmerNum.value += counter%self.progress_checkpoint
+        Input.lock.release()
+        stderr_print.check_progress(
+            self.no_kmers_to_analyse, "tests conducted.", self.name + ": "
+        )
+        return kmers4pca
+
+    def getPCA(self, kmers4pca):
+        scaled_data = StandardScaler().fit_transform(kmers4pca)
+
+        n_compo = 2
+        labels = [f"PC {i+1}" for i in range(n_compo)]
+        PCA_df = pd.DataFrame(
+            PCA(n_components=n_compo).fit_transform(scaled_data),
+            columns=labels,
+            )
+
+        import plotly.express as px
+        pheno = [
+                sample.phenotypes[self.name] for sample in Input.samples.values()
+                ]
+        pheno = ['sens' if x == 0 else 'res' for x in pheno]
+        strainID = list(Input.samples.keys())
+        country = [x.split("_")[-1] for x in strainID]
+        species = [x.split("_")[-2] for x in strainID]
+        fig = px.scatter(
+            PCA_df, x='PC 1', y='PC 2',
+            symbol=country, symbol_sequence=[50,100],
+            color=pheno, hover_data=species
+            )
+        fig.show()
+        fig.write_html("PC_pheno_species_kmers.html")
+
     @timer
     def test_kmers_association_with_phenotype(self):
         stderr_print.currentKmerNum.value = 0
@@ -868,32 +934,6 @@ class phenotypes():
             w_pheno_w_kmer_expected, w_pheno_wo_kmer_expected,
             wo_pheno_w_kmer_expected, wo_pheno_wo_kmer_expected
             )
-
-    def getPCA(self, kmers4pca):
-        scaled_data = StandardScaler().fit_transform(kmers4pca)
-
-        n_compo = 2
-        labels = [f"PC {i+1}" for i in range(n_compo)]
-        PCA_df = pd.DataFrame(
-            PCA(n_components=n_compo).fit_transform(scaled_data),
-            columns=labels,
-            )
-
-        import plotly.express as px
-        pheno = [
-                sample.phenotypes[self.name] for sample in Input.samples.values()
-                ]
-        pheno = ['sens' if x == 0 else 'res' for x in pheno]
-        strainID = list(Input.samples.keys())
-        country = [x.split("_")[-1] for x in strainID]
-        species = [x.split("_")[-2] for x in strainID]
-        fig = px.scatter(
-            PCA_df, x='PC 1', y='PC 2',
-            symbol=country, symbol_sequence=[50,100],
-            color=pheno, hover_data=species
-            )
-        fig.show()
-        fig.write_html("PC_pheno_species_kmers.html")
 
     def machine_learning_modelling(self):
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
@@ -1185,30 +1225,6 @@ class phenotypes():
             self.ML_df.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
             self.ML_df.to_csv(self.name + "_MLdf.csv")
             self.model_package['kmers'] = self.ML_df.columns[:-2]
-
-    def PCA_from_random_kmers(self):
-        # Strandardization
-        df_to_scale = self.ML_df
-        scaler = StandardScaler()
-        scaler.fit(df_to_scale)
-        scaled_data = scaler.transform(df_to_scale)
-
-        # PCA transformation
-        pca = PCA(n_components=2)
-        pca.fit(scaled_data)
-        self.PCA_df = pd.DataFrame(
-            pca.transform(scaled_data),
-            index=self.ML_df.index,
-            )
-        self.PCA_df.columns = [
-            'PC_' + str(i) for i in  range(1, 1 + self.PCA_df.shape[1])
-            ]
-
-        import plotly.express as px
-        fig = px.scatter(PCA_df, x='PC 1', y='PC 2')
-        fig.write_html("/Users/macpro/Desktop/PC1,2_pheno_species_8000kmers.html")
-
-
 
     @timer
     def PCA_analysis(self):
@@ -1742,33 +1758,6 @@ class phenotypes():
                 + str(len(item)) + "\n" + item + "\n")
         f1.close()
 
-def sample4pca(split_of_kmer_lists):
-    kmers4pca = list()
-    counter = 0
-
-    for line in zip(*[open(item) for item in split_of_kmer_lists]):
-        counter += 1
-        if counter%phenotypes.progress_checkpoint == 0:
-            Input.lock.acquire()
-            stderr_print.currentKmerNum.value += phenotypes.progress_checkpoint
-            Input.lock.release()
-            stderr_print.check_progress(
-                phenotypes.no_kmers_to_analyse, "tests conducted.", phenotypes.name + ": "
-            )
-        if counter%100 == 0:
-            kmer = line[0].split()[0]
-            kmer_vector = [int(j.split()[1].strip()) for j in line]
-            if not phenotypes.real_counts:
-                kmer_vector = [1 if count > 0 else 0 for count in kmer_vector]
-            kmers4pca.append(kmer_vector)
-    Input.lock.acquire()
-    stderr_print.currentKmerNum.value += counter%phenotypes.progress_checkpoint
-    Input.lock.release()
-    stderr_print.check_progress(
-        phenotypes.no_kmers_to_analyse, "tests conducted.", phenotypes.name + ": "
-    )
-    return kmers4pca
-
 def modeling(args):
     # The main function of "phenotypeseeker modeling"
 
@@ -1824,17 +1813,12 @@ def modeling(args):
             Samples.get_weights()
 
     if not Input.jump_to or Input.jump_to == "testing":
-        phenotypes.kmer_testing_setup()
-        with Pool(Input.num_threads) as p:
-            kmers4pca = zip(*p.map(
-               sample4pca, zip(*phenotypes.vectors_as_multiple_input)
-            ))
-        kmers4pca = np.concatenate([np.array(x).T for x in kmers4pca], axis=1)
-        print(kmers4pca.shape)
-        phenotypes.getPCA(kmers4pca)
-
         # Analyses of phenotypes
         phenotypes.kmer_testing_setup()
+        list(map(
+            lambda x:  x.getPCAmatrix(), 
+            Input.phenotypes_to_analyse.values()
+            ))
         list(map(
             lambda x:  x.test_kmers_association_with_phenotype(), 
             Input.phenotypes_to_analyse.values()
