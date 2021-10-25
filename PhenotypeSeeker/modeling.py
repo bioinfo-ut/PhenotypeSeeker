@@ -1768,21 +1768,21 @@ def modeling(args):
         sys.stderr.write("\x1b[1;32mGenerating the k-mer lists for input samples:\x1b[0m\n")
         sys.stderr.flush()
 
-        # with Pool(Input.num_threads) as p:
-        #     p.map(
-        #         lambda x: x.get_kmer_lists(), Input.samples.values()
-        #     )
+        with Pool(Input.num_threads) as p:
+            p.map(
+                lambda x: x.get_kmer_lists(), Input.samples.values()
+            )
 
-        # sys.stderr.write("\n\x1b[1;32mGenerating the k-mer feature vector.\x1b[0m\n")
-        # sys.stderr.flush()
-        # Samples.get_feature_vector()
-        # sys.stderr.write("\x1b[1;32mMapping samples to the feature vector space:\x1b[0m\n")
-        # sys.stderr.flush()
-        # stderr_print.currentSampleNum.value = 0
-        # with Pool(Input.num_threads) as p:
-        #     p.map(
-        #         lambda x: x.map_samples(), Input.samples.values()
-        #     )
+        sys.stderr.write("\n\x1b[1;32mGenerating the k-mer feature vector.\x1b[0m\n")
+        sys.stderr.flush()
+        Samples.get_feature_vector()
+        sys.stderr.write("\x1b[1;32mMapping samples to the feature vector space:\x1b[0m\n")
+        sys.stderr.flush()
+        stderr_print.currentSampleNum.value = 0
+        with Pool(Input.num_threads) as p:
+            p.map(
+                lambda x: x.map_samples(), Input.samples.values()
+            )
         if args.weights:
             mash_files = ["distances.mat", "reference.msh", "mash_distances.mat"]
             for mash_file in mash_files:
