@@ -1824,6 +1824,7 @@ def modeling(args):
             Samples.get_weights()
 
     if not Input.jump_to or Input.jump_to == "testing":
+        phenotypes.kmer_testing_setup()
         with Pool(Input.num_threads) as p:
             kmers4pca = zip(*p.map(
                phenotypes.sample4pca, zip(*phenotypes.vectors_as_multiple_input)
