@@ -660,7 +660,7 @@ class phenotypes():
         if self.ML_df.shape[0] == 0:
             self.no_results.append(self.name)
 
-    def sample4pca(self):
+    def sample4pca(self, split_of_kmer_lists):
         kmers4pca = list()
         counter = 0
 
