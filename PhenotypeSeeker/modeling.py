@@ -660,33 +660,6 @@ class phenotypes():
         if self.ML_df.shape[0] == 0:
             self.no_results.append(self.name)
 
-    def sample4pca(self, split_of_kmer_lists):
-        kmers4pca = list()
-        counter = 0
-
-        for line in zip(*[open(item) for item in split_of_kmer_lists]):
-            counter += 1
-            if counter%self.progress_checkpoint == 0:
-                Input.lock.acquire()
-                stderr_print.currentKmerNum.value += self.progress_checkpoint
-                Input.lock.release()
-                stderr_print.check_progress(
-                    self.no_kmers_to_analyse, "tests conducted.", self.name + ": "
-                )
-            if counter%100 == 0:
-                kmer = line[0].split()[0]
-                kmer_vector = [int(j.split()[1].strip()) for j in line]
-                if not self.real_counts:
-                    kmer_vector = [1 if count > 0 else 0 for count in kmer_vector]
-                kmers4pca.append(kmer_vector)
-        Input.lock.acquire()
-        stderr_print.currentKmerNum.value += counter%self.progress_checkpoint
-        Input.lock.release()
-        stderr_print.check_progress(
-            self.no_kmers_to_analyse, "tests conducted.", self.name + ": "
-        )
-        return kmers4pca
-
     def get_kmers_tested(self, split_of_kmer_lists):
 
         kmer_dict = dict()
@@ -1769,6 +1742,33 @@ class phenotypes():
                 + str(len(item)) + "\n" + item + "\n")
         f1.close()
 
+def sample4pca(self, split_of_kmer_lists):
+    kmers4pca = list()
+    counter = 0
+
+    for line in zip(*[open(item) for item in split_of_kmer_lists]):
+        counter += 1
+        if counter%phenotypes.progress_checkpoint == 0:
+            Input.lock.acquire()
+            stderr_print.currentKmerNum.value += phenotypes.progress_checkpoint
+            Input.lock.release()
+            stderr_print.check_progress(
+                self.no_kmers_to_analyse, "tests conducted.", phenotypes.name + ": "
+            )
+        if counter%100 == 0:
+            kmer = line[0].split()[0]
+            kmer_vector = [int(j.split()[1].strip()) for j in line]
+            if not phenotypes.real_counts:
+                kmer_vector = [1 if count > 0 else 0 for count in kmer_vector]
+            kmers4pca.append(kmer_vector)
+    Input.lock.acquire()
+    stderr_print.currentKmerNum.value += counter%phenotypes.progress_checkpoint
+    Input.lock.release()
+    stderr_print.check_progress(
+        phenotypes.no_kmers_to_analyse, "tests conducted.", phenotypes.name + ": "
+    )
+    return kmers4pca
+
 def modeling(args):
     # The main function of "phenotypeseeker modeling"
 
@@ -1827,7 +1827,7 @@ def modeling(args):
         phenotypes.kmer_testing_setup()
         with Pool(Input.num_threads) as p:
             kmers4pca = zip(*p.map(
-               phenotypes.sample4pca, zip(*phenotypes.vectors_as_multiple_input)
+               sample4pca, zip(*phenotypes.vectors_as_multiple_input)
             ))
         kmers4pca = np.concatenate([np.array(x).T for x in kmers4pca], axis=1)
         print(kmers4pca.shape)
