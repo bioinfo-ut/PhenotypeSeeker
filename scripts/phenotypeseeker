@@ -275,7 +275,7 @@ def Main():
         )
     other.add_argument(
         "-jt", "--jump_to", type=str, metavar='', default=None,
-        choices=["modelling", "PCA"],
+        choices=["modelling", "testing"],
         help='Continue a discontinued process and skip the steps, which output \
         files exist already in the correct paths.'
         )
