@@ -1753,7 +1753,7 @@ def sample4pca(split_of_kmer_lists):
             stderr_print.currentKmerNum.value += phenotypes.progress_checkpoint
             Input.lock.release()
             stderr_print.check_progress(
-                self.no_kmers_to_analyse, "tests conducted.", phenotypes.name + ": "
+                phenotypes.no_kmers_to_analyse, "tests conducted.", phenotypes.name + ": "
             )
         if counter%100 == 0:
             kmer = line[0].split()[0]
