@@ -1824,7 +1824,7 @@ def modeling(args):
             Input.phenotypes_to_analyse.values()
             ))
         
-        Remove phenotypes with no results
+        # Remove phenotypes with no results
         Input.pop_phenos_out_of_kmers()
         sys.stderr.flush()
       
