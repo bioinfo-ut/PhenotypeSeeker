@@ -168,7 +168,7 @@ class Phenotypes():
         print(f"selfpca: {self.pca}")
         if self.pca:
             print(self.matrix.shape)
-            print(self.scaler.n_features)            
+            print(type(self.scaler))     
             scaled_matrix = self.scaler.transform(self.matrix)
             PCs = self.pca_model.transform(scaled_matrix)
             if self.lr:

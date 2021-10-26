@@ -1299,6 +1299,7 @@ class phenotypes():
         df_to_scale = self.ML_df.drop(['phenotype', 'weights'], axis=1)
         scaler = StandardScaler()
         scaler.fit(df_to_scale)
+        print(scaler.mean_)
         scaled_data = scaler.transform(df_to_scale)
 
         # PCA transformation
