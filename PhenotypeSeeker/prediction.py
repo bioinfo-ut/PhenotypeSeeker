@@ -135,7 +135,8 @@ class Phenotypes():
         scaler = None
         PCs_to_keep = None
         kmers_to_keep = None
-        if model_pkg['pca']:
+        print(model_pkg)
+        if model_pkg['pca_model']:
             pca_model = model_pkg['pca_model']
             scaler = model_pkg['scaler']
             PCs_to_keep = model_pkg['PCs_to_keep']
