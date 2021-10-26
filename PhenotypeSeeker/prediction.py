@@ -135,16 +135,15 @@ class Phenotypes():
         scaler = None
         PCs_to_keep = None
         kmers_to_keep = None
-        print(model_pkg)
-        if model_pkg['pca_model']:
+        if model_pkg['pca'] or model_pkg['LR']:
             pca_model = model_pkg['pca_model']
             scaler = model_pkg['scaler']
-            PCs_to_keep = model_pkg['PCs_to_keep']
-            pca = True
+            if model_pkg['pca']:
+                PCs_to_keep = model_pkg['PCs_to_keep']
+                pca = True
             if model_pkg['LR']:
                 kmers_to_keep = model_pkg['kmers_to_keep']
                 lr = True
-            
             
         return cls(
                 name, model, kmers, pca, lr, pca_model, scaler, PCs_to_keep, pred_scale,
