@@ -1551,7 +1551,7 @@ class phenotypes():
         self.summary_file.write("Major error rate: %s\n" % ME)           
 
     def write_model_coefficients_to_file(self):
-        if self.pca == True:
+        if self.pca and not self.LR:
             self.coeff_file.write(
                 "PC\tcoef._in_" + self.model_name_short + \
                 "_model\texplained_variance\texplained_variance_ratio" + \
@@ -1581,7 +1581,7 @@ class phenotypes():
             else:
                 coef = self.ML_df.loc['coefficient', predictor]
 
-            if self.pca:
+            if self.pca and not self.LR:
                 self.coeff_file.write(
                     f"{predictor}\t{coef}\t{self.pca_explained_variance_[idx]}" + \
                     f"\t{self.pca_explained_variance_ratio_[idx]}" + \
