@@ -1057,6 +1057,7 @@ class phenotypes():
         self.model_package['pca'] = self.pca
         self.model_package['LR'] = self.LR
         self.model_package['pred_scale'] = self.pred_scale
+        print(self.model_package)
         joblib.dump(self.model_package, self.model_file)
 
         self.write_model_coefficients_to_file()
