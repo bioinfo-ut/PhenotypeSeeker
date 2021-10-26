@@ -174,6 +174,7 @@ class Phenotypes():
                 )
             else:
                 self.matrix = PCs[:, self.PCs_to_keep]
+            print(self.matrix)
 
     def predict(self):
 
