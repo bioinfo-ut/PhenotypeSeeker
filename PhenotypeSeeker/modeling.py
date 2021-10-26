@@ -175,7 +175,7 @@ class Input():
         phenotypes.n_splits_cv_inner = n_splits_cv_inner
         phenotypes.logreg_solver = cls.get_logreg_solver(
             logreg_solver)
-        phenotypes.pca = pca
+        phenotypes.pca = pca or LR
         phenotypes.real_counts = real_counts
         phenotypes.LR = LR
 
@@ -943,7 +943,6 @@ class phenotypes():
         self.set_hyperparameters()
         self.get_ML_df()
         if self.LR:
-            self.pca = True
             self.LR_feature_selection()
         if self.pca:
             self.PCA_analysis()
