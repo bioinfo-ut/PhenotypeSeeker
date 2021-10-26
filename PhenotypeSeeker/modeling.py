@@ -942,11 +942,12 @@ class phenotypes():
         self.set_model()
         self.set_hyperparameters()
         self.get_ML_df()
-        if self.LR:
-            self.LR_feature_selection()
         if self.pca:
-            self.PCA_analysis()
-            features = 'PCs'
+            if self.LR:
+                self.LR_feature_selection()
+            else:
+                self.PCA_analysis()
+                features = 'PCs'
         self.get_outputfile_names(features)
         if phenotypes.n_splits_cv_outer:
             self.assert_n_splits_cv_outer(phenotypes.n_splits_cv_outer, self.ML_df)
