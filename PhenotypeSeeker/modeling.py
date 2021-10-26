@@ -1340,6 +1340,7 @@ class phenotypes():
         self.ML_df = pd.concat(
                 [PCs, self.ML_df.loc[:, kmers_to_keep + [True, True]]], axis=1
             )
+        print(self.ML_df)
 
     def fit_model(self):
         if self.pred_scale == "continuous":
