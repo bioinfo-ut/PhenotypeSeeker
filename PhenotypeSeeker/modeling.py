@@ -703,7 +703,7 @@ class phenotypes():
         PCA_df['species'] = [x.split("_")[-2] for x in strainID]
         fig = px.scatter(
             PCA_df, x='PC 1', y='PC 2',
-            symbol='country', symbol_sequence=[50,100],
+            symbol='country', symbol_sequence=[50,100,150],
             color='pheno', hover_data=['species']
             )
         fig.show()
@@ -1303,14 +1303,14 @@ class phenotypes():
         scaled_data = scaler.transform(df_to_scale)
 
         # PCA transformation
-        pca = PCA(n_components=1)
+        pca = PCA(n_components=2)
         pca.fit(scaled_data)
 
         # PCA transformation
         PCs = pd.DataFrame(
             pca.transform(scaled_data),
             index=self.ML_df.index,
-            columns=['PC_1']
+            columns=['PC_1', 'PC_2']
             )
         self.model_package['scaler'] = scaler
         self.model_package['pca_model'] = pca
@@ -1817,10 +1817,10 @@ def modeling(args):
     if not Input.jump_to or Input.jump_to == "testing":
         # Analyses of phenotypes
         phenotypes.kmer_testing_setup()
-        # list(map(
-        #     lambda x:  x.getPCAmatrix(), 
-        #     Input.phenotypes_to_analyse.values()
-        #     ))
+        list(map(
+            lambda x:  x.getPCAmatrix(), 
+            Input.phenotypes_to_analyse.values()
+            ))
         list(map(
             lambda x:  x.test_kmers_association_with_phenotype(), 
             Input.phenotypes_to_analyse.values()
