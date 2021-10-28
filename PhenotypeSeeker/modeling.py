@@ -1299,7 +1299,6 @@ class phenotypes():
         df_to_scale = self.ML_df.drop(['phenotype', 'weights'], axis=1)
         scaler = StandardScaler()
         scaler.fit(df_to_scale)
-        print(scaler.mean_)
         scaled_data = scaler.transform(df_to_scale)
 
         # PCA transformation
@@ -1340,9 +1339,10 @@ class phenotypes():
                 kmers_to_keep.append(False)
 
         self.model_package['kmers_to_keep'] = kmers_to_keep
-        self.ML_df = pd.concat(
-                [PCs, self.ML_df.loc[:, kmers_to_keep + [True, True]]], axis=1
-            )
+        # self.ML_df = pd.concat(
+        #         [PCs, self.ML_df.loc[:, kmers_to_keep + [True, True]]], axis=1
+        #     )
+        self.ML_df = self.ML_df.loc[:, kmers_to_keep + [True, True]]
 
     def fit_model(self):
         if self.pred_scale == "continuous":
@@ -1817,10 +1817,10 @@ def modeling(args):
     if not Input.jump_to or Input.jump_to == "testing":
         # Analyses of phenotypes
         phenotypes.kmer_testing_setup()
-        list(map(
-            lambda x:  x.getPCAmatrix(), 
-            Input.phenotypes_to_analyse.values()
-            ))
+        # list(map(
+        #     lambda x:  x.getPCAmatrix(), 
+        #     Input.phenotypes_to_analyse.values()
+        #     ))
         list(map(
             lambda x:  x.test_kmers_association_with_phenotype(), 
             Input.phenotypes_to_analyse.values()
