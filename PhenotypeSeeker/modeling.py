@@ -1302,14 +1302,14 @@ class phenotypes():
         scaled_data = scaler.transform(df_to_scale)
 
         # PCA transformation
-        pca = PCA(n_components=2)
+        pca = PCA(n_components=3)
         pca.fit(scaled_data)
 
         # PCA transformation
         PCs = pd.DataFrame(
             pca.transform(scaled_data),
             index=self.ML_df.index,
-            columns=['PC_1', 'PC_2']
+            columns=['PC_1', 'PC_2', 'PC_3']
             )
         self.model_package['scaler'] = scaler
         self.model_package['pca_model'] = pca
@@ -1339,10 +1339,10 @@ class phenotypes():
                 kmers_to_keep.append(False)
 
         self.model_package['kmers_to_keep'] = kmers_to_keep
-        # self.ML_df = pd.concat(
-        #         [PCs, self.ML_df.loc[:, kmers_to_keep + [True, True]]], axis=1
-        #     )
-        self.ML_df = self.ML_df.loc[:, kmers_to_keep + [True, True]]
+        self.ML_df = pd.concat(
+                [PCs, self.ML_df.loc[:, kmers_to_keep + [True, True]]], axis=1
+            )
+        # self.ML_df = self.ML_df.loc[:, kmers_to_keep + [True, True]]
 
     def fit_model(self):
         if self.pred_scale == "continuous":
