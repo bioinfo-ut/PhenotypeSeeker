@@ -1340,9 +1340,11 @@ class phenotypes():
                 kmers_to_keep.append(False)
 
         self.model_package['kmers_to_keep'] = kmers_to_keep
-        self.ML_df = pd.concat(
-                [PCs, self.ML_df.loc[:, kmers_to_keep + [True, True]]], axis=1
-            )
+        # self.ML_df = pd.concat(
+        #         [PCs, self.ML_df.loc[:, kmers_to_keep + [True, True]]], axis=1
+        #     )
+        self.ML_df = self.ML_df.loc[:, kmers_to_keep + [True, True]]
+
 
     def fit_model(self):
         if self.pred_scale == "continuous":
