@@ -504,13 +504,13 @@ class stderr_print():
         sys.stderr.flush()
 
     @classmethod
-    def check_progress(cls, totalKmers, text, phenotype=""):
-        currentPercent = int((cls.currentKmerNum.value/float(totalKmers))*100)
+    def update_percent(cls, phenotype):
+        currentPercent = int((cls.currentKmerNum.value/phenotypes.no_kmers_to_analyse)*100)
         if currentPercent > cls.previousPercent.value:
             if currentPercent != 100:
-                output = f"\t{phenotype} \x1b[1;91m{currentPercent}% \x1b[1;32m{text}"
+                output = f"\t{phenotype}: \x1b[1;91m{currentPercent}% \x1b[1;32mtests conducted."
             else:
-                output = f"\t{phenotype} {currentPercent}% {text}"
+                output = f"\t{phenotype}: {currentPercent}% tests conducted."
             cls.previousPercent.value = currentPercent
             cls(output)
 
@@ -632,7 +632,7 @@ class phenotypes():
         cls.progress_checkpoint = int(
             math.ceil(cls.no_kmers_to_analyse/(100*Input.num_threads))
             )
-        # call(["rm K-mer_lists/feature_vector.list"], shell=True)
+        call(["rm K-mer_lists/feature_vector.list"], shell=True)
 
         # Set up split up vectors as multiple input list
         for sample in Input.samples:
@@ -662,25 +662,12 @@ class phenotypes():
 
         for line in zip(*[open(item) for item in split_of_kmer_lists]):
             counter += 1
-            if counter%self.progress_checkpoint == 0:
-                Input.lock.acquire()
-                stderr_print.currentKmerNum.value += self.progress_checkpoint
-                Input.lock.release()
-                stderr_print.check_progress(
-                    self.no_kmers_to_analyse, "tests conducted.", self.name + ": "
-                )
             if counter%100 == 0:
                 kmer = line[0].split()[0]
                 kmer_vector = [int(j.split()[1].strip()) for j in line]
                 if not self.real_counts:
                     kmer_vector = [1 if count > 0 else 0 for count in kmer_vector]
                 kmers4pca.append(kmer_vector)
-        Input.lock.acquire()
-        stderr_print.currentKmerNum.value += counter%self.progress_checkpoint
-        Input.lock.release()
-        stderr_print.check_progress(
-            self.no_kmers_to_analyse, "tests conducted.", self.name + ": "
-        )
         return kmers4pca
 
     def getPCA(self, kmers4pca):
@@ -738,9 +725,7 @@ class phenotypes():
                 Input.lock.acquire()
                 stderr_print.currentKmerNum.value += self.progress_checkpoint
                 Input.lock.release()
-                stderr_print.check_progress(
-                    self.no_kmers_to_analyse, "tests conducted.", self.name + ": "
-                )
+                stderr_print.update_percent(self.name)
             kmer = line[0].split()[0]
             kmer_vector = [int(j.split()[1].strip()) for j in line]
             if not self.real_counts:
@@ -761,9 +746,7 @@ class phenotypes():
         Input.lock.acquire()
         stderr_print.currentKmerNum.value += counter%self.progress_checkpoint
         Input.lock.release()
-        stderr_print.check_progress(
-            self.no_kmers_to_analyse, "tests conducted.", self.name + ": "
-        )
+        stderr_print.update_percent(self.name)
         return kmer_dict
 
     def conduct_t_test(
