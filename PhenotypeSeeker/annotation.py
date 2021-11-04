@@ -4,6 +4,7 @@ __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
 import os
+import sys
 
 from subprocess import run
 
@@ -37,6 +38,8 @@ class Input():
     pool = None
     lock = None
     num_threads = 8
+
+    lock = Manager().Lock()
     
     @classmethod
     def get_input_data(cls, inputfilename):
@@ -86,12 +89,25 @@ class Samples():
         run(["mkdir", "-p", "K-mer_lists"])
         process = run(
             ["glistmaker " + self.address + " -o K-mer_lists/" + 
-            self.name + "_0" + " -w " + self.kmer_length + "--index"], shell=True
+            self.name + " -w " + self.kmer_length + "--index"], shell=True
             )
         Input.lock.acquire()
         stderr_print.currentSampleNum.value += 1
         Input.lock.release()
         stderr_print.print_progress("lists generated.")
+
+    def get_kmer_indexes(self):
+        outputfile = "K-mer_lists/" + self.name + "_kmer_indexes.txt"
+        with open(outputfile, "w+") as outputfile:
+            call(
+                [
+                "glistquery K-mer_lists/" + self.name + "_" + self.kmer_length + ".list"
+                ]
+                , shell=True, stdout=outputfile)
+        Input.lock.acquire()
+        stderr_print.currentSampleNum.value += 1
+        Input.lock.release()
+        stderr_print.print_progress("indexes generated.")
 
 def annotation(args):
     Input.get_input_data(args.inputfile)
@@ -101,6 +117,12 @@ def annotation(args):
             lambda x: x.get_kmer_indexes(),
             Input.samples.values()
         )
+    sys.stderr.write("\x1b[1;32mAchieving the k-mer indexes in input samples:\x1b[0m\n")
+    with Pool(Input.num_threads) as p:
+        p.map(
+            lambda x: x.get_kmer_indexes(),
+            Input.samples.values()
+        )   
     # with Pool(Input.num_threads) as p:
     #     p.map(
     #         lambda x: x.call_prokka(),
