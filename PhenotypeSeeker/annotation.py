@@ -63,5 +63,5 @@ def annotation(args):
     with Pool(Input.num_threads) as p:
         p.map(
             lambda x: x.call_prokka(),
-            Input.phenotypes_to_analyse.values()
+            Input.samples.values()
         )
