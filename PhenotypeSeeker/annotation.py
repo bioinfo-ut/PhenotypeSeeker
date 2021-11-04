@@ -5,8 +5,9 @@ __email__ = "erki.aun@ut.ee"
 
 import os
 
-from collections import OrderedDict
+from subprocess import run
 
+from collections import OrderedDict
 from multiprocess import Manager, Pool, Value
 
 class Input():
@@ -52,6 +53,10 @@ class Samples():
     def from_inputfile(cls, line):
         name, address = line.split()[0], line.split()[1]
         return cls(name, address)
+
+    def call_prokka(self):
+        run([f"prokka --kingdom Bacteria --outdir prokka/prokka_{self.name} \
+            --genus Enterococcus --locustag {self.name} {self.address}"])
 
 def annotation(args):
 	Input.get_input_data(args.inputfile)
