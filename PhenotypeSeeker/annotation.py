@@ -60,5 +60,8 @@ class Samples():
 
 def annotation(args):
 	Input.get_input_data(args.inputfile)
-	for sample in Input.samples.values():
-		print(sample.address)
+    with Pool(Input.num_threads) as p:
+        p.map(
+            lambda x: x.call_prokka(),
+            Input.phenotypes_to_analyse.values()
+        )
