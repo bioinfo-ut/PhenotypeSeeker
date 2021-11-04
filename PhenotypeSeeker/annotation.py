@@ -123,7 +123,19 @@ class Samples():
 
     @staticmethod
     def indexes_to_list(kmers):
-        pass
+        kmer_indexes = {}
+        for kmer, strains in kmers.items():
+            for strain in strains:
+                with open(f"K-mer_lists/{strain}_kmer_indexes.txt") as indexfile:
+                    for line in indexfile:
+                        if line.split()[0] != kmer:
+                            continue
+                        kmer, occurences = line.split()
+                        for i in range(occurences):
+                            _, contig, pos, strand = indexfile.readline.split()
+                            print(kmer, strain, contig, pos, strand)
+
+
 
 
 def annotation(args):
@@ -137,12 +149,13 @@ def annotation(args):
             lambda x: x.get_kmer_lists(),
             Input.samples.values()
         )
-    sys.stderr.write("\x1b[1;32mAchieving the k-mer indexes in input samples:\x1b[0m\n")
+    sys.stderr.write("\x1b[1;32mGenerate the k-mer indexes in input samples:\x1b[0m\n")
     with Pool(Input.num_threads) as p:
         p.map(
             lambda x: x.get_kmer_indexes(),
             Input.samples.values()
-        )   
+        )
+    sys.stderr.write("\x1b[1;32mExtract the k-mer indexes for kmers to annotate:\x1b[0m\n") 
     # with Pool(Input.num_threads) as p:
     #     p.map(
     #         lambda x: x.call_prokka(),
