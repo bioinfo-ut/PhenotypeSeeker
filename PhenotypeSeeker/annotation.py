@@ -59,7 +59,7 @@ class Samples():
             --genus Enterococcus --locustag {self.name} {self.address}"])
 
 def annotation(args):
-	Input.get_input_data(args.inputfile)
+    Input.get_input_data(args.inputfile)
     with Pool(Input.num_threads) as p:
         p.map(
             lambda x: x.call_prokka(),
