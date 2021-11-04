@@ -311,10 +311,19 @@ def Main():
     parser_b.set_defaults(func=prediction.prediction)
 
     #Subparser "annotation" options
-    parser_c.add_argument(
+    required_options = parser_c.add_argument_group('Required options')
+    other = parser_c.add_argument_group('Other options')
+
+    required_options.add_argument(
         'inputfile', default=sys.stdin,
         help='Text file of tab separated list of sample IDs and corresponding \
-        Fasta/Fastq file addresses.')
+        Fasta/Fastq file addresses.'
+        )
+    required_options.add_argument(
+        'model_file', default=sys.stdin,
+        help='Model package with the k-mers to be annotated.'
+        )
+
     parser_c.set_defaults(func=annotation.annotation)
 
     args = parser.parse_args()

@@ -110,6 +110,7 @@ class Samples():
         stderr_print.print_progress("indexes generated.")
 
 def annotation(args):
+    Sammples.kmer_length = args.kmer_length
     Input.get_input_data(args.inputfile)
     sys.stderr.write("\x1b[1;32mGenerating the k-mer lists in input samples:\x1b[0m\n")
     with Pool(Input.num_threads) as p:

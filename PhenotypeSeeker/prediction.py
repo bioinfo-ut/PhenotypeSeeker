@@ -126,7 +126,7 @@ class Phenotypes():
         name, model_adre = line.split()[0], line.split()[1] 
         model_pkg = joblib.load(model_adre)
         model = model_pkg['model']
-        kmers = model_pkg['kmers']
+        kmers = list(model_pkg['kmers'].keys())
         pred_scale = model_pkg['pred_scale']
 
         pca = False
