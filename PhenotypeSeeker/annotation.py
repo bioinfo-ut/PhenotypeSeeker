@@ -114,7 +114,7 @@ def annotation(args):
     sys.stderr.write("\x1b[1;32mGenerating the k-mer lists in input samples:\x1b[0m\n")
     with Pool(Input.num_threads) as p:
         p.map(
-            lambda x: x.get_kmer_indexes(),
+            lambda x: x.get_kmer_lists(),
             Input.samples.values()
         )
     sys.stderr.write("\x1b[1;32mAchieving the k-mer indexes in input samples:\x1b[0m\n")
