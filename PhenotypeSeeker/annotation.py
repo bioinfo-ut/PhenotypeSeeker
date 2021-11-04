@@ -101,7 +101,7 @@ class Samples():
         run(["mkdir", "-p", "K-mer_lists"])
         process = run(
             ["glistmaker " + self.address + " -o K-mer_lists/" + 
-            self.name + " -w " + Input.kmer_length + "--index"], shell=True
+            self.name + " -w " + Input.kmer_length + " --index"], shell=True
             )
         Input.lock.acquire()
         stderr_print.currentSampleNum.value += 1
@@ -125,7 +125,7 @@ class Samples():
     def indexes_to_list(kmers):
         kmer_indexes = {}
         for kmer, strains in kmers.items():
-            for strain in strains:
+            for strain in strains[1:]:
                 with open(f"K-mer_lists/{strain}_kmer_indexes.txt") as indexfile:
                     for line in indexfile:
                         if line.split()[0] != kmer:
