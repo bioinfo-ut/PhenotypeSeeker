@@ -42,6 +42,7 @@ class Input():
     lock = Manager().Lock()
 
     kmers = None
+    kmer_lenght = None
     
     @classmethod
     def get_input_data(cls, inputfilename):
@@ -119,6 +120,10 @@ class Samples():
         stderr_print.currentSampleNum.value += 1
         Input.lock.release()
         stderr_print.print_progress("indexes generated.")
+
+    @staticmethod
+    def indexes_to_list(kmers):
+
 
 def annotation(args):
     Input.get_input_data(args.inputfile)
