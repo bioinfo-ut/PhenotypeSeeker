@@ -64,7 +64,7 @@ class Input():
         cls.kmers = model_pkg['kmers']
         if model_pkg['LR']:
             kmers_to_keep = model_pkg['kmers'].loc[model_pkg['kmers_to_keep']]
-        cls.kmer_length = len(cls.kmers.index.values[0])
+        cls.kmer_length = str(len(cls.kmers.index.values[0]))
 
 class Samples():
 
