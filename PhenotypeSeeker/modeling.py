@@ -1198,6 +1198,8 @@ class phenotypes():
                 self.ML_df.T[out_cols].to_csv(
                     f'{out_cols[0]}_results_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
                     )
+            self.model_package['kmers'] = self.ML_df.loc['samples_with_kmer'][:-2]
+            self.ML_df.drop(out_cols, inplace=True)
             self.ML_df['weights'] = [
                 sample.weight for sample in Input.samples.values()
                 ]
@@ -1205,9 +1207,7 @@ class phenotypes():
                 sample.phenotypes[self.name] for sample in Input.samples.values()
                 ]
             self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
-            self.model_package['kmers'] = self.ML_df.loc['samples_with_kmer'][:-2].to_dict()
             self.ML_df.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
-            self.ML_df.drop(out_cols, inplace=True)
             self.ML_df.to_csv(self.name + "_MLdf.csv")
 
     @timer

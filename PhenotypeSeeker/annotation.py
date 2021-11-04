@@ -40,6 +40,8 @@ class Input():
     num_threads = 8
 
     lock = Manager().Lock()
+
+    kmers = None
     
     @classmethod
     def get_input_data(cls, inputfilename):
@@ -54,6 +56,15 @@ class Input():
                     cls.samples[sample_name] = (
                         Samples.from_inputfile(line)
                         )
+
+    @classmethod
+    def get_kmers(cls, model_pkg):
+        model_pkg = joblib.load(model_pkg)
+        cls.kmers = model_pkg['kmers']
+        if model_pkg['LR']:
+            kmers_to_keep = model_pkg['kmers']model_pkg['kmers_to_keep']
+        cls.kmer_length = len(cls.kmers.index.values[0])
+
 class Samples():
 
     no_samples = 0
@@ -89,7 +100,7 @@ class Samples():
         run(["mkdir", "-p", "K-mer_lists"])
         process = run(
             ["glistmaker " + self.address + " -o K-mer_lists/" + 
-            self.name + " -w " + self.kmer_length + "--index"], shell=True
+            self.name + " -w " + Input.kmer_length + "--index"], shell=True
             )
         Input.lock.acquire()
         stderr_print.currentSampleNum.value += 1
@@ -101,7 +112,7 @@ class Samples():
         with open(outputfile, "w+") as outputfile:
             call(
                 [
-                "glistquery K-mer_lists/" + self.name + "_" + self.kmer_length + ".list"
+                "glistquery K-mer_lists/" + self.name + "_" + Input.kmer_length + ".list"
                 ]
                 , shell=True, stdout=outputfile)
         Input.lock.acquire()
@@ -110,8 +121,8 @@ class Samples():
         stderr_print.print_progress("indexes generated.")
 
 def annotation(args):
-    Sammples.kmer_length = 13
     Input.get_input_data(args.inputfile)
+    Input.get_kmers
     sys.stderr.write("\x1b[1;32mGenerating the k-mer lists in input samples:\x1b[0m\n")
     with Pool(Input.num_threads) as p:
         p.map(
