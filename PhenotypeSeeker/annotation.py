@@ -123,6 +123,7 @@ class Samples():
 
     @staticmethod
     def indexes_to_list(kmers):
+        pass
 
 
 def annotation(args):
