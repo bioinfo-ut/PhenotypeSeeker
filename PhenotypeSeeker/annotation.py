@@ -101,7 +101,8 @@ class Samples():
         run(["mkdir", "-p", "K-mer_lists"])
         process = run(
             ["glistmaker " + self.address + " -o K-mer_lists/" + 
-            self.name + " -w " + Input.kmer_length + " --index"], shell=True
+            self.name + " -w " + Input.kmer_length + " --index"], shell=True,
+            stdout=open(os.devnull, 'wb')
             )
         Input.lock.acquire()
         stderr_print.currentSampleNum.value += 1
@@ -111,7 +112,7 @@ class Samples():
     def get_kmer_indexes(self):
         outputfile = "K-mer_lists/" + self.name + "_kmer_indexes.txt"
         with open(outputfile, "w+") as outputfile:
-            call(
+            run(
                 [
                 "glistquery K-mer_lists/" + self.name + "_" + Input.kmer_length + ".list"
                 ]
