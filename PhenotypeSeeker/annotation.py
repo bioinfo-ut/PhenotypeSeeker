@@ -129,6 +129,8 @@ class Samples():
 def annotation(args):
     Input.get_input_data(args.inputfile)
     Input.get_kmers(args.model_file)
+    print(Input.kmers)
+    print(Input.kmer_length)
     sys.stderr.write("\x1b[1;32mGenerating the k-mer lists in input samples:\x1b[0m\n")
     with Pool(Input.num_threads) as p:
         p.map(
