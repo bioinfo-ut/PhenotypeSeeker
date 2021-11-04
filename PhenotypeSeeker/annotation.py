@@ -55,8 +55,8 @@ class Samples():
         return cls(name, address)
 
     def call_prokka(self):
-        run([f"prokka --kingdom Bacteria --outdir prokka/prokka_{self.name} \
-            --genus Enterococcus --locustag {self.name} {self.address}"])
+        run([f"/storage8/erkia/prokka/bin/prokka --kingdom Bacteria --outdir prokka/prokka_{self.name} \
+            --genus Enterococcus --locustag {self.name} {self.address}"], shell=True)
 
 def annotation(args):
     Input.get_input_data(args.inputfile)
