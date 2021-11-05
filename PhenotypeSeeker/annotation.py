@@ -102,7 +102,7 @@ class Samples():
         process = run(
             ["glistmaker " + self.address + " -o K-mer_lists/" + 
             self.name + " -w " + Input.kmer_length + " --index"], shell=True,
-            stdout=open(os.devnull, 'wb')
+            stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL
             )
         Input.lock.acquire()
         stderr_print.currentSampleNum.value += 1
@@ -114,7 +114,7 @@ class Samples():
         with open(outputfile, "w+") as outputfile:
             run(
                 [
-                "glistquery K-mer_lists/" + self.name + "_" + Input.kmer_length + ".list"
+                "glistquery K-mer_lists/" + self.name + "_" + Input.kmer_length + ".index"
                 ]
                 , shell=True, stdout=outputfile)
         Input.lock.acquire()
