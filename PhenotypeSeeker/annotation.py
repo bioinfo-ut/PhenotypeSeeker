@@ -178,23 +178,23 @@ class Samples():
         nearest = min(genome_annotations[strain][contig], key=lambda x:abs(x-pos))
         print(kmer, strain, contig, pos)
         print(genome_annotations[strain][contig][nearest])
-        annotation = genome_annotations[strain][contig][nearest][gene_name]
+        annotation = genome_annotations[strain][contig][nearest]['gene_name']
 
-        if genome_annotations[strain][contig][nearest][strand] == '+':
-            if (pos >= genome_annotations[strain][contig][nearest][gene_start] and
-               pos <= genome_annotations[strain][contig][nearest][gene_end]):
+        if genome_annotations[strain][contig][nearest]['strand'] == '+':
+            if (pos >= genome_annotations[strain][contig][nearest]['gene_start'] and
+               pos <= genome_annotations[strain][contig][nearest]['gene_end']):
                 relative_pos = 'inside the gene of'
-            elif pos < genome_annotations[strain][contig][nearest][gene_start]:
+            elif pos < genome_annotations[strain][contig][nearest]['gene_start']:
                 relative_pos = 'preceding the gene of'
-            elif pos > genome_annotations[strain][contig][nearest][gene_end]:
+            elif pos > genome_annotations[strain][contig][nearest]['gene_end']:
                 relative_pos = 'succeeding the gene of'
         elif genome_annotations[strain][contig][nearest][strand] == '-':
-            if (pos <= genome_annotations[strain][contig][nearest][gene_start] and
-               pos >= genome_annotations[strain][contig][nearest][gene_end]):
+            if (pos <= genome_annotations[strain][contig][nearest]['gene_start'] and
+               pos >= genome_annotations[strain][contig][nearest]['gene_end']):
                 relative_pos = 'inside the gene of'
-            elif pos > genome_annotations[strain][contig][nearest][gene_start]:
+            elif pos > genome_annotations[strain][contig][nearest]['gene_start']:
                 relative_pos = 'preceding the gene of'
-            elif pos < genome_annotations[strain][contig][nearest][gene_end]:
+            elif pos < genome_annotations[strain][contig][nearest]['gene_end']:
                 relative_pos = 'succeeding the gene of'
         print(f"{kmer}\t{relative_pos}\t{annotation}")
 
@@ -232,7 +232,7 @@ def annotation(args):
     #         lambda x: x.call_prokka(),
     #         Input.samples.values()
     #     )
-    sys.stderr.write("\x1b[1;32m\nReading in prokka annotations\x1b[0m")
+    sys.stderr.write("\x1b[1;32m\nReading in prokka annotations.\x1b[0m")
     genome_annotations = Samples.read_in_prokka_results()
     sys.stderr.write("\x1b[1;32m\nAnnotating the k-mers:\x1b[0m\n")
     Samples.get_annotations(Input.kmers, genome_annotations)
