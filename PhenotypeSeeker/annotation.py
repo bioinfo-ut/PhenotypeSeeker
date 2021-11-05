@@ -114,7 +114,8 @@ class Samples():
         with open(outputfile, "w+") as outputfile:
             run(
                 [
-                "glistquery K-mer_lists/" + self.name + "_" + Input.kmer_length + ".index"
+                "glistquery --locations \
+                K-mer_lists/" + self.name + "_" + Input.kmer_length + ".index"
                 ]
                 , shell=True, stdout=outputfile)
         Input.lock.acquire()
