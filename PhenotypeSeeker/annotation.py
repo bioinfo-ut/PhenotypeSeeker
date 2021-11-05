@@ -115,7 +115,7 @@ class Samples():
                         elif strand == "-":
                             gene_start = int(line2list[4])
                             gene_end = int(line2list[3])                          
-                        gene_name = line2list[-1].strip().split("=product")[-1]
+                        gene_name = line2list[-1].strip().split("product=")[-1]
                         if sample.name not in genome_annotations:
                             genome_annotations[sample.name] = {contig : {
                                 gene_start : {'gene_start': gene_start, 'gene_name': gene_name, 'gene_end': gene_end, 'strand': strand},
@@ -167,7 +167,6 @@ class Samples():
                         ]
                         , capture_output=True, text=True)
                     returncode = indexes.returncode
-                print(indexes.stdout, end="")
                 for line in indexes.stdout.strip().split("\n")[1:]:
                     _, contig, pos, _ = line.split()
                     cls.annotate(kmer, strain, contig_mapper[contig], int(pos)+1, genome_annotations)
@@ -179,6 +178,25 @@ class Samples():
         nearest = min(genome_annotations[strain][contig], key=lambda x:abs(x-pos))
         print(kmer, strain, contig, pos)
         print(genome_annotations[strain][contig][nearest])
+        annotation = genome_annotations[strain][contig][nearest][gene_name]
+
+        if genome_annotations[strain][contig][nearest][strand] = '+':
+            if (pos >= genome_annotations[strain][contig][nearest][gene_start] and
+               pos <= genome_annotations[strain][contig][nearest][gene_end]):
+                relative_pos = 'inside the gene of'
+            elif pos < genome_annotations[strain][contig][nearest][gene_start]:
+                relative_pos = 'preceding the gene of'
+            elif pos > genome_annotations[strain][contig][nearest][gene_end]:
+                relative_pos = 'succeeding the gene of'
+        elif genome_annotations[strain][contig][nearest][strand] = '-':
+            if (pos <= genome_annotations[strain][contig][nearest][gene_start] and
+               pos >= genome_annotations[strain][contig][nearest][gene_end]):
+                relative_pos = 'inside the gene of'
+            elif pos > genome_annotations[strain][contig][nearest][gene_start]:
+                relative_pos = 'preceding the gene of'
+            elif pos < genome_annotations[strain][contig][nearest][gene_end]:
+                relative_pos = 'succeeding the gene of'
+        print(f"{kmer}\t{relative_pos}\t{annotation}")
 
     # @staticmethod
     # def indexes_to_list(kmers):
