@@ -122,9 +122,11 @@ class Samples():
                         ]
                         , capture_output=True, text=True)
                     returncode = indexes.returncode
-                print(indexes.stdout)
-                for _, contig, pos, strand in indexes.stdout.strip().split("\n")[1:]:
-                    print(contig, pos, strand)
+                print(indexes.stdout, end="")
+                for line in indexes.stdout.strip().split("\n")[1:]:
+                    _, contig, pos, strand = line.split()
+                    print()
+                    print(_, contig, pos, strand)
 
     # @staticmethod
     # def indexes_to_list(kmers):
