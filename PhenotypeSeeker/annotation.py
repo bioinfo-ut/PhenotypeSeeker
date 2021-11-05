@@ -127,7 +127,6 @@ class Samples():
     def indexes_to_list(kmers):
         kmer_indexes = {}
         for kmer, strains in kmers.items():
-            strains = strains.split()[1:]
             for strain in strains:
                 with open(f"K-mer_lists/{strain}_kmer_indexes.txt") as indexfile:
                     for line in indexfile:
