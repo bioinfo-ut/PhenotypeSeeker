@@ -149,8 +149,8 @@ def annotation(args):
             lambda x: x.get_kmer_indexes(),
             Input.samples.values()
         )
-    sys.stderr.write("\x1b[1;32m\nGenerate the k-mer indexes in input samples:\x1b[0m\n")
-    lambda x: x.get_annotations(Input.kmers)
+    sys.stderr.write("\x1b[1;32m\nAnnotate k-mers:\x1b[0m\n")
+    x.get_annotations(Input.kmers)
     # with Pool(Input.num_threads) as p:
     #     p.map(
     #         lambda x: x.call_prokka(),
