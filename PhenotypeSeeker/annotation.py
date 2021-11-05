@@ -99,7 +99,7 @@ class Samples():
     def read_in_prokka_annotations():
         gene_annotations = {}
         for sample in Input.samples.values():
-            with open(glob.glob(f"prokka/prokka_{sample.name}/PROKKA*.gff")) as prokka_res:
+            with open(glob.glob(f"prokka/prokka_{sample.name}/PROKKA*.gff")[0], 'r') as prokka_res:
                 for line in prokka_res:
                     if f"ID={sample.name}" in line:
                         line2list = line.split()
