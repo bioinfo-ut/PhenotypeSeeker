@@ -119,9 +119,8 @@ class Samples():
                     f"K-mer_lists/{strain}_{Input.kmer_length}.index"
                     ]
                     , capture_output=True, text=True)
-
-                print(strain)
-                print(indexes.stdout, end="")
+                print(strain, flush=True)
+                print(indexes.stdout, end="", flush=True)
                 # print(indexes.stdout.split("\n"))
                     
 
