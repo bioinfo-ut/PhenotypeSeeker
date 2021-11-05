@@ -95,9 +95,13 @@ class Samples():
     def call_prokka(self):
         run([f"/storage8/erkia/prokka/bin/prokka --kingdom Bacteria --outdir prokka/prokka_{self.name} \
             --genus Enterococcus --locustag {self.name} {self.address}"], shell=True)
+        Input.lock.acquire()
+        stderr_print.currentSampleNum.value += 1
+        Input.lock.release()
+        stderr_print.print_progress("genomes annotated.")
 
-    def read_in_prokka_annotations():
-        gene_annotations = {}
+    def read_in_prokka_results():
+        genome_annotations = {}
         for sample in Input.samples.values():
             with open(glob.glob(f"prokka/prokka_{sample.name}/PROKKA*.gff")[0], 'r') as prokka_res:
                 for line in prokka_res:
@@ -111,23 +115,22 @@ class Samples():
                         elif strand == "-":
                             gene_start = line2list[4]
                             gene_end = line2list[3]                           
-                        gene_name = line2list[-1].split("product")[-1]
+                        gen_name = line2list[-1].strip().split("=product")[-1]
                         if sample.name not in gene_annotations:
-                            gene_annotations[sample.name] = {contig : {
-                                gene_start : {'position': 'gene_start', 'gene_name': gene_name, 'gene_end': gene_end, 'strand': strand},
-                                gene_end : {'position': 'gene_end', 'gene_name': gene_name, 'gene_end': gene_end, 'strand': strand}
+                            genome_annotations[sample.name] = {contig : {
+                                gene_start : {'gene_start': gene_start, 'gene_name': gene_name, 'gene_end': gene_end, 'strand': strand},
+                                gene_end : {'gene_start': gene_start, 'gene_name': gene_name, 'gene_end': gene_end, 'strand': strand}
                                 }}
                         else:
-                            if contig not in gene_annotations[sample.name]:
-                                gene_annotations[sample.name][contig] = {
-                                    gene_start : {'position': 'gene_start', 'gene_name': gene_name, 'gene_end': gene_end, 'strand': strand},
-                                    gene_end : {'position': 'gene_end', 'gene_name': gene_name, 'gene_end': gene_end, 'strand': strand}
+                            if contig not in genome_annotations[sample.name]:
+                                genome_annotations[sample.name][contig] = {
+                                    gene_start : {'gene_start': gene_start, 'gene_name': gene_name, 'gene_end': gene_end, 'strand': strand},
+                                    gene_end : {'gene_start': gene_start, 'gene_name': gene_name, 'gene_end': gene_end, 'strand': strand}
                                 }
                             else:
-                                gene_annotations[sample.name][contig][gene_start] = {'position': 'gene_start', 'gene_name': gene_name, 'gene_end': gene_end, 'strand': strand}
-                                gene_annotations[sample.name][contig][gene_end] = {'position': 'gene_end', 'gene_name': gene_name, 'gene_start': gene_start, 'strand': strand}
-                    print(gene_annotations)
-
+                                genome_annotations[sample.name][contig][gene_start] = {'gene_start': gene_start, 'gene_name': gene_name, 'gene_end': gene_end, 'strand': strand}
+                                genome_annotations[sample.name][contig][gene_end] = {'gene_start': gene_start, 'gene_name': gene_name, 'gene_end': gene_end, 'strand': strand}
+        return genome_annotations
 
     def get_kmer_indexes(self):
         # Makes "K-mer_lists" directory where all lists are stored.
@@ -144,8 +147,8 @@ class Samples():
         Input.lock.release()
         stderr_print.print_progress("lists generated.")
 
-    @staticmethod
-    def get_annotations(kmers):
+    @classmethod
+    def get_annotations(cls, kmers, genome_annotations):
         for kmer, strains in kmers.items():
             for strain in strains:
                 contig_mapper = {}
@@ -166,13 +169,16 @@ class Samples():
                     returncode = indexes.returncode
                 print(indexes.stdout, end="")
                 for line in indexes.stdout.strip().split("\n")[1:]:
-                    _, contig, pos, strand = line.split()
-                    print(contig_mapper[contig], pos, strand)
+                    _, contig, pos, _ = line.split()
+                    cls.annotate(kmer, strain, contig_mapper[contig], pos+1, genome_annotations)
 
 
-    @staticmethod
-    def annotate(contig, pos, strand):
-        pass
+    @classmethod
+    def annotate(cls, kmer, strain, contig, pos, genome_annotations):
+        # Find the nearest position
+        nearest = min(genome_annotations[strain][contig], key=lambda x:abs(x-pos))
+        print(kmer, strain, contig, pos)
+        print(genome_annotations[strain][contig][nearest])
 
     # @staticmethod
     # def indexes_to_list(kmers):
@@ -195,19 +201,23 @@ class Samples():
 def annotation(args):
     Input.get_input_data(args.inputfile)
     Input.get_kmers(args.model_file)
-    print(Input.kmers)
-    print(Input.kmer_length)
-    sys.stderr.write("\x1b[1;32mGenerating the k-mer indexes in input samples:\x1b[0m\n")
+    # sys.stderr.write("\x1b[1;32mGenerating the k-mer indexes in input samples:\x1b[0m\n")
     # with Pool(Input.num_threads) as p:
     #     p.map(
     #         lambda x: x.get_kmer_indexes(),
     #         Input.samples.values()
     #     )
-    sys.stderr.write("\x1b[1;32m\nAnnotating k-mers:\x1b[0m\n")
-    # Samples.get_annotations(Input.kmers)
-    Samples.read_in_prokka_annotations()
+    # sys.stderr.write("\x1b[1;32mAnnotating the k-mer genomes with prokka:\x1b[0m\n")
+    # stderr_print.currentSampleNum.value += 0
     # with Pool(Input.num_threads) as p:
     #     p.map(
     #         lambda x: x.call_prokka(),
     #         Input.samples.values()
     #     )
+    sys.stderr.write("\x1b[1;32m\nReading in prokka annotations:\x1b[0m\n")
+    genome_annotations = Samples.read_in_prokka_results()
+    sys.stderr.write("\x1b[1;32m\nAnnotating the k-mers:\x1b[0m\n")
+    get_annotations(Input.kmers, genome_annotations)
+
+
+
