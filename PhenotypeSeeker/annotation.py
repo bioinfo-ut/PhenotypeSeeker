@@ -111,6 +111,7 @@ class Samples():
                             gene_annotations[sample] = [f"{contig}\t{gene_start}\t{gene_end}\t{gene_name}"]
                         else:
                             gene_annotations[sample].append(f"{contig}\t{gene_start}\t{gene_end}\t{gene_name}")
+                    print(gene_annotations)
 
 
     def get_kmer_indexes(self):
