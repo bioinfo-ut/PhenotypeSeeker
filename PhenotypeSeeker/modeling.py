@@ -1198,7 +1198,7 @@ class phenotypes():
                 self.ML_df.T[out_cols].to_csv(
                     f'{out_cols[0]}_results_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
                     )
-            self.model_package['kmers'] = self.ML_df.loc['samples_with_kmer'][:-2].apply(
+            self.model_package['kmers'] = self.ML_df.loc['samples_with_kmer'].apply(
                 lambda x: x.split()[1:]
                 )
             self.ML_df.drop(out_cols, inplace=True)
