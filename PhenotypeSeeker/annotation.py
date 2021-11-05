@@ -101,6 +101,7 @@ class Samples():
         for sample in Input.samples.values():
             with open(glob.glob(f"prokka/prokka_{sample.name}/PROKKA*.gff")) as prokka_res:
                 for line in prokka_res:
+                    pass
 
 
     def get_kmer_indexes(self):
