@@ -105,7 +105,7 @@ class Samples():
                         line2list = line.split()
                         contig = line2list[0]
                         strand = line2list[5]
-                        if strand == "+"
+                        if strand == "+":
                             gene_start = line2list[3]
                             gene_end = line2list[4]
                         elif strand == "-":
