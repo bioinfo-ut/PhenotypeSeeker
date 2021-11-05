@@ -114,11 +114,14 @@ class Samples():
     def get_annotations(kmers):
         for kmer, strains in kmers.items():
             for strain in strains:
-                indexes = run(
-                    ["glistquery", "--locations", "-q", kmer,
-                    f"K-mer_lists/{strain}_{Input.kmer_length}.index"
-                    ]
-                    , capture_output=True, text=True, check=True)
+                returncode = -1
+                while returncode != 0:
+                    indexes = run(
+                        ["glistquery", "--locations", "-q", kmer,
+                        f"K-mer_lists/{strain}_{Input.kmer_length}.index"
+                        ]
+                        , capture_output=True, text=True, check=True)
+                    returncode = indexes.returncode
                 print(strain)
                 print(indexes.stdout, end="")
 
