@@ -151,7 +151,7 @@ def annotation(args):
             Input.samples.values()
         )
     sys.stderr.write("\x1b[1;32m\nAnnotate k-mers:\x1b[0m\n")
-    get_annotations(Input.kmers)
+    Samples.get_annotations(Input.kmers)
     # with Pool(Input.num_threads) as p:
     #     p.map(
     #         lambda x: x.call_prokka(),
