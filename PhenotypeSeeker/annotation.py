@@ -112,12 +112,13 @@ class Samples():
     def get_annotations(self):
         for kmer, strains in kmers.items():
             for strain in strains:
-                run(
+                indexes = run(
                     [
                     f"glistquery --locations -q {kmer} \
                     K-mer_lists/{self.name}_{Input.kmer_length}.index"
                     ]
-                    , shell=True)
+                    , shell=True, stdout=PIPE)
+                print(indexes.stdout)
 
     # @staticmethod
     # def indexes_to_list(kmers):
