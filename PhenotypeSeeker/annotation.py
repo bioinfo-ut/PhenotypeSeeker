@@ -134,7 +134,7 @@ class Samples():
                             continue
                         kmer, occurences = line.split()
                         for i in range(int(occurences)):
-                            _, contig, pos, strand = indexfile.readline.split()
+                            _, contig, pos, strand = indexfile.readline().split()
                             print(kmer, strain, contig, pos, strand)
 
 
