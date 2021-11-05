@@ -115,11 +115,11 @@ class Samples():
         for kmer, strains in kmers.items():
             for strain in strains:
                 indexes = run(
-                    [
-                    f"glistquery --locations -q {kmer} \
-                    K-mer_lists/{strain}_{Input.kmer_length}.index"
+                    ["glistquery", "--locations", "-q", kmer,
+                    f"K-mer_lists/{strain}_{Input.kmer_length}.index"
                     ]
-                    , shell=True, capture_output=True, text=True)
+                    , capture_output=True, text=True)
+
                 print(strain)
                 print(indexes.stdout, end="")
                 # print(indexes.stdout.split("\n"))
