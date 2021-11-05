@@ -125,8 +125,7 @@ class Samples():
                 print(indexes.stdout, end="")
                 for line in indexes.stdout.strip().split("\n")[1:]:
                     _, contig, pos, strand = line.split()
-                    print()
-                    print(_, contig, pos, strand)
+                    print(contig, pos, strand)
 
     # @staticmethod
     # def indexes_to_list(kmers):
