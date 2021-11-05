@@ -180,7 +180,7 @@ class Samples():
         print(genome_annotations[strain][contig][nearest])
         annotation = genome_annotations[strain][contig][nearest][gene_name]
 
-        if genome_annotations[strain][contig][nearest][strand] = '+':
+        if genome_annotations[strain][contig][nearest][strand] == '+':
             if (pos >= genome_annotations[strain][contig][nearest][gene_start] and
                pos <= genome_annotations[strain][contig][nearest][gene_end]):
                 relative_pos = 'inside the gene of'
@@ -188,7 +188,7 @@ class Samples():
                 relative_pos = 'preceding the gene of'
             elif pos > genome_annotations[strain][contig][nearest][gene_end]:
                 relative_pos = 'succeeding the gene of'
-        elif genome_annotations[strain][contig][nearest][strand] = '-':
+        elif genome_annotations[strain][contig][nearest][strand] == '-':
             if (pos <= genome_annotations[strain][contig][nearest][gene_start] and
                pos >= genome_annotations[strain][contig][nearest][gene_end]):
                 relative_pos = 'inside the gene of'
