@@ -7,7 +7,7 @@ import os
 import sys
 import joblib
 
-from subprocess import run, PIPE
+from subprocess import run, PIPE, DEVNULL
 from collections import OrderedDict
 from multiprocess import Manager, Pool, Value
 
