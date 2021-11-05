@@ -147,6 +147,7 @@ class Samples():
 
     @staticmethod
     def annotate(contig, pos, strand):
+        pass
 
     # @staticmethod
     # def indexes_to_list(kmers):
