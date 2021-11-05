@@ -94,7 +94,7 @@ class Samples():
         run([f"/storage8/erkia/prokka/bin/prokka --kingdom Bacteria --outdir prokka/prokka_{self.name} \
             --genus Enterococcus --locustag {self.name} {self.address}"], shell=True)
 
-    def get_kmer_lists(self):
+    def get_kmer_indexes(self):
         # Makes "K-mer_lists" directory where all lists are stored.
         # Generates k-mer lists for every sample in names_of_samples variable 
         # (list or dict).
@@ -109,34 +109,30 @@ class Samples():
         Input.lock.release()
         stderr_print.print_progress("lists generated.")
 
-    def get_kmer_indexes(self):
-        outputfile = "K-mer_lists/" + self.name + "_kmer_indexes.txt"
-        with open(outputfile, "w+") as outputfile:
-            run(
-                [
-                "glistquery --locations \
-                K-mer_lists/" + self.name + "_" + Input.kmer_length + ".index"
-                ]
-                , shell=True, stdout=outputfile)
-        Input.lock.acquire()
-        stderr_print.currentSampleNum.value += 1
-        Input.lock.release()
-        stderr_print.print_progress("indexes generated.")
-
-    @staticmethod
-    def indexes_to_list(kmers):
-        kmer_indexes = {}
+    def get_annotations(self):
         for kmer, strains in kmers.items():
             for strain in strains:
-                with open(f"K-mer_lists/{strain}_kmer_indexes.txt") as indexfile:
-                    for line in indexfile:
-                        if line.split()[0] != kmer:
-                            continue
-                        kmer, occurences = line.split()
-                        print(kmer, occurences)
-                        for i in range(int(occurences)):
-                            _, contig, pos, strand = indexfile.readline().split()
-                            print(kmer, strain, contig, pos, strand)
+                run(
+                    [
+                    f"glistquery --locations -q {kmer} \
+                    K-mer_lists/{self.name}_{Input.kmer_length}.index"
+                    ]
+                    , shell=True)
+
+    # @staticmethod
+    # def indexes_to_list(kmers):
+    #     kmer_indexes = {}
+    #     for kmer, strains in kmers.items():
+    #         for strain in strains:
+    #             with open(f"K-mer_lists/{strain}_kmer_indexes.txt") as indexfile:
+    #                 for line in indexfile:
+    #                     if line.split()[0] != kmer:
+    #                         continue
+    #                     kmer, occurences = line.split()
+    #                     print(kmer, occurences)
+    #                     for i in range(int(occurences)):
+    #                         _, contig, pos, strand = indexfile.readline().split()
+    #                         print(kmer, strain, contig, pos, strand)
 
 
 
@@ -146,24 +142,16 @@ def annotation(args):
     Input.get_kmers(args.model_file)
     print(Input.kmers)
     print(Input.kmer_length)
-    sys.stderr.write("\x1b[1;32mGenerating the k-mer lists in input samples:\x1b[0m\n")
-    with Pool(Input.num_threads) as p:
-        p.map(
-            lambda x: x.get_kmer_lists(),
-            Input.samples.values()
-        )
-    sys.stderr.write("\x1b[1;32m\nGenerate the k-mer indexes in input samples:\x1b[0m\n")
-    stderr_print.currentSampleNum.value = 0
+    sys.stderr.write("\x1b[1;32mGenerating the k-mer indexed lists in input samples:\x1b[0m\n")
     with Pool(Input.num_threads) as p:
         p.map(
             lambda x: x.get_kmer_indexes(),
             Input.samples.values()
         )
-    sys.stderr.write("\x1b[1;32m\nExtract the k-mer indexes for kmers to annotate:\x1b[0m\n")
-    Samples.indexes_to_list(Input.kmers)
+    sys.stderr.write("\x1b[1;32m\nGenerate the k-mer indexes in input samples:\x1b[0m\n")
+    lambda x: x.get_annotations(Input.kmers)
     # with Pool(Input.num_threads) as p:
     #     p.map(
     #         lambda x: x.call_prokka(),
     #         Input.samples.values()
     #     )
-    sys.stderr.write("\x1b[1;32mGenerating the k-mer indexes in input samples:\x1b[0m\n")
