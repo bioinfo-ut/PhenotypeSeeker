@@ -108,7 +108,9 @@ class Samples():
                         gene_end = line2list[4]
                         gene_name = line2list[-1].split("product")[-1]
                         if sample not in gene_annotations:
-                            gene_annotations[sample] = f"{contig}\t{gene_start}\t{gene_end}\t{gene_name}"
+                            gene_annotations[sample] = [f"{contig}\t{gene_start}\t{gene_end}\t{gene_name}"]
+                        else:
+                            gene_annotations[sample].append(f"{contig}\t{gene_start}\t{gene_end}\t{gene_name}")
 
 
     def get_kmer_indexes(self):
