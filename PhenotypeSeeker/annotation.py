@@ -6,6 +6,7 @@ __email__ = "erki.aun@ut.ee"
 import os
 import sys
 import joblib
+import glob
 
 from subprocess import run, PIPE, DEVNULL
 from collections import OrderedDict
@@ -95,6 +96,13 @@ class Samples():
         run([f"/storage8/erkia/prokka/bin/prokka --kingdom Bacteria --outdir prokka/prokka_{self.name} \
             --genus Enterococcus --locustag {self.name} {self.address}"], shell=True)
 
+    def read_in_prokka_annotations():
+        contigs = {}
+        for sample in Input.samples.values():
+            with open(glob.glob(f"prokka/prokka_{sample.name}/PROKKA*.gff")) as prokka_res:
+                for line in prokka_res:
+
+
     def get_kmer_indexes(self):
         # Makes "K-mer_lists" directory where all lists are stored.
         # Generates k-mer lists for every sample in names_of_samples variable 
@@ -114,6 +122,14 @@ class Samples():
     def get_annotations(kmers):
         for kmer, strains in kmers.items():
             for strain in strains:
+                contig_mapper = {}
+                query_seqs = run(
+                        ["glistquery", "--sequences",
+                        f"K-mer_lists/{strain}_{Input.kmer_length}.index"
+                        ]
+                        , capture_output=True, text=True)
+                for line in query_seqs.strip().split("\n"):
+                    contig_mapper[line.split()[1]] = line.split()[2]
                 returncode = -1
                 while returncode != 0:
                     indexes = run(
@@ -125,7 +141,11 @@ class Samples():
                 print(indexes.stdout, end="")
                 for line in indexes.stdout.strip().split("\n")[1:]:
                     _, contig, pos, strand = line.split()
-                    print(contig, pos, strand)
+                    print(contig_mapper[contig], pos, strand)
+
+
+    @staticmethod
+    def annotate(contig, pos, strand):
 
     # @staticmethod
     # def indexes_to_list(kmers):
