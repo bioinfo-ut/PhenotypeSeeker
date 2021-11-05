@@ -102,16 +102,15 @@ class Samples():
             with open(glob.glob(f"prokka/prokka_{sample.name}/PROKKA*.gff")[0], 'r') as prokka_res:
                 for line in prokka_res:
                     if f"ID={sample.name}" in line:
-                        line2list = line.split()
+                        line2list = line.split('\t')
                         contig = line2list[0]
-                        strand = line2list[6]
+                        strand = line2list[5]
                         if strand == "+":
-                            gene_start = line2list[3]
-                            gene_end = line2list[4]
-                        elif strand == "-":
-                            gene_start = line2list[4]
+                            gene_start = line2list[2]
                             gene_end = line2list[3]
-                        print(line2list[-1].split("product"))                            
+                        elif strand == "-":
+                            gene_start = line2list[3]
+                            gene_end = line2list[2]                           
                         gene_name = line2list[-1].split("product")[-1]
                         if sample.name not in gene_annotations:
                             gene_annotations[sample.name] = {contig : {
