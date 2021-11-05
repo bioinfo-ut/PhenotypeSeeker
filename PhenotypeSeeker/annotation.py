@@ -119,7 +119,7 @@ class Samples():
                     f"glistquery --locations -q {kmer} \
                     K-mer_lists/{strain}_{Input.kmer_length}.index"
                     ]
-                    , shell=True, stdout=PIPE)
+                    , shell=True, capture_output=True, text=True)
                 print(indexes.stdout)
 
     # @staticmethod
@@ -145,13 +145,13 @@ def annotation(args):
     Input.get_kmers(args.model_file)
     print(Input.kmers)
     print(Input.kmer_length)
-    sys.stderr.write("\x1b[1;32mGenerating the k-mer indexed lists in input samples:\x1b[0m\n")
+    sys.stderr.write("\x1b[1;32mGenerating the k-mer indexes in input samples:\x1b[0m\n")
     with Pool(Input.num_threads) as p:
         p.map(
             lambda x: x.get_kmer_indexes(),
             Input.samples.values()
         )
-    sys.stderr.write("\x1b[1;32m\nAnnotate k-mers:\x1b[0m\n")
+    sys.stderr.write("\x1b[1;32m\nAnnotating k-mers:\x1b[0m\n")
     Samples.get_annotations(Input.kmers)
     # with Pool(Input.num_threads) as p:
     #     p.map(
