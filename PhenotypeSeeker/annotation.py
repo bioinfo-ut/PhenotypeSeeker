@@ -110,7 +110,8 @@ class Samples():
         Input.lock.release()
         stderr_print.print_progress("lists generated.")
 
-    def get_annotations(self):
+    @staticmethod
+    def get_annotations(kmers):
         for kmer, strains in kmers.items():
             for strain in strains:
                 indexes = run(
