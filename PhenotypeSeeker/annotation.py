@@ -110,11 +110,11 @@ class Samples():
                         contig = line2list[0]
                         strand = line2list[6]
                         if strand == "+":
-                            gene_start = line2list[3]
-                            gene_end = line2list[4]
+                            gene_start = int(line2list[3])
+                            gene_end = int(line2list[4])
                         elif strand == "-":
-                            gene_start = line2list[4]
-                            gene_end = line2list[3]                           
+                            gene_start = int(line2list[4])
+                            gene_end = int(line2list[3])                          
                         gene_name = line2list[-1].strip().split("=product")[-1]
                         if sample.name not in genome_annotations:
                             genome_annotations[sample.name] = {contig : {
@@ -170,7 +170,7 @@ class Samples():
                 print(indexes.stdout, end="")
                 for line in indexes.stdout.strip().split("\n")[1:]:
                     _, contig, pos, _ = line.split()
-                    cls.annotate(kmer, strain, contig_mapper[contig], pos+1, genome_annotations)
+                    cls.annotate(kmer, strain, contig_mapper[contig], int(pos)+1, genome_annotations)
 
 
     @classmethod
@@ -214,7 +214,7 @@ def annotation(args):
     #         lambda x: x.call_prokka(),
     #         Input.samples.values()
     #     )
-    sys.stderr.write("\x1b[1;32m\nReading in prokka annotations:\x1b[0m\n")
+    sys.stderr.write("\x1b[1;32m\nReading in prokka annotations\x1b[0m")
     genome_annotations = Samples.read_in_prokka_results()
     sys.stderr.write("\x1b[1;32m\nAnnotating the k-mers:\x1b[0m\n")
     Samples.get_annotations(Input.kmers, genome_annotations)
