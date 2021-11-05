@@ -102,7 +102,7 @@ class Samples():
         process = run(
             ["glistmaker " + self.address + " -o K-mer_lists/" + 
             self.name + " -w " + Input.kmer_length + " --index"], shell=True,
-            stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL
+            stderr=DEVNULL, stdout=DEVNULL
             )
         Input.lock.acquire()
         stderr_print.currentSampleNum.value += 1
