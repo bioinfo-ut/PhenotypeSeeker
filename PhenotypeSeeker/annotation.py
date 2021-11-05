@@ -7,7 +7,7 @@ import os
 import sys
 import joblib
 
-from subprocess import run, DEVNULL
+from subprocess import run, PIPE
 from collections import OrderedDict
 from multiprocess import Manager, Pool, Value
 
@@ -61,9 +61,10 @@ class Input():
     @classmethod
     def get_kmers(cls, model_pkg):
         model_pkg = joblib.load(model_pkg)
-        cls.kmers = model_pkg['kmers']
         if model_pkg['LR']:
-            kmers_to_keep = model_pkg['kmers'].loc[model_pkg['kmers_to_keep']]
+            cls.kmers = model_pkg['kmers'].loc[model_pkg['kmers_to_keep']]
+        else:
+            cls.kmers = model_pkg['kmers']
         cls.kmer_length = str(len(cls.kmers.index.values[0]))
 
 class Samples():
@@ -150,7 +151,7 @@ def annotation(args):
             Input.samples.values()
         )
     sys.stderr.write("\x1b[1;32m\nAnnotate k-mers:\x1b[0m\n")
-    x.get_annotations(Input.kmers)
+    get_annotations(Input.kmers)
     # with Pool(Input.num_threads) as p:
     #     p.map(
     #         lambda x: x.call_prokka(),
