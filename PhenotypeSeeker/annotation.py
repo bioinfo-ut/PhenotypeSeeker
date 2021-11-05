@@ -118,7 +118,7 @@ class Samples():
                             if contig not in gene_annotations[sample.name]:
                                 gene_annotations[sample.name].add({contig : {gene_start : gene_name, gene_end : gene_name}})
                             else:
-                                gene_annotations[sample.name][contig].add(gene_start : gene_name, gene_end : gene_name)
+                                gene_annotations[sample.name][contig].add({gene_start : gene_name, gene_end : gene_name})
                     print(gene_annotations)
 
 
