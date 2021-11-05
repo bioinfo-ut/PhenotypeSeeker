@@ -129,7 +129,7 @@ class Samples():
                         f"K-mer_lists/{strain}_{Input.kmer_length}.index"
                         ]
                         , capture_output=True, text=True)
-                for line in query_seqs.strip().split("\n"):
+                for line in query_seqs.stdout.strip().split("\n"):
                     contig_mapper[line.split()[1]] = line.split()[2]
                 returncode = -1
                 while returncode != 0:
