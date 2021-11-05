@@ -120,7 +120,7 @@ class Samples():
                         ["glistquery", "--locations", "-q", kmer,
                         f"K-mer_lists/{strain}_{Input.kmer_length}.index"
                         ]
-                        , capture_output=True, text=True, check=True)
+                        , capture_output=True, text=True)
                     returncode = indexes.returncode
                 print(strain)
                 print(indexes.stdout, end="")
