@@ -123,7 +123,7 @@ class Samples():
                         , capture_output=True, text=True)
                     returncode = indexes.returncode
                 print(indexes.stdout)
-                for _, contig, pos, strand in indexes.stdout.strip().split("\n")[1:]:
+                for _, contig, pos, strand in indexes.stdout.strip().split("\n")[1:-1]:
                     print(contig, pos, strand)
 
     # @staticmethod
