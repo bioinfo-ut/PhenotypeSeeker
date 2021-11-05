@@ -121,7 +121,7 @@ class Samples():
                     ]
                     , shell=True, capture_output=True, text=True)
                 for line in indexes.stdout.split("\n")[1:]:
-                    _, contig, pos, strand = indexfile.readline().split()
+                    _, contig, pos, strand = line.split()
                     print(kmer, strain, contig, pos, strand)
                     
 
