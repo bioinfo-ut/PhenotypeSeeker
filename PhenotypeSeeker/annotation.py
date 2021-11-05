@@ -121,7 +121,7 @@ class Samples():
                     ]
                     , shell=True, capture_output=True, text=True)
                 print(indexes.stdout)
-                print(indexes.stdout.split("\n"))
+                # print(indexes.stdout.split("\n"))
                     
 
 
