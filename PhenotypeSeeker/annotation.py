@@ -107,7 +107,7 @@ class Samples():
                         gene_start = line2list[3]
                         gene_end = line2list[4]
                         gene_name = line2list[-1].split("product")[-1]
-                        if sample not in gene_annotations:
+                        if sample.name not in gene_annotations:
                             gene_annotations[sample.name] = [f"{contig}\t{gene_start}\t{gene_end}\t{gene_name}"]
                         else:
                             gene_annotations[sample.name].append(f"{contig}\t{gene_start}\t{gene_end}\t{gene_name}")
