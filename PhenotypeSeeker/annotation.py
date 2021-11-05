@@ -104,7 +104,7 @@ class Samples():
                     if f"ID={sample.name}" in line:
                         line2list = line.split()
                         contig = line2list[0]
-                        strand = line2list[5]
+                        strand = line2list[6]
                         if strand == "+":
                             gene_start = line2list[3]
                             gene_end = line2list[4]
