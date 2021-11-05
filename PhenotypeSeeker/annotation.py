@@ -97,11 +97,18 @@ class Samples():
             --genus Enterococcus --locustag {self.name} {self.address}"], shell=True)
 
     def read_in_prokka_annotations():
-        contigs = {}
+        gene_annotations = {}
         for sample in Input.samples.values():
             with open(glob.glob(f"prokka/prokka_{sample.name}/PROKKA*.gff")) as prokka_res:
                 for line in prokka_res:
-                    pass
+                    if f"ID={sample.name}" in line:
+                        line2list = line.split()
+                        contig = line2list[0]
+                        gene_start = line2list[3]
+                        gene_end = line2list[4]
+                        gene_name = line2list[-1].split("product")[-1]
+                        if sample not in gene_annotations
+                            gene_annotations[sample] = f"{contig}\t{gene_start}\t{gene_end}\t{gene_name}"
 
 
     def get_kmer_indexes(self):
