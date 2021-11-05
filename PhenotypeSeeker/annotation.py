@@ -104,13 +104,13 @@ class Samples():
                     if f"ID={sample.name}" in line:
                         line2list = line.split('\t')
                         contig = line2list[0]
-                        strand = line2list[5]
+                        strand = line2list[6]
                         if strand == "+":
-                            gene_start = line2list[2]
-                            gene_end = line2list[3]
-                        elif strand == "-":
                             gene_start = line2list[3]
-                            gene_end = line2list[2]                           
+                            gene_end = line2list[4]
+                        elif strand == "-":
+                            gene_start = line2list[4]
+                            gene_end = line2list[3]                           
                         gene_name = line2list[-1].split("product")[-1]
                         if sample.name not in gene_annotations:
                             gene_annotations[sample.name] = {contig : {
