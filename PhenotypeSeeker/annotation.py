@@ -113,12 +113,19 @@ class Samples():
                             gene_end = line2list[3]                            
                         gene_name = line2list[-1].split("product")[-1]
                         if sample.name not in gene_annotations:
-                            gene_annotations[sample.name] = {contig : {gene_start : gene_name, gene_end : gene_name}}
+                            gene_annotations[sample.name] = {contig : {
+                                gene_start : {'position': 'gene_start', 'gene_name': gene_name, 'gene_end': gene_end, 'strand': strand},
+                                gene_end : {'position': 'gene_end', 'gene_name': gene_name, 'gene_end': gene_end, 'strand': strand}
+                                }}
                         else:
                             if contig not in gene_annotations[sample.name]:
-                                gene_annotations[sample.name].add({contig : {gene_start : gene_name, gene_end : gene_name}})
+                                gene_annotations[sample.name][contig] = {
+                                    gene_start : {'position': 'gene_start', 'gene_name': gene_name, 'gene_end': gene_end, 'strand': strand},
+                                    gene_end : {'position': 'gene_end', 'gene_name': gene_name, 'gene_end': gene_end, 'strand': strand}
+                                }
                             else:
-                                gene_annotations[sample.name][contig].add({gene_start : gene_name, gene_end : gene_name})
+                                gene_annotations[sample.name][contig][gene_start] = {'position': 'gene_start', 'gene_name': gene_name, 'gene_end': gene_end, 'strand': strand}
+                                gene_annotations[sample.name][contig][gene_end] = {'position': 'gene_end', 'gene_name': gene_name, 'gene_start': gene_start, 'strand': strand}
                     print(gene_annotations)
 
 
