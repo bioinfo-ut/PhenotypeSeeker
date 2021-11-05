@@ -120,9 +120,8 @@ class Samples():
                     K-mer_lists/{strain}_{Input.kmer_length}.index"
                     ]
                     , shell=True, capture_output=True, text=True)
-                for line in indexes.stdout.split("\n")[1:]:
-                    _, contig, pos, strand = line.split()
-                    print(kmer, strain, contig, pos, strand)
+                print(indexes.stdout)
+                print(indexes.stdout.split("\n"))
                     
 
 
