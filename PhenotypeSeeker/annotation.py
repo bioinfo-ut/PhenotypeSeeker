@@ -217,7 +217,7 @@ def annotation(args):
     sys.stderr.write("\x1b[1;32m\nReading in prokka annotations:\x1b[0m\n")
     genome_annotations = Samples.read_in_prokka_results()
     sys.stderr.write("\x1b[1;32m\nAnnotating the k-mers:\x1b[0m\n")
-    get_annotations(Input.kmers, genome_annotations)
+    Samples.get_annotations(Input.kmers, genome_annotations)
 
 
 
