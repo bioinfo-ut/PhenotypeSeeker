@@ -209,7 +209,7 @@ class annotate():
                 relative_pos = 'preceding'
             elif pos < cls.genome_annotations[strain][contig][nearest]['gene_end']:
                 relative_pos = 'succeeding'
-        if f"{kmer}\t{relative_pos}\t{gene}\t{product}" not in kmer_annotations:
+        if f"{kmer}\t{relative_pos}\t{gene}\t{product}" not in cls.kmer_annotations:
             cls.kmer_annotations[f"{kmer}\t{relative_pos}\t{gene}\t{product}"] = [strain]
         else:
             cls.kmer_annotations[f"{kmer}\t{relative_pos}\t{gene}\t{product}"].append(strain)
