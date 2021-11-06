@@ -187,8 +187,8 @@ class annotate():
     @classmethod
     def annotate_kmers(cls, kmer, strain, contig, pos):
         # Find the nearest position
-        nearest = min(cls.genome_annotations[strain][contig], key=lambda x:abs(x-pos))
         print(kmer, strain, contig, pos)
+        nearest = min(cls.genome_annotations[strain][contig], key=lambda x:abs(x-pos))
         print(cls.genome_annotations[strain][contig][nearest])
         gene = cls.genome_annotations[strain][contig][nearest]['gene_name']
         product = cls.genome_annotations[strain][contig][nearest]['product_name']
