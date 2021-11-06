@@ -205,7 +205,7 @@ class annotate():
             elif cls.genome_annotations[strain][contig][nearest]['strand'] == '-':
                 if (pos <= cls.genome_annotations[strain][contig][nearest]['gene_start'] and
                    pos >= cls.genome_annotations[strain][contig][nearest]['gene_end']):
-                    relative_pos = 'inside'
+                    relative_pos = 'in'
                 elif pos > cls.genome_annotations[strain][contig][nearest]['gene_start']:
                     relative_pos = 'preceding'
                 elif pos < cls.genome_annotations[strain][contig][nearest]['gene_end']:
