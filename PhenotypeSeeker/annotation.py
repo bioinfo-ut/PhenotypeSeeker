@@ -100,8 +100,28 @@ class Samples():
         Input.lock.release()
         stderr_print.print_progress("genomes annotated.")
 
-    def read_in_prokka_results():
-        genome_annotations = {}
+    def get_kmer_indexes(self):
+        # Makes "K-mer_lists" directory where all lists are stored.
+        # Generates k-mer lists for every sample in names_of_samples variable 
+        # (list or dict).
+        run(["mkdir", "-p", "K-mer_lists"])
+        process = run(
+            ["glistmaker " + self.address + " -o K-mer_lists/" + 
+            self.name + " -w " + Input.kmer_length + " --index"], shell=True,
+            stderr=DEVNULL, stdout=DEVNULL
+            )
+        Input.lock.acquire()
+        stderr_print.currentSampleNum.value += 1
+        Input.lock.release()
+        stderr_print.print_progress("lists generated.")
+
+class annotation():
+
+    genome_annotations = {}
+    kmer_annotations = OrderedDict()
+
+    @classmethod
+    def read_in_prokka_results(cls):
         for sample in Input.samples.values():
             with open(glob.glob(f"prokka/prokka_{sample.name}/PROKKA*.gff")[0], 'r') as prokka_res:
                 for line in prokka_res:
@@ -120,40 +140,27 @@ class Samples():
                             gene_name = line2list[-1].split("gene=")[-1].split(";")[0]
                         else:
                             gene_name = "-"
-                        if sample.name not in genome_annotations:
-                            genome_annotations[sample.name] = {contig : {
-                                gene_start : {'gene_start': gene_start, 'gene_name': gene_name, 'gene_end': gene_end, 'strand': strand, 'product_name': product_name},
-                                gene_end : {'gene_start': gene_start, 'gene_name': gene_name, 'gene_end': gene_end, 'strand': strand, 'product_name': product_name}
+                        data = {'gene_start': gene_start, 'gene_name': gene_name, 'gene_end': gene_end,
+                                'strand': strand, 'product_name': product_name
+                            }
+                        if sample.name not in cls.genome_annotations:
+                            cls.genome_annotations[sample.name] = {contig : {
+                                gene_start : data,
+                                gene_end : data
                                 }}
                         else:
-                            if contig not in genome_annotations[sample.name]:
-                                genome_annotations[sample.name][contig] = {
-                                    gene_start : {'gene_start': gene_start, 'gene_name': gene_name, 'gene_end': gene_end, 'strand': strand, 'product_name': product_name},
-                                    gene_end : {'gene_start': gene_start, 'gene_name': gene_name, 'gene_end': gene_end, 'strand': strand, 'product_name': product_name}
+                            if contig not in cls.genome_annotations[sample.name]:
+                                cls.genome_annotations[sample.name][contig] = {
+                                    gene_start : data,
+                                    gene_end : data
                                 }
                             else:
-                                genome_annotations[sample.name][contig][gene_start] = {'gene_start': gene_start, 'gene_name': gene_name, 'gene_end': gene_end, 'strand': strand, 'product_name': product_name}
-                                genome_annotations[sample.name][contig][gene_end] = {'gene_start': gene_start, 'gene_name': gene_name, 'gene_end': gene_end, 'strand': strand, 'product_name': product_name}
-        return genome_annotations
-
-    def get_kmer_indexes(self):
-        # Makes "K-mer_lists" directory where all lists are stored.
-        # Generates k-mer lists for every sample in names_of_samples variable 
-        # (list or dict).
-        run(["mkdir", "-p", "K-mer_lists"])
-        process = run(
-            ["glistmaker " + self.address + " -o K-mer_lists/" + 
-            self.name + " -w " + Input.kmer_length + " --index"], shell=True,
-            stderr=DEVNULL, stdout=DEVNULL
-            )
-        Input.lock.acquire()
-        stderr_print.currentSampleNum.value += 1
-        Input.lock.release()
-        stderr_print.print_progress("lists generated.")
+                                cls.genome_annotations[sample.name][contig][gene_start] = data
+                                cls.genome_annotations[sample.name][contig][gene_end] = data
 
     @classmethod
-    def get_annotations(cls, kmers, genome_annotations):
-        for kmer, strains in kmers.items():
+    def get_kmer_annotations(cls):
+        for kmer, strains in Input.kmers.items():
             for strain in strains:
                 contig_mapper = {}
                 query_seqs = run(
@@ -173,52 +180,46 @@ class Samples():
                     returncode = indexes.returncode
                 for line in indexes.stdout.strip().split("\n")[1:]:
                     _, contig, pos, _ = line.split()
-                    cls.annotate(kmer, strain, contig_mapper[contig], int(pos)+1, genome_annotations)
+                    cls.annotate_kmers(
+                        kmer, strain, contig_mapper[contig], int(pos)+1)
 
 
     @classmethod
-    def annotate(cls, kmer, strain, contig, pos, genome_annotations):
+    def annotate_kmers(cls, kmer, strain, contig, pos):
         # Find the nearest position
-        nearest = min(genome_annotations[strain][contig], key=lambda x:abs(x-pos))
+        nearest = min(cls.genome_annotations[strain][contig], key=lambda x:abs(x-pos))
         print(kmer, strain, contig, pos)
-        print(genome_annotations[strain][contig][nearest])
-        gene = genome_annotations[strain][contig][nearest]['gene_name']
-        product = genome_annotations[strain][contig][nearest]['product_name']
+        print(cls.genome_annotations[strain][contig][nearest])
+        gene = cls.genome_annotations[strain][contig][nearest]['gene_name']
+        product = cls.genome_annotations[strain][contig][nearest]['product_name']
 
-        if genome_annotations[strain][contig][nearest]['strand'] == '+':
-            if (pos >= genome_annotations[strain][contig][nearest]['gene_start'] and
-               pos <= genome_annotations[strain][contig][nearest]['gene_end']):
+        if cls.genome_annotations[strain][contig][nearest]['strand'] == '+':
+            if (pos >= cls.genome_annotations[strain][contig][nearest]['gene_start'] and
+               pos <= cls.genome_annotations[strain][contig][nearest]['gene_end']):
                 relative_pos = 'inside'
-            elif pos < genome_annotations[strain][contig][nearest]['gene_start']:
+            elif pos < cls.genome_annotations[strain][contig][nearest]['gene_start']:
                 relative_pos = 'preceding'
-            elif pos > genome_annotations[strain][contig][nearest]['gene_end']:
+            elif pos > cls.genome_annotations[strain][contig][nearest]['gene_end']:
                 relative_pos = 'succeeding'
-        elif genome_annotations[strain][contig][nearest]['strand'] == '-':
-            if (pos <= genome_annotations[strain][contig][nearest]['gene_start'] and
-               pos >= genome_annotations[strain][contig][nearest]['gene_end']):
+        elif cls.genome_annotations[strain][contig][nearest]['strand'] == '-':
+            if (pos <= cls.genome_annotations[strain][contig][nearest]['gene_start'] and
+               pos >= cls.genome_annotations[strain][contig][nearest]['gene_end']):
                 relative_pos = 'inside'
-            elif pos > genome_annotations[strain][contig][nearest]['gene_start']:
+            elif pos > cls.genome_annotations[strain][contig][nearest]['gene_start']:
                 relative_pos = 'preceding'
-            elif pos < genome_annotations[strain][contig][nearest]['gene_end']:
+            elif pos < cls.genome_annotations[strain][contig][nearest]['gene_end']:
                 relative_pos = 'succeeding'
-        print(f"{kmer}\t{relative_pos}\t{gene}\t{product}")
+        if f"{kmer}\t{relative_pos}\t{gene}\t{product}" not in kmer_annotations:
+            cls.kmer_annotations[f"{kmer}\t{relative_pos}\t{gene}\t{product}"] = [strain]
+        else:
+            cls.kmer_annotations[f"{kmer}\t{relative_pos}\t{gene}\t{product}"].append(strain)
 
-    # @staticmethod
-    # def indexes_to_list(kmers):
-    #     kmer_indexes = {}
-    #     for kmer, strains in kmers.items():
-    #         for strain in strains:
-    #             with open(f"K-mer_lists/{strain}_kmer_indexes.txt") as indexfile:
-    #                 for line in indexfile:
-    #                     if line.split()[0] != kmer:
-    #                         continue
-    #                     kmer, occurences = line.split()
-    #                     print(kmer, occurences)
-    #                     for i in range(int(occurences)):
-    #                         _, contig, pos, strand = indexfile.readline().split()
-    #                         print(kmer, strain, contig, pos, strand)
-
-
+    @classmethod
+    def write_results(cls):
+        with open('kmer_annotations.txt', 'w') as out:
+            out.write(f'kmer\trelative_position\tgene\tproduct\tsupporting_strains')
+            for key, value in cls.kmer_annotations.items():
+                out.write(f"key\t{" ".join(value)}")
 
 
 def annotation(args):
@@ -238,9 +239,12 @@ def annotation(args):
     #         Input.samples.values()
     #     )
     sys.stderr.write("\x1b[1;32m\nReading in prokka annotations.\x1b[0m")
-    genome_annotations = Samples.read_in_prokka_results()
+    genome_annotations = annotation.read_in_prokka_results()
     sys.stderr.write("\x1b[1;32m\nAnnotating the k-mers:\x1b[0m\n")
-    Samples.get_annotations(Input.kmers, genome_annotations)
+    annotation.get_kmer_annotations()
+    sys.stderr.write("\x1b[1;32m\nWriting results to 'kmer_annotations.txt':\x1b[0m\n")
+    annotations.write_results()
+
 
 
 
