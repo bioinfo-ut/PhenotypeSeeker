@@ -116,7 +116,10 @@ class Samples():
                             gene_start = int(line2list[4])
                             gene_end = int(line2list[3])                          
                         product_name = line2list[-1].strip().split("product=")[-1]
-                        gene_name = line2list[-1].split("gene=")[-1].split(";")[0]
+                        if 'gene' in line2list[-1]:
+                            gene_name = line2list[-1].split("gene=")[-1].split(";")[0]
+                        else:
+                            gene_name = "-"
                         if sample.name not in genome_annotations:
                             genome_annotations[sample.name] = {contig : {
                                 gene_start : {'gene_start': gene_start, 'gene_name': gene_name, 'gene_end': gene_end, 'strand': strand, 'product_name': product_name},
