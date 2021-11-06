@@ -219,7 +219,7 @@ class annotation():
         with open('kmer_annotations.txt', 'w') as out:
             out.write(f'kmer\trelative_position\tgene\tproduct\tsupporting_strains')
             for key, value in cls.kmer_annotations.items():
-                out.write(f"key\t{" ".join(value)}")
+                out.write(f"key\t{' '.join(value)}")
 
 
 def annotation(args):
