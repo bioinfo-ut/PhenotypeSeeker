@@ -188,27 +188,30 @@ class annotate():
     def annotate_kmers(cls, kmer, strain, contig, pos):
         # Find the nearest position
         print(kmer, strain, contig, pos)
-        nearest = min(cls.genome_annotations[strain][contig], key=lambda x:abs(x-pos))
-        print(cls.genome_annotations[strain][contig][nearest])
-        gene = cls.genome_annotations[strain][contig][nearest]['gene_name']
-        product = cls.genome_annotations[strain][contig][nearest]['product_name']
-
-        if cls.genome_annotations[strain][contig][nearest]['strand'] == '+':
-            if (pos >= cls.genome_annotations[strain][contig][nearest]['gene_start'] and
-               pos <= cls.genome_annotations[strain][contig][nearest]['gene_end']):
-                relative_pos = 'inside'
-            elif pos < cls.genome_annotations[strain][contig][nearest]['gene_start']:
-                relative_pos = 'preceding'
-            elif pos > cls.genome_annotations[strain][contig][nearest]['gene_end']:
-                relative_pos = 'succeeding'
-        elif cls.genome_annotations[strain][contig][nearest]['strand'] == '-':
-            if (pos <= cls.genome_annotations[strain][contig][nearest]['gene_start'] and
-               pos >= cls.genome_annotations[strain][contig][nearest]['gene_end']):
-                relative_pos = 'inside'
-            elif pos > cls.genome_annotations[strain][contig][nearest]['gene_start']:
-                relative_pos = 'preceding'
-            elif pos < cls.genome_annotations[strain][contig][nearest]['gene_end']:
-                relative_pos = 'succeeding'
+        relative_pos = "-"
+        gene = "-"
+        product = "-"
+        if contig in cls.genome_annotations[strain]:
+            nearest = min(cls.genome_annotations[strain][contig], key=lambda x:abs(x-pos))
+            print(cls.genome_annotations[strain][contig][nearest])
+            gene = cls.genome_annotations[strain][contig][nearest]['gene_name']
+            product = cls.genome_annotations[strain][contig][nearest]['product_name']
+            if cls.genome_annotations[strain][contig][nearest]['strand'] == '+':
+                if (pos >= cls.genome_annotations[strain][contig][nearest]['gene_start'] and
+                   pos <= cls.genome_annotations[strain][contig][nearest]['gene_end']):
+                    relative_pos = 'inside'
+                elif pos < cls.genome_annotations[strain][contig][nearest]['gene_start']:
+                    relative_pos = 'preceding'
+                elif pos > cls.genome_annotations[strain][contig][nearest]['gene_end']:
+                    relative_pos = 'succeeding'
+            elif cls.genome_annotations[strain][contig][nearest]['strand'] == '-':
+                if (pos <= cls.genome_annotations[strain][contig][nearest]['gene_start'] and
+                   pos >= cls.genome_annotations[strain][contig][nearest]['gene_end']):
+                    relative_pos = 'inside'
+                elif pos > cls.genome_annotations[strain][contig][nearest]['gene_start']:
+                    relative_pos = 'preceding'
+                elif pos < cls.genome_annotations[strain][contig][nearest]['gene_end']:
+                    relative_pos = 'succeeding'
         if f"{kmer}\t{relative_pos}\t{gene}\t{product}" not in cls.kmer_annotations:
             cls.kmer_annotations[f"{kmer}\t{relative_pos}\t{gene}\t{product}"] = [strain]
         else:
