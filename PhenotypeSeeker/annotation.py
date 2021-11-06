@@ -219,9 +219,10 @@ class annotate():
     def write_results(cls):
         with open('kmer_annotations.txt', 'w') as out:
             out.write(f'kmer\trelative_position\tgene\tproduct\tsamples\n')
+            prev_kmer = None
             for key, value in cls.kmer_annotations.items():
                 kmer = key.split()[0]
-                if kmer != prev_kmer:
+                if prev_kmer and kmer != prev_kmer:
                     out.write("\n")
                 out.write(f"{key}\t{' '.join(value)}\n")
                 prev_kmer = kmer
