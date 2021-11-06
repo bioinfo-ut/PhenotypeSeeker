@@ -187,19 +187,17 @@ class annotate():
     @classmethod
     def annotate_kmers(cls, kmer, strain, contig, pos):
         # Find the nearest position
-        print(kmer, strain, contig, pos)
         relative_pos = "-"
         gene = "-"
         product = "-"
         if contig in cls.genome_annotations[strain]:
             nearest = min(cls.genome_annotations[strain][contig], key=lambda x:abs(x-pos))
-            print(cls.genome_annotations[strain][contig][nearest])
             gene = cls.genome_annotations[strain][contig][nearest]['gene_name']
             product = cls.genome_annotations[strain][contig][nearest]['product_name']
             if cls.genome_annotations[strain][contig][nearest]['strand'] == '+':
                 if (pos >= cls.genome_annotations[strain][contig][nearest]['gene_start'] and
                    pos <= cls.genome_annotations[strain][contig][nearest]['gene_end']):
-                    relative_pos = 'inside'
+                    relative_pos = 'in'
                 elif pos < cls.genome_annotations[strain][contig][nearest]['gene_start']:
                     relative_pos = 'preceding'
                 elif pos > cls.genome_annotations[strain][contig][nearest]['gene_end']:
@@ -220,9 +218,13 @@ class annotate():
     @classmethod
     def write_results(cls):
         with open('kmer_annotations.txt', 'w') as out:
-            out.write(f'kmer\trelative_position\tgene\tproduct\tsupporting_strains\n')
+            out.write(f'kmer\trelative_position\tgene\tproduct\tsamples\n')
             for key, value in cls.kmer_annotations.items():
+                kmer = key.split()[0]
+                if kmer != prev_kmer:
+                    out.write("\n")
                 out.write(f"{key}\t{' '.join(value)}\n")
+                prev_kmer = kmer
 
 
 def annotation(args):
