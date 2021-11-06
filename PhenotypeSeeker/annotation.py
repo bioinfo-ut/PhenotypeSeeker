@@ -182,7 +182,8 @@ class annotate():
                 ["glistquery", "--locations", "-q", kmer,
                 f"K-mer_lists/{strain}_{Input.kmer_length}.index"
                 ]
-                , capture_output=True, text=True, check=True)
+                , capture_output=True, text=True)
+                print(indexes.returncode)
                 for line in indexes.stdout.strip().split("\n")[1:]:
                     _, contig, pos, _ = line.split()
                     cls.annotate_kmers(
