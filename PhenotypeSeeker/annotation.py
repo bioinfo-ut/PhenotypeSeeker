@@ -115,7 +115,7 @@ class Samples():
         Input.lock.release()
         stderr_print.print_progress("lists generated.")
 
-class annotation():
+class annotate():
 
     genome_annotations = {}
     kmer_annotations = OrderedDict()
@@ -239,11 +239,11 @@ def annotation(args):
     #         Input.samples.values()
     #     )
     sys.stderr.write("\x1b[1;32m\nReading in prokka annotations.\x1b[0m")
-    genome_annotations = annotation.read_in_prokka_results()
+    annotate.read_in_prokka_results()
     sys.stderr.write("\x1b[1;32m\nAnnotating the k-mers:\x1b[0m\n")
-    annotation.get_kmer_annotations()
+    annotate.get_kmer_annotations()
     sys.stderr.write("\x1b[1;32m\nWriting results to 'kmer_annotations.txt':\x1b[0m\n")
-    annotations.write_results()
+    annotate.write_results()
 
 
 
