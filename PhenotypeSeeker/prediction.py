@@ -178,7 +178,7 @@ class Phenotypes():
                 # self.matrix = self.matrix[:, self.kmers_to_keep]
             else:
                 self.matrix = PCs[:, self.PCs_to_keep]
-            print(self.matrix)
+            self.ML_df.to_csv(self.name + "pred_df.csv", self.matrix)
 
     def predict(self):
 
