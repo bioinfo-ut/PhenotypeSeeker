@@ -10,12 +10,12 @@ from subprocess import call
 from collections import OrderedDict
 from multiprocess import Pool
 import math
-
 import joblib
 import pkg_resources
 import numpy as np
 import sys
 import warnings
+import pandas as pd
 
 pkg_resources.require("numpy==1.18.1", "scikit-learn==0.22.1")
 warnings.showwarning = lambda *args, **kwargs: None
