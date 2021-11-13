@@ -947,8 +947,8 @@ class phenotypes():
                 self.ML_df_train, self.ML_df_test = (
                     self.ML_df.iloc[train_index], self.ML_df.iloc[test_index]
                     )
-                self.X_train, self.y_train = self.split_df(self.ML_df_train)
-                self.X_test, self.y_test = self.split_df(self.ML_df_test)
+                self.X_train, self.weights_train, self.y_train = self.split_df(self.ML_df_train)
+                self.X_test, self.weights_test, self.y_test = self.split_df(self.ML_df_test)
 
                 self.get_best_model()
                 self.fit_model()
@@ -996,8 +996,8 @@ class phenotypes():
             self.ML_df, test_size=self.testset_size, random_state=55,
             stratify=stratify
             )
-            self.X_train, self.y_train= self.split_df(self.ML_df_train)
-            self.X_test, self.y_test = self.split_df(self.ML_df_test)
+            self.X_train, self.weights_train, self.y_train = self.split_df(self.ML_df_train)
+            self.X_test, self.weights_test, self.y_test = self.split_df(self.ML_df_test)
             self.assert_n_splits_cv_inner(
                 phenotypes.n_splits_cv_inner, self.ML_df, self.y_train
                 )
@@ -1019,7 +1019,7 @@ class phenotypes():
                 self.summary_file.write(
                 '\nThe final output model training on the whole dataset:\n'
                 )
-            self.X_train, self.y_train = self.split_df(self.ML_df)
+            self.X_train, self.weights_train, self.y_train = self.split_df(self.ML_df_train)
             self.assert_n_splits_cv_inner(
                 phenotypes.n_splits_cv_inner, self.ML_df, self.y_train
                 )
@@ -1055,7 +1055,7 @@ class phenotypes():
 
     @classmethod
     def split_df(cls, df):
-        return df.iloc[:,0:-2], df.iloc[:,-1]
+        return df.iloc[:,0:-2], df.iloc[:,-2], df.iloc[:,-1]
 
     def set_model(self):
         if self.pred_scale == "continuous":
@@ -1076,12 +1076,14 @@ class phenotypes():
                 if self.penalty == "L1":
                     self.model = LogisticRegression(
                         penalty='l1', solver=self.logreg_solver,
-                        max_iter=self.max_iter, tol=self.tol
+                        max_iter=self.max_iter, tol=self.tol,
+                        class_weight='balanced'
                         )        
                 elif self.penalty == "L2":
                     self.model = LogisticRegression(
                         penalty='l2', solver=self.logreg_solver,
-                        max_iter=self.max_iter, tol=self.tol
+                        max_iter=self.max_iter, tol=self.tol,
+                        class_weight='balanced'
                         )
                 elif self.penalty == "elasticnet" or "L1+L2":
                     self.model = SGDClassifier(
@@ -1147,7 +1149,8 @@ class phenotypes():
         elif self.pred_scale == "binary":
             if self.model_name_long == "logistic regression":
                 self.best_model = GridSearchCV(
-                    self.model, self.hyper_parameters, cv=self.n_splits_cv_inner
+                    self.model, self.hyper_parameters, cv=self.n_splits_cv_inner,
+                    scoring='balanced_accuracy_score'
                     )
             elif self.model_name_long == "support vector machine":
                 if self.kernel == "linear":
