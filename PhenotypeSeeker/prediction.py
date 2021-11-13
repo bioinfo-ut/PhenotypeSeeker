@@ -165,7 +165,8 @@ class Phenotypes():
             ]
         for idx, line in enumerate(zip(*[open(counts) for counts in kmer_counts])):
             self.matrix[:, idx] = np.array([j.split()[2].strip() for j in line])
-        print(f"selfpca: {self.pca}")
+        pd.Dataframe(self.matrix, index=Input.samples.keys(), columns=self.kmers).to_csv(
+            self.name + "pred_df.csv")
         if self.pca:
             print(self.matrix.shape)
             print(type(self.scaler))     
@@ -178,7 +179,6 @@ class Phenotypes():
                 # self.matrix = self.matrix[:, self.kmers_to_keep]
             else:
                 self.matrix = PCs[:, self.PCs_to_keep]
-            self.ML_df.to_csv(self.name + "pred_df.csv", self.matrix)
 
     def predict(self):
 
