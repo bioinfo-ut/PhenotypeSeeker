@@ -1150,7 +1150,7 @@ class phenotypes():
             if self.model_name_long == "logistic regression":
                 self.best_model = GridSearchCV(
                     self.model, self.hyper_parameters, cv=self.n_splits_cv_inner,
-                    scoring='balanced_accuracy_score'
+                    scoring='balanced_accuracy'
                     )
             elif self.model_name_long == "support vector machine":
                 if self.kernel == "linear":
