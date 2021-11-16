@@ -629,7 +629,6 @@ class phenotypes():
         output = check_output(('wc', '-l'), stdin=ps.stdout)
         ps.wait()
         cls.no_kmers_to_analyse = int(output)
-        print(cls.no_kmers_to_analyse)
         cls.progress_checkpoint = int(
             math.ceil(cls.no_kmers_to_analyse/(100*Input.num_threads))
             )
@@ -1056,7 +1055,7 @@ class phenotypes():
 
     @classmethod
     def split_df(cls, df):
-        return df.iloc[:,0:-2], df.iloc[:,-2], df.iloc[:,-1]
+        return self.df.iloc[:,0:-2], self.df.iloc[:,-2], self.df.iloc[:,-1]
 
     def set_model(self):
         if self.pred_scale == "continuous":
