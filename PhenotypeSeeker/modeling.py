@@ -803,7 +803,7 @@ class phenotypes():
             )
 
         chisquare, pvalue = chisquare_results
-        if (args.omit_B and pvalue < self.pvalue_cutoff) or (pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse)):
+        if (Input.omit_B and pvalue < self.pvalue_cutoff) or (pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse)):
            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
         else:
             return None
