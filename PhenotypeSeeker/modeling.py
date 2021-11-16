@@ -145,7 +145,7 @@ class Input():
             binary_classifier, regressor, penalty, max_iter,
             tol, l1_ratio, n_splits_cv_outer, kernel, n_iter,
             n_splits_cv_inner, testset_size, train_on_whole,
-            logreg_solver, jump_to, pca, real_counts
+            logreg_solver, jump_to, pca, real_counts, omit_B
             ):
         phenotypes.alphas = cls._get_alphas(
             alphas, alpha_min, alpha_max, n_alphas
@@ -177,6 +177,7 @@ class Input():
             logreg_solver)
         phenotypes.pca = pca
         phenotypes.real_counts = real_counts
+        phenotypes.omit_B = omit_B
 
     @staticmethod
     def get_model_name(regressor, binary_classifier):
@@ -802,7 +803,7 @@ class phenotypes():
             )
 
         chisquare, pvalue = chisquare_results
-        if pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
+        if (args.omit_B and pvalue < self.pvalue_cutoff) or (pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse)):
            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
         else:
             return None
@@ -1648,7 +1649,7 @@ def modeling(args):
         args.penalty, args.max_iter, args.tolerance, args.l1_ratio,
         args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner,
         args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to,
-        args.pca, args.real_counts
+        args.pca, args.real_counts, args.omit_B_correction
         )
 
     if not Input.jump_to:
