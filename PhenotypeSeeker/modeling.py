@@ -628,7 +628,8 @@ class phenotypes():
         ps = Popen("glistquery K-mer_lists/feature_vector.list", shell=True, stdout=PIPE)
         output = check_output(('wc', '-l'), stdin=ps.stdout)
         ps.wait()
-        cls.no_kmers_to_analyse = int(output)
+        # cls.no_kmers_to_analyse = int(output)
+        cls.no_kmers_to_analyse = 9042436
         cls.progress_checkpoint = int(
             math.ceil(cls.no_kmers_to_analyse/(100*Input.num_threads))
             )
@@ -697,7 +698,7 @@ class phenotypes():
         fig.write_html("PC_pheno_species_kmers.html")
 
     @timer
-    def test_kmers_association_with_phenotype(self):
+    def test_kmer_association_with_phenotype(self):
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
         with Pool(Input.num_threads) as p:
@@ -853,7 +854,9 @@ class phenotypes():
             )
 
         chisquare, pvalue = chisquare_results
-        if pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
+        print(chisquare, pvalue)
+        # if pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
+        if pvalue < self.pvalue_cutoff:
            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
         else:
             return None
@@ -1810,7 +1813,7 @@ def modeling(args):
         #     Input.phenotypes_to_analyse.values()
         #     ))
         list(map(
-            lambda x:  x.test_kmers_association_with_phenotype(), 
+            lambda x:  x.test_kmer_association_with_phenotype(), 
             Input.phenotypes_to_analyse.values()
             ))
         
