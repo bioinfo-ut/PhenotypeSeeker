@@ -170,20 +170,14 @@ class annotate():
                         , capture_output=True, text=True)
                 for line in query_seqs.stdout.strip().split("\n"):
                     contig_mapper[line.split()[1]] = line.split()[2]
-                # returncode = -1
-                # while returncode != 0:
-                #     indexes = run(
-                #         ["glistquery", "--locations", "-q", kmer,
-                #         f"K-mer_lists/{strain}_{Input.kmer_length}.index"
-                #         ]
-                #         , capture_output=True, text=True, check=True)
-                #     returncode = indexes.returncode
-                indexes = run(
-                ["glistquery", "--locations", "-q", kmer,
-                f"K-mer_lists/{strain}_{Input.kmer_length}.index"
-                ]
-                , capture_output=True, text=True)
-                print(indexes.returncode)
+                returncode = -1
+                while returncode != 0:
+                    indexes = run(
+                        ["glistquery", "--locations", "-q", kmer,
+                        f"K-mer_lists/{strain}_{Input.kmer_length}.index"
+                        ]
+                        , capture_output=True, text=True)
+                    returncode = indexes.returncode
                 for line in indexes.stdout.strip().split("\n")[1:]:
                     _, contig, pos, _ = line.split()
                     cls.annotate_kmers(

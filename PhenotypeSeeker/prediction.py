@@ -165,11 +165,9 @@ class Phenotypes():
             ]
         for idx, line in enumerate(zip(*[open(counts) for counts in kmer_counts])):
             self.matrix[:, idx] = np.array([j.split()[2].strip() for j in line])
-        pd.Dataframe(self.matrix, index=Input.samples.keys(), columns=self.kmers).to_csv(
+        pd.DataFrame(self.matrix, index=Input.samples.keys(), columns=self.kmers).to_csv(
             self.name + "pred_df.csv")
-        if self.pca:
-            print(self.matrix.shape)
-            print(type(self.scaler))     
+        if self.pca:    
             scaled_matrix = self.scaler.transform(self.matrix)
             PCs = self.pca_model.transform(scaled_matrix)
             if self.lr:
