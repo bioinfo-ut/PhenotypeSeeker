@@ -1055,7 +1055,7 @@ class phenotypes():
 
     @classmethod
     def split_df(cls, df):
-        return self.df.iloc[:,0:-2], self.df.iloc[:,-2], self.df.iloc[:,-1]
+        return df.iloc[:,0:-2], df.iloc[:,-2], df.iloc[:,-1]
 
     def set_model(self):
         if self.pred_scale == "continuous":
