@@ -1019,7 +1019,7 @@ class phenotypes():
                 self.summary_file.write(
                 '\nThe final output model training on the whole dataset:\n'
                 )
-            self.X_train, self.weights_train, self.y_train = self.split_df(self.ML_df_train)
+            self.X_train, self.weights_train, self.y_train = self.split_df(self.ML_df)
             self.assert_n_splits_cv_inner(
                 phenotypes.n_splits_cv_inner, self.ML_df, self.y_train
                 )
