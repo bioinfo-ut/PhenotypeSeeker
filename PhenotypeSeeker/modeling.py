@@ -1816,6 +1816,7 @@ class annotate():
                         ref_genome.index_path
                         ]
                         , capture_output=True, text=True)
+                print(query_seqs)
                 for line in query_seqs.stdout.strip().split("\n"):
                     contig_mapper[line.split()[1]] = line.split()[2]
                 returncode = -1
