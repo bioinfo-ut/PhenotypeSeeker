@@ -1813,12 +1813,13 @@ class annotate():
                 contig_mapper = {}
                 print(ref_genome.index_path)
                 cwd = os.getcwd()
-                os.chdir()
+                os.chdir(os.urljoin(ref_genomes.db_base + "FASTA"))
                 query_seqs = run(
                         ["glistquery", "--sequences",
                         ref_genome.index_path
                         ]
                         , capture_output=True, text=True)
+                os.chdir(cwd)
                 print(query_seqs)
                 for line in query_seqs.stdout.strip().split("\n"):
                     contig_mapper[line.split()[1]] = line.split()[2]
