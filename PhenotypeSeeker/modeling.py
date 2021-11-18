@@ -1884,7 +1884,7 @@ class ref_genomes():
     def get_refs(cls):
         db_base = "/storage8/erkia/"
         specie = "Streptococcus_penumoniae"
-        ref_ids = [os.path.basename(x).split[0:2] for x in glob.glob(db_base + specie + f"GFF/*.gff")]
+        ref_ids = [os.path.basename(x).split[0:2] for x in glob.glob(db_base + specie + f"/GFF/*.gff")]
         for ref_id in ref_ids:
             print(ref_id)
             gff_path = db_base + specie + "/GFF/" + ref_id + ".gff"
