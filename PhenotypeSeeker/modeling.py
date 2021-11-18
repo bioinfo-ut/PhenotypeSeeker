@@ -1889,8 +1889,8 @@ class ref_genomes():
                     in glob.glob(db_base + specie + f"/GFF/*.gff")
                    ]
         for ref_id in ref_ids:
-            gff_path = os.path.join(db_base, specie, "GFF", ref_id, "_genomic.gff")
-            index_path = os.path.join(db_base, specie, "/FASTA/", ref_id, "_genomic.fna")
+            gff_path = os.path.join(db_base, specie, "GFF", ref_id + "_genomic.gff")
+            index_path = os.path.join(db_base, specie, "/FASTA/", ref_id + "_genomic.fna")
             cls.instances[ref_id] = cls(ref_id, index_path, gff_path)
 
 def modeling(args):
