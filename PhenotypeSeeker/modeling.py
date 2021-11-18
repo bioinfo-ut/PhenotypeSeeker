@@ -1881,7 +1881,6 @@ class ref_genomes():
         self.gff_path = gff_path
         
         ref_genomes.instances[name] = self
-        print(ref_genomes.instances)
         ref_genomes.nr_ref_genomes += 1
 
     @classmethod
@@ -1889,7 +1888,7 @@ class ref_genomes():
         for index_path in glob.glob("/storage8/erkia/Streptococcus_pneumoniae/FASTA/*.index"):
             name = os.path.basename(index_path)
             gff_path = index_path.replace('FASTA', 'GFF').replace('index', 'gff')
-        return cls(name, index_path, gff_path)
+            return cls(name, index_path, gff_path)
 
 def modeling(args):
     # The main function of "phenotypeseeker modeling"
