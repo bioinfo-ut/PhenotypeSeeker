@@ -1805,7 +1805,6 @@ class annotate():
                             else:
                                 cls.genome_annotations[ref_genome.name][contig][gene_start] = data
                                 cls.genome_annotations[ref_genome.name][contig][gene_end] = data
-        print(cls.genome_annotations)
 
     @classmethod
     def get_kmer_annotations(cls, inp):
@@ -1976,6 +1975,10 @@ def modeling(args):
 
         ref_genomes.get_refs()
         annotate.get_ref_annos()
+        ML_df = pd.read_csv(betalactam + "_MLdf.csv", index_col=0)
+        ML_df.index = ML_df.index.astype(str)
+        kmers = ML_df.columns[:-2]
+        annotate.get_kmer_annotations(kmers)
 
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
         sys.stderr.flush()
