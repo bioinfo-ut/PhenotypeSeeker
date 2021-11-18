@@ -1777,10 +1777,10 @@ class annotate():
                             gene_start = int(line2list[4])
                             gene_end = int(line2list[3])
 
-                        if 'gene' in line2list[-1]:
+                        if 'gene=' in line2list[-1]:
                             gene_name = line2list[-1].split("gene=")[-1].split(";")[0]
-                        elif 'name' in line2list[-1]:
-                            gene_name = line2list[-1].split("gene=")[-1].split(";")[0]
+                        elif 'Name=' in line2list[-1]:
+                            gene_name = line2list[-1].split("Name=")[-1].split(";")[0]
                         else:
                             gene_name = "-"
 
@@ -1808,19 +1808,17 @@ class annotate():
 
     @classmethod
     def get_kmer_annotations(cls, kmers):
+        cwd = os.getcwd()
+        os.chdir(os.path.join(ref_genomes.db_base, ref_genomes.specie, "FASTA"))
         for kmer in kmers:
             for ref_genome in ref_genomes.instances.values():
                 contig_mapper = {}
                 print(ref_genome.index_path)
-                cwd = os.getcwd()
-                os.chdir(os.path.join(ref_genomes.db_base, ref_genomes.specie, "FASTA"))
                 query_seqs = run(
                         ["glistquery", "--sequences",
                         ref_genome.index_path
                         ]
                         , capture_output=True, text=True)
-                os.chdir(cwd)
-                print(query_seqs)
                 for line in query_seqs.stdout.strip().split("\n"):
                     contig_mapper[line.split()[1]] = line.split()[2]
                 returncode = -1
@@ -1837,6 +1835,7 @@ class annotate():
                     _, contig, pos, _ = line.split()
                     cls.annotate_kmers(
                         kmer, ref_genome.name, contig_mapper[contig], int(pos)+1)
+        os.chdir(cwd)
 
     @classmethod
     def annotate_kmers(cls, kmer, strain, contig, pos):
