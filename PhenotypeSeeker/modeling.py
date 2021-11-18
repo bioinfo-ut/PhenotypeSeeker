@@ -1769,20 +1769,24 @@ class annotate():
                         line2list = line.split('\t')
                         contig = line2list[0]
                         strand = line2list[6]
+                        
                         if strand == "+":
                             gene_start = int(line2list[3])
                             gene_end = int(line2list[4])
                         elif strand == "-":
                             gene_start = int(line2list[4])
-                            gene_end = int(line2list[3])                          
-                        # product_name = line2list[-1].strip().split("product=")[-1]
+                            gene_end = int(line2list[3])
+
                         if 'gene' in line2list[-1]:
                             gene_name = line2list[-1].split("gene=")[-1].split(";")[0]
                         elif 'name' in line2list[-1]:
                             gene_name = line2list[-1].split("gene=")[-1].split(";")[0]
                         else:
                             gene_name = "-"
+
                         if "Protein Homology" in ref_annos.next():
+                            product_name = line2list[-1].strip().split("product=")[-1]
+
                         data = {'gene_start': gene_start, 'gene_name': gene_name,
                                 'gene_end': gene_end, 'strand': strand,
                                 'product_name': product_name
