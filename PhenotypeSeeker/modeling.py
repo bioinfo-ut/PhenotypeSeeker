@@ -1785,10 +1785,10 @@ class annotate():
                             gene_name = "-"
 
                         product_line = ref_annos.readline()
-                        product = product_line.split()[-1].split("Product=")[-1].split(";")[0]
-                        if "Protein Homology" in ref_annos.readline():
-                            line2list = line.split('\t')
-                            product_name = line2list[-1].strip().split("product=")[-1]
+                        if "Product=" in product_line:
+                            product = product_line.split()[-1].split("Product=")[-1].split(";")[0]
+                        else:
+                            product = "-"
 
                         data = {'gene_start': gene_start, 'gene_name': gene_name,
                                 'gene_end': gene_end, 'strand': strand,
