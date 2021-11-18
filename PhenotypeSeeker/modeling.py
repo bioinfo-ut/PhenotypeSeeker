@@ -1807,8 +1807,8 @@ class annotate():
                                 cls.genome_annotations[ref_genome.name][contig][gene_end] = data
 
     @classmethod
-    def get_kmer_annotations(cls, inp):
-        for kmer in inp():
+    def get_kmer_annotations(cls, kmers):
+        for kmer in kmers:
             for ref_genome in ref_genomes.instances.values():
                 contig_mapper = {}
                 query_seqs = run(
@@ -1975,7 +1975,7 @@ def modeling(args):
 
         ref_genomes.get_refs()
         annotate.get_ref_annos()
-        ML_df = pd.read_csv(betalactam + "_MLdf.csv", index_col=0)
+        ML_df = pd.read_csv("betalactam" + "_MLdf.csv", index_col=0)
         ML_df.index = ML_df.index.astype(str)
         kmers = ML_df.columns[:-2]
         annotate.get_kmer_annotations(kmers)
