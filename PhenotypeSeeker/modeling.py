@@ -1892,11 +1892,10 @@ class ref_genomes():
             gff_path = os.path.join(cls.db_base, cls.specie, "GFF", ref_id + "_genomic.gff")
             index_path = os.path.join(cls.db_base, cls.specie, "FASTA", f"{ref_id}_{Samples.kmer_length}.index")
             contig_mapper = {}
+            print("glistquery", "--sequences", index_path)
             query_seqs = run(
-                ["glistquery", "--sequences",
-                ref_genome.index_path
-                ]
-                , capture_output=True, text=True)
+                ["glistquery", "--sequences", index_path], capture_output=True, text=True
+                )
             for line in query_seqs.stdout.strip().split("\n"):
                 contig_mapper[line.split()[1]] = line.split()[2]
             cls.instances[ref_id] = cls(ref_id, index_path, gff_path, contig_mapper)
