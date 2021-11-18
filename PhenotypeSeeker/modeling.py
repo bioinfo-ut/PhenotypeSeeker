@@ -1827,7 +1827,8 @@ class annotate():
                 while returncode != 0:
                     indexes = run(
                         ["glistquery", "--locations", "-q", kmer,
-                        f"K-mer_lists/{ref_genome.name}_{Samples.kmer_length}.index"
+                        os.path.join(ref_genomes.base, ref_genomes.specie,
+                        f"{ref_genome.name}_{Samples.kmer_length}.index")
                         ]
                         , capture_output=True, text=True)
                     returncode = indexes.returncode
