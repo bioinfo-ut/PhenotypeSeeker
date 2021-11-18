@@ -1785,7 +1785,7 @@ class annotate():
                             gene_name = "-"
 
                         product_line = ref_annos.readline()
-                        if "Product=" in product_line:
+                        if "product=" in product_line:
                             product = product_line.split()[-1].split("Product=")[-1].split(";")[0]
                         else:
                             product = "-"
