@@ -1889,6 +1889,7 @@ class ref_genomes():
             gff_path = db_base + specie + "/GFF/" + ref_id + ".gff"
             index_path = db_base + specie + "/FASTA/" + ref_id + ".fna"
             cls.instances[ref_id] = cls(ref_id, index_path, gff_path)
+            print(cls.instances)
 
 def modeling(args):
     # The main function of "phenotypeseeker modeling"
