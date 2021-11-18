@@ -1873,8 +1873,6 @@ class ref_genomes():
     instances = OrderedDict()
     nr_ref_genomes = 0
 
-    # vectors_as_multiple_input = Manager().list()
-
     def __init__(self, name, index_path, gff_path):
         self.name = name
         self.index_path = index_path
@@ -1965,7 +1963,7 @@ def modeling(args):
       
     if not Input.jump_to or Input.jump_to in ["modeling", "modelling", "testing"]:
 
-        ref_genomes.from_db_dir()
+        ref_genomes.get_refs()
         print(ref_genomes.instances)
 
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
