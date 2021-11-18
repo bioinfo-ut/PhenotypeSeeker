@@ -1765,7 +1765,7 @@ class annotate():
         for ref_genome in ref_genomes.instances.values():
             with open(ref_genome.gff_path) as ref_annos:
                 for line in ref_annos:
-                    if "gene" == line.split('\t')[2]:
+                    if '#' not in line and "gene" == line.split('\t')[2]:
                         line2list = line.split('\t')
                         contig = line2list[0]
                         strand = line2list[6]
@@ -1778,10 +1778,14 @@ class annotate():
                         # product_name = line2list[-1].strip().split("product=")[-1]
                         if 'gene' in line2list[-1]:
                             gene_name = line2list[-1].split("gene=")[-1].split(";")[0]
+                        elif 'name' in line2list[-1]:
+                            gene_name = line2list[-1].split("gene=")[-1].split(";")[0]
                         else:
                             gene_name = "-"
-                        data = {'gene_start': gene_start, 'gene_name': gene_name, 'gene_end': gene_end, 'strand': strand,
-                                # 'product_name': product_name
+                        if "Protein Homology" in ref_annos.next():
+                        data = {'gene_start': gene_start, 'gene_name': gene_name,
+                                'gene_end': gene_end, 'strand': strand,
+                                'product_name': product_name
                             }
                         if sample.name not in cls.genome_annotations:
                             cls.genome_annotations[sample.name] = {contig : {
@@ -1797,6 +1801,7 @@ class annotate():
                             else:
                                 cls.genome_annotations[sample.name][contig][gene_start] = data
                                 cls.genome_annotations[sample.name][contig][gene_end] = data
+        print(genome_annotations)
 
     @classmethod
     def get_kmer_annotations(cls, inp):
