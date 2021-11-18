@@ -1886,6 +1886,7 @@ class ref_genomes():
         specie = "Streptococcus_penumoniae"
         ref_ids = [os.path.basename(x).split[0:2] for x in glob.glob(db_base + specie + f"GFF/*.gff")]
         for ref_id in ref_ids:
+            print(ref_id)
             gff_path = db_base + specie + "/GFF/" + ref_id + ".gff"
             index_path = db_base + specie + "/FASTA/" + ref_id + ".fna"
             cls.instances[ref_id] = cls(ref_id, index_path, gff_path)
