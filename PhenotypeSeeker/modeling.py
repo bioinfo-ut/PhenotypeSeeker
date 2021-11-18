@@ -1884,12 +1884,14 @@ class ref_genomes():
         ref_genomes.nr_ref_genomes += 1
 
     @classmethod
-    def from_db_dir(cls):
-        for index_path in glob.glob("/storage8/erkia/Streptococcus_pneumoniae/FASTA/*.index"):
-            print(index_path)
-            name = os.path.basename(index_path)
-            gff_path = index_path.replace('FASTA', 'GFF').replace('index', 'gff')
-            return cls(name, index_path, gff_path)
+    def get_refs(cls):
+        db_base = "/storage8/erkia/"
+        specie = "Streptococcus_penumoniae"
+        ref_ids = [os.path.basename(x).split[0:2] for x in glob.glob(db_base + specie + f"GFF/*.gff")]
+        for ref_id in ref_ids:
+            gff_path = db_base + specie + "/GFF/" + ref_id + ".gff"
+            index_path = db_base + specie + "/FASTA/" + ref_id + ".fna"
+            cls(ref_id, index_path, gff_path)
 
 def modeling(args):
     # The main function of "phenotypeseeker modeling"
