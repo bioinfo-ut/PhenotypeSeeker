@@ -1885,12 +1885,12 @@ class ref_genomes():
         db_base = "/storage8/erkia/"
         specie = "Streptococcus_pneumoniae"
         ref_ids = [
-                    "_".join(os.path.basename(x).split("_")[0:2]) for x
+                    "_".join(os.path.basename(x).split("_")[0:-1]) for x
                     in glob.glob(db_base + specie + f"/GFF/*.gff")
                    ]
         for ref_id in ref_ids:
-            gff_path = db_base + specie + "/GFF/" + ref_id + ".gff"
-            index_path = db_base + specie + "/FASTA/" + ref_id + ".fna"
+            gff_path = os.path.join(db_base, specie, "GFF", ref_id, "_genomic.gff")
+            index_path = os.path.join(db_base, specie, "/FASTA/", ref_id, "_genomic.fna")
             cls.instances[ref_id] = cls(ref_id, index_path, gff_path)
 
 def modeling(args):
