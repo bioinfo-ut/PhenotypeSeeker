@@ -1886,6 +1886,7 @@ class ref_genomes():
     @classmethod
     def from_db_dir(cls):
         for index_path in glob.glob("/storage8/erkia/Streptococcus_pneumoniae/FASTA/*.index"):
+            print(index_path)
             name = os.path.basename(index_path)
             gff_path = index_path.replace('FASTA', 'GFF').replace('index', 'gff')
             return cls(name, index_path, gff_path)
