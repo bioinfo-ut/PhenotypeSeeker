@@ -1884,13 +1884,14 @@ class ref_genomes():
     def get_refs(cls):
         db_base = "/storage8/erkia/"
         specie = "Streptococcus_pneumoniae"
-        ref_ids = ["_".join(os.path.basename(x).split("_")[0:2]) for x in glob.glob(db_base + specie + f"/GFF/*.gff")]
+        ref_ids = [
+                    "_".join(os.path.basename(x).split("_")[0:2]) for x
+                    in glob.glob(db_base + specie + f"/GFF/*.gff")
+                   ]
         for ref_id in ref_ids:
-            print(ref_id)
             gff_path = db_base + specie + "/GFF/" + ref_id + ".gff"
             index_path = db_base + specie + "/FASTA/" + ref_id + ".fna"
             cls.instances[ref_id] = cls(ref_id, index_path, gff_path)
-            print(cls.instances)
 
 def modeling(args):
     # The main function of "phenotypeseeker modeling"
@@ -1965,7 +1966,7 @@ def modeling(args):
     if not Input.jump_to or Input.jump_to in ["modeling", "modelling", "testing"]:
 
         ref_genomes.get_refs()
-        print(ref_genomes.instances)
+        ref_genomes.gene_annotations_in_refs()
 
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
         sys.stderr.flush()
