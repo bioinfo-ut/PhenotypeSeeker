@@ -18,6 +18,7 @@ import matplotlib.pyplot as plt
 import Bio
 import numpy as np
 import pandas as pd
+import glob
 
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor, _DistanceMatrix
 from collections import OrderedDict
@@ -1874,9 +1875,10 @@ class ref_genomes():
 
     # vectors_as_multiple_input = Manager().list()
 
-    def __init__(self, name, address):
+    def __init__(self, name, index_path, gff_path):
         self.name = name
-        self.address = address
+        self.index_path = index_path
+        self.gff_path = gff_path
         
         ref_genomes.instances[name] = self
         ref_genomes.nr_ref_genomes += 1
@@ -1884,7 +1886,7 @@ class ref_genomes():
     @classmethod
     def from_db_dir(cls):
         for index_path in glob.glob("/storage8/erkia/Streptococcus_pneumoniae/FASTA/*.index"):
-            name = os.path.basename(path)
+            name = os.path.basename(index_path)
             gff_path = index_path.replace('FASTA', 'GFF').replace('index', 'gff')
         return cls(name, index_path, gff_path)
 
