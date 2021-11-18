@@ -1881,6 +1881,7 @@ class ref_genomes():
         self.gff_path = gff_path
         
         ref_genomes.instances[name] = self
+        print(ref_genomes.instances)
         ref_genomes.nr_ref_genomes += 1
 
     @classmethod
