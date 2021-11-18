@@ -1823,7 +1823,7 @@ class annotate():
                 while returncode != 0:
                     indexes = run(
                         ["glistquery", "--locations", "-q", kmer,
-                        f"K-mer_lists/{strain}_{Input.kmer_length}.index"
+                        f"K-mer_lists/{ref_genome.name}_{Samples.kmer_length}.index"
                         ]
                         , capture_output=True, text=True)
                     returncode = indexes.returncode
@@ -1898,7 +1898,7 @@ class ref_genomes():
                    ]
         for ref_id in ref_ids:
             gff_path = os.path.join(db_base, specie, "GFF", ref_id + "_genomic.gff")
-            index_path = os.path.join(db_base, specie, "FASTA", f"{ref_id}_{Input.kmer_length}.index")
+            index_path = os.path.join(db_base, specie, "FASTA", f"{ref_id}_{Samples.kmer_length}.index")
             cls.instances[ref_id] = cls(ref_id, index_path, gff_path)
 
 def modeling(args):
