@@ -1748,6 +1748,146 @@ class phenotypes():
                 + str(len(item)) + "\n" + item + "\n")
         f1.close()
 
+
+
+
+
+
+
+class annotate():
+
+    genome_annotations = {}
+    kmer_annotations = OrderedDict()
+
+    @classmethod
+    def gene_annotations_in_refs(cls):
+        for ref_genome in ref_genomes.instances.values():
+            with open(ref_genome.gff_path) as genome_annotation:
+                for line in prokka_res:
+                    if "gene" == line.split('\t')[2]:
+                        line2list = line.split('\t')
+                        contig = line2list[0]
+                        strand = line2list[6]
+                        if strand == "+":
+                            gene_start = int(line2list[3])
+                            gene_end = int(line2list[4])
+                        elif strand == "-":
+                            gene_start = int(line2list[4])
+                            gene_end = int(line2list[3])                          
+                        # product_name = line2list[-1].strip().split("product=")[-1]
+                        if 'gene' in line2list[-1]:
+                            gene_name = line2list[-1].split("gene=")[-1].split(";")[0]
+                        else:
+                            gene_name = "-"
+                        data = {'gene_start': gene_start, 'gene_name': gene_name, 'gene_end': gene_end, 'strand': strand,
+                                # 'product_name': product_name
+                            }
+                        if sample.name not in cls.genome_annotations:
+                            cls.genome_annotations[sample.name] = {contig : {
+                                gene_start : data,
+                                gene_end : data
+                                }}
+                        else:
+                            if contig not in cls.genome_annotations[sample.name]:
+                                cls.genome_annotations[sample.name][contig] = {
+                                    gene_start : data,
+                                    gene_end : data
+                                }
+                            else:
+                                cls.genome_annotations[sample.name][contig][gene_start] = data
+                                cls.genome_annotations[sample.name][contig][gene_end] = data
+
+    @classmethod
+    def get_kmer_annotations(cls, inp):
+        for kmer in inp():
+            for ref_genome in ref_genomes.instances.values():
+                contig_mapper = {}
+                query_seqs = run(
+                        ["glistquery", "--sequences",
+                        ref_genome.index_path
+                        ]
+                        , capture_output=True, text=True)
+                for line in query_seqs.stdout.strip().split("\n"):
+                    contig_mapper[line.split()[1]] = line.split()[2]
+                returncode = -1
+                while returncode != 0:
+                    indexes = run(
+                        ["glistquery", "--locations", "-q", kmer,
+                        f"K-mer_lists/{strain}_{Input.kmer_length}.index"
+                        ]
+                        , capture_output=True, text=True)
+                    returncode = indexes.returncode
+                for line in indexes.stdout.strip().split("\n")[1:]:
+                    _, contig, pos, _ = line.split()
+                    cls.annotate_kmers(
+                        kmer, strain, contig_mapper[contig], int(pos)+1)
+
+
+    @classmethod
+    def annotate_kmers(cls, kmer, strain, contig, pos):
+        # Find the nearest position
+        relative_pos = "-"
+        gene = "-"
+        product = "-"
+        if contig in cls.genome_annotations[strain]:
+            nearest = min(cls.genome_annotations[strain][contig], key=lambda x:abs(x-pos))
+            gene = cls.genome_annotations[strain][contig][nearest]['gene_name']
+            product = cls.genome_annotations[strain][contig][nearest]['product_name']
+            if cls.genome_annotations[strain][contig][nearest]['strand'] == '+':
+                if (pos >= cls.genome_annotations[strain][contig][nearest]['gene_start'] and
+                   pos <= cls.genome_annotations[strain][contig][nearest]['gene_end']):
+                    relative_pos = 'in'
+                elif pos < cls.genome_annotations[strain][contig][nearest]['gene_start']:
+                    relative_pos = 'preceding'
+                elif pos > cls.genome_annotations[strain][contig][nearest]['gene_end']:
+                    relative_pos = 'succeeding'
+            elif cls.genome_annotations[strain][contig][nearest]['strand'] == '-':
+                if (pos <= cls.genome_annotations[strain][contig][nearest]['gene_start'] and
+                   pos >= cls.genome_annotations[strain][contig][nearest]['gene_end']):
+                    relative_pos = 'in'
+                elif pos > cls.genome_annotations[strain][contig][nearest]['gene_start']:
+                    relative_pos = 'preceding'
+                elif pos < cls.genome_annotations[strain][contig][nearest]['gene_end']:
+                    relative_pos = 'succeeding'
+        if f"{kmer}\t{relative_pos}\t{gene}\t{product}" not in cls.kmer_annotations:
+            cls.kmer_annotations[f"{kmer}\t{relative_pos}\t{gene}\t{product}"] = [strain]
+        else:
+            cls.kmer_annotations[f"{kmer}\t{relative_pos}\t{gene}\t{product}"].append(strain)
+
+    @classmethod
+    def write_results(cls):
+        with open('kmer_annotations.txt', 'w') as out:
+            out.write(f'kmer\trelative_position\tgene\tproduct\tsamples\n')
+            prev_kmer = None
+            for key, value in cls.kmer_annotations.items():
+                kmer = key.split()[0]
+                if prev_kmer and kmer != prev_kmer:
+                    out.write("\n")
+                out.write(f"{key}\t{' '.join(value)}\n")
+                prev_kmer = kmer
+
+
+class ref_genomes():
+
+    instances = OrderedDict()
+    nr_ref_genomes = 0
+
+    # vectors_as_multiple_input = Manager().list()
+
+    def __init__(self, name, address):
+        self.name = name
+        self.address = address
+        
+        ref_genomes.instances[name] = self
+        ref_genomes.nr_ref_genomes += 1
+
+    @classmethod
+    def from_db_dir(cls):
+        for index_path in glob.glob("/storage8/erkia/Streptococcus_pneumoniae/FASTA/*.index"):
+            name = os.path.basename(path)
+            gff_path = index_path.replace('FASTA', 'GFF').replace('index', 'gff')
+        return cls(name, index_path, gff_path)
+
 def modeling(args):
     # The main function of "phenotypeseeker modeling"
 
@@ -1819,6 +1959,10 @@ def modeling(args):
         sys.stderr.flush()
       
     if not Input.jump_to or Input.jump_to in ["modeling", "modelling", "testing"]:
+
+        ref_genomes.from_db_dir()
+        print(ref_genomes.instances)
+
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
         sys.stderr.flush()
         with Pool(Input.num_threads) as p:
