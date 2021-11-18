@@ -1831,6 +1831,7 @@ class annotate():
                         ]
                         , capture_output=True, text=True)
                     returncode = indexes.returncode
+                print(indexes)
                 for line in indexes.stdout.strip().split("\n")[1:]:
                     _, contig, pos, _ = line.split()
                     cls.annotate_kmers(
