@@ -1966,7 +1966,7 @@ def modeling(args):
     if not Input.jump_to or Input.jump_to in ["modeling", "modelling", "testing"]:
 
         ref_genomes.get_refs()
-        annotate.gene_ref_annos()
+        annotate.get_ref_annos()
 
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
         sys.stderr.flush()
