@@ -1769,7 +1769,7 @@ class annotate():
                         line2list = line.split('\t')
                         contig = line2list[0]
                         strand = line2list[6]
-                        
+
                         if strand == "+":
                             gene_start = int(line2list[3])
                             gene_end = int(line2list[4])
@@ -1784,7 +1784,7 @@ class annotate():
                         else:
                             gene_name = "-"
 
-                        if "Protein Homology" in ref_annos.next():
+                        if "Protein Homology" in ref_annos.readline():
                             product_name = line2list[-1].strip().split("product=")[-1]
 
                         data = {'gene_start': gene_start, 'gene_name': gene_name,
