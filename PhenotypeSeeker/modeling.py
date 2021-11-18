@@ -1851,6 +1851,7 @@ class annotate():
             cls.kmer_annotations[f"{kmer}\t{relative_pos}\t{gene}\t{product}"] = [strain]
         else:
             cls.kmer_annotations[f"{kmer}\t{relative_pos}\t{gene}\t{product}"].append(strain)
+        print(f"{kmer}\t{relative_pos}\t{gene}\t{product}")
 
     @classmethod
     def write_results(cls):
@@ -1892,7 +1893,6 @@ class ref_genomes():
             gff_path = os.path.join(cls.db_base, cls.specie, "GFF", ref_id + "_genomic.gff")
             index_path = os.path.join(cls.db_base, cls.specie, "FASTA", f"{ref_id}_{Samples.kmer_length}.index")
             contig_mapper = {}
-            print("glistquery", "--sequences", index_path)
             query_seqs = run(
                 ["glistquery", "--sequences", index_path], capture_output=True, text=True
                 )
@@ -1978,6 +1978,7 @@ def modeling(args):
         ML_df.index = ML_df.index.astype(str)
         kmers = ML_df.columns[:-2]
         annotate.get_kmer_annotations(kmers)
+        annotate.write_results()
 
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
         sys.stderr.flush()
