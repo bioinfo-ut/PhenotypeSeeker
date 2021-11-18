@@ -1792,7 +1792,7 @@ class annotate():
 
                         data = {'gene_start': gene_start, 'gene_name': gene_name,
                                 'gene_end': gene_end, 'strand': strand,
-                                'product_name': product_name
+                                'product_name': product
                             }
                         if ref_genome.name not in cls.genome_annotations:
                             cls.genome_annotations[ref_genome.name] = {contig : {
