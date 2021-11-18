@@ -1870,7 +1870,7 @@ class annotate():
 
 class ref_genomes():
 
-    instances = list()
+    instances = OrderedDict()
     nr_ref_genomes = 0
 
     def __init__(self, name, index_path, gff_path):
@@ -1878,7 +1878,6 @@ class ref_genomes():
         self.index_path = index_path
         self.gff_path = gff_path
         
-        ref_genomes.instances.append(self)
         ref_genomes.nr_ref_genomes += 1
 
     @classmethod
@@ -1889,7 +1888,7 @@ class ref_genomes():
         for ref_id in ref_ids:
             gff_path = db_base + specie + "/GFF/" + ref_id + ".gff"
             index_path = db_base + specie + "/FASTA/" + ref_id + ".fna"
-            cls(ref_id, index_path, gff_path)
+            cls.instances[ref_id] = cls(ref_id, index_path, gff_path)
 
 def modeling(args):
     # The main function of "phenotypeseeker modeling"
