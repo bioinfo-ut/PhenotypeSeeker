@@ -1827,8 +1827,8 @@ class annotate():
                 while returncode != 0:
                     indexes = run(
                         ["glistquery", "--locations", "-q", kmer,
-                        os.path.join(ref_genomes.base, ref_genomes.specie,
-                        f"{ref_genome.name}_{Samples.kmer_length}.index")
+                        os.path.join(ref_genomes.db_base, ref_genomes.specie,
+                        "FASTA", f"{ref_genome.name}_{Samples.kmer_length}.index")
                         ]
                         , capture_output=True, text=True)
                     returncode = indexes.returncode
@@ -1836,7 +1836,7 @@ class annotate():
                 for line in indexes.stdout.strip().split("\n")[1:]:
                     _, contig, pos, _ = line.split()
                     cls.annotate_kmers(
-                        kmer, strain, contig_mapper[contig], int(pos)+1)
+                        kmer, ref_genome.name, contig_mapper[contig], int(pos)+1)
 
     @classmethod
     def annotate_kmers(cls, kmer, strain, contig, pos):
