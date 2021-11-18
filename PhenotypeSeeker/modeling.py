@@ -1765,7 +1765,7 @@ class annotate():
         for ref_genome in ref_genomes.instances.values():
             with open(ref_genome.gff_path) as ref_annos:
                 for line in ref_annos:
-                    if '#' not in line and "gene" == line.split('\t')[2]:
+                    if '#' not in line and "gene" in line.split('\t')[2]:
                         line2list = line.split('\t')
                         contig = line2list[0]
                         strand = line2list[6]
@@ -1784,6 +1784,8 @@ class annotate():
                         else:
                             gene_name = "-"
 
+                        product_line = ref_annos.readline()
+                        product = product_line.split()[-1].split("Product=")[-1].split(";")[0]
                         if "Protein Homology" in ref_annos.readline():
                             line2list = line.split('\t')
                             product_name = line2list[-1].strip().split("product=")[-1]
