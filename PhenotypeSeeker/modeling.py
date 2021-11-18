@@ -1808,34 +1808,18 @@ class annotate():
 
     @classmethod
     def get_kmer_annotations(cls, kmers):
-        cwd = os.getcwd()
-        os.chdir(os.path.join(ref_genomes.db_base, ref_genomes.specie, "FASTA"))
         for kmer in kmers:
             for ref_genome in ref_genomes.instances.values():
-                contig_mapper = {}
-                print(ref_genome.index_path)
-                query_seqs = run(
-                        ["glistquery", "--sequences",
-                        ref_genome.index_path
-                        ]
-                        , capture_output=True, text=True)
-                for line in query_seqs.stdout.strip().split("\n"):
-                    contig_mapper[line.split()[1]] = line.split()[2]
-                returncode = -1
-                while returncode != 0:
-                    indexes = run(
-                        ["glistquery", "--locations", "-q", kmer,
-                        os.path.join(ref_genomes.db_base, ref_genomes.specie,
-                        "FASTA", f"{ref_genome.name}_{Samples.kmer_length}.index")
-                        ]
-                        , capture_output=True, text=True)
-                    returncode = indexes.returncode
-                print(indexes)
+                indexes = run(
+                    ["glistquery", "--locations", "-q", kmer,
+                    os.path.join(ref_genomes.db_base, ref_genomes.specie,
+                    "FASTA", f"{ref_genome.name}_{Samples.kmer_length}.index")
+                    ]
+                    , capture_output=True, text=True)
                 for line in indexes.stdout.strip().split("\n")[1:]:
                     _, contig, pos, _ = line.split()
                     cls.annotate_kmers(
-                        kmer, ref_genome.name, contig_mapper[contig], int(pos)+1)
-        os.chdir(cwd)
+                        kmer, ref_genome.name, ref_genome.contig_mapper[contig], int(pos)+1)
 
     @classmethod
     def annotate_kmers(cls, kmer, strain, contig, pos):
@@ -1867,7 +1851,6 @@ class annotate():
             cls.kmer_annotations[f"{kmer}\t{relative_pos}\t{gene}\t{product}"] = [strain]
         else:
             cls.kmer_annotations[f"{kmer}\t{relative_pos}\t{gene}\t{product}"].append(strain)
-        print(f"{kmer}\t{relative_pos}\t{gene}\t{product}")
 
     @classmethod
     def write_results(cls):
@@ -1881,7 +1864,6 @@ class annotate():
                 out.write(f"{key}\t{' '.join(value)}\n")
                 prev_kmer = kmer
 
-
 class ref_genomes():
 
     instances = OrderedDict()
@@ -1890,10 +1872,11 @@ class ref_genomes():
     db_base = None
     specie = None
 
-    def __init__(self, name, index_path, gff_path):
+    def __init__(self, name, index_path, gff_path, contig_mapper):
         self.name = name
         self.index_path = index_path
         self.gff_path = gff_path
+        self.contig_mapper = contig_mapper
         
         ref_genomes.nr_ref_genomes += 1
 
@@ -1908,7 +1891,15 @@ class ref_genomes():
         for ref_id in ref_ids:
             gff_path = os.path.join(cls.db_base, cls.specie, "GFF", ref_id + "_genomic.gff")
             index_path = os.path.join(cls.db_base, cls.specie, "FASTA", f"{ref_id}_{Samples.kmer_length}.index")
-            cls.instances[ref_id] = cls(ref_id, index_path, gff_path)
+            contig_mapper = {}
+            query_seqs = run(
+                ["glistquery", "--sequences",
+                ref_genome.index_path
+                ]
+                , capture_output=True, text=True)
+            for line in query_seqs.stdout.strip().split("\n"):
+                contig_mapper[line.split()[1]] = line.split()[2]
+            cls.instances[ref_id] = cls(ref_id, index_path, gff_path, contig_mapper)
 
 def modeling(args):
     # The main function of "phenotypeseeker modeling"
