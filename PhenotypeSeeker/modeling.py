@@ -1813,7 +1813,7 @@ class annotate():
                 contig_mapper = {}
                 print(ref_genome.index_path)
                 cwd = os.getcwd()
-                os.chdir(os.urljoin(ref_genomes.db_base + "FASTA"))
+                os.chdir(os.path.join(ref_genomes.db_base, ref_genomes.specie, "FASTA"))
                 query_seqs = run(
                         ["glistquery", "--sequences",
                         ref_genome.index_path
