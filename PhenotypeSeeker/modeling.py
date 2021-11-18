@@ -1811,6 +1811,9 @@ class annotate():
         for kmer in kmers:
             for ref_genome in ref_genomes.instances.values():
                 contig_mapper = {}
+                print(ref_genome.index_path)
+                cwd = os.getcwd()
+                os.chdir()
                 query_seqs = run(
                         ["glistquery", "--sequences",
                         ref_genome.index_path
@@ -1881,6 +1884,9 @@ class ref_genomes():
     instances = OrderedDict()
     nr_ref_genomes = 0
 
+    db_base = None
+    specie = None
+
     def __init__(self, name, index_path, gff_path):
         self.name = name
         self.index_path = index_path
@@ -1890,15 +1896,15 @@ class ref_genomes():
 
     @classmethod
     def get_refs(cls):
-        db_base = "/storage8/erkia/"
-        specie = "Streptococcus_pneumoniae"
+        cls.db_base = "/storage8/erkia/"
+        cls.specie = "Streptococcus_pneumoniae"
         ref_ids = [
                     "_".join(os.path.basename(x).split("_")[0:-1]) for x
-                    in glob.glob(db_base + specie + f"/GFF/*.gff")
+                    in glob.glob(cls.db_base + cls.specie + f"/GFF/*.gff")
                    ]
         for ref_id in ref_ids:
-            gff_path = os.path.join(db_base, specie, "GFF", ref_id + "_genomic.gff")
-            index_path = os.path.join(db_base, specie, "FASTA", f"{ref_id}_{Samples.kmer_length}.index")
+            gff_path = os.path.join(cls.db_base, cls.specie, "GFF", ref_id + "_genomic.gff")
+            index_path = os.path.join(cls.db_base, cls.specie, "FASTA", f"{ref_id}_{Samples.kmer_length}.index")
             cls.instances[ref_id] = cls(ref_id, index_path, gff_path)
 
 def modeling(args):
