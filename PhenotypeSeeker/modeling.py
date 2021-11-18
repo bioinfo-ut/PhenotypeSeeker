@@ -1791,20 +1791,20 @@ class annotate():
                                 'gene_end': gene_end, 'strand': strand,
                                 'product_name': product_name
                             }
-                        if sample.name not in cls.genome_annotations:
-                            cls.genome_annotations[sample.name] = {contig : {
+                        if ref_genome.name not in cls.genome_annotations:
+                            cls.genome_annotations[ref_genome.name] = {contig : {
                                 gene_start : data,
                                 gene_end : data
                                 }}
                         else:
-                            if contig not in cls.genome_annotations[sample.name]:
-                                cls.genome_annotations[sample.name][contig] = {
+                            if contig not in cls.genome_annotations[ref_genome.name]:
+                                cls.genome_annotations[ref_genome.name][contig] = {
                                     gene_start : data,
                                     gene_end : data
                                 }
                             else:
-                                cls.genome_annotations[sample.name][contig][gene_start] = data
-                                cls.genome_annotations[sample.name][contig][gene_end] = data
+                                cls.genome_annotations[ref_genome.name][contig][gene_start] = data
+                                cls.genome_annotations[ref_genome.name][contig][gene_end] = data
         print(genome_annotations)
 
     @classmethod
