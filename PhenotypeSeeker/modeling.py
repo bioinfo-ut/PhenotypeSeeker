@@ -1870,7 +1870,7 @@ class annotate():
 
 class ref_genomes():
 
-    instances = OrderedDict()
+    instances = list()
     nr_ref_genomes = 0
 
     def __init__(self, name, index_path, gff_path):
@@ -1878,7 +1878,7 @@ class ref_genomes():
         self.index_path = index_path
         self.gff_path = gff_path
         
-        ref_genomes.instances[name] = self
+        ref_genomes.instances.append(self)
         ref_genomes.nr_ref_genomes += 1
 
     @classmethod
