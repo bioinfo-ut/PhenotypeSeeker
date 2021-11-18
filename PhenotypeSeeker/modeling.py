@@ -1866,6 +1866,7 @@ class annotate():
             cls.kmer_annotations[f"{kmer}\t{relative_pos}\t{gene}\t{product}"] = [strain]
         else:
             cls.kmer_annotations[f"{kmer}\t{relative_pos}\t{gene}\t{product}"].append(strain)
+        print(f"{kmer}\t{relative_pos}\t{gene}\t{product}")
 
     @classmethod
     def write_results(cls):
