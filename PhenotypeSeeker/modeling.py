@@ -1816,7 +1816,6 @@ class annotate():
                         ref_genome.index_path
                         ]
                         , capture_output=True, text=True)
-                print(query_seqs)
                 for line in query_seqs.stdout.strip().split("\n"):
                     contig_mapper[line.split()[1]] = line.split()[2]
                 returncode = -1
@@ -1831,7 +1830,6 @@ class annotate():
                     _, contig, pos, _ = line.split()
                     cls.annotate_kmers(
                         kmer, strain, contig_mapper[contig], int(pos)+1)
-
 
     @classmethod
     def annotate_kmers(cls, kmer, strain, contig, pos):
@@ -1899,7 +1897,7 @@ class ref_genomes():
                    ]
         for ref_id in ref_ids:
             gff_path = os.path.join(db_base, specie, "GFF", ref_id + "_genomic.gff")
-            index_path = os.path.join(db_base, specie, "/FASTA/", ref_id + "_genomic.fna")
+            index_path = os.path.join(db_base, specie, "FASTA", ref_id + "_genomic.index")
             cls.instances[ref_id] = cls(ref_id, index_path, gff_path)
 
 def modeling(args):
