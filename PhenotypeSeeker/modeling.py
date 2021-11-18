@@ -1763,8 +1763,8 @@ class annotate():
     @classmethod
     def get_ref_annos(cls):
         for ref_genome in ref_genomes.instances.values():
-            with open(ref_genome.gff_path) as genome_annotation:
-                for line in prokka_res:
+            with open(ref_genome.gff_path) as ref_annos:
+                for line in ref_annos:
                     if "gene" == line.split('\t')[2]:
                         line2list = line.split('\t')
                         contig = line2list[0]
