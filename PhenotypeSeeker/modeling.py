@@ -1197,7 +1197,7 @@ class phenotypes():
                     'num_samples_w_kmer']
             self.ML_df.columns.name = "k-mer"
             self.ML_df.index = out_cols + list(Input.samples.keys())
-            print(self.ML_df.loc[out_cols[0:2]])
+            self.ML_df.loc[out_cols[0:2]] = self.ML_df.loc[out_cols[0:2]].apply(pd.to_numeric)
 
             # Limiting the kmer amount by p-val
             self.ML_df = self.ML_df.sort_values('p-value', axis=1)
