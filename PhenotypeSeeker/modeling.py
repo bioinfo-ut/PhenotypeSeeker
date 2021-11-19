@@ -1826,7 +1826,6 @@ class annotate():
                     , capture_output=True, text=True)
                 for line in indexes.stdout.strip().split("\n")[1:]:
                     if line:
-                        print(line)
                         _, contig, pos, _ = line.split()
                         cls.annotate_kmers(
                             kmer, ref_genome.name, ref_genome.contig_mapper[contig], int(pos)+1)
@@ -1868,6 +1867,8 @@ class annotate():
             "relative_pos" : relative_pos, "gene": gene,
             "product": product, "protein_id": protein_id},
             ignore_index=True)
+        print(kmer, relative_pos, gene, product, protein_id)
+        print(cls.kmer_annotations)
         # else:
         #     cls.kmer_annotations[kmer] = cls.kmer_annotations[kmer].append({
         #         "relative_pos" : relative_pos, "gene": gene,
