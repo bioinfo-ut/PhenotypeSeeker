@@ -1223,11 +1223,13 @@ class phenotypes():
                 f'kmer_metadata_{self.name}.tsv', sep='\t'
                 )
             print(self.ML_df.groupby(by="product").mean())
+            print(self.ML_df.groupby(by="product").size())
             # kmer_clusters = self.ML_df.T.groupby(by=["product"].mean()
             # print(kmer_clusters)
 
             # Setting up the final dataframe
             self.model_package['kmers'] = kmers
+            print(self.ML_df)
             self.ML_df.drop(out_cols, inplace=True)
             self.ML_df['weights'] = [
                 sample.weight for sample in Input.samples.values()
