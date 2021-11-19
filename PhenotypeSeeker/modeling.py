@@ -727,6 +727,8 @@ class phenotypes():
                 stderr_print.currentKmerNum.value += self.progress_checkpoint
                 Input.lock.release()
                 stderr_print.update_percent(self.name)
+                if counter == 10000:
+                    return
             kmer = line[0].split()[0]
             kmer_vector = [int(j.split()[1].strip()) for j in line]
             if not self.real_counts:
@@ -1206,6 +1208,8 @@ class phenotypes():
                     'num_samples_w_kmer', 'samples_with_kmer']
             self.ML_df.columns.name = "k-mer"
             self.ML_df.index = out_cols + list(Input.samples.keys())
+
+            # Limiting the kmer amount by p-val
             self.ML_df = self.ML_df.sort_values('p-value', axis=1)
             self.ML_df.T[out_cols].to_csv(f'{out_cols[0]}_results_{self.name}.tsv', sep='\t')
             if self.kmer_limit:
@@ -1214,9 +1218,19 @@ class phenotypes():
                     f'{out_cols[0]}_results_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
                     )
 
-            self.model_package['kmers'] = self.ML_df.loc['samples_with_kmer'].apply(
-                lambda x: x.split()[1:]
+            # Annotation block
+            ref_genomes.get_refs()
+            kmers = self.ML_df.columns[:-2]
+            annotate.get_kmer_annotations(kmers)
+            annotate.write_results()
+            self.ML_df = self.ML_df.append(annotate.kmer_annotations.T)
+            out_cols = out_cols + ["gene", "relative_pos", "product", "protein_id"]
+            self.ML_df.T[out_cols].to_csv(
+                f'kmer_metadata_{self.name}.tsv', sep='\t'
                 )
+            self.model_package['kmers'] = kmers
+
+
             self.ML_df.drop(out_cols, inplace=True)
             self.ML_df['weights'] = [
                 sample.weight for sample in Input.samples.values()
