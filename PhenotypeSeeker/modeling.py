@@ -727,7 +727,7 @@ class phenotypes():
                 stderr_print.currentKmerNum.value += self.progress_checkpoint
                 Input.lock.release()
                 stderr_print.update_percent(self.name)
-            if counter == 20000:
+            if counter == 40000:
                 return kmer_dict
             kmer = line[0].split()[0]
             kmer_vector = [int(j.split()[1].strip()) for j in line]
@@ -1218,6 +1218,9 @@ class phenotypes():
             self.ML_df.T[out_cols].to_csv(
                 f'kmer_metadata_{self.name}.tsv', sep='\t'
                 )
+
+            kmer_clusters = self.ML_df.groupby("product")
+            print(kmer_clusters)
 
             # Setting up the final dataframe
             self.model_package['kmers'] = kmers
