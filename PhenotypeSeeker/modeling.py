@@ -1210,7 +1210,7 @@ class phenotypes():
 
             # Annotation
             ref_genomes.get_refs()
-            ref_genomes.get_ref_annos()
+            annotate.get_ref_annos()
             annotate.get_kmer_annotations(kmers)
             annotate.write_results()
             self.ML_df = self.ML_df.append(annotate.kmer_annotations.T)
