@@ -2023,15 +2023,6 @@ def modeling(args):
         sys.stderr.flush()
       
     if not Input.jump_to or Input.jump_to in ["modeling", "modelling", "testing"]:
-
-        # ref_genomes.get_refs()
-        # annotate.get_ref_annos()
-        # ML_df = pd.read_csv("betalactam" + "_MLdf.csv", index_col=0)
-        # ML_df.index = ML_df.index.astype(str)
-        # kmers = ML_df.columns[:-2]
-        # annotate.get_kmer_annotations(kmers)
-        # annotate.write_results()
-
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
         sys.stderr.flush()
         with Pool(Input.num_threads) as p:
@@ -2040,7 +2031,7 @@ def modeling(args):
                 Input.phenotypes_to_analyse.values()
             )
 
-    call(['rm', '-rf', 'K-mer_lists'])
+    # call(['rm', '-rf', 'K-mer_lists'])
 
     if args.assembly:
         sys.stderr.write("\x1b[1;32mAssembling the k-mers used in modeling of: \x1b[0m\n")
