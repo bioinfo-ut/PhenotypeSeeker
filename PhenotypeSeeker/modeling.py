@@ -1760,7 +1760,7 @@ class annotate():
     genome_annotations = {}
     kmer_annotations = pd.DataFrame({
             "kmer" : [],
-            "relative_pos" : [], "gene": [],
+            "gene": [], "relative_pos" : [],
             "product": [], "protein_id": []})
 
     @classmethod
@@ -1825,12 +1825,13 @@ class annotate():
                     ]
                     , capture_output=True, text=True)
                 if indexes.stdout:
-                    line = indexes.stdout.strip().split("\n")[1]
-                    _, contig, pos, _ = line.split()
-                    cls.annotate_kmers(
-                        kmer, ref_genome.name, ref_genome.contig_mapper[contig], int(pos)+1)
-                    break
-            print(cls.kmer_annotations)
+                    print(indexes.stdout)
+            #         line = indexes.stdout.strip().split("\n")[1]
+            #         _, contig, pos, _ = line.split()
+            #         cls.annotate_kmers(
+            #             kmer, ref_genome.name, ref_genome.contig_mapper[contig], int(pos)+1)
+            #         break
+            # print(cls.kmer_annotations)
 
             # mode_product = cls.kmer_annotations[kmer]["product"].mode()[0]
             # cls.kmer_annotations[kmer] = cls.kmer_annotations[kmer][cls.kmer_annotations[kmer]["product"] == mode_product]
