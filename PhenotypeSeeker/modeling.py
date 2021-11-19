@@ -1829,13 +1829,11 @@ class annotate():
     @classmethod
     def annotate_kmers(cls, kmer, strain, contig, pos):
         # Find the nearest position
-        relative_pos = "-"
-        gene = "-"
-        product = "-"
         if contig in cls.genome_annotations[strain]:
             nearest = min(cls.genome_annotations[strain][contig], key=lambda x:abs(x-pos))
             gene = cls.genome_annotations[strain][contig][nearest]['gene_name']
             product = cls.genome_annotations[strain][contig][nearest]['product_name']
+            prodtein_id = cls.genome_annotations[strain][contig][nearest]['protein_id']
             if cls.genome_annotations[strain][contig][nearest]['strand'] == '+':
                 if (pos >= cls.genome_annotations[strain][contig][nearest]['gene_start'] and
                    pos <= cls.genome_annotations[strain][contig][nearest]['gene_end']):
