@@ -1199,7 +1199,6 @@ class phenotypes():
             self.ML_df.index = out_cols + list(Input.samples.keys())
             self.ML_df = self.ML_df.T
             self.ML_df[out_cols[0:2]] = self.ML_df[out_cols[0:2]].apply(pd.to_numeric)
-            print(self.ML_df.dtypes)
 
             # Limiting the kmer amount by p-val
             self.ML_df = self.ML_df.sort_values('p-value')
@@ -1223,7 +1222,10 @@ class phenotypes():
                 f'kmer_metadata_{self.name}.tsv', sep='\t'
                 )
             print(self.ML_df.groupby(by="product").mean())
-            print(self.ML_df.groupby(by="product").size())
+            print(self.ML_df.groupby(by="product").agg(
+                count=('k-mer', 'size'), mean_sent=('chi2', 'mean')) \
+                .reset_index())
+
             # kmer_clusters = self.ML_df.T.groupby(by=["product"].mean()
             # print(kmer_clusters)
 
