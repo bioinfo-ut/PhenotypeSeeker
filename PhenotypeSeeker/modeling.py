@@ -1223,12 +1223,15 @@ class phenotypes():
                 f'kmer_metadata_{self.name}.tsv', sep='\t'
                 )
             clusters = self.ML_df.groupby(by="product").agg(
-                count=('product', 'size'), chi2_max=('chi2', 'max')
+                count=('product', 'size'), chi2_max=('chi2', 'max'),
+                chi2_mean=('chi2', 'mean')
                 ).reset_index()
             print(clusters)
             clusters['score'] = clusters['count'].apply(lambda x: math.ceil(x/Samples.kmer_length))
             print(clusters)
 
+            clusters_top10 = clusters.sort_values(count, ascending=False).product[:10]
+            print(clusters_top10)
             # kmer_clusters = self.ML_df.T.groupby(by=["product"].mean()
             # print(kmer_clusters)
 
