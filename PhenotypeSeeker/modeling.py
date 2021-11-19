@@ -1824,10 +1824,13 @@ class annotate():
                     "FASTA", f"{ref_genome.name}_{Samples.kmer_length}.index")
                     ]
                     , capture_output=True, text=True)
-                for line in indexes.stdout.strip().split("\n")[1:]:
+                line = indexes.stdout.strip().split("\n")[1:].readline()
+                # for line in indexes.stdout.strip().split("\n")[1:]:
+                if line:
                     _, contig, pos, _ = line.split()
                     cls.annotate_kmers(
                         kmer, ref_genome.name, ref_genome.contig_mapper[contig], int(pos)+1)
+                    break
 
             # mode_product = cls.kmer_annotations[kmer]["product"].mode()[0]
             # cls.kmer_annotations[kmer] = cls.kmer_annotations[kmer][cls.kmer_annotations[kmer]["product"] == mode_product]
@@ -1860,7 +1863,7 @@ class annotate():
                 elif pos < cls.genome_annotations[strain][contig][nearest]['gene_end']:
                     relative_pos = 'succeeding'
         cls.kmer_annotations.append({
-            "kmer" : kmer
+            "kmer" : kmer,
             "relative_pos" : relative_pos, "gene": gene,
             "product": product, "protein_id": protein_id})
         # else:
