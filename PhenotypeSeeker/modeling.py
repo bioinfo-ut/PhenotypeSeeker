@@ -1225,13 +1225,11 @@ class phenotypes():
             clusters = self.ML_df.groupby(by="product").agg(
                 count=('product', 'size'), chi2_max=('chi2', 'max')
                 ).reset_index()
-            clusters['score'] = math.ceil(clusters['count']/Samples.kmer_length)
+            clusters['score'] = clusters['count'].apply(lambda x: math.ceil(x/Samples.kmer_length))
             print(clusters)
 
             # kmer_clusters = self.ML_df.T.groupby(by=["product"].mean()
             # print(kmer_clusters)
-
-
 
             # Setting up the final dataframe
             self.model_package['kmers'] = kmers
