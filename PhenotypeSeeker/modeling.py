@@ -1218,25 +1218,24 @@ class phenotypes():
             self.ML_df = pd.concat([self.ML_df, annotate.kmer_annotations], axis=1)
             out_cols = out_cols + ["gene", "relative_pos", "product", "protein_id"]
 
-
-
             self.ML_df = self.ML_df.sort_values(["chi2", "product"])
             self.ML_df[out_cols].to_csv(
                 f'kmer_metadata_{self.name}.tsv', sep='\t'
                 )
-            print(self.ML_df.groupby(by="product").mean())
-            print(self.ML_df.groupby(by="product").agg(
+            clusters = self.ML_df.groupby(by="product").agg(
                 count=('product', 'size'), chi2_max=('chi2', 'max')) \
-                .reset_index())
+                .reset_index()
+            print(type(clusters))
+            print(clusters)
 
             # kmer_clusters = self.ML_df.T.groupby(by=["product"].mean()
             # print(kmer_clusters)
 
+
+
             # Setting up the final dataframe
             self.model_package['kmers'] = kmers
-            print(out_cols)
-            print(self.ML_df.columns)
-            self.ML_df.drop(out_cols, inplace=True)
+            self.ML_df.drop(out_cols, inplace=True, axis=1)
             self.ML_df['weights'] = [
                 sample.weight for sample in Input.samples.values()
                 ]
