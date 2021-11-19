@@ -1216,7 +1216,7 @@ class phenotypes():
             annotate.get_ref_annos()
             annotate.get_kmer_annotations(kmers)
             annotate.write_results()
-            self.ML_df = self.ML_df.append(annotate.kmer_annotations.T)
+            self.ML_df = pd.concat([self.ML_df, annotate.kmer_annotations], index=1)
             out_cols = out_cols + ["gene", "relative_pos", "product", "protein_id"]
             self.ML_df.T.sort_values("product")
             self.ML_df.T[out_cols].to_csv(
