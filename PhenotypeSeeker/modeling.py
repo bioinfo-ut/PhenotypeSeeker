@@ -1228,15 +1228,15 @@ class phenotypes():
                 ).reset_index()
             # print(clusters)
             # clusters['score'] = clusters['count'].apply(lambda x: math.ceil(x/int(Samples.kmer_length)))
+            clusters = clusters.sort_values('count', ascending=False)
             print(clusters)
-            clusters_by_count = clusters.sort_values('count', ascending=False)
-            clusters_top10 = clusters_by_count[:10]
+            clusters_top10 = clusters.product[:10]
             if 'hypothetical protein' in clusters_top10:
                 clusters_top10.drop(labels=['hypothetical protein'])
             print(clusters_top10)
             # kmer_clusters = self.ML_df.T.groupby(by=["product"].mean()
             # print(kmer_clusters)
-            self.ML_df = self.ML_df[self.ML_df.product in [clusters_top10]]
+            self.ML_df = self.ML_df[self.ML_df.product in clusters_top10]
 
             # Setting up the final dataframe
             self.model_package['kmers'] = kmers
