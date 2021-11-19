@@ -1825,8 +1825,8 @@ class annotate():
                     _, contig, pos, _ = line.split()
                     cls.annotate_kmers(
                         kmer, ref_genome.name, ref_genome.contig_mapper[contig], int(pos)+1)
-        print(cls.kmer_annotations[kmer])
-        print(cls.kmer_annotations[kmer]["product"].mode())
+            print(cls.kmer_annotations[kmer])
+            print(cls.kmer_annotations[kmer]["product"].mode())
 
     @classmethod
     def annotate_kmers(cls, kmer, strain, contig, pos):
