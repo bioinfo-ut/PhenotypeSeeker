@@ -1198,10 +1198,10 @@ class phenotypes():
             self.ML_df.columns.name = "k-mer"
             self.ML_df.index = out_cols + list(Input.samples.keys())
             self.ML_df = self.ML_df.T
-            self.ML_df[out_cols[0:2]] = self.ML_df[out_cols[0:2]].apply(pd.to_numeric)
+            self.ML_df[out_cols[0]] = self.ML_df[out_cols[0]].apply(pd.to_numeric)
 
             # Limiting the kmer amount by p-val
-            self.ML_df = self.ML_df.sort_values('p-value')
+            self.ML_df = self.ML_df.sort_values(out_cols[0], ascending=False)
             self.ML_df[out_cols].to_csv(f'{out_cols[0]}_results_{self.name}.tsv', sep='\t')
             if self.kmer_limit:
                 self.ML_df = self.ML_df.iloc[:self.kmer_limit, :]
@@ -1231,7 +1231,8 @@ class phenotypes():
 
             # Setting up the final dataframe
             self.model_package['kmers'] = kmers
-            print(self.ML_df)
+            print(out_cols)
+            print(self.ML_df.columns)
             self.ML_df.drop(out_cols, inplace=True)
             self.ML_df['weights'] = [
                 sample.weight for sample in Input.samples.values()
