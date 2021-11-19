@@ -1229,7 +1229,7 @@ class phenotypes():
             # clusters['score'] = clusters['count'].apply(lambda x: math.ceil(x/int(Samples.kmer_length)))
             clusters = clusters.sort_values('count', ascending=False)
             print(clusters)
-            clusters_top10 = clusters.product.loc[:10]
+            clusters_top10 = clusters['product'].loc[:10]
             if 'hypothetical protein' in clusters_top10:
                 clusters_top10.drop(labels=['hypothetical protein'])
             print(clusters_top10)
