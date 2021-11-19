@@ -1189,13 +1189,13 @@ class phenotypes():
             self.model_package['kmers'] = self.ML_df.columns[:-2]
 
             print(self.ML_df)
-            # ref_genomes.get_refs()
-            # annotate.get_ref_annos()
+            ref_genomes.get_refs()
+            annotate.get_ref_annos()
             # ML_df = pd.read_csv("betalactam" + "_MLdf.csv", index_col=0)
             # ML_df.index = ML_df.index.astype(str)
-            # kmers = ML_df.columns[:-2]
-            # annotate.get_kmer_annotations(kmers)
-            # annotate.write_results()
+            kmers = ML_df.columns[:-2]
+            annotate.get_kmer_annotations(kmers)
+            annotate.write_results()
 
         else:
             if self.pred_scale == "binary":
@@ -2003,13 +2003,13 @@ def modeling(args):
       
     if not Input.jump_to or Input.jump_to in ["modeling", "modelling", "testing"]:
 
-        ref_genomes.get_refs()
-        annotate.get_ref_annos()
-        ML_df = pd.read_csv("betalactam" + "_MLdf.csv", index_col=0)
-        ML_df.index = ML_df.index.astype(str)
-        kmers = ML_df.columns[:-2]
-        annotate.get_kmer_annotations(kmers)
-        annotate.write_results()
+        # ref_genomes.get_refs()
+        # annotate.get_ref_annos()
+        # ML_df = pd.read_csv("betalactam" + "_MLdf.csv", index_col=0)
+        # ML_df.index = ML_df.index.astype(str)
+        # kmers = ML_df.columns[:-2]
+        # annotate.get_kmer_annotations(kmers)
+        # annotate.write_results()
 
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
         sys.stderr.flush()
