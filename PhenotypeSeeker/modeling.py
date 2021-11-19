@@ -1196,7 +1196,7 @@ class phenotypes():
             kmers = self.ML_df.columns[:-2]
             annotate.get_kmer_annotations(kmers)
             annotate.write_results()
-            print(pd.concat(self.ML_df, annotate.kmer_annotations.T))
+            print(self.ML_df.append(annotate.kmer_annotations))
 
         else:
             if self.pred_scale == "binary":
