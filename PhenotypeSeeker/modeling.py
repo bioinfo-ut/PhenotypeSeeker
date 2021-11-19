@@ -727,7 +727,7 @@ class phenotypes():
                 stderr_print.currentKmerNum.value += self.progress_checkpoint
                 Input.lock.release()
                 stderr_print.update_percent(self.name)
-            if counter == 200000:
+            if counter == 100000:
                 return kmer_dict
             kmer = line[0].split()[0]
             kmer_vector = [int(j.split()[1].strip()) for j in line]
@@ -1226,14 +1226,15 @@ class phenotypes():
                 count=('product', 'size'), chi2_max=('chi2', 'max'),
                 chi2_mean=('chi2', 'mean')
                 ).reset_index()
+            # print(clusters)
+            # clusters['score'] = clusters['count'].apply(lambda x: math.ceil(x/int(Samples.kmer_length)))
             print(clusters)
-            clusters['score'] = clusters['count'].apply(lambda x: math.ceil(x/Samples.kmer_length))
-            print(clusters)
-
             clusters_top10 = clusters.sort_values(count, ascending=False).product[:10]
+            clusters_top10.drop(labels=['hypothetical protein'])
             print(clusters_top10)
             # kmer_clusters = self.ML_df.T.groupby(by=["product"].mean()
             # print(kmer_clusters)
+            self.ML_df = self.ML_df[self.ML_df.product in [clusters_top10]]
 
             # Setting up the final dataframe
             self.model_package['kmers'] = kmers
