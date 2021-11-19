@@ -1833,7 +1833,7 @@ class annotate():
             nearest = min(cls.genome_annotations[strain][contig], key=lambda x:abs(x-pos))
             gene = cls.genome_annotations[strain][contig][nearest]['gene_name']
             product = cls.genome_annotations[strain][contig][nearest]['product_name']
-            prodtein_id = cls.genome_annotations[strain][contig][nearest]['protein_id']
+            protein_id = cls.genome_annotations[strain][contig][nearest]['protein_id']
             if cls.genome_annotations[strain][contig][nearest]['strand'] == '+':
                 if (pos >= cls.genome_annotations[strain][contig][nearest]['gene_start'] and
                    pos <= cls.genome_annotations[strain][contig][nearest]['gene_end']):
@@ -1850,11 +1850,16 @@ class annotate():
                     relative_pos = 'preceding'
                 elif pos < cls.genome_annotations[strain][contig][nearest]['gene_end']:
                     relative_pos = 'succeeding'
-        if f"{kmer}\t{relative_pos}\t{gene}\t{product}\t{protein_id}" not in cls.kmer_annotations:
-            cls.kmer_annotations[f"{kmer}\t{relative_pos}\t{gene}\t{product}\t{protein_id}"] = [strain]
+        if kmer not in cls.kmer_annotations:
+            cls.kmer_annotations[kmer] = pd.DataFrame({
+                "relative_pos" : [relative_pos], "gene": [gene],
+                "product": product, "protein_id": protein_id})
         else:
-            cls.kmer_annotations[f"{kmer}\t{relative_pos}\t{gene}\t{product}\t{protein_id}"].append(strain)
-        print(f"{kmer}\t{relative_pos}\t{gene}\t{product}\t{protein_id}")
+            cls.kmer_annotations[kmer] = cls.kmer_annotations[kmer].append({
+                "relative_pos" : [relative_pos], "gene": [gene],
+                "product": product, "protein_id": protein_id
+                })
+        print(cls.kmer_annotations[kmer])
 
     @classmethod
     def write_results(cls):
