@@ -1201,16 +1201,15 @@ class phenotypes():
             self.ML_df[out_cols[0:2]] = self.ML_df[out_cols[0:2]].apply(pd.to_numeric)
             print(self.ML_df.dtypes)
 
-
             # Limiting the kmer amount by p-val
-            self.ML_df = self.ML_df.sort_values('p-value', axis=1)
-            self.ML_df.T[out_cols].to_csv(f'{out_cols[0]}_results_{self.name}.tsv', sep='\t')
+            self.ML_df = self.ML_df.sort_values('p-value')
+            self.ML_df[out_cols].to_csv(f'{out_cols[0]}_results_{self.name}.tsv', sep='\t')
             if self.kmer_limit:
-                self.ML_df = self.ML_df.iloc[:,:self.kmer_limit]
-                self.ML_df.T[out_cols].to_csv(
+                self.ML_df = self.ML_df.iloc[:self.kmer_limit, :]
+                self.ML_df[out_cols].to_csv(
                     f'{out_cols[0]}_results_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
                     )
-            kmers = self.ML_df.columns
+            kmers = self.ML_df.index
 
             # Annotation
             ref_genomes.get_refs()
