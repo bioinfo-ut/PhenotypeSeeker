@@ -1220,7 +1220,8 @@ class phenotypes():
             self.ML_df.T[out_cols].to_csv(
                 f'kmer_metadata_{self.name}.tsv', sep='\t'
                 )
-            print(ML_df.T)
+            print(self.ML_df.T)
+            print(self.ML_df.T.groupby(by="product").mean())
             # kmer_clusters = self.ML_df.T.groupby(by=["product"].mean()
             # print(kmer_clusters)
 
