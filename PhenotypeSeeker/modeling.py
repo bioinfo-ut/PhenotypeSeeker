@@ -1218,8 +1218,7 @@ class phenotypes():
             self.ML_df.T[out_cols].to_csv(
                 f'kmer_metadata_{self.name}.tsv', sep='\t'
                 )
-
-            kmer_clusters = self.ML_df.groupby("product")
+            kmer_clusters = self.ML_df.groupby(by=["product"])
             print(kmer_clusters)
 
             # Setting up the final dataframe
