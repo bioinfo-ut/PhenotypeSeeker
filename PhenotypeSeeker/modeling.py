@@ -1216,10 +1216,11 @@ class phenotypes():
             self.ML_df = self.ML_df.append(annotate.kmer_annotations.T)
             out_cols.remove('samples_with_kmer')
             out_cols = out_cols + ["gene", "relative_pos", "product", "protein_id"]
-            self.ML_df.sort_values("product")
+            self.ML_df.T.sort_values("product")
             self.ML_df.T[out_cols].to_csv(
                 f'kmer_metadata_{self.name}.tsv', sep='\t'
                 )
+            print(ML_df.T)
             # kmer_clusters = self.ML_df.T.groupby(by=["product"].mean()
             # print(kmer_clusters)
 
