@@ -1873,7 +1873,6 @@ class annotate():
                 elif pos < cls.genome_annotations[strain][contig][nearest]['gene_end']:
                     relative_pos = 'succeeding'
         cls.kmer_annotations.loc[kmer] = {
-            "kmer" : kmer,
             "relative_pos" : relative_pos, "gene": gene,
             "product": product, "protein_id": protein_id
             }
