@@ -1225,7 +1225,7 @@ class phenotypes():
             clusters = self.ML_df.groupby(by="product").agg(
                 count=('product', 'size'), chi2_max=('chi2', 'max')
                 ).reset_index()
-            print(type(clusters))
+            clusters['score'] = math.ceil(clusters['count']/Samples.kmer_length)
             print(clusters)
 
             # kmer_clusters = self.ML_df.T.groupby(by=["product"].mean()
@@ -1236,10 +1236,11 @@ class phenotypes():
             # Setting up the final dataframe
             self.model_package['kmers'] = kmers
             self.ML_df.drop(out_cols, inplace=True, axis=1)
-            self.ML_df.loc['weights'] = [
+            self.ML_df = self.ML_df.T
+            self.ML_df['weights'] = [
                 sample.weight for sample in Input.samples.values()
                 ]
-            self.ML_df.loc['phenotype'] = [
+            self.ML_df['phenotype'] = [
                 sample.phenotypes[self.name] for sample in Input.samples.values()
                 ]
             self.ML_df = self.ML_df[self.ML_df.phenotype != 'NA']
