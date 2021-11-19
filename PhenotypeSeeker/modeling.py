@@ -1193,7 +1193,7 @@ class phenotypes():
             annotate.get_ref_annos()
             # ML_df = pd.read_csv("betalactam" + "_MLdf.csv", index_col=0)
             # ML_df.index = ML_df.index.astype(str)
-            kmers = ML_df.columns[:-2]
+            kmers = self.ML_df.columns[:-2]
             annotate.get_kmer_annotations(kmers)
             annotate.write_results()
 
