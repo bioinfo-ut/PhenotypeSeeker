@@ -1824,7 +1824,7 @@ class annotate():
                     "FASTA", f"{ref_genome.name}_{Samples.kmer_length}.index")
                     ]
                     , capture_output=True, text=True)
-                if indexes.stdout():
+                if indexes.stdout:
                     line = indexes.stdout.strip().split("\n")[1]
                     _, contig, pos, _ = line.split()
                     cls.annotate_kmers(
