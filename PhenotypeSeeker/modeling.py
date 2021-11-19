@@ -1826,6 +1826,7 @@ class annotate():
                     , capture_output=True, text=True)
                 for line in indexes.stdout.strip().split("\n")[1:]:
                     if line:
+                        print(line)
                         _, contig, pos, _ = line.split()
                         cls.annotate_kmers(
                             kmer, ref_genome.name, ref_genome.contig_mapper[contig], int(pos)+1)
