@@ -1771,8 +1771,7 @@ class annotate():
     genome_annotations = {}
     kmer_annotations = pd.DataFrame({
             "gene": [], "relative_pos" : [],
-            "product": [], "protein_id": []},
-            index=phenotype.ML_df.columns[:-2])
+            "product": [], "protein_id": []})
 
     @classmethod
     def get_ref_annos(cls):
@@ -1827,6 +1826,7 @@ class annotate():
 
     @classmethod
     def get_kmer_annotations(cls, kmers):
+        cls.kmer_annotations.index = kmers
         for kmer in kmers:
             for ref_genome in ref_genomes.instances.values():
                 indexes = run(
