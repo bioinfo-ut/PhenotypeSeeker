@@ -1786,7 +1786,7 @@ class annotate():
 
                         product_line = ref_annos.readline()
                         if "product=" in product_line:
-                            product = product_line.split()[-1].split("Product=")[-1].split(";")[0]
+                            product = product_line.split('\t')[-1].split("product=")[-1].split(";")[0]
                         else:
                             product = "-"
 
