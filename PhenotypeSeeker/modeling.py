@@ -1856,9 +1856,9 @@ class annotate():
                 "product": product, "protein_id": protein_id})
         else:
             cls.kmer_annotations[kmer] = cls.kmer_annotations[kmer].append({
-                "relative_pos" : [relative_pos], "gene": [gene],
+                "relative_pos" : relative_pos, "gene": gene,
                 "product": product, "protein_id": protein_id
-                })
+                }, ignore_index=True)
         print(cls.kmer_annotations[kmer])
 
     @classmethod
