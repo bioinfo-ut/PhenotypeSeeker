@@ -1208,12 +1208,11 @@ class phenotypes():
                 self.ML_df[out_cols].to_csv(
                     f'{out_cols[0]}_results_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
                     )
-            kmers = self.ML_df.index
 
             # Annotation
             ref_genomes.get_refs()
             annotate.get_ref_annos()
-            annotate.get_kmer_annotations(kmers)
+            annotate.get_kmer_annotations(self.ML_df.index)
             annotate.write_results()
             self.ML_df = pd.concat([self.ML_df, annotate.kmer_annotations], axis=1)
             out_cols = out_cols + ["gene", "relative_pos", "product", "protein_id"]
@@ -1230,6 +1229,7 @@ class phenotypes():
             # clusters['score'] = clusters['count'].apply(lambda x: math.ceil(x/int(Samples.kmer_length)))
             clusters = clusters.sort_values('count', ascending=False)
             print(clusters)
+            print(clusters.product)
             clusters_top10 = clusters.product[:10]
             if 'hypothetical protein' in clusters_top10:
                 clusters_top10.drop(labels=['hypothetical protein'])
@@ -1239,9 +1239,9 @@ class phenotypes():
             self.ML_df = self.ML_df[self.ML_df.product in clusters_top10]
 
             # Setting up the final dataframe
-            self.model_package['kmers'] = kmers
             self.ML_df.drop(out_cols, inplace=True, axis=1)
             self.ML_df = self.ML_df.T
+            self.model_package['kmers'] = self.ML_df.index
             self.ML_df['weights'] = [
                 sample.weight for sample in Input.samples.values()
                 ]
