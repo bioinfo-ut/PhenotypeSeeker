@@ -1206,20 +1206,22 @@ class phenotypes():
                 self.ML_df.T[out_cols].to_csv(
                     f'{out_cols[0]}_results_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
                     )
+            kmers = self.ML_df.columns
 
             # Annotation
             ref_genomes.get_refs()
             annotate.get_ref_annos()
-            annotate.get_kmer_annotations(self.ML_df.columns)
+            annotate.get_kmer_annotations(kmers)
             annotate.write_results()
             self.ML_df = self.ML_df.append(annotate.kmer_annotations.T)
             out_cols.remove('samples_with_kmer')
             out_cols = out_cols + ["gene", "relative_pos", "product", "protein_id"]
+            self.ML_df.sort_values("product")
             self.ML_df.T[out_cols].to_csv(
                 f'kmer_metadata_{self.name}.tsv', sep='\t'
                 )
-            kmer_clusters = self.ML_df.groupby(by=["product"])
-            print(kmer_clusters)
+            # kmer_clusters = self.ML_df.T.groupby(by=["product"].mean()
+            # print(kmer_clusters)
 
             # Setting up the final dataframe
             self.model_package['kmers'] = kmers
