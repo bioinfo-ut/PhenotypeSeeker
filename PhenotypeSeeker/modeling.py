@@ -1223,7 +1223,7 @@ class phenotypes():
                 )
             print(self.ML_df.groupby(by="product").mean())
             print(self.ML_df.groupby(by="product").agg(
-                count=('k-mer', 'size'), mean_sent=('chi2', 'mean')) \
+                count=('product', 'size'), mean_chi2=('chi2', 'mean')) \
                 .reset_index())
 
             # kmer_clusters = self.ML_df.T.groupby(by=["product"].mean()
