@@ -1207,11 +1207,10 @@ class phenotypes():
                     f'{out_cols[0]}_results_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
                     )
 
-
             # Annotation
             ref_genomes.get_refs()
             annotate.get_ref_annos()
-            annotate.get_kmer_annotations(kmers)
+            annotate.get_kmer_annotations(self.ML_df.columns)
             annotate.write_results()
             self.ML_df = self.ML_df.append(annotate.kmer_annotations.T)
             out_cols = out_cols + ["gene", "relative_pos", "product", "protein_id"]
