@@ -1830,6 +1830,7 @@ class annotate():
                     cls.annotate_kmers(
                         kmer, ref_genome.name, ref_genome.contig_mapper[contig], int(pos)+1)
                     break
+            print(cls.kmer_annotations)
 
             # mode_product = cls.kmer_annotations[kmer]["product"].mode()[0]
             # cls.kmer_annotations[kmer] = cls.kmer_annotations[kmer][cls.kmer_annotations[kmer]["product"] == mode_product]
@@ -1864,7 +1865,8 @@ class annotate():
         cls.kmer_annotations.append({
             "kmer" : kmer,
             "relative_pos" : relative_pos, "gene": gene,
-            "product": product, "protein_id": protein_id})
+            "product": product, "protein_id": protein_id},
+            ignore_index=True)
         # else:
         #     cls.kmer_annotations[kmer] = cls.kmer_annotations[kmer].append({
         #         "relative_pos" : relative_pos, "gene": gene,
