@@ -1772,7 +1772,7 @@ class annotate():
     kmer_annotations = pd.DataFrame({
             "gene": [], "relative_pos" : [],
             "product": [], "protein_id": []},
-            index="kmer")
+            index=self.ML_df.columns[:-2])
 
     @classmethod
     def get_ref_annos(cls):
