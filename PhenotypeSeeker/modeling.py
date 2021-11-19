@@ -1187,6 +1187,16 @@ class phenotypes():
                 )
             self.ML_df.index = self.ML_df.index.astype(str)
             self.model_package['kmers'] = self.ML_df.columns[:-2]
+
+            print(self.ML_df)
+            # ref_genomes.get_refs()
+            # annotate.get_ref_annos()
+            # ML_df = pd.read_csv("betalactam" + "_MLdf.csv", index_col=0)
+            # ML_df.index = ML_df.index.astype(str)
+            # kmers = ML_df.columns[:-2]
+            # annotate.get_kmer_annotations(kmers)
+            # annotate.write_results()
+
         else:
             if self.pred_scale == "binary":
                 out_cols = ['chi2', 'p-value', 'num_samples_w_kmer', 'samples_with_kmer']
@@ -1202,6 +1212,7 @@ class phenotypes():
                 self.ML_df.T[out_cols].to_csv(
                     f'{out_cols[0]}_results_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
                     )
+
             self.model_package['kmers'] = self.ML_df.loc['samples_with_kmer'].apply(
                 lambda x: x.split()[1:]
                 )
