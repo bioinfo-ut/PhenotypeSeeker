@@ -1758,7 +1758,10 @@ class phenotypes():
 class annotate():
 
     genome_annotations = {}
-    kmer_annotations = OrderedDict()
+    kmer_annotations = pd.DataFrame({
+            "kmer" : [],
+            "relative_pos" : [], "gene": [],
+            "product": [], "protein_id": []})
 
     @classmethod
     def get_ref_annos(cls):
@@ -1825,10 +1828,11 @@ class annotate():
                     _, contig, pos, _ = line.split()
                     cls.annotate_kmers(
                         kmer, ref_genome.name, ref_genome.contig_mapper[contig], int(pos)+1)
-            mode_product = cls.kmer_annotations[kmer]["product"].mode()[0]
-            cls.kmer_annotations[kmer] = cls.kmer_annotations[kmer][cls.kmer_annotations[kmer]["product"] == mode_product]
-            cls.kmer_annotations[kmer] = cls.kmer_annotations[kmer].mode()[0]
-            print(cls.kmer_annotations[kmer])
+
+            # mode_product = cls.kmer_annotations[kmer]["product"].mode()[0]
+            # cls.kmer_annotations[kmer] = cls.kmer_annotations[kmer][cls.kmer_annotations[kmer]["product"] == mode_product]
+            # cls.kmer_annotations[kmer] = cls.kmer_annotations[kmer].mode()[0]
+            # print(cls.kmer_annotations[kmer])
             # print(cls.kmer_annotations[kmer][cls.kmer_annotations[kmer]["product"] == mode_product[0]])
 
     @classmethod
@@ -1855,15 +1859,15 @@ class annotate():
                     relative_pos = 'preceding'
                 elif pos < cls.genome_annotations[strain][contig][nearest]['gene_end']:
                     relative_pos = 'succeeding'
-        if kmer not in cls.kmer_annotations:
-            cls.kmer_annotations[kmer] = pd.DataFrame({
-                "relative_pos" : [relative_pos], "gene": [gene],
-                "product": product, "protein_id": protein_id})
-        else:
-            cls.kmer_annotations[kmer] = cls.kmer_annotations[kmer].append({
-                "relative_pos" : relative_pos, "gene": gene,
-                "product": product, "protein_id": protein_id
-                }, ignore_index=True)
+        cls.kmer_annotations.append({
+            "kmer" : kmer
+            "relative_pos" : relative_pos, "gene": gene,
+            "product": product, "protein_id": protein_id})
+        # else:
+        #     cls.kmer_annotations[kmer] = cls.kmer_annotations[kmer].append({
+        #         "relative_pos" : relative_pos, "gene": gene,
+        #         "product": product, "protein_id": protein_id
+        #         }, ignore_index=True)
 
     @classmethod
     def write_results(cls):
