@@ -727,7 +727,7 @@ class phenotypes():
                 stderr_print.currentKmerNum.value += self.progress_checkpoint
                 Input.lock.release()
                 stderr_print.update_percent(self.name)
-            if counter == 40000:
+            if counter == 80000:
                 return kmer_dict
             kmer = line[0].split()[0]
             kmer_vector = [int(j.split()[1].strip()) for j in line]
@@ -1217,7 +1217,10 @@ class phenotypes():
             annotate.write_results()
             self.ML_df = pd.concat([self.ML_df, annotate.kmer_annotations], axis=1)
             out_cols = out_cols + ["gene", "relative_pos", "product", "protein_id"]
-            self.ML_df.sort_values("product")
+
+
+
+            self.ML_df = self.ML_df.sort_values(["chi2", "product"])
             self.ML_df[out_cols].to_csv(
                 f'kmer_metadata_{self.name}.tsv', sep='\t'
                 )
