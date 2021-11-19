@@ -1826,7 +1826,9 @@ class annotate():
                     cls.annotate_kmers(
                         kmer, ref_genome.name, ref_genome.contig_mapper[contig], int(pos)+1)
             mode_product = cls.kmer_annotations[kmer]["product"].mode()[0]
-            print(cls.kmer_annotations[kmer][cls.kmer_annotations[kmer]["product"] == mode_product[0]])
+            print(mode_product)
+            print(cls.kmer_annotations[kmer]["product"] == mode_product[0])
+            # print(cls.kmer_annotations[kmer][cls.kmer_annotations[kmer]["product"] == mode_product[0]])
 
     @classmethod
     def annotate_kmers(cls, kmer, strain, contig, pos):
