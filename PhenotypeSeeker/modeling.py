@@ -727,7 +727,7 @@ class phenotypes():
                 stderr_print.currentKmerNum.value += self.progress_checkpoint
                 Input.lock.release()
                 stderr_print.update_percent(self.name)
-            if counter == 80000:
+            if counter == 200000:
                 return kmer_dict
             kmer = line[0].split()[0]
             kmer_vector = [int(j.split()[1].strip()) for j in line]
@@ -1223,8 +1223,7 @@ class phenotypes():
                 f'kmer_metadata_{self.name}.tsv', sep='\t'
                 )
             clusters = self.ML_df.groupby(by="product").agg(
-                count=('product', 'size'), chi2_max=('chi2', 'max'),
-                score=(math.ceil(count/Samples.kmer_length)*chi2_max)
+                count=('product', 'size'), chi2_max=('chi2', 'max')
                 ).reset_index()
             print(type(clusters))
             print(clusters)
@@ -1237,13 +1236,13 @@ class phenotypes():
             # Setting up the final dataframe
             self.model_package['kmers'] = kmers
             self.ML_df.drop(out_cols, inplace=True, axis=1)
-            self.ML_df['weights'] = [
+            self.ML_df.loc['weights'] = [
                 sample.weight for sample in Input.samples.values()
                 ]
-            self.ML_df['phenotype'] = [
+            self.ML_df.loc['phenotype'] = [
                 sample.phenotypes[self.name] for sample in Input.samples.values()
                 ]
-            self.ML_df = self.ML_df.loc[self.ML_df.phenotype != 'NA']
+            self.ML_df = self.ML_df[self.ML_df.phenotype != 'NA']
             self.ML_df.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
             self.ML_df.to_csv(self.name + "_MLdf.csv")
 
