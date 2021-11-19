@@ -1789,10 +1789,12 @@ class annotate():
                             product = product_line.split('\t')[-1].split("product=")[-1].split(";")[0]
                         else:
                             product = "-"
+                        if "protein_id=" in product_line: 
+                            protein_id = product_line.split('\t')[-1].split("protein_id=")[-1].split(";")[0]
 
                         data = {'gene_start': gene_start, 'gene_name': gene_name,
                                 'gene_end': gene_end, 'strand': strand,
-                                'product_name': product
+                                'product_name': product, 'protein_id': protein_id
                             }
                         if ref_genome.name not in cls.genome_annotations:
                             cls.genome_annotations[ref_genome.name] = {contig : {
@@ -1850,11 +1852,11 @@ class annotate():
                     relative_pos = 'preceding'
                 elif pos < cls.genome_annotations[strain][contig][nearest]['gene_end']:
                     relative_pos = 'succeeding'
-        if f"{kmer}\t{relative_pos}\t{gene}\t{product}" not in cls.kmer_annotations:
-            cls.kmer_annotations[f"{kmer}\t{relative_pos}\t{gene}\t{product}"] = [strain]
+        if f"{kmer}\t{relative_pos}\t{gene}\t{product}\t{protein_id}" not in cls.kmer_annotations:
+            cls.kmer_annotations[f"{kmer}\t{relative_pos}\t{gene}\t{product}\t{protein_id}"] = [strain]
         else:
-            cls.kmer_annotations[f"{kmer}\t{relative_pos}\t{gene}\t{product}"].append(strain)
-        print(f"{kmer}\t{relative_pos}\t{gene}\t{product}")
+            cls.kmer_annotations[f"{kmer}\t{relative_pos}\t{gene}\t{product}\t{protein_id}"].append(strain)
+        print(f"{kmer}\t{relative_pos}\t{gene}\t{product}\t{protein_id}")
 
     @classmethod
     def write_results(cls):
