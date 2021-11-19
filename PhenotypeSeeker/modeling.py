@@ -1770,9 +1770,9 @@ class annotate():
 
     genome_annotations = {}
     kmer_annotations = pd.DataFrame({
-            "kmer" : [],
             "gene": [], "relative_pos" : [],
-            "product": [], "protein_id": []})
+            "product": [], "protein_id": []},
+            index="kmer")
 
     @classmethod
     def get_ref_annos(cls):
@@ -1873,11 +1873,11 @@ class annotate():
                     relative_pos = 'preceding'
                 elif pos < cls.genome_annotations[strain][contig][nearest]['gene_end']:
                     relative_pos = 'succeeding'
-        cls.kmer_annotations = cls.kmer_annotations.append({
+        cls.kmer_annotations[kmer] = {
             "kmer" : kmer,
             "relative_pos" : relative_pos, "gene": gene,
-            "product": product, "protein_id": protein_id},
-            ignore_index=True)
+            "product": product, "protein_id": protein_id
+            }
         # else:
         #     cls.kmer_annotations[kmer] = cls.kmer_annotations[kmer].append({
         #         "relative_pos" : relative_pos, "gene": gene,
