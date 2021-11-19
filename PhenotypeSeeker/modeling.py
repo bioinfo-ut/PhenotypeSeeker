@@ -1225,6 +1225,7 @@ class phenotypes():
             clusters = self.ML_df.groupby(by="product").agg(
                 count=('product', 'size'), chi2_max=('chi2', 'max')
                 ).reset_index()
+            print(clusters)
             clusters['score'] = clusters['count'].apply(lambda x: math.ceil(x/Samples.kmer_length))
             print(clusters)
 
