@@ -1227,7 +1227,7 @@ class phenotypes():
                 ).reset_index()
             # print(clusters)
             # clusters['score'] = clusters['count'].apply(lambda x: math.ceil(x/int(Samples.kmer_length)))
-            clusters = clusters.sort_values('count', ascending=False)
+            clusters = clusters.sort_values('count', ascending=False, ignore_index=True)
             print(clusters)
             clusters_top10 = clusters['product'].loc[:10]
             if 'hypothetical protein' in clusters_top10:
@@ -1235,7 +1235,8 @@ class phenotypes():
             print(clusters_top10)
             # kmer_clusters = self.ML_df.T.groupby(by=["product"].mean()
             # print(kmer_clusters)
-            self.ML_df = self.ML_df[self.ML_df.product in clusters_top10]
+            self.ML_df = self.ML_df[self.ML_df['product'].isin(clusters_top10)]
+            print(self.ML_df)
 
             # Setting up the final dataframe
             self.ML_df.drop(out_cols, inplace=True, axis=1)
