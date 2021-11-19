@@ -857,7 +857,7 @@ class phenotypes():
 
         chisquare, pvalue = chisquare_results
         if pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
-            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
+            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
         else:
             return None
 
@@ -1191,13 +1191,13 @@ class phenotypes():
             self.model_package['kmers'] = self.ML_df.columns[:-2]
         else:
             if self.pred_scale == "binary":
-                out_cols = ['chi2', 'p-value', 'num_samples_w_kmer', 'samples_with_kmer']
+                out_cols = ['chi2', 'p-value', 'num_samples_w_kmer']
             else:
                 out_cols = ['t-test', 'p-value', '+_group_mean', '-_group_mean', \
-                    'num_samples_w_kmer', 'samples_with_kmer']
+                    'num_samples_w_kmer']
             self.ML_df.columns.name = "k-mer"
             self.ML_df.index = out_cols + list(Input.samples.keys())
-            self.ML_df.loc[out_cols[0:2]] = self.ML_df.loc[out_cols[0:2]].apply(pd.to_numeric)
+            print(self.ML_df.T.dtypes)
 
             # Limiting the kmer amount by p-val
             self.ML_df = self.ML_df.sort_values('p-value', axis=1)
@@ -1215,7 +1215,6 @@ class phenotypes():
             annotate.get_kmer_annotations(kmers)
             annotate.write_results()
             self.ML_df = self.ML_df.append(annotate.kmer_annotations.T)
-            out_cols.remove('samples_with_kmer')
             out_cols = out_cols + ["gene", "relative_pos", "product", "protein_id"]
             self.ML_df.T.sort_values("product")
             self.ML_df.T[out_cols].to_csv(
