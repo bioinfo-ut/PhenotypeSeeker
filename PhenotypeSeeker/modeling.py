@@ -1216,15 +1216,13 @@ class phenotypes():
             annotate.get_ref_annos()
             annotate.get_kmer_annotations(kmers)
             annotate.write_results()
-            self.ML_df = pd.concat([self.ML_df, annotate.kmer_annotations], index=1)
+            self.ML_df = pd.concat([self.ML_df, annotate.kmer_annotations], axis=1)
             out_cols = out_cols + ["gene", "relative_pos", "product", "protein_id"]
-            self.ML_df.T.sort_values("product")
-            self.ML_df.T[out_cols].to_csv(
+            self.ML_df.sort_values("product")
+            self.ML_df[out_cols].to_csv(
                 f'kmer_metadata_{self.name}.tsv', sep='\t'
                 )
-            print(self.ML_df.T.dtypes)
-            print(self.ML_df.T)
-            print(self.ML_df.T.groupby(by="product").mean())
+            print(self.ML_df.groupby(by="product").mean())
             # kmer_clusters = self.ML_df.T.groupby(by=["product"].mean()
             # print(kmer_clusters)
 
