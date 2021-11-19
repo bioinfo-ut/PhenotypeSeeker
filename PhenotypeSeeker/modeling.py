@@ -1828,7 +1828,7 @@ class annotate():
             mode_product = cls.kmer_annotations[kmer]["product"].mode()[0]
             print(mode_product)
             print(cls.kmer_annotations[kmer])
-            print(cls.kmer_annotations[kmer]["product"] == mode_product)
+            print(cls.kmer_annotations[kmer] = cls.kmer_annotations[kmer][cls.kmer_annotations[kmer]["product"] == mode_product])
             # print(cls.kmer_annotations[kmer][cls.kmer_annotations[kmer]["product"] == mode_product[0]])
 
     @classmethod
