@@ -1826,7 +1826,6 @@ class annotate():
 
     @classmethod
     def get_kmer_annotations(cls, kmers):
-        cls.kmer_annotations.index = kmers
         for kmer in kmers:
             for ref_genome in ref_genomes.instances.values():
                 indexes = run(
@@ -1874,7 +1873,6 @@ class annotate():
                 elif pos < cls.genome_annotations[strain][contig][nearest]['gene_end']:
                     relative_pos = 'succeeding'
         cls.kmer_annotations[kmer] = {
-            "kmer" : kmer,
             "relative_pos" : relative_pos, "gene": gene,
             "product": product, "protein_id": protein_id
             }
