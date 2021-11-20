@@ -2038,7 +2038,7 @@ def modeling(args):
             sys.stderr.write("\x1b[1;32mAnnotating the kmers for phenotype: \x1b[0m\n")
             ref_genomes.get_refs()
             ref_genomes.get_ref_annos()
-            map(lambda x: x.get_annotations(), Input.phenotypes_to_analyse.values())
+            list(map(lambda x: x.get_annotations(), Input.phenotypes_to_analyse.values()))
     if not Input.jump_to or Input.jump_to in ["testing", "annotating", "clustering"]:
         if args.clustering:
             sys.stderr.write("\x1b[1;32mClustering the kmers for phenotype: \x1b[0m\n")
