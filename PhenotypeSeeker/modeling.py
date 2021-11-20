@@ -1840,7 +1840,7 @@ class phenotypes():
         clusters.to_csv(f"kmer_counts_in_genes_{self.name}.tsv", sep='\t')
         clusters_top = clusters['product'].loc[:9]
         if 'hypothetical protein' in clusters_top:
-            clusters_top10.drop(labels=['hypothetical protein'])
+            clusters_top.drop(labels=['hypothetical protein'])
         self.ML_df = self.ML_df[self.ML_df['product'].isin(clusters_top)]
         self.ML_df[self.out_cols].to_csv(
             f'kmers_selected_for_modelling_metadata_{self.name}_.tsv', sep='\t'
