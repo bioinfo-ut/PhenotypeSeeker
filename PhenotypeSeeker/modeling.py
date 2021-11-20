@@ -1780,7 +1780,7 @@ class phenotypes():
             Input.lock.acquire()
             stderr_print.currentKmerNum.value += 1
             Input.lock.release()
-            stderr_print.update_percent(self.name, total, "kmers annotated.")
+            stderr_print.update_percent_anno(self.name, total, "kmers annotated.")
             for ref_genome in ref_genomes.instances.values():
                 indexes = run(
                     ["glistquery", "--locations", "-q", kmer,
