@@ -1802,8 +1802,7 @@ class phenotypes():
                 + str(len(item)) + "\n" + item + "\n")
         f1.close()
 
-    @classmethod
-    def get_kmer_annotations(cls, kmers):
+    def get_kmer_annotations(self, kmers):
         for kmer in kmers:
             for ref_genome in ref_genomes.instances.values():
                 indexes = run(
@@ -1815,12 +1814,11 @@ class phenotypes():
                 line2list = indexes.stdout.strip().split("\n")[1:]
                 if line2list:
                     _, contig, pos, _ = line2list[0].split()
-                    cls.annotate_kmers(
+                    self.annotate_kmers(
                         kmer, ref_genome.name, ref_genome.contig_mapper[contig], int(pos)+1)
                     break
 
-    @classmethod
-    def annotate_kmers(cls, kmer, strain, contig, pos):
+    def annotate_kmers(self, kmer, strain, contig, pos):
         # Find the nearest position
         if contig in ref_genomes.genome_annotations[strain]:
             nearest = min(ref_genomes.genome_annotations[strain][contig], key=lambda x:abs(x-pos))
@@ -1843,12 +1841,14 @@ class phenotypes():
                     relative_pos = 'preceding'
                 elif pos < ref_genomes.genome_annotations[strain][contig][nearest]['gene_end']:
                     relative_pos = 'succeeding'
-        cls.kmer_annotations.loc[kmer] = {
+        self.kmer_annotations.loc[kmer] = {
             "relative_pos" : relative_pos, "gene": gene,
             "product": product, "protein_id": protein_id
             }
 
     def get_annotations(self):
+        sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
+        sys.stderr.flush()
         # Annotation
         self.get_kmer_annotations(self.ML_df.index)
         self.ML_df = pd.concat([self.ML_df, self.kmer_annotations], axis=1)
