@@ -1834,8 +1834,8 @@ class phenotypes():
             count=('product', 'size'), chi2_max=('chi2', 'max'),
             chi2_mean=('chi2', 'mean')
             ).reset_index()
-        clusters.to_csv(f"kmer_counts_in_genes_{self.name}.tsv", sep='\t')
         clusters = clusters.sort_values('count', ascending=False, ignore_index=True)
+        clusters.to_csv(f"kmer_counts_in_genes_{self.name}.tsv", sep='\t')
         clusters_top = clusters['product'].loc[:9]
         if 'hypothetical protein' in clusters_top:
             clusters_top10.drop(labels=['hypothetical protein'])
