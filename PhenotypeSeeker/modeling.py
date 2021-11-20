@@ -735,8 +735,8 @@ class phenotypes():
                 stderr_print.currentKmerNum.value += self.progress_checkpoint
                 Input.lock.release()
                 stderr_print.update_percent(self.name)
-            if counter == 25000:
-                return kmer_dict
+            # if counter == 25000:
+            #     return kmer_dict
             kmer = line[0].split()[0]
             kmer_vector = [int(j.split()[1].strip()) for j in line]
             if not self.real_counts:
@@ -939,7 +939,7 @@ class phenotypes():
         self.ML_df.index = self.out_cols + list(Input.samples.keys())
         self.ML_df = self.ML_df.T
         self.ML_df[self.out_cols[0]] = self.ML_df[self.out_cols[0]].apply(pd.to_numeric)
-        # Limiting the kmer amount by p-val
+        # Limiting the kmer amount by n_kmers
         self.ML_df = self.ML_df.sort_values(self.out_cols[0], ascending=False)
         self.ML_df[self.out_cols].to_csv(f'{self.out_cols[0]}_results_{self.name}.tsv', sep='\t')
         if self.kmer_limit:
@@ -2005,9 +2005,9 @@ def modeling(args):
             list(map(lambda x: x.get_annotations(), Input.phenotypes_to_analyse.values()))
 
     if not Input.jump_to or Input.jump_to in ["testing", "annotating", "clustering"]:
-        if args.cluster:
-            sys.stderr.write("\x1b[1;32mClustering the kmers for phenotype: \x1b[0m\n")
+        if args.cluster:  
             # Clustering
+            sys.stderr.write("\x1b[1;32mClustering the kmers for phenotype: \x1b[0m\n")
             list(map(lambda x: x.get_clusters(), Input.phenotypes_to_analyse.values()))
       
     if not Input.jump_to or Input.jump_to in ["modeling", "modelling", "testing", "annotating", "clustering"]:
