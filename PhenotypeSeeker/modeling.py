@@ -1915,7 +1915,7 @@ class ref_genomes():
     @classmethod
     def get_ref_annos(cls):
         for ref_genome in cls.instances.values():
-            with open(cls.gff_path) as ref_annos:
+            with open(ref_genome.gff_path) as ref_annos:
                 for line in ref_annos:
                     if '#' not in line and "gene" in line.split('\t')[2]:
                         line2list = line.split('\t')
