@@ -2000,7 +2000,7 @@ def modeling(args):
             list(map(lambda x: x.get_annotations(), Input.phenotypes_to_analyse.values()))
 
     if not Input.jump_to or Input.jump_to in ["testing", "annotating", "clustering"]:
-        if args.clustering:
+        if args.cluster:
             sys.stderr.write("\x1b[1;32mClustering the kmers for phenotype: \x1b[0m\n")
             # Clustering
             list(map(lambda x: x.get_clusters(), Input.phenotypes_to_analyse.values()))
