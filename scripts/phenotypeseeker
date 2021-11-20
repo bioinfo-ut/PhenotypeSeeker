@@ -274,6 +274,10 @@ def Main():
         help='Annotate kmers.'
         )
     other.add_argument(
+        "--cluster", action='store_true',
+        help='Cluster kmers.'
+        )
+    other.add_argument(
         "-nt", "--num_threads", type=int, metavar='INT', default=8,
         help='Specify the number of threads the program is run on (default 8).'
         )

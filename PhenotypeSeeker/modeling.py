@@ -597,7 +597,7 @@ class phenotypes():
         self.pca_explained_variance_ = None
         self.pca_explained_variance_ratio_ = None
 
-        kmer_annotations = pd.DataFrame({
+        self.kmer_annotations = pd.DataFrame({
             "gene": [], "relative_pos" : [],
             "product": [], "protein_id": []})
 
@@ -731,6 +731,11 @@ class phenotypes():
             self.ML_df.index = self.out_cols + list(Input.samples.keys())
             self.ML_df = self.ML_df.T
             self.ML_df[self.out_cols[0]] = self.ML_df[self.out_cols[0]].apply(pd.to_numeric)
+            # Limiting the kmer amount by p-val
+            self.ML_df = self.ML_df.sort_values(out_cols[0], ascending=False)
+            self.ML_df[out_cols].to_csv(f'{out_cols[0]}_results_{self.name}.tsv', sep='\t')
+            if self.kmer_limit:
+                self.ML_df = self.ML_df.iloc[:self.kmer_limit, :]
 
     def get_kmers_tested(self, split_of_kmer_lists):
 
@@ -2039,6 +2044,7 @@ def modeling(args):
             ref_genomes.get_refs()
             ref_genomes.get_ref_annos()
             list(map(lambda x: x.get_annotations(), Input.phenotypes_to_analyse.values()))
+
     if not Input.jump_to or Input.jump_to in ["testing", "annotating", "clustering"]:
         if args.clustering:
             sys.stderr.write("\x1b[1;32mClustering the kmers for phenotype: \x1b[0m\n")
