@@ -274,7 +274,7 @@ def Main():
         help='Annotate kmers.'
         )
     other.add_argument(
-        "--cluster", action='store_true',
+        "--clustering", action='store_true',
         help='Cluster kmers.'
         )
     other.add_argument(
