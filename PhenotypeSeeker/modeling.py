@@ -505,18 +505,7 @@ class stderr_print():
         sys.stderr.flush()
 
     @classmethod
-    def update_percent(cls, phenotype):
-        currentPercent = int((cls.currentKmerNum.value/phenotypes.no_kmers_to_analyse)*100)
-        if currentPercent > cls.previousPercent.value:
-            if currentPercent != 100:
-                output = f"\t{phenotype}: \x1b[1;91m{currentPercent}% \x1b[1;32mtests conducted."
-            else:
-                output = f"\t{phenotype}: {currentPercent}% tests conducted."
-            cls.previousPercent.value = currentPercent
-            cls(output)
-
-   @classmethod
-    def update_percent_anno(cls, phenotype, totalKmers, txt):
+    def update_percent(cls, phenotype, totalKmers, txt):
         currentPercent = int((cls.currentKmerNum.value/totalKmers)*100)
         if currentPercent > cls.previousPercent.value:
             if currentPercent != 100:
@@ -745,7 +734,9 @@ class phenotypes():
                 Input.lock.acquire()
                 stderr_print.currentKmerNum.value += self.progress_checkpoint
                 Input.lock.release()
-                stderr_print.update_percent(self.name)
+                stderr_print.update_percent(
+                    self.name, phenotypes.no_kmers_to_analyse, "tests conducted"
+                    )
             # if counter == 25000:
             #     return kmer_dict
             kmer = line[0].split()[0]
@@ -768,7 +759,9 @@ class phenotypes():
         Input.lock.acquire()
         stderr_print.currentKmerNum.value += counter%self.progress_checkpoint
         Input.lock.release()
-        stderr_print.update_percent(self.name)
+        stderr_print.update_percent(
+            self.name, phenotypes.no_kmers_to_analyse, "tests conducted"
+            )
         return kmer_dict
 
     def conduct_t_test(
@@ -1780,7 +1773,7 @@ class phenotypes():
             Input.lock.acquire()
             stderr_print.currentKmerNum.value += 1
             Input.lock.release()
-            stderr_print.update_percent_anno(self.name, total, "kmers annotated.")
+            stderr_print.update_percent(self.name, total, "kmers annotated.")
             for ref_genome in ref_genomes.instances.values():
                 indexes = run(
                     ["glistquery", "--locations", "-q", kmer,
