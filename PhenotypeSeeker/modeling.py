@@ -721,15 +721,16 @@ class phenotypes():
         del results_from_threads
         if self.ML_df.shape[0] == 0:
             self.no_results.append(self.name)
-        if self.pred_scale == "binary":
-            self.out_cols = ['chi2', 'p-value', 'num_samples_w_kmer']
         else:
-            self.out_cols = ['t-test', 'p-value', '+_group_mean', '-_group_mean', \
-                'num_samples_w_kmer']
-        self.ML_df.columns.name = "k-mer"
-        self.ML_df.index = self.out_cols + list(Input.samples.keys())
-        self.ML_df = self.ML_df.T
-        self.ML_df[self.out_cols[0]] = self.ML_df[self.out_cols[0]].apply(pd.to_numeric)
+            if self.pred_scale == "binary":
+                self.out_cols = ['chi2', 'p-value', 'num_samples_w_kmer']
+            else:
+                self.out_cols = ['t-test', 'p-value', '+_group_mean', '-_group_mean', \
+                    'num_samples_w_kmer']
+            self.ML_df.columns.name = "k-mer"
+            self.ML_df.index = self.out_cols + list(Input.samples.keys())
+            self.ML_df = self.ML_df.T
+            self.ML_df[self.out_cols[0]] = self.ML_df[self.out_cols[0]].apply(pd.to_numeric)
 
     def get_kmers_tested(self, split_of_kmer_lists):
 
@@ -744,7 +745,7 @@ class phenotypes():
                 stderr_print.currentKmerNum.value += self.progress_checkpoint
                 Input.lock.release()
                 stderr_print.update_percent(self.name)
-            if counter == 10000:
+            if counter == 25000:
                 return kmer_dict
             kmer = line[0].split()[0]
             kmer_vector = [int(j.split()[1].strip()) for j in line]
