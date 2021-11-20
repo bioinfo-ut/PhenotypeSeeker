@@ -1213,53 +1213,6 @@ class phenotypes():
             self.ML_df.index = self.ML_df.index.astype(str)
             self.model_package['kmers'] = self.ML_df.columns[:-2]
         else:
-
-            # # Setting up the dataframe
-            # if self.pred_scale == "binary":
-            #     out_cols = ['chi2', 'p-value', 'num_samples_w_kmer']
-            # else:
-            #     out_cols = ['t-test', 'p-value', '+_group_mean', '-_group_mean', \
-            #         'num_samples_w_kmer']
-            # self.ML_df.columns.name = "k-mer"
-            # self.ML_df.index = out_cols + list(Input.samples.keys())
-            # self.ML_df = self.ML_df.T
-            # self.ML_df[out_cols[0]] = self.ML_df[out_cols[0]].apply(pd.to_numeric)
-
-            # # Limiting the kmer amount by p-val
-            # self.ML_df = self.ML_df.sort_values(out_cols[0], ascending=False)
-            # self.ML_df[out_cols].to_csv(f'{out_cols[0]}_results_{self.name}.tsv', sep='\t')
-            # if self.kmer_limit:
-            #     self.ML_df = self.ML_df.iloc[:self.kmer_limit, :]
-
-            # # Annotation
-            # ref_genomes.get_refs()
-            # annotate.get_ref_annos()
-            # annotate.get_kmer_annotations(self.ML_df.index)
-            # annotate.write_results()
-            # self.ML_df = pd.concat([self.ML_df, annotate.kmer_annotations], axis=1)
-            # out_cols = out_cols + ["gene", "relative_pos", "product", "protein_id"]
-            # self.ML_df = self.ML_df.sort_values(["chi2", "product"])
-
-            # self.ML_df[out_cols].to_csv(
-            #     f'kmer_metadata_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
-            #     )
-
-            # # k-mer clustering by genes
-            # clusters = self.ML_df.groupby(by="product").agg(
-            #     count=('product', 'size'), chi2_max=('chi2', 'max'),
-            #     chi2_mean=('chi2', 'mean')
-            #     ).reset_index()
-            # clusters.to_csv(f"kmer_counts_in_genes_{self.name}.tsv", sep='\t')
-            # clusters = clusters.sort_values('count', ascending=False, ignore_index=True)
-            # clusters_top10 = clusters['product'].loc[:9]
-            # if 'hypothetical protein' in clusters_top10:
-            #     clusters_top10.drop(labels=['hypothetical protein'])
-            # self.ML_df = self.ML_df[self.ML_df['product'].isin(clusters_top10)]
-            # print(self.ML_df)
-            # self.ML_df[out_cols].to_csv(
-            #     f'kmers_selected_for_modelling_metadata_{self.name}_.tsv', sep='\t'
-            #     )
-
             # Setting up the  dataframe
             self.ML_df.drop(self.out_cols, inplace=True, axis=1)
             self.ML_df = self.ML_df.T
@@ -1877,7 +1830,7 @@ class phenotypes():
         if 'hypothetical protein' in clusters_top:
             clusters_top10.drop(labels=['hypothetical protein'])
         self.ML_df = self.ML_df[self.ML_df['product'].isin(clusters_top)]
-        self.ML_df[out_cols].to_csv(
+        self.ML_df[self.out_cols].to_csv(
             f'kmers_selected_for_modelling_metadata_{self.name}_.tsv', sep='\t'
             )
 
