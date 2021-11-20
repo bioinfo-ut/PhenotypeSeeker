@@ -737,8 +737,8 @@ class phenotypes():
                 stderr_print.update_percent(
                     self.name, phenotypes.no_kmers_to_analyse, "tests conducted"
                     )
-            # if counter == 25000:
-            #     return kmer_dict
+            if counter == 25000:
+                return kmer_dict
             kmer = line[0].split()[0]
             kmer_vector = [int(j.split()[1].strip()) for j in line]
             if not self.real_counts:
@@ -1773,7 +1773,7 @@ class phenotypes():
             Input.lock.acquire()
             stderr_print.currentKmerNum.value += 1
             Input.lock.release()
-            stderr_print.update_percent(self.name, total, "kmers annotated.")
+            stderr_print.update_percent(self.name, total, "kmers annotated")
             for ref_genome in ref_genomes.instances.values():
                 indexes = run(
                     ["glistquery", "--locations", "-q", kmer,
@@ -1817,8 +1817,6 @@ class phenotypes():
             }
 
     def get_annotations(self):
-        sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
-        sys.stderr.flush()
         # Annotation
         self.get_kmer_annotations(self.ML_df.index)
         self.ML_df = pd.concat([self.ML_df, self.kmer_annotations], axis=1)
