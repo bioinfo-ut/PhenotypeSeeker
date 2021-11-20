@@ -515,6 +515,17 @@ class stderr_print():
             cls.previousPercent.value = currentPercent
             cls(output)
 
+   @classmethod
+    def update_percent_anno(cls, phenotype, totalKmers, txt):
+        currentPercent = int((cls.currentKmerNum.value/totalKmers)*100)
+        if currentPercent > cls.previousPercent.value:
+            if currentPercent != 100:
+                output = f"\t{phenotype}: \x1b[1;91m{currentPercent}% \x1b[1;32m{txt}."
+            else:
+                output = f"\t{phenotype}: {currentPercent}% {txt}."
+            cls.previousPercent.value = currentPercent
+            cls(output)
+
     @classmethod
     def print_progress(cls, txt):
         if cls.currentSampleNum.value != Samples.no_samples:
@@ -1762,7 +1773,14 @@ class phenotypes():
         f1.close()
 
     def get_kmer_annotations(self, kmers):
+        stderr_print.currentKmerNum.value = 0
+        stderr_print.previousPercent.value = 0
+        total = len(kmers)
         for kmer in kmers:
+            Input.lock.acquire()
+            stderr_print.currentKmerNum.value += 1
+            Input.lock.release()
+            stderr_print.update_percent(self.name, total, "kmers annotated.")
             for ref_genome in ref_genomes.instances.values():
                 indexes = run(
                     ["glistquery", "--locations", "-q", kmer,
