@@ -1864,6 +1864,8 @@ class phenotypes():
             )
 
     def get_clusters(self):
+        sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
+        sys.stderr.flush()
         # k-mer clustering by genes
         clusters = self.ML_df.groupby(by="product").agg(
             count=('product', 'size'), chi2_max=('chi2', 'max'),
