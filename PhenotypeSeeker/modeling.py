@@ -1261,7 +1261,7 @@ class phenotypes():
             #     )
 
             # Setting up the  dataframe
-            self.ML_df.drop(out_cols, inplace=True, axis=1)
+            self.ML_df.drop(self.out_cols, inplace=True, axis=1)
             self.ML_df = self.ML_df.T
             self.model_package['kmers'] = self.ML_df.index
             self.ML_df['weights'] = [
@@ -1873,11 +1873,10 @@ class phenotypes():
             ).reset_index()
         clusters.to_csv(f"kmer_counts_in_genes_{self.name}.tsv", sep='\t')
         clusters = clusters.sort_values('count', ascending=False, ignore_index=True)
-        clusters_top10 = clusters['product'].loc[:9]
-        if 'hypothetical protein' in clusters_top10:
+        clusters_top = clusters['product'].loc[:9]
+        if 'hypothetical protein' in clusters_top:
             clusters_top10.drop(labels=['hypothetical protein'])
-        self.ML_df = self.ML_df[self.ML_df['product'].isin(clusters_top10)]
-        print(self.ML_df)
+        self.ML_df = self.ML_df[self.ML_df['product'].isin(clusters_top)]
         self.ML_df[out_cols].to_csv(
             f'kmers_selected_for_modelling_metadata_{self.name}_.tsv', sep='\t'
             )
@@ -2051,7 +2050,7 @@ def modeling(args):
         if args.clustering:
             sys.stderr.write("\x1b[1;32mClustering the kmers for phenotype: \x1b[0m\n")
             # Clustering
-            map(lambda x: x.get_clusters(), Input.phenotypes_to_analyse.values())
+            list(map(lambda x: x.get_clusters(), Input.phenotypes_to_analyse.values()))
       
     if not Input.jump_to or Input.jump_to in ["modeling", "modelling", "testing", "annotating", "clustering"]:
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
