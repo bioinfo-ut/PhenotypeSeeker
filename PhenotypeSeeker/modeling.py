@@ -732,8 +732,8 @@ class phenotypes():
             self.ML_df = self.ML_df.T
             self.ML_df[self.out_cols[0]] = self.ML_df[self.out_cols[0]].apply(pd.to_numeric)
             # Limiting the kmer amount by p-val
-            self.ML_df = self.ML_df.sort_values(out_cols[0], ascending=False)
-            self.ML_df[out_cols].to_csv(f'{out_cols[0]}_results_{self.name}.tsv', sep='\t')
+            self.ML_df = self.ML_df.sort_values(self.out_cols[0], ascending=False)
+            self.ML_df[self.out_cols].to_csv(f'{self.out_cols[0]}_results_{self.name}.tsv', sep='\t')
             if self.kmer_limit:
                 self.ML_df = self.ML_df.iloc[:self.kmer_limit, :]
 
