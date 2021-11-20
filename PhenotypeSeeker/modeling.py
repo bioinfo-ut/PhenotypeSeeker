@@ -737,8 +737,8 @@ class phenotypes():
                 stderr_print.update_percent(
                     self.name, phenotypes.no_kmers_to_analyse, "tests conducted"
                     )
-            # if counter == 25000:
-            #     return kmer_dict
+            if counter == 25000:
+                return kmer_dict
             kmer = line[0].split()[0]
             kmer_vector = [int(j.split()[1].strip()) for j in line]
             if not self.real_counts:
@@ -1825,6 +1825,8 @@ class phenotypes():
         self.ML_df[self.out_cols].to_csv(
             f'kmer_metadata_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
             )
+        sys.stderr.write("\n")
+        sys.stderr.flush()
 
     def get_clusters(self):
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
