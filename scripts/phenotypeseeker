@@ -270,12 +270,16 @@ def Main():
         (eg. original antibiotic resistance measurements).'
         )
     other.add_argument(
+        "--annotate", action='store_true',
+        help='Annotate kmers.'
+        )
+    other.add_argument(
         "-nt", "--num_threads", type=int, metavar='INT', default=8,
         help='Specify the number of threads the program is run on (default 8).'
         )
     other.add_argument(
         "-jt", "--jump_to", type=str, metavar='', default=None,
-        choices=["modelling", "testing"],
+        choices=["modelling", "testing", "annotating", "clustering"],
         help='Continue a discontinued process and skip the steps, which output \
         files exist already in the correct paths.'
         )

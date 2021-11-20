@@ -597,6 +597,10 @@ class phenotypes():
         self.pca_explained_variance_ = None
         self.pca_explained_variance_ratio_ = None
 
+        kmer_annotations = pd.DataFrame({
+            "gene": [], "relative_pos" : [],
+            "product": [], "protein_id": []})
+
         self.metrics_dict_train = {
             "MSE": [], "CoD": [], "SpCC": [], "Sp_pval": [], "PeCC": [], "Pe_pval": [],
             "DFA": [], "Acc": [], "Sn": [], "Sp": [], "AUCROC": [], "Pr": [], "MCC": [],
@@ -613,6 +617,8 @@ class phenotypes():
         self.summary_file = None
         self.coeff_file = None
         self.model_file = None
+
+        self.out_cols = None
 
     # -------------------------------------------------------------------
     # Functions for calculating the association test results for kmers.
@@ -707,12 +713,23 @@ class phenotypes():
             )
         sys.stderr.write("\n")
         sys.stderr.flush()
+
+        # Collecting the results and setting up the dataframe for ML
         self.ML_df = pd.concat(
             [pd.DataFrame.from_dict(x) for x in results_from_threads],
             axis=1)
         del results_from_threads
         if self.ML_df.shape[0] == 0:
             self.no_results.append(self.name)
+        if self.pred_scale == "binary":
+            self.out_cols = ['chi2', 'p-value', 'num_samples_w_kmer']
+        else:
+            self.out_cols = ['t-test', 'p-value', '+_group_mean', '-_group_mean', \
+                'num_samples_w_kmer']
+        self.ML_df.columns.name = "k-mer"
+        self.ML_df.index = self.out_cols + list(Input.samples.keys())
+        self.ML_df = self.ML_df.T
+        self.ML_df[self.out_cols[0]] = self.ML_df[self.out_cols[0]].apply(pd.to_numeric)
 
     def get_kmers_tested(self, split_of_kmer_lists):
 
@@ -727,8 +744,8 @@ class phenotypes():
                 stderr_print.currentKmerNum.value += self.progress_checkpoint
                 Input.lock.release()
                 stderr_print.update_percent(self.name)
-            # if counter == 100000:
-            #     return kmer_dict
+            if counter == 10000:
+                return kmer_dict
             kmer = line[0].split()[0]
             kmer_vector = [int(j.split()[1].strip()) for j in line]
             if not self.real_counts:
@@ -1191,53 +1208,53 @@ class phenotypes():
             self.model_package['kmers'] = self.ML_df.columns[:-2]
         else:
 
-            # Setting up the dataframe
-            if self.pred_scale == "binary":
-                out_cols = ['chi2', 'p-value', 'num_samples_w_kmer']
-            else:
-                out_cols = ['t-test', 'p-value', '+_group_mean', '-_group_mean', \
-                    'num_samples_w_kmer']
-            self.ML_df.columns.name = "k-mer"
-            self.ML_df.index = out_cols + list(Input.samples.keys())
-            self.ML_df = self.ML_df.T
-            self.ML_df[out_cols[0]] = self.ML_df[out_cols[0]].apply(pd.to_numeric)
+            # # Setting up the dataframe
+            # if self.pred_scale == "binary":
+            #     out_cols = ['chi2', 'p-value', 'num_samples_w_kmer']
+            # else:
+            #     out_cols = ['t-test', 'p-value', '+_group_mean', '-_group_mean', \
+            #         'num_samples_w_kmer']
+            # self.ML_df.columns.name = "k-mer"
+            # self.ML_df.index = out_cols + list(Input.samples.keys())
+            # self.ML_df = self.ML_df.T
+            # self.ML_df[out_cols[0]] = self.ML_df[out_cols[0]].apply(pd.to_numeric)
 
-            # Limiting the kmer amount by p-val
-            self.ML_df = self.ML_df.sort_values(out_cols[0], ascending=False)
-            self.ML_df[out_cols].to_csv(f'{out_cols[0]}_results_{self.name}.tsv', sep='\t')
-            if self.kmer_limit:
-                self.ML_df = self.ML_df.iloc[:self.kmer_limit, :]
+            # # Limiting the kmer amount by p-val
+            # self.ML_df = self.ML_df.sort_values(out_cols[0], ascending=False)
+            # self.ML_df[out_cols].to_csv(f'{out_cols[0]}_results_{self.name}.tsv', sep='\t')
+            # if self.kmer_limit:
+            #     self.ML_df = self.ML_df.iloc[:self.kmer_limit, :]
 
-            # Annotation
-            ref_genomes.get_refs()
-            annotate.get_ref_annos()
-            annotate.get_kmer_annotations(self.ML_df.index)
-            annotate.write_results()
-            self.ML_df = pd.concat([self.ML_df, annotate.kmer_annotations], axis=1)
-            out_cols = out_cols + ["gene", "relative_pos", "product", "protein_id"]
-            self.ML_df = self.ML_df.sort_values(["chi2", "product"])
+            # # Annotation
+            # ref_genomes.get_refs()
+            # annotate.get_ref_annos()
+            # annotate.get_kmer_annotations(self.ML_df.index)
+            # annotate.write_results()
+            # self.ML_df = pd.concat([self.ML_df, annotate.kmer_annotations], axis=1)
+            # out_cols = out_cols + ["gene", "relative_pos", "product", "protein_id"]
+            # self.ML_df = self.ML_df.sort_values(["chi2", "product"])
 
-            self.ML_df[out_cols].to_csv(
-                f'kmer_metadata_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
-                )
+            # self.ML_df[out_cols].to_csv(
+            #     f'kmer_metadata_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
+            #     )
 
-            # k-mer clustering by genes
-            clusters = self.ML_df.groupby(by="product").agg(
-                count=('product', 'size'), chi2_max=('chi2', 'max'),
-                chi2_mean=('chi2', 'mean')
-                ).reset_index()
-            clusters.to_csv(f"kmer_counts_in_genes_{self.name}.tsv", sep='\t')
-            clusters = clusters.sort_values('count', ascending=False, ignore_index=True)
-            clusters_top10 = clusters['product'].loc[:9]
-            if 'hypothetical protein' in clusters_top10:
-                clusters_top10.drop(labels=['hypothetical protein'])
-            self.ML_df = self.ML_df[self.ML_df['product'].isin(clusters_top10)]
-            print(self.ML_df)
-            self.ML_df[out_cols].to_csv(
-                f'kmers_selected_for_modelling_metadata_{self.name}_.tsv', sep='\t'
-                )
+            # # k-mer clustering by genes
+            # clusters = self.ML_df.groupby(by="product").agg(
+            #     count=('product', 'size'), chi2_max=('chi2', 'max'),
+            #     chi2_mean=('chi2', 'mean')
+            #     ).reset_index()
+            # clusters.to_csv(f"kmer_counts_in_genes_{self.name}.tsv", sep='\t')
+            # clusters = clusters.sort_values('count', ascending=False, ignore_index=True)
+            # clusters_top10 = clusters['product'].loc[:9]
+            # if 'hypothetical protein' in clusters_top10:
+            #     clusters_top10.drop(labels=['hypothetical protein'])
+            # self.ML_df = self.ML_df[self.ML_df['product'].isin(clusters_top10)]
+            # print(self.ML_df)
+            # self.ML_df[out_cols].to_csv(
+            #     f'kmers_selected_for_modelling_metadata_{self.name}_.tsv', sep='\t'
+            #     )
 
-            # Setting up the final dataframe
+            # Setting up the  dataframe
             self.ML_df.drop(out_cols, inplace=True, axis=1)
             self.ML_df = self.ML_df.T
             self.model_package['kmers'] = self.ML_df.index
@@ -1784,23 +1801,120 @@ class phenotypes():
                 + str(len(item)) + "\n" + item + "\n")
         f1.close()
 
+    @classmethod
+    def get_kmer_annotations(cls, kmers):
+        for kmer in kmers:
+            for ref_genome in ref_genomes.instances.values():
+                indexes = run(
+                    ["glistquery", "--locations", "-q", kmer,
+                    os.path.join(ref_genomes.db_base, ref_genomes.specie,
+                    "FASTA", f"{ref_genome.name}_{Samples.kmer_length}.index")
+                    ]
+                    , capture_output=True, text=True)
+                line2list = indexes.stdout.strip().split("\n")[1:]
+                if line2list:
+                    _, contig, pos, _ = line2list[0].split()
+                    cls.annotate_kmers(
+                        kmer, ref_genome.name, ref_genome.contig_mapper[contig], int(pos)+1)
+                    break
 
+    @classmethod
+    def annotate_kmers(cls, kmer, strain, contig, pos):
+        # Find the nearest position
+        if contig in ref_genomes.genome_annotations[strain]:
+            nearest = min(ref_genomes.genome_annotations[strain][contig], key=lambda x:abs(x-pos))
+            gene = ref_genomes.genome_annotations[strain][contig][nearest]['gene_name']
+            product = ref_genomes.genome_annotations[strain][contig][nearest]['product_name']
+            protein_id = ref_genomes.genome_annotations[strain][contig][nearest]['protein_id']
+            if ref_genomes.genome_annotations[strain][contig][nearest]['strand'] == '+':
+                if (pos >= ref_genomes.genome_annotations[strain][contig][nearest]['gene_start'] and
+                   pos <= ref_genomes.genome_annotations[strain][contig][nearest]['gene_end']):
+                    relative_pos = 'in'
+                elif pos < ref_genomes.genome_annotations[strain][contig][nearest]['gene_start']:
+                    relative_pos = 'preceding'
+                elif pos > ref_genomes.genome_annotations[strain][contig][nearest]['gene_end']:
+                    relative_pos = 'succeeding'
+            elif ref_genomes.genome_annotations[strain][contig][nearest]['strand'] == '-':
+                if (pos <= ref_genomes.genome_annotations[strain][contig][nearest]['gene_start'] and
+                   pos >= ref_genomes.genome_annotations[strain][contig][nearest]['gene_end']):
+                    relative_pos = 'in'
+                elif pos > ref_genomes.genome_annotations[strain][contig][nearest]['gene_start']:
+                    relative_pos = 'preceding'
+                elif pos < ref_genomes.genome_annotations[strain][contig][nearest]['gene_end']:
+                    relative_pos = 'succeeding'
+        cls.kmer_annotations.loc[kmer] = {
+            "relative_pos" : relative_pos, "gene": gene,
+            "product": product, "protein_id": protein_id
+            }
 
+    def get_annotations(self):
+        # Annotation
+        self.get_kmer_annotations(self.ML_df.index)
+        self.ML_df = pd.concat([self.ML_df, self.kmer_annotations], axis=1)
+        self.out_cols = self.out_cols + ["gene", "relative_pos", "product", "protein_id"]
+        self.ML_df = self.ML_df.sort_values(["chi2", "product"])
+        self.ML_df[self.out_cols].to_csv(
+            f'kmer_metadata_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
+            )
 
+    def get_clusters(self):
+        # k-mer clustering by genes
+        clusters = self.ML_df.groupby(by="product").agg(
+            count=('product', 'size'), chi2_max=('chi2', 'max'),
+            chi2_mean=('chi2', 'mean')
+            ).reset_index()
+        clusters.to_csv(f"kmer_counts_in_genes_{self.name}.tsv", sep='\t')
+        clusters = clusters.sort_values('count', ascending=False, ignore_index=True)
+        clusters_top10 = clusters['product'].loc[:9]
+        if 'hypothetical protein' in clusters_top10:
+            clusters_top10.drop(labels=['hypothetical protein'])
+        self.ML_df = self.ML_df[self.ML_df['product'].isin(clusters_top10)]
+        print(self.ML_df)
+        self.ML_df[out_cols].to_csv(
+            f'kmers_selected_for_modelling_metadata_{self.name}_.tsv', sep='\t'
+            )
 
+class ref_genomes():
 
-
-class annotate():
-
+    instances = OrderedDict()
     genome_annotations = {}
-    kmer_annotations = pd.DataFrame({
-            "gene": [], "relative_pos" : [],
-            "product": [], "protein_id": []})
+
+    nr_ref_genomes = 0
+
+    db_base = None
+    specie = None
+
+    def __init__(self, name, index_path, gff_path, contig_mapper):
+        self.name = name
+        self.index_path = index_path
+        self.gff_path = gff_path
+        self.contig_mapper = contig_mapper
+        
+        ref_genomes.nr_ref_genomes += 1
+
+    @classmethod
+    def get_refs(cls):
+        cls.db_base = "/storage8/erkia/"
+        cls.specie = "Streptococcus_pneumoniae"
+        ref_ids = [
+                    "_".join(os.path.basename(x).split("_")[0:-1]) for x
+                    in glob.glob(cls.db_base + cls.specie + f"/GFF/*.gff")
+                   ]
+        for ref_id in ref_ids:
+            gff_path = os.path.join(cls.db_base, cls.specie, "GFF", ref_id + "_genomic.gff")
+            index_path = os.path.join(cls.db_base, cls.specie, "FASTA", f"{ref_id}_{Samples.kmer_length}.index")
+            contig_mapper = {}
+            query_seqs = run(
+                ["glistquery", "--sequences", index_path], capture_output=True, text=True
+                )
+            for line in query_seqs.stdout.strip().split("\n"):
+                contig_mapper[line.split()[1]] = line.split()[2]
+            cls.instances[ref_id] = cls(ref_id, index_path, gff_path, contig_mapper)
 
     @classmethod
     def get_ref_annos(cls):
-        for ref_genome in ref_genomes.instances.values():
-            with open(ref_genome.gff_path) as ref_annos:
+        for ref_genome in cls.instances.values():
+            with open(cls.gff_path) as ref_annos:
                 for line in ref_annos:
                     if '#' not in line and "gene" in line.split('\t')[2]:
                         line2list = line.split('\t')
@@ -1847,110 +1961,6 @@ class annotate():
                             else:
                                 cls.genome_annotations[ref_genome.name][contig][gene_start] = data
                                 cls.genome_annotations[ref_genome.name][contig][gene_end] = data
-
-    @classmethod
-    def get_kmer_annotations(cls, kmers):
-        for kmer in kmers:
-            for ref_genome in ref_genomes.instances.values():
-                indexes = run(
-                    ["glistquery", "--locations", "-q", kmer,
-                    os.path.join(ref_genomes.db_base, ref_genomes.specie,
-                    "FASTA", f"{ref_genome.name}_{Samples.kmer_length}.index")
-                    ]
-                    , capture_output=True, text=True)
-                line2list = indexes.stdout.strip().split("\n")[1:]
-                if line2list:
-                    _, contig, pos, _ = line2list[0].split()
-                    cls.annotate_kmers(
-                        kmer, ref_genome.name, ref_genome.contig_mapper[contig], int(pos)+1)
-                    break
-
-            # mode_product = cls.kmer_annotations[kmer]["product"].mode()[0]
-            # cls.kmer_annotations[kmer] = cls.kmer_annotations[kmer][cls.kmer_annotations[kmer]["product"] == mode_product]
-            # cls.kmer_annotations[kmer] = cls.kmer_annotations[kmer].mode()[0]
-            # print(cls.kmer_annotations[kmer])
-            # print(cls.kmer_annotations[kmer][cls.kmer_annotations[kmer]["product"] == mode_product[0]])
-
-    @classmethod
-    def annotate_kmers(cls, kmer, strain, contig, pos):
-        # Find the nearest position
-        if contig in cls.genome_annotations[strain]:
-            nearest = min(cls.genome_annotations[strain][contig], key=lambda x:abs(x-pos))
-            gene = cls.genome_annotations[strain][contig][nearest]['gene_name']
-            product = cls.genome_annotations[strain][contig][nearest]['product_name']
-            protein_id = cls.genome_annotations[strain][contig][nearest]['protein_id']
-            if cls.genome_annotations[strain][contig][nearest]['strand'] == '+':
-                if (pos >= cls.genome_annotations[strain][contig][nearest]['gene_start'] and
-                   pos <= cls.genome_annotations[strain][contig][nearest]['gene_end']):
-                    relative_pos = 'in'
-                elif pos < cls.genome_annotations[strain][contig][nearest]['gene_start']:
-                    relative_pos = 'preceding'
-                elif pos > cls.genome_annotations[strain][contig][nearest]['gene_end']:
-                    relative_pos = 'succeeding'
-            elif cls.genome_annotations[strain][contig][nearest]['strand'] == '-':
-                if (pos <= cls.genome_annotations[strain][contig][nearest]['gene_start'] and
-                   pos >= cls.genome_annotations[strain][contig][nearest]['gene_end']):
-                    relative_pos = 'in'
-                elif pos > cls.genome_annotations[strain][contig][nearest]['gene_start']:
-                    relative_pos = 'preceding'
-                elif pos < cls.genome_annotations[strain][contig][nearest]['gene_end']:
-                    relative_pos = 'succeeding'
-        cls.kmer_annotations.loc[kmer] = {
-            "relative_pos" : relative_pos, "gene": gene,
-            "product": product, "protein_id": protein_id
-            }
-        # else:
-        #     cls.kmer_annotations[kmer] = cls.kmer_annotations[kmer].append({
-        #         "relative_pos" : relative_pos, "gene": gene,
-        #         "product": product, "protein_id": protein_id
-        #         }, ignore_index=True)
-
-    @classmethod
-    def write_results(cls):
-        with open('kmer_annotations.txt', 'w') as out:
-            out.write(f'kmer\trelative_position\tgene\tproduct\tsamples\n')
-            prev_kmer = None
-            for key, value in cls.kmer_annotations.items():
-                kmer = key.split()[0]
-                if prev_kmer and kmer != prev_kmer:
-                    out.write("\n")
-                out.write(f"{key}\t{' '.join(value)}\n")
-                prev_kmer = kmer
-
-class ref_genomes():
-
-    instances = OrderedDict()
-    nr_ref_genomes = 0
-
-    db_base = None
-    specie = None
-
-    def __init__(self, name, index_path, gff_path, contig_mapper):
-        self.name = name
-        self.index_path = index_path
-        self.gff_path = gff_path
-        self.contig_mapper = contig_mapper
-        
-        ref_genomes.nr_ref_genomes += 1
-
-    @classmethod
-    def get_refs(cls):
-        cls.db_base = "/storage8/erkia/"
-        cls.specie = "Streptococcus_pneumoniae"
-        ref_ids = [
-                    "_".join(os.path.basename(x).split("_")[0:-1]) for x
-                    in glob.glob(cls.db_base + cls.specie + f"/GFF/*.gff")
-                   ]
-        for ref_id in ref_ids:
-            gff_path = os.path.join(cls.db_base, cls.specie, "GFF", ref_id + "_genomic.gff")
-            index_path = os.path.join(cls.db_base, cls.specie, "FASTA", f"{ref_id}_{Samples.kmer_length}.index")
-            contig_mapper = {}
-            query_seqs = run(
-                ["glistquery", "--sequences", index_path], capture_output=True, text=True
-                )
-            for line in query_seqs.stdout.strip().split("\n"):
-                contig_mapper[line.split()[1]] = line.split()[2]
-            cls.instances[ref_id] = cls(ref_id, index_path, gff_path, contig_mapper)
 
 def modeling(args):
     # The main function of "phenotypeseeker modeling"
@@ -2017,12 +2027,24 @@ def modeling(args):
             lambda x:  x.test_kmer_association_with_phenotype(), 
             Input.phenotypes_to_analyse.values()
             ))
-        
         # Remove phenotypes with no results
         Input.pop_phenos_out_of_kmers()
         sys.stderr.flush()
+
+    if not Input.jump_to or Input.jump_to in ["testing", "annotating"]:
+        if args.annotate:
+            # Annotation
+            sys.stderr.write("\x1b[1;32mAnnotating the kmers for phenotype: \x1b[0m\n")
+            ref_genomes.get_refs()
+            ref_genomes.get_ref_annos()
+            map(lambda x: x.get_annotations(), Input.phenotypes_to_analyse.values())
+    if not Input.jump_to or Input.jump_to in ["testing", "annotating", "clustering"]:
+        if args.clustering:
+            sys.stderr.write("\x1b[1;32mClustering the kmers for phenotype: \x1b[0m\n")
+            # Clustering
+            map(lambda x: x.get_clusters(), Input.phenotypes_to_analyse.values())
       
-    if not Input.jump_to or Input.jump_to in ["modeling", "modelling", "testing"]:
+    if not Input.jump_to or Input.jump_to in ["modeling", "modelling", "testing", "annotating", "clustering"]:
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
         sys.stderr.flush()
         with Pool(Input.num_threads) as p:
