@@ -720,22 +720,7 @@ class phenotypes():
             axis=1)
         del results_from_threads
         if self.ML_df.shape[0] == 0:
-            self.no_results.append(self.name)
-        else:
-            if self.pred_scale == "binary":
-                self.out_cols = ['chi2', 'p-value', 'num_samples_w_kmer']
-            else:
-                self.out_cols = ['t-test', 'p-value', '+_group_mean', '-_group_mean', \
-                    'num_samples_w_kmer']
-            self.ML_df.columns.name = "k-mer"
-            self.ML_df.index = self.out_cols + list(Input.samples.keys())
-            self.ML_df = self.ML_df.T
-            self.ML_df[self.out_cols[0]] = self.ML_df[self.out_cols[0]].apply(pd.to_numeric)
-            # Limiting the kmer amount by p-val
-            self.ML_df = self.ML_df.sort_values(self.out_cols[0], ascending=False)
-            self.ML_df[self.out_cols].to_csv(f'{self.out_cols[0]}_results_{self.name}.tsv', sep='\t')
-            if self.kmer_limit:
-                self.ML_df = self.ML_df.iloc[:self.kmer_limit, :]
+            self.no_results.append(self.name)    
 
     def get_kmers_tested(self, split_of_kmer_lists):
 
@@ -943,6 +928,22 @@ class phenotypes():
             w_pheno_w_kmer_expected, w_pheno_wo_kmer_expected,
             wo_pheno_w_kmer_expected, wo_pheno_wo_kmer_expected
             )
+
+    def set_up_dataframe(self):
+        if self.pred_scale == "binary":
+            self.out_cols = ['chi2', 'p-value', 'num_samples_w_kmer']
+        else:
+            self.out_cols = ['t-test', 'p-value', '+_group_mean', '-_group_mean', \
+                'num_samples_w_kmer']
+        self.ML_df.columns.name = "k-mer"
+        self.ML_df.index = self.out_cols + list(Input.samples.keys())
+        self.ML_df = self.ML_df.T
+        self.ML_df[self.out_cols[0]] = self.ML_df[self.out_cols[0]].apply(pd.to_numeric)
+        # Limiting the kmer amount by p-val
+        self.ML_df = self.ML_df.sort_values(self.out_cols[0], ascending=False)
+        self.ML_df[self.out_cols].to_csv(f'{self.out_cols[0]}_results_{self.name}.tsv', sep='\t')
+        if self.kmer_limit:
+            self.ML_df = self.ML_df.iloc[:self.kmer_limit, :]
 
     def machine_learning_modelling(self):
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
@@ -1990,6 +1991,10 @@ def modeling(args):
         # Remove phenotypes with no results
         Input.pop_phenos_out_of_kmers()
         sys.stderr.flush()
+        list(map(
+            lambda x:  x.set_up_dataframe(), 
+            Input.phenotypes_to_analyse.values()
+            ))
 
     if not Input.jump_to or Input.jump_to in ["testing", "annotating"]:
         if args.annotate:
