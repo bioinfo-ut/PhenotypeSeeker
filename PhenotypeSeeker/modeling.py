@@ -600,9 +600,7 @@ class phenotypes():
         self.pca_explained_variance_ = None
         self.pca_explained_variance_ratio_ = None
 
-        self.kmer_annotations = pd.DataFrame({
-            "gene": [], "relative_pos" : [],
-            "product": [], "protein_id": []})
+        self.kmer_annotations = {}
 
         self.metrics_dict_train = {
             "MSE": [], "CoD": [], "SpCC": [], "Sp_pval": [], "PeCC": [], "Pe_pval": [],
@@ -1776,10 +1774,14 @@ class phenotypes():
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
         total = len(kmers)
+        counter = 0
+        checkpoint = math.ceil(total/100)
         for kmer in kmers:
-            Input.lock.acquire()
-            stderr_print.currentKmerNum.value += 1
-            Input.lock.release()
+            counter += 1
+            if counter % checkpoint == 0:
+                Input.lock.acquire()
+                stderr_print.currentKmerNum.value += 1
+                Input.lock.release()
             stderr_print.update_percent(self.name, total, "kmers annotated")
             for ref_genome in ref_genomes.instances.values():
                 indexes = run(
@@ -1794,6 +1796,7 @@ class phenotypes():
                     self.annotate_kmers(
                         kmer, ref_genome.name, ref_genome.contig_mapper[contig], int(pos)+1)
                     break
+        self.kmer_annotations = pd.DataFrame.from_dict(x)
 
     def annotate_kmers(self, kmer, strain, contig, pos):
         # Find the nearest position
@@ -1818,7 +1821,7 @@ class phenotypes():
                     relative_pos = 'preceding'
                 elif pos < ref_genomes.genome_annotations[strain][contig][nearest]['gene_end']:
                     relative_pos = 'succeeding'
-        self.kmer_annotations.loc[kmer] = {
+        self.kmer_annotations[kmer] = {
             "relative_pos" : relative_pos, "gene": gene,
             "product": product, "protein_id": protein_id
             }
@@ -1826,7 +1829,7 @@ class phenotypes():
     def get_annotations(self):
         # Annotation
         self.get_kmer_annotations(self.ML_df.index)
-        self.ML_df = pd.concat([self.ML_df, self.kmer_annotations], axis=1)
+        self.ML_df = pd.concat([self.ML_df, self.kmer_annotations.T], axis=1)
         self.out_cols = self.out_cols + ["gene", "relative_pos", "product", "protein_id"]
         self.ML_df = self.ML_df.sort_values(["chi2", "product"])
         self.ML_df[self.out_cols].to_csv(
