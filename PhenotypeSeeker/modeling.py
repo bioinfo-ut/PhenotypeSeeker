@@ -1795,11 +1795,12 @@ class phenotypes():
                 self.annotate_kmers(
                     kmer, ref_genome.name, ref_genome.contig_mapper[contig], int(pos)+1)
                 break
-        self.kmer_annotations = pd.DataFrame.from_dict(x)
+        self.kmer_annotations = pd.DataFrame.from_dict(self.kmer_annotations)
 
     def annotate_kmers(self, kmer, strain, contig, pos):
         # Find the nearest position
         if contig in ref_genomes.genome_annotations[strain]:
+            print(contig, ref_genomes.genome_annotations[strain])
             nearest = min(ref_genomes.genome_annotations[strain][contig], key=lambda x:abs(x-pos))
             gene = ref_genomes.genome_annotations[strain][contig][nearest]['gene_name']
             product = ref_genomes.genome_annotations[strain][contig][nearest]['product_name']
@@ -1824,6 +1825,7 @@ class phenotypes():
             "relative_pos" : relative_pos, "gene": gene,
             "product": product, "protein_id": protein_id
             }
+        print(self.kmer_annotations)
 
     def get_annotations(self):
         # Annotation
