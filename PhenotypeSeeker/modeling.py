@@ -1792,6 +1792,7 @@ class phenotypes():
             if line2list:
                 ref_idx, contig, pos, strand = line2list[0].split()
                 ref_genome = ref_genomes.instances[ref_idx]
+                print(kmer, ref_genome.name, ref_genome.contig_mapper[contig])
                 self.annotate_kmers(
                     kmer, ref_genome.name, ref_genome.contig_mapper[contig], int(pos)+1)
                 break
@@ -1899,7 +1900,6 @@ class ref_genomes():
                     if ref_queue == ref_index:
                         contig_name = contig_name.split()[0]
                         contig_mapper[contig_index] = contig_name
-                        print(contig_mapper)
                 cls.instances[ref_queue] = cls(ref_id, gff_path, contig_mapper)
 
     @classmethod
