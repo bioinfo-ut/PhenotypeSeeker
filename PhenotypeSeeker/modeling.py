@@ -1791,7 +1791,7 @@ class phenotypes():
             line2list = indexes.stdout.strip().split("\n")[1:]
             if line2list:
                 ref_idx, contig, pos, strand = line2list[0].split()
-                ref_genome = ref_genomes.instances[ref_query_nr]
+                ref_genome = ref_genomes.instances[ref_idx]
                 self.annotate_kmers(
                     kmer, ref_genome.name, ref_idx.contig_mapper[contig], int(pos)+1)
                 break
