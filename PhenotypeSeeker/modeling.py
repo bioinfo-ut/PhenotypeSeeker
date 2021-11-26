@@ -1878,8 +1878,8 @@ class ref_genomes():
         cls.db_base = "/storage8/erkia/"
         cls.specie = "Streptococcus_pneumoniae"
         cls.index_path = os.path.join(cls.db_base, cls.specie, f"locations_{Samples.kmer_length}.index")
-        with open(os.path.join(cls.db_base, cls.specie, "genome_map.txt")) as gen_map:
-            for line in gen_map:
+        with open(os.path.join(cls.db_base, cls.specie, "file_indexes.txt")) as file_idx:
+            for line in file_dix:
                 if "write_kmers" in line:
                     break
                 else:
