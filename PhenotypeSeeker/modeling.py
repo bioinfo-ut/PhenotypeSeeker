@@ -1793,7 +1793,7 @@ class phenotypes():
                 ref_idx, contig, pos, strand = line2list[0].split()
                 ref_genome = ref_genomes.instances[ref_idx]
                 self.annotate_kmers(
-                    kmer, ref_genome.name, ref_idx.contig_mapper[contig], int(pos)+1)
+                    kmer, ref_genome.name, ref_genome.contig_mapper[contig], int(pos)+1)
                 break
         self.kmer_annotations = pd.DataFrame.from_dict(x)
 
@@ -1879,11 +1879,11 @@ class ref_genomes():
         cls.specie = "Streptococcus_pneumoniae"
         cls.index_path = os.path.join(cls.db_base, cls.specie, f"locations_{Samples.kmer_length}.index")
         with open(os.path.join(cls.db_base, cls.specie, "file_indexes.txt")) as file_idx:
-            for line in file_dix:
+            for line in file_idx:
                 if "write_kmers" in line:
                     break
                 else:
-                    ref_queue, ref_id, _, _, _, _ = line.split()
+                    ref_queue, ref_id, _, _ = line.split()
                     ref_queue = ref_queue.strip(":")
                     ref_id = "_".join(os.path.basename(ref_id).split("_")[0:-1])
                 gff_path = os.path.join(cls.db_base, cls.specie, "GFF", ref_id + "_genomic.gff")
