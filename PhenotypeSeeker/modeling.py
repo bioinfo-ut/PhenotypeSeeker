@@ -1783,19 +1783,18 @@ class phenotypes():
                 stderr_print.currentKmerNum.value += 1
                 Input.lock.release()
             stderr_print.update_percent(self.name, total, "kmers annotated")
-            for ref_genome in ref_genomes.instances.values():
-                indexes = run(
-                    ["glistquery", "--locations", "-q", kmer,
-                    os.path.join(ref_genomes.db_base, ref_genomes.specie,
-                    "FASTA", f"{ref_genome.name}_{Samples.kmer_length}.index")
-                    ]
-                    , capture_output=True, text=True)
-                line2list = indexes.stdout.strip().split("\n")[1:]
-                if line2list:
-                    _, contig, pos, _ = line2list[0].split()
-                    self.annotate_kmers(
-                        kmer, ref_genome.name, ref_genome.contig_mapper[contig], int(pos)+1)
-                    break
+            indexes = run(
+                ["glistquery", "--locations", "-q", kmer,
+                ref_genomes.index_path
+                ]
+                , capture_output=True, text=True)
+            line2list = indexes.stdout.strip().split("\n")[1:]
+            if line2list:
+                ref_idx, contig, pos, strand = line2list[0].split()
+                ref_genome = ref_genomes.instances[ref_query_nr]
+                self.annotate_kmers(
+                    kmer, ref_genome.name, ref_idx.contig_mapper[contig], int(pos)+1)
+                break
         self.kmer_annotations = pd.DataFrame.from_dict(x)
 
     def annotate_kmers(self, kmer, strain, contig, pos):
@@ -1810,17 +1809,17 @@ class phenotypes():
                    pos <= ref_genomes.genome_annotations[strain][contig][nearest]['gene_end']):
                     relative_pos = 'in'
                 elif pos < ref_genomes.genome_annotations[strain][contig][nearest]['gene_start']:
-                    relative_pos = 'preceding'
+                    relative_pos = "3'-flanking"
                 elif pos > ref_genomes.genome_annotations[strain][contig][nearest]['gene_end']:
-                    relative_pos = 'succeeding'
+                    relative_pos = "5'-flanking"
             elif ref_genomes.genome_annotations[strain][contig][nearest]['strand'] == '-':
                 if (pos <= ref_genomes.genome_annotations[strain][contig][nearest]['gene_start'] and
                    pos >= ref_genomes.genome_annotations[strain][contig][nearest]['gene_end']):
                     relative_pos = 'in'
                 elif pos > ref_genomes.genome_annotations[strain][contig][nearest]['gene_start']:
-                    relative_pos = 'preceding'
+                    relative_pos = "3'-flanking"
                 elif pos < ref_genomes.genome_annotations[strain][contig][nearest]['gene_end']:
-                    relative_pos = 'succeeding'
+                    relative_pos = "5'-flanking"
         self.kmer_annotations[kmer] = {
             "relative_pos" : relative_pos, "gene": gene,
             "product": product, "protein_id": protein_id
@@ -1865,10 +1864,10 @@ class ref_genomes():
 
     db_base = None
     specie = None
+    index_path = None
 
-    def __init__(self, name, index_path, gff_path, contig_mapper):
+    def __init__(self, name, gff_path, contig_mapper):
         self.name = name
-        self.index_path = index_path
         self.gff_path = gff_path
         self.contig_mapper = contig_mapper
         
@@ -1878,20 +1877,26 @@ class ref_genomes():
     def get_refs(cls):
         cls.db_base = "/storage8/erkia/"
         cls.specie = "Streptococcus_pneumoniae"
-        ref_ids = [
-                    "_".join(os.path.basename(x).split("_")[0:-1]) for x
-                    in glob.glob(cls.db_base + cls.specie + f"/GFF/*.gff")
-                   ]
-        for ref_id in ref_ids:
-            gff_path = os.path.join(cls.db_base, cls.specie, "GFF", ref_id + "_genomic.gff")
-            index_path = os.path.join(cls.db_base, cls.specie, "FASTA", f"{ref_id}_{Samples.kmer_length}.index")
-            contig_mapper = {}
-            query_seqs = run(
-                ["glistquery", "--sequences", index_path], capture_output=True, text=True
-                )
-            for line in query_seqs.stdout.strip().split("\n"):
-                contig_mapper[line.split()[1]] = line.split()[2]
-            cls.instances[ref_id] = cls(ref_id, index_path, gff_path, contig_mapper)
+        cls.index_path = os.path.join(cls.db_base, cls.specie, f"{locations}_{Samples.kmer_length}.index")
+        with open(os.path.join(cls.db_base, cls.specie, "genome_map.txt")) as gen_map:
+            for line in gen_map:
+                if "write_kmers" in line:
+                    break
+                else:
+                    ref_queue, ref_id, _, _, _, _ = line.split()
+                    ref_queue = ref_queue.strip(":")
+                    ref_id = "_".join(os.path.basename(ref_id).split("_")[0:-1])
+                gff_path = os.path.join(cls.db_base, cls.specie, "GFF", ref_id + "_genomic.gff")
+                contig_mapper = {}
+                query_seqs = run(
+                    ["glistquery", "--sequences", index_path], capture_output=True, text=True
+                    )
+                for line in query_seqs.stdout.strip().split("\n"):
+                    ref_index, contig_index, contig_name, _, _, _  =  line.split()
+                    if ref_queue == ref_index:
+                        contig_name = contig_name.split()[0]
+                        contig_mapper[contig_index] = contig_name
+                cls.instances[ref_queue] = cls(ref_id, gff_path, contig_mapper)
 
     @classmethod
     def get_ref_annos(cls):
