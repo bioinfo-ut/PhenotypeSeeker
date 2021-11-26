@@ -1788,6 +1788,8 @@ class phenotypes():
                 ref_genomes.index_path
                 ]
                 , capture_output=True, text=True)
+            print(kmer)
+            print(indexes)
             line2list = indexes.stdout.strip().split("\n")[1:]
             if line2list:
                 ref_idx, contig, pos, strand = line2list[0].split()
