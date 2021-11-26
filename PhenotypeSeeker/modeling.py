@@ -1898,12 +1898,12 @@ class ref_genomes():
                         contig_mapper[contig_index] = contig_name
                 print(f"ref spec: {ref_id} {gff_path}")
                 cls.instances[ref_queue] = cls(ref_id, gff_path, contig_mapper)
+                print(cls.instances[ref_queue].name)
 
     @classmethod
     def get_ref_annos(cls):
-        print(cls.instances.values())
-        print(cls.instances.keys())
         for ref_genome in cls.instances.values():
+            print(ref_genome.gff_path)
             with open(ref_genome.gff_path) as ref_annos:
                 for line in ref_annos:
                     if '#' not in line and "gene" in line.split('\t')[2]:
