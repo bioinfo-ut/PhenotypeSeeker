@@ -1892,7 +1892,7 @@ class ref_genomes():
                     ["glistquery", "--sequences", cls.index_path], capture_output=True, text=True
                     )
                 for line in query_seqs.stdout.strip().split("\n"):
-                    ref_index, contig_index, contig_name, _, _, _  =  line.split()
+                    ref_index, contig_index, contig_name  =  line.split()[:3]
                     if ref_queue == ref_index:
                         contig_name = contig_name.split()[0]
                         contig_mapper[contig_index] = contig_name
