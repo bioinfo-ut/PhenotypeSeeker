@@ -1896,9 +1896,9 @@ class ref_genomes():
                     if ref_queue == ref_index:
                         contig_name = contig_name.split()[0]
                         contig_mapper[contig_index] = contig_name
-                print(f"ref spec: {ref_id} {gff_path}")
                 cls.instances[ref_queue] = cls(ref_id, gff_path, contig_mapper)
-                print(cls.instances[ref_queue].name)
+        for ref_genome in cls.instances.values():
+            print(ref_genome.name)
 
     @classmethod
     def get_ref_annos(cls):
