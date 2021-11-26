@@ -1776,6 +1776,8 @@ class phenotypes():
         total = len(kmers)
         counter = 0
         checkpoint = math.ceil(total/100)
+        print(total)
+        print(checkpoint)
         for kmer in kmers:
             counter += 1
             if counter % checkpoint == 0:
@@ -1783,14 +1785,14 @@ class phenotypes():
                 stderr_print.currentKmerNum.value += checkpoint
                 Input.lock.release()
                 stderr_print.update_percent(self.name, total, "kmers annotated")
-            start = time.time()
+            # start = time.time()
             indexes = run(
                 ["glistquery", "--locations", "-q", kmer,
                 ref_genomes.index_path
                 ]
                 , capture_output=True, text=True)
-            finish = time.time()
-            print(f"Time elapsed: {finish - start} s.")
+            #finish = time.time()
+            #print(f"Time elapsed: {finish - start} s.")
             line2list = indexes.stdout.strip().split("\n")[1:]
             if line2list:
                 ref_idx, contig, pos, strand = line2list[0].split()
