@@ -1783,11 +1783,14 @@ class phenotypes():
                 stderr_print.currentKmerNum.value += 1
                 Input.lock.release()
             stderr_print.update_percent(self.name, total, "kmers annotated")
+            start = time.time()
             indexes = run(
                 ["glistquery", "--locations", "-q", kmer,
                 ref_genomes.index_path
                 ]
                 , capture_output=True, text=True)
+            finish = time.time()
+            print(f"Time elapsed: {finish} - {start}")
             line2list = indexes.stdout.strip().split("\n")[1:]
             if line2list:
                 ref_idx, contig, pos, strand = line2list[0].split()
@@ -1799,7 +1802,6 @@ class phenotypes():
     def annotate_kmers(self, kmer, strain, contig, pos):
         # Find the nearest position
         if contig in ref_genomes.genome_annotations[strain]:
-            print(contig)
             nearest = min(ref_genomes.genome_annotations[strain][contig], key=lambda x:abs(x-pos))
             gene = ref_genomes.genome_annotations[strain][contig][nearest]['gene_name']
             product = ref_genomes.genome_annotations[strain][contig][nearest]['product_name']
@@ -1901,7 +1903,6 @@ class ref_genomes():
     @classmethod
     def get_ref_annos(cls):
         for ref_genome in cls.instances.values():
-            print(ref_genome.gff_path)
             with open(ref_genome.gff_path) as ref_annos:
                 for line in ref_annos:
                     if '#' not in line and "gene" in line.split('\t')[2]:
