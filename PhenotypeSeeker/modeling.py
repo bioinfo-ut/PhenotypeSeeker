@@ -1788,13 +1788,10 @@ class phenotypes():
                 ref_genomes.index_path
                 ]
                 , capture_output=True, text=True)
-            print(kmer)
-            print(indexes)
             line2list = indexes.stdout.strip().split("\n")[1:]
             if line2list:
                 ref_idx, contig, pos, strand = line2list[0].split()
                 ref_genome = ref_genomes.instances[ref_idx]
-                print(kmer, ref_genome.name, ref_genome.contig_mapper[contig])
                 self.annotate_kmers(
                     kmer, ref_genome.name, ref_genome.contig_mapper[contig], int(pos)+1)
                 break
