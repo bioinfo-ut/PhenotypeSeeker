@@ -1780,9 +1780,9 @@ class phenotypes():
             counter += 1
             if counter % checkpoint == 0:
                 Input.lock.acquire()
-                stderr_print.currentKmerNum.value += 1
+                stderr_print.currentKmerNum.value += checkpoint
                 Input.lock.release()
-            stderr_print.update_percent(self.name, total, "kmers annotated")
+                stderr_print.update_percent(self.name, total, "kmers annotated")
             start = time.time()
             indexes = run(
                 ["glistquery", "--locations", "-q", kmer,
@@ -1790,7 +1790,7 @@ class phenotypes():
                 ]
                 , capture_output=True, text=True)
             finish = time.time()
-            print(f"Time elapsed: {finish} - {start}")
+            print(f"Time elapsed: {finish - start} s.")
             line2list = indexes.stdout.strip().split("\n")[1:]
             if line2list:
                 ref_idx, contig, pos, strand = line2list[0].split()
