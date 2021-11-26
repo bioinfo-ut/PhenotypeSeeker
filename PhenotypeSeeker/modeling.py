@@ -1901,7 +1901,6 @@ class ref_genomes():
                 cls.instances[ref_queue] = cls(ref_id, gff_path, contig_mapper)
         for ref_genome in cls.instances.values():
             print(ref_genome.name)
-        for ref_genome in cls.instances.values():
             print(ref_genome.gff_path)
 
     @classmethod
