@@ -1898,6 +1898,7 @@ class ref_genomes():
                         contig_mapper[contig_index] = contig_name
                 print(f"ref spec: {ref_id} {gff_path}")
                 cls.instances[ref_queue] = cls(ref_id, gff_path, contig_mapper)
+                print(cls.nr_ref_genomes)
 
     @classmethod
     def get_ref_annos(cls):
