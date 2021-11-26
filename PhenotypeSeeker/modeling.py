@@ -1877,7 +1877,7 @@ class ref_genomes():
     def get_refs(cls):
         cls.db_base = "/storage8/erkia/"
         cls.specie = "Streptococcus_pneumoniae"
-        cls.index_path = os.path.join(cls.db_base, cls.specie, f"{locations}_{Samples.kmer_length}.index")
+        cls.index_path = os.path.join(cls.db_base, cls.specie, f"locations_{Samples.kmer_length}.index")
         with open(os.path.join(cls.db_base, cls.specie, "genome_map.txt")) as gen_map:
             for line in gen_map:
                 if "write_kmers" in line:
@@ -1889,7 +1889,7 @@ class ref_genomes():
                 gff_path = os.path.join(cls.db_base, cls.specie, "GFF", ref_id + "_genomic.gff")
                 contig_mapper = {}
                 query_seqs = run(
-                    ["glistquery", "--sequences", index_path], capture_output=True, text=True
+                    ["glistquery", "--sequences", cls.index_path], capture_output=True, text=True
                     )
                 for line in query_seqs.stdout.strip().split("\n"):
                     ref_index, contig_index, contig_name, _, _, _  =  line.split()
