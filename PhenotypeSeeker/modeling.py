@@ -1820,12 +1820,10 @@ class phenotypes():
                     relative_pos = "3'-flanking"
                 elif pos < ref_genomes.genome_annotations[strain][contig][nearest]['gene_end']:
                     relative_pos = "5'-flanking"
-            print(kmer, relative_pos, gene, product)
         self.kmer_annotations[kmer] = {
             "relative_pos" : relative_pos, "gene": gene,
             "product": product, "protein_id": protein_id
             }
-        print(self.kmer_annotations)
 
     def get_annotations(self):
         # Annotation
