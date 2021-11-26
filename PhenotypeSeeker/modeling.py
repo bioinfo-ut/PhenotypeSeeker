@@ -1794,7 +1794,6 @@ class phenotypes():
                 ref_genome = ref_genomes.instances[ref_idx]
                 self.annotate_kmers(
                     kmer, ref_genome.name, ref_genome.contig_mapper[contig], int(pos)+1)
-                break
         self.kmer_annotations = pd.DataFrame.from_dict(self.kmer_annotations)
 
     def annotate_kmers(self, kmer, strain, contig, pos):
