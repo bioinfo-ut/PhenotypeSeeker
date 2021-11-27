@@ -1305,6 +1305,7 @@ class phenotypes():
 
         df_to_scale = self.ML_df.drop(self.out_cols, axis=1).T
         kmers_to_test = self.ML_df.shape[1]
+        self.out_cols += ['likelihood_ratio_test', 'lrt_pvalue']
         kmers_to_keep = []
 
         # Strandardization
