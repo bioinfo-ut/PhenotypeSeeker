@@ -1336,6 +1336,8 @@ class phenotypes():
         probs_base = model.predict_proba(PCs[['PC_1', 'PC_2']])
         logloss_base = log_loss(PCs['phenotype'], probs_base, normalize=False)
 
+        LRs = []
+        LR_pvals = []
         for kmer in df_to_scale:
             alt_df = pd.merge(PCs[['PC_1', 'PC_2']], df_to_scale[kmer], left_index=True, right_index=True)
             model.fit(alt_df, PCs['phenotype'])
@@ -1343,23 +1345,27 @@ class phenotypes():
             logloss_alt = log_loss(PCs['phenotype'].values, probs_alt, normalize=False)
 
             LR = 2*(logloss_base - logloss_alt)
+            LRs.append(LR)
             p_value = stats.chi2.sf(LR, 1)
+            LR_pvals.append(p_value)
+            # if p_value < 0.05/kmers_to_test:
+            #     kmers_to_keep.append(True)
 
-            if p_value < 0.05/kmers_to_test:
-                kmers_to_keep.append(True)
+            #     LR_out.write(f"K-mer: {kmer}\n")
+            #     LR_out.write(f"Logloss base: {logloss_base}\n")
+            #     LR_out.write(f"Logloss alt: {logloss_alt}\n")
+            #     LR_out.write(f"Likelihood ratio statistic: {LR}\n")
+            #     LR_out.write(f"p-value: {p_value}\n\n\n")
+            # else:
+            #     kmers_to_keep.append(False)
 
-                LR_out.write(f"K-mer: {kmer}\n")
-                LR_out.write(f"Logloss base: {logloss_base}\n")
-                LR_out.write(f"Logloss alt: {logloss_alt}\n")
-                LR_out.write(f"Likelihood ratio statistic: {LR}\n")
-                LR_out.write(f"p-value: {p_value}\n\n\n")
-            else:
-                kmers_to_keep.append(False)
+        # self.model_package['kmers_to_keep'] = kmers_to_keep
+        # self.ML_df = pd.concat(
+        #         [PCs, self.ML_df.loc[:, kmers_to_keep + [True, True]]], axis=1
+        #     )
+        print(LR_pvals)
+        print(LRs)
 
-        self.model_package['kmers_to_keep'] = kmers_to_keep
-        self.ML_df = pd.concat(
-                [PCs, self.ML_df.loc[:, kmers_to_keep + [True, True]]], axis=1
-            )
 
     def fit_model(self):
         if self.pred_scale == "continuous":
