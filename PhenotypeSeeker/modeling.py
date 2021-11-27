@@ -1363,8 +1363,9 @@ class phenotypes():
         # self.ML_df = pd.concat(
         #         [PCs, self.ML_df.loc[:, kmers_to_keep + [True, True]]], axis=1
         #     )
-        print(LR_pvals)
-        print(LRs)
+        self.ML_df['likelihood_ratio_test_statistic'] = LRs
+        self.ML_df['lrt_pvalue'] = LR_pvals
+        print(self.ML_df)
 
 
     def fit_model(self):
