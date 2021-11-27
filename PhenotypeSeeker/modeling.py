@@ -953,8 +953,6 @@ class phenotypes():
                 self.ML_df[self.out_cols].to_csv(
                     f'kmer_metadata_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
                 )
-        print(ML_df)
-
 
     def machine_learning_modelling(self):
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
@@ -1304,6 +1302,7 @@ class phenotypes():
 
         LR_out = open('likelihood_tests.txt' , "w")
 
+        print(self.ML_df)
         df_to_scale = self.ML_df.drop(self.out_cols).T
         kmers_to_test = self.ML_df.shape[1]
         kmers_to_keep = []
@@ -1327,11 +1326,12 @@ class phenotypes():
         self.model_package['scaler'] = scaler
         self.model_package['pca_model'] = pca
 
-        self.ML_df['phenotype'] = [
+        PCs['phenotype'] = [
             sample.phenotypes[self.name] for sample in Input.samples.values()
             ]
-        self.ML_df = self.ML_df[self.ML_df.phenotype != 'NA']
-        self.ML_df.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
+        PCs = self.ML_df[self.ML_df.phenotype != 'NA']
+        PCs.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
+        print(PCs)
 
         model = LogisticRegression()  
         model.fit(PCs, self.ML_df['phenotype'])
