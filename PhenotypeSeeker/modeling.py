@@ -1236,7 +1236,7 @@ class phenotypes():
 
             if self.LR:
                 self.ML_df = pd.concat(
-                        [self.ML_df, self.PCs[['PC_1', 'PC_2']].T]
+                        [self.PCs[['PC_1', 'PC_2']], self.ML_df]
                     )
             self.ML_df.to_csv(self.name + "_MLdf.csv")
 
