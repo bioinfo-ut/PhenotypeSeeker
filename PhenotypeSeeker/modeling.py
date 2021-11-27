@@ -1304,6 +1304,8 @@ class phenotypes():
 
         LR_out = open('likelihood_tests.txt' , "w")
 
+        print(self.ML_df)
+
         kmers_to_test = self.ML_df.shape[1]
         kmers_to_keep = []
 
