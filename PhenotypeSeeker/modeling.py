@@ -738,8 +738,8 @@ class phenotypes():
                 stderr_print.update_percent(
                     self.name, phenotypes.no_kmers_to_analyse, "tests conducted"
                     )
-            # if counter == 20000:
-            #     return kmer_dict
+            if counter == 20000:
+                return kmer_dict
             kmer = line[0].split()[0]
             kmer_vector = [int(j.split()[1].strip()) for j in line]
             if not self.real_counts:
@@ -953,6 +953,8 @@ class phenotypes():
                 self.ML_df[self.out_cols].to_csv(
                     f'kmer_metadata_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
                 )
+        print(ML_df)
+
 
     def machine_learning_modelling(self):
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
@@ -1302,11 +1304,10 @@ class phenotypes():
 
         LR_out = open('likelihood_tests.txt' , "w")
 
-        kmers_to_test = self.ML_df.iloc[:-2].shape[1]
+        kmers_to_test = self.ML_df.shape[1]
         kmers_to_keep = []
 
         # Strandardization
-        df_to_scale = self.ML_df.drop(['phenotype', 'weights'], axis=1)
         scaler = StandardScaler()
         scaler.fit(df_to_scale)
         scaled_data = scaler.transform(df_to_scale)
@@ -1324,12 +1325,18 @@ class phenotypes():
         self.model_package['scaler'] = scaler
         self.model_package['pca_model'] = pca
 
+        self.ML_df['phenotype'] = [
+            sample.phenotypes[self.name] for sample in Input.samples.values()
+            ]
+        self.ML_df = self.ML_df[self.ML_df.phenotype != 'NA']
+        self.ML_df.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
+
         model = LogisticRegression()  
         model.fit(PCs, self.ML_df['phenotype'])
         probs_base = model.predict_proba(PCs)
         logloss_base = log_loss(self.ML_df['phenotype'].values, probs_base, normalize=False)
 
-        for kmer in self.ML_df.iloc[:, :-2]:
+        for kmer in self.ML_df:
             model.fit(pd.concat([PCs, self.ML_df[kmer]], axis=1), self.ML_df['phenotype'])
             probs_alt = model.predict_proba(pd.concat([PCs, self.ML_df[kmer]], axis=1))
             logloss_alt = log_loss(self.ML_df['phenotype'].values, probs_alt, normalize=False)
@@ -1352,7 +1359,6 @@ class phenotypes():
         self.ML_df = pd.concat(
                 [PCs, self.ML_df.loc[:, kmers_to_keep + [True, True]]], axis=1
             )
-        # self.ML_df = self.ML_df.loc[:, kmers_to_keep + [True, True]]
 
     def fit_model(self):
         if self.pred_scale == "continuous":
@@ -2021,6 +2027,11 @@ def modeling(args):
             lambda x:  x.set_up_dataframe(), 
             Input.phenotypes_to_analyse.values()
             ))
+
+    if not Input.jump_to or Input.jump_to in ["testing"]:
+        if phenotypes.LR:
+            sys.stderr.write("\x1b[1;32mConducting the likelihood ratio tests for phenotype: \x1b[0m\n")
+            list(map(lambda x: x.LR_feature_selection(), Input.phenotypes_to_analyse.values()))
 
     if not Input.jump_to or Input.jump_to in ["testing", "annotating"]:
         if args.annotate:
