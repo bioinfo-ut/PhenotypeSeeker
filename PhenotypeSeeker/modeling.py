@@ -962,11 +962,8 @@ class phenotypes():
         self.set_hyperparameters()
         self.get_ML_df()
         if self.pca:
-            if self.LR:
-                self.LR_feature_selection()
-            else:
-                self.PCA_analysis()
-                features = 'PCs'
+            self.PCA_analysis()
+            features = 'PCs'
         self.get_outputfile_names(features)
         if phenotypes.n_splits_cv_outer:
             self.assert_n_splits_cv_outer(phenotypes.n_splits_cv_outer, self.ML_df)
@@ -1360,11 +1357,11 @@ class phenotypes():
             #     kmers_to_keep.append(False)
 
         # self.model_package['kmers_to_keep'] = kmers_to_keep
-        # self.ML_df = pd.concat(
-        #         [PCs, self.ML_df.loc[:, kmers_to_keep + [True, True]]], axis=1
-        #     )
-        self.ML_df['likelihood_ratio_test_statistic'] = LRs
+        self.ML_df['likelihood_ratio_test'] = LRs
         self.ML_df['lrt_pvalue'] = LR_pvals
+        self.ML_df = pd.concat(
+            [PCs, self.ML_df]
+            )
         print(self.ML_df)
 
 
