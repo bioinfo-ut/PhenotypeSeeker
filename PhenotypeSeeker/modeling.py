@@ -1336,7 +1336,7 @@ class phenotypes():
         probs_base = model.predict_proba(PCs)
         logloss_base = log_loss(self.ML_df['phenotype'].values, probs_base, normalize=False)
 
-        for kmer in self.ML_df:
+        for kmer in df_to_scale:
             print(kmer)
             model.fit(pd.concat([PCs, self.ML_df[kmer]], axis=1), self.ML_df['phenotype'])
             probs_alt = model.predict_proba(pd.concat([PCs, self.ML_df[kmer]], axis=1))
