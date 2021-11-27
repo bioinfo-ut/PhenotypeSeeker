@@ -961,9 +961,9 @@ class phenotypes():
         self.set_model()
         self.set_hyperparameters()
         self.get_ML_df()
-        if self.pca:
-            self.PCA_analysis()
-            features = 'PCs'
+        # if self.pca:
+        #     self.PCA_analysis()
+        #     features = 'PCs'
         self.get_outputfile_names(features)
         if phenotypes.n_splits_cv_outer:
             self.assert_n_splits_cv_outer(phenotypes.n_splits_cv_outer, self.ML_df)
@@ -1859,7 +1859,7 @@ class phenotypes():
         # k-mer clustering by genes
         clusters = self.ML_df.groupby(by="product").agg(
             count=('product', 'size'), chi2_max=('chi2', 'max'),
-            chi2_mean=('chi2', 'mean')
+            lrt_max=('likelihood_ratio_test', 'max')
             ).reset_index()
         clusters = clusters.sort_values('count', ascending=False, ignore_index=True)
         clusters.to_csv(f"kmer_counts_in_genes_{self.name}.tsv", sep='\t')
