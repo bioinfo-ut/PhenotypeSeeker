@@ -1318,7 +1318,7 @@ class phenotypes():
         pca.fit(scaled_data)
 
         # PCA transformation
-        PCs = pd.DataFrame(
+        self.PCs = pd.DataFrame(
             pca.transform(scaled_data),
             index=df_to_scale.index,
             columns=['PC_1', 'PC_2']
@@ -1326,25 +1326,24 @@ class phenotypes():
         self.model_package['scaler'] = scaler
         self.model_package['pca_model'] = pca
 
-        PCs['phenotype'] = [
+        self.PCs['phenotype'] = [
             sample.phenotypes[self.name] for sample in Input.samples.values()
             ]
-        PCs = PCs[PCs.phenotype != 'NA']
-        PCs.phenotype = PCs.phenotype.apply(pd.to_numeric)
-        print(PCs)
+        self.PCs = self.PCs[self.PCs.phenotype != 'NA']
+        self.PCs.phenotype = self.PCs.phenotype.apply(pd.to_numeric)
 
         model = LogisticRegression()  
-        model.fit(PCs[['PC_1', 'PC_2']], PCs['phenotype'])
-        probs_base = model.predict_proba(PCs[['PC_1', 'PC_2']])
-        logloss_base = log_loss(PCs['phenotype'], probs_base, normalize=False)
+        model.fit(self.PCs[['PC_1', 'PC_2']], self.PCs['phenotype'])
+        probs_base = model.predict_proba(self.PCs[['PC_1', 'PC_2']])
+        logloss_base = log_loss(self.PCs['phenotype'], probs_base, normalize=False)
 
         LRs = []
         LR_pvals = []
         for kmer in df_to_scale:
-            alt_df = pd.merge(PCs[['PC_1', 'PC_2']], df_to_scale[kmer], left_index=True, right_index=True)
-            model.fit(alt_df, PCs['phenotype'])
+            alt_df = pd.merge(self.PCs[['PC_1', 'PC_2']], df_to_scale[kmer], left_index=True, right_index=True)
+            model.fit(alt_df, self.PCs['phenotype'])
             probs_alt = model.predict_proba(alt_df)
-            logloss_alt = log_loss(PCs['phenotype'].values, probs_alt, normalize=False)
+            logloss_alt = log_loss(self.PCs['phenotype'].values, probs_alt, normalize=False)
 
             LR = 2*(logloss_base - logloss_alt)
             LRs.append(LR)
@@ -1364,9 +1363,6 @@ class phenotypes():
         # self.model_package['kmers_to_keep'] = kmers_to_keep
         self.ML_df['likelihood_ratio_test'] = LRs
         self.ML_df['lrt_pvalue'] = LR_pvals
-        self.ML_df = pd.concat(
-            [self.ML_df, PCs[['PC_1', 'PC_2']].T]
-            )
         print(self.ML_df)
 
 
@@ -1843,7 +1839,7 @@ class phenotypes():
 
     def get_annotations(self):
         # Annotation
-        self.get_kmer_annotations(self.ML_df.index)
+        self.get_kmer_annotations(self.ML_df.index[:-2])
         self.ML_df = pd.concat([self.ML_df, self.kmer_annotations.T], axis=1)
         self.out_cols = self.out_cols + ["gene", "relative_pos", "product", "protein_id"]
         self.ML_df = self.ML_df.sort_values(["chi2", "product"])
