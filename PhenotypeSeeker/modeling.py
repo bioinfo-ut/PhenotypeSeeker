@@ -1320,7 +1320,7 @@ class phenotypes():
         # PCA transformation
         PCs = pd.DataFrame(
             pca.transform(scaled_data),
-            index=self.ML_df.index,
+            index=self.df_to_scale.index,
             columns=['PC_1', 'PC_2']
             )
         self.model_package['scaler'] = scaler
