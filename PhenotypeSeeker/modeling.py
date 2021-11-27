@@ -1363,7 +1363,7 @@ class phenotypes():
         self.ML_df['likelihood_ratio_test'] = LRs
         self.ML_df['lrt_pvalue'] = LR_pvals
         self.ML_df = pd.concat(
-            [PCs[['PC_1', 'PC_2']].T, self.ML_df]
+            [self.ML_df, PCs[['PC_1', 'PC_2']].T]
             )
         print(self.ML_df)
 
