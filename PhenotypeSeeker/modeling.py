@@ -1225,7 +1225,8 @@ class phenotypes():
             self.ML_df = self.ML_df.T
             self.model_package['kmers'] = self.ML_df.columns
 
-
+            print(self.ML_df)
+            print([sample.weight for sample in Input.samples.values()])
 
             self.ML_df['weights'] = [
                 sample.weight for sample in Input.samples.values()
