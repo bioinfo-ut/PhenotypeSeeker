@@ -1225,9 +1225,6 @@ class phenotypes():
             self.ML_df = self.ML_df.T
             self.model_package['kmers'] = self.ML_df.columns
 
-            print(self.ML_df)
-            print([sample.weight for sample in Input.samples.values()])
-
             self.ML_df['weights'] = [
                 sample.weight for sample in Input.samples.values()
                 ]
@@ -1236,6 +1233,11 @@ class phenotypes():
                 ]
             self.ML_df = self.ML_df[self.ML_df.phenotype != 'NA']
             self.ML_df.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
+
+            if self.LR:
+                self.ML_df = pd.concat(
+                        [self.ML_df, self.PCs[['PC_1', 'PC_2']].T]
+                    )
             self.ML_df.to_csv(self.name + "_MLdf.csv")
 
     @timer
