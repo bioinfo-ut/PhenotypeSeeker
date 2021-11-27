@@ -1333,7 +1333,7 @@ class phenotypes():
 
         model = LogisticRegression()  
         model.fit(PCs[['PC_1', 'PC_2']], PCs['phenotype'])
-        probs_base = model.predict_proba(PCs)
+        probs_base = model.predict_proba(PCs[['PC_1', 'PC_2']])
         logloss_base = log_loss(PCs['phenotype'], probs_base, normalize=False)
 
         for kmer in df_to_scale:
