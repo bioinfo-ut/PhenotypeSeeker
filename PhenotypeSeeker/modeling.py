@@ -738,7 +738,7 @@ class phenotypes():
                 stderr_print.update_percent(
                     self.name, phenotypes.no_kmers_to_analyse, "tests conducted"
                     )
-            if counter == 10000:
+            if counter == 20000:
                 return kmer_dict
             kmer = line[0].split()[0]
             kmer_vector = [int(j.split()[1].strip()) for j in line]
@@ -1776,8 +1776,6 @@ class phenotypes():
         total = len(kmers)
         counter = 0
         checkpoint = math.ceil(total/100)
-        print(total)
-        print(checkpoint)
         for kmer in kmers:
             counter += 1
             if counter % checkpoint == 0:
@@ -1788,8 +1786,8 @@ class phenotypes():
             indexes = Popen(
                 ["stdbuf", "-oL", "glistquery", "--locations", "-q", kmer,
                 ref_genomes.index_path
-                ]
-                , stdout=indexes.PIPE, text=True, bufsize=-1)
+                ],
+                stdout=PIPE, text=True, bufsize=-1)
             indexes.stdout.readline()
             for line in indexes.stdout:
                 ref_idx, contig, pos, strand = line.split()
