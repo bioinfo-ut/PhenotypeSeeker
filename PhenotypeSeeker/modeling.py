@@ -1224,6 +1224,9 @@ class phenotypes():
             self.ML_df.drop(self.out_cols, inplace=True, axis=1)
             self.ML_df = self.ML_df.T
             self.model_package['kmers'] = self.ML_df.columns
+
+
+
             self.ML_df['weights'] = [
                 sample.weight for sample in Input.samples.values()
                 ]
@@ -1360,7 +1363,7 @@ class phenotypes():
         self.ML_df['likelihood_ratio_test'] = LRs
         self.ML_df['lrt_pvalue'] = LR_pvals
         self.ML_df = pd.concat(
-            [PCs, self.ML_df]
+            [PCs[['PC_1', 'PC_2']].T, self.ML_df]
             )
         print(self.ML_df)
 
