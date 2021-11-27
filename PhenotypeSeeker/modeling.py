@@ -1303,7 +1303,7 @@ class phenotypes():
         LR_out = open('likelihood_tests.txt' , "w")
 
         print(self.ML_df)
-        df_to_scale = self.ML_df.drop(self.out_cols).T
+        df_to_scale = self.ML_df.drop(self.out_cols, axis=1).T
         kmers_to_test = self.ML_df.shape[1]
         kmers_to_keep = []
         print(df_to_scale)
