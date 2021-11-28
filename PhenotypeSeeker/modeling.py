@@ -1858,11 +1858,9 @@ class phenotypes():
             count=('product', 'size'), chi2_min_pval=('p-value', 'min'),
             lrt_min_pval=('lrt_pvalue', 'min')
             ).reset_index()
-        clusters = clusters.sort_values('count', 'lrt_min_pval', ignore_index=True)
+        clusters = clusters.sort_values('lrt_min_pval', ignore_index=True)
         clusters.to_csv(f"kmer_counts_in_genes_{self.name}.tsv", sep='\t')
         clusters_top = clusters['product'].loc[:9]
-        if 'hypothetical protein' in clusters_top:
-            clusters_top.drop(labels=['hypothetical protein'])
         self.ML_df = self.ML_df[self.ML_df['product'].isin(clusters_top)]
         self.ML_df[self.out_cols].to_csv(
             f'kmers_selected_for_modelling_metadata_{self.name}_.tsv', sep='\t'
@@ -1942,6 +1940,8 @@ class ref_genomes():
                             product = "-"
                         if "protein_id=" in product_line: 
                             protein_id = product_line.split('\t')[-1].split("protein_id=")[-1].split(";")[0]
+                        if product = 'hypothetical protein':
+                            product = f"{product}_{protein_id}"
 
                         data = {'gene_start': gene_start, 'gene_name': gene_name,
                                 'gene_end': gene_end, 'strand': strand,
