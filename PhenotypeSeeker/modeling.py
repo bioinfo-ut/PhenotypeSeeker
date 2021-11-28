@@ -738,8 +738,8 @@ class phenotypes():
                 stderr_print.update_percent(
                     self.name, phenotypes.no_kmers_to_analyse, "tests conducted"
                     )
-            if counter == 40000:
-                return kmer_dict
+            # if counter == 40000:
+            #     return kmer_dict
             kmer = line[0].split()[0]
             kmer_vector = [int(j.split()[1].strip()) for j in line]
             if not self.real_counts:
@@ -1940,7 +1940,9 @@ class ref_genomes():
                             product = "-"
                         if "protein_id=" in product_line: 
                             protein_id = product_line.split('\t')[-1].split("protein_id=")[-1].split(";")[0]
-                        if product = 'hypothetical protein':
+                        else:
+                            protein_id = "-"
+                        if product == 'hypothetical protein':
                             product = f"{product}_{protein_id}"
 
                         data = {'gene_start': gene_start, 'gene_name': gene_name,
