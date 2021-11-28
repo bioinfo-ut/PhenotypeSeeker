@@ -1349,8 +1349,8 @@ class phenotypes():
 
             LR = 2*(logloss_base - logloss_alt)
             LRs.append(LR)
-            p_value = stats.chi2.sf(LR, 1)
-            LR_pvals.append(p_value)
+            LR_pval = stats.chi2.sf(LR, 1)
+            LR_pvals.append(LR_pval)
             # if p_value < 0.05/kmers_to_test:
             #     kmers_to_keep.append(True)
 
@@ -1365,7 +1365,6 @@ class phenotypes():
         # self.model_package['kmers_to_keep'] = kmers_to_keep
         self.ML_df['likelihood_ratio_test'] = LRs
         self.ML_df['lrt_pvalue'] = LR_pvals
-        print(self.ML_df)
 
 
     def fit_model(self):
@@ -1856,8 +1855,8 @@ class phenotypes():
         sys.stderr.flush()
         # k-mer clustering by genes
         clusters = self.ML_df.groupby(by="product").agg(
-            count=('product', 'size'), chi2_max=('chi2', 'max'),
-            lrt_max=('likelihood_ratio_test', 'max')
+            count=('product', 'size'), chi2_min_pval=('p-value', 'min'),
+            lrt_min_pval=('lrt_pvalue', 'min')
             ).reset_index()
         clusters = clusters.sort_values('count', ascending=False, ignore_index=True)
         clusters.to_csv(f"kmer_counts_in_genes_{self.name}.tsv", sep='\t')
