@@ -738,7 +738,7 @@ class phenotypes():
                 stderr_print.update_percent(
                     self.name, phenotypes.no_kmers_to_analyse, "tests conducted"
                     )
-            if counter == 20000:
+            if counter == 40000:
                 return kmer_dict
             kmer = line[0].split()[0]
             kmer_vector = [int(j.split()[1].strip()) for j in line]
@@ -1858,7 +1858,7 @@ class phenotypes():
             count=('product', 'size'), chi2_min_pval=('p-value', 'min'),
             lrt_min_pval=('lrt_pvalue', 'min')
             ).reset_index()
-        clusters = clusters.sort_values('count', ascending=False, ignore_index=True)
+        clusters = clusters.sort_values('count', 'lrt_min_pval', ignore_index=True)
         clusters.to_csv(f"kmer_counts_in_genes_{self.name}.tsv", sep='\t')
         clusters_top = clusters['product'].loc[:9]
         if 'hypothetical protein' in clusters_top:
