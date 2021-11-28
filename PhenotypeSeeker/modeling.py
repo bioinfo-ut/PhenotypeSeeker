@@ -738,8 +738,8 @@ class phenotypes():
                 stderr_print.update_percent(
                     self.name, phenotypes.no_kmers_to_analyse, "tests conducted"
                     )
-            # if counter == 40000:
-            #     return kmer_dict
+            if counter == 40000:
+                return kmer_dict
             kmer = line[0].split()[0]
             kmer_vector = [int(j.split()[1].strip()) for j in line]
             if not self.real_counts:
@@ -1860,8 +1860,9 @@ class phenotypes():
             ).reset_index()
         clusters = clusters.sort_values('lrt_min_pval', ignore_index=True)
         clusters.to_csv(f"kmer_counts_in_genes_{self.name}.tsv", sep='\t')
-        clusters_top = clusters['product'].loc[:9]
-        self.ML_df = self.ML_df[self.ML_df['product'].isin(clusters_top)]
+        clusters4ML = clusters[clusters.lrt_min_pval > (p-value/n_kmers)]
+        clusters4ML.to_csv(f"kmer_clusters_selected_for_modelling_{self.name}.tsv", sep='\t')
+        # self.ML_df = self.ML_df[self.ML_df['product'].isin(clusters_top)]
         self.ML_df[self.out_cols].to_csv(
             f'kmers_selected_for_modelling_metadata_{self.name}_.tsv', sep='\t'
             )
