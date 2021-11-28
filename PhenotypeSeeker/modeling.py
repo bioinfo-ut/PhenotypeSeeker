@@ -1860,7 +1860,7 @@ class phenotypes():
             ).reset_index()
         clusters = clusters.sort_values('lrt_min_pval', ignore_index=True)
         clusters.to_csv(f"kmer_counts_in_genes_{self.name}.tsv", sep='\t')
-        clusters4ML = clusters[clusters.lrt_min_pval > (p-value/n_kmers)]
+        clusters4ML = clusters[clusters.lrt_min_pval > (self.pvalue_cutoff/self.kmer_limit)]
         clusters4ML.to_csv(f"kmer_clusters_selected_for_modelling_{self.name}.tsv", sep='\t')
         # self.ML_df = self.ML_df[self.ML_df['product'].isin(clusters_top)]
         self.ML_df[self.out_cols].to_csv(
