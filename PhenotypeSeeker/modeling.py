@@ -1234,11 +1234,9 @@ class phenotypes():
             self.ML_df = self.ML_df[self.ML_df.phenotype != 'NA']
             self.ML_df.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
 
-            print(self.ML_df)
-            print(PCs)
             if self.LR:
                 self.ML_df = pd.concat(
-                        [self.PCs[['PC_1', 'PC_2']], self.ML_df, axis=1]
+                        [self.PCs[['PC_1', 'PC_2']], self.ML_df], axis=1
                     )
             self.ML_df.to_csv(self.name + "_MLdf.csv")
 
