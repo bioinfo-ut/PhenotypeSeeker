@@ -1205,7 +1205,7 @@ class phenotypes():
             + self.name + ".txt", "w")
         self.coeff_file = open(f"{features}_and_coefficients_in_" + self.model_name_short \
             + "_model_" + self.name + ".txt", "w")
-        self.model_package = joblib.load(self.model_name_short + "_model_" + self.name + ".pkl")
+        self.model_file = open(self.model_name_short + "_model_" + self.name + ".pkl", "wb")
 
     @timer
     def get_ML_df(self):
@@ -1214,8 +1214,7 @@ class phenotypes():
                 self.name + "_MLdf.csv", index_col=0
                 )
             self.ML_df.index = self.ML_df.index.astype(str)
-            self.model_package = open(self.model_name_short + "_model_" + self.name + ".pkl")
-            print(self.model_package)
+            self.model_package = joblib.load(self.model_name_short + "_model_" + self.name + ".pkl")
         else:
             # Setting up the  dataframe
             self.ML_df.drop(self.out_cols, inplace=True, axis=1)
