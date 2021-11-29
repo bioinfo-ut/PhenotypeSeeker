@@ -1215,6 +1215,7 @@ class phenotypes():
                 )
             self.ML_df.index = self.ML_df.index.astype(str)
             self.model_package = open(self.model_name_short + "_model_" + self.name + ".pkl")
+            print(self.model_package)
         else:
             # Setting up the  dataframe
             self.ML_df.drop(self.out_cols, inplace=True, axis=1)
