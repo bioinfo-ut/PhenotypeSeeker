@@ -1863,9 +1863,7 @@ class phenotypes():
         clusters4ML = clusters[clusters.lrt_min_pval < (self.pvalue_cutoff/self.no_kmers_to_analyse)]
         clusters4ML.to_csv(f"kmer_clusters_selected_for_modelling_{self.name}.tsv", sep='\t')
 
-        print(clusters4ML['product'])
-        print(type(clusters4ML['product']))
-        kmers_to_keep = self.ML_df['product'].isin(clusters4ML.product.tolist())
+        kmers_to_keep = self.ML_df['product'].isin(clusters4ML['product'])
         self.model_package['kmers_to_keep'] = kmers_to_keep
         self.ML_df = self.ML_df[kmers_to_keep]
         self.ML_df[self.out_cols].to_csv(
