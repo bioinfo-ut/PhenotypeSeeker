@@ -954,6 +954,8 @@ class phenotypes():
                     f'kmer_metadata_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
                 )
         self.model_package['kmers'] = self.ML_df.index
+        self.model_package['LR'] = self.LR
+        self.model_package['pred_scale'] = self.pred_scale
 
     def machine_learning_modelling(self):
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
@@ -962,9 +964,6 @@ class phenotypes():
         self.set_model()
         self.set_hyperparameters()
         self.get_ML_df()
-        # if self.pca:
-        #     self.PCA_analysis()
-        #     features = 'PCs'
         self.get_outputfile_names(features)
         if phenotypes.n_splits_cv_outer:
             self.assert_n_splits_cv_outer(phenotypes.n_splits_cv_outer, self.ML_df)
@@ -1072,9 +1071,6 @@ class phenotypes():
 
         # Set and dump model package
         self.model_package['model'] = self.model_fitted
-        self.model_package['pca'] = self.pca
-        self.model_package['LR'] = self.LR
-        self.model_package['pred_scale'] = self.pred_scale
         joblib.dump(self.model_package, self.model_file)
 
         self.write_model_coefficients_to_file()
@@ -1210,6 +1206,7 @@ class phenotypes():
         self.coeff_file = open(f"{features}_and_coefficients_in_" + self.model_name_short \
             + "_model_" + self.name + ".txt", "w")
         self.model_file = open(self.model_name_short + "_model_" + self.name + ".pkl", "wb")
+        self.model_package = joblib.load(self.)
 
     @timer
     def get_ML_df(self):
@@ -1218,7 +1215,7 @@ class phenotypes():
                 self.name + "_MLdf.csv", index_col=0
                 )
             self.ML_df.index = self.ML_df.index.astype(str)
-            self.model_package['kmers'] = self.ML_df.columns[:-2]
+            self.model_package = open(self.model_name_short + "_model_" + self.name + ".pkl")
         else:
             # Setting up the  dataframe
             self.ML_df.drop(self.out_cols, inplace=True, axis=1)
@@ -1350,18 +1347,7 @@ class phenotypes():
             LRs.append(LR)
             LR_pval = stats.chi2.sf(LR, 1)
             LR_pvals.append(LR_pval)
-            # if p_value < 0.05/kmers_to_test:
-            #     kmers_to_keep.append(True)
 
-            #     LR_out.write(f"K-mer: {kmer}\n")
-            #     LR_out.write(f"Logloss base: {logloss_base}\n")
-            #     LR_out.write(f"Logloss alt: {logloss_alt}\n")
-            #     LR_out.write(f"Likelihood ratio statistic: {LR}\n")
-            #     LR_out.write(f"p-value: {p_value}\n\n\n")
-            # else:
-            #     kmers_to_keep.append(False)
-
-        # self.model_package['kmers_to_keep'] = kmers_to_keep
         self.ML_df['likelihood_ratio_test'] = LRs
         self.ML_df['lrt_pvalue'] = LR_pvals
 
@@ -1863,7 +1849,7 @@ class phenotypes():
         clusters4ML = clusters[clusters.lrt_min_pval < (self.pvalue_cutoff/self.kmer_limit)]
         clusters4ML.to_csv(f"kmer_clusters_selected_for_modelling_{self.name}.tsv", sep='\t')
 
-        kmers_to_keep = self.ML_df['product'].isin(clusters4ML['product'])
+        kmers_to_keep = self.ML_df['product'].isin(clusters4ML['product']) or self.ML_df['product'].isin(clusters4ML['product'])
         self.model_package['kmers_to_keep'] = kmers_to_keep
         self.ML_df = self.ML_df[kmers_to_keep]
         self.ML_df[self.out_cols].to_csv(
