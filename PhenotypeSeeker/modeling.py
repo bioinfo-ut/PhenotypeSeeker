@@ -1205,8 +1205,7 @@ class phenotypes():
             + self.name + ".txt", "w")
         self.coeff_file = open(f"{features}_and_coefficients_in_" + self.model_name_short \
             + "_model_" + self.name + ".txt", "w")
-        self.model_file = open(self.model_name_short + "_model_" + self.name + ".pkl", "wb")
-        self.model_package = joblib.load(self.)
+        self.model_package = joblib.load(self.model_name_short + "_model_" + self.name + ".pkl")
 
     @timer
     def get_ML_df(self):
