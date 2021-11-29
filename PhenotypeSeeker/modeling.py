@@ -1839,7 +1839,8 @@ class phenotypes():
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
         sys.stderr.flush()
         # k-mer clustering by genes
-        clusters = self.ML_df.groupby(by=["product", "gene"]).agg(
+        clusters = self.ML_df.groupby(by=["product"]).agg(
+            gene=('gene', 'mode'),
             count=('product', 'size'), chi2_min_pval=('p-value', 'min'),
             lrt_min_pval=('lrt_pvalue', 'min')
             ).reset_index()
