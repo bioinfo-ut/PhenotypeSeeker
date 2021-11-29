@@ -738,8 +738,8 @@ class phenotypes():
                 stderr_print.update_percent(
                     self.name, phenotypes.no_kmers_to_analyse, "tests conducted"
                     )
-            # if counter == 15000:
-            #     return kmer_dict
+            if counter == 15000:
+                return kmer_dict
             kmer = line[0].split()[0]
             kmer_vector = [int(j.split()[1].strip()) for j in line]
             if not self.real_counts:
@@ -935,27 +935,33 @@ class phenotypes():
             )
 
     def set_up_dataframe(self):
-        if self.pred_scale == "binary":
-            self.out_cols = ['chi2', 'p-value', 'num_samples_w_kmer']
-        else:
-            self.out_cols = ['t-test', 'p-value', '+_group_mean', '-_group_mean', \
-                'num_samples_w_kmer']
-        self.ML_df.columns.name = "k-mer"
-        self.ML_df.index = self.out_cols + list(Input.samples.keys())
-        self.ML_df = self.ML_df.T
-        self.ML_df[self.out_cols[0]] = self.ML_df[self.out_cols[0]].apply(pd.to_numeric)
-        # Limiting the kmer amount by n_kmers
-        self.ML_df = self.ML_df.sort_values(self.out_cols[0], ascending=False)
-        self.ML_df[self.out_cols].to_csv(f'{self.out_cols[0]}_results_{self.name}.tsv', sep='\t')
-        if self.kmer_limit:
-            self.ML_df = self.ML_df.iloc[:self.kmer_limit, :]
-            if not Input.annotate:
-                self.ML_df[self.out_cols].to_csv(
-                    f'kmer_metadata_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
+        if Input.jump_to == 'selection':
+            self.ML_df = pd.read_csv(
+                f"{self.name}_pre_selection_df.tsv", sep='\t'
                 )
-        self.model_package['kmers'] = self.ML_df.index
-        self.model_package['LR'] = self.LR
-        self.model_package['pred_scale'] = self.pred_scale
+        else:
+            if self.pred_scale == "binary":
+                self.out_cols = ['chi2', 'p-value', 'num_samples_w_kmer']
+            else:
+                self.out_cols = ['t-test', 'p-value', '+_group_mean', '-_group_mean', \
+                    'num_samples_w_kmer']
+            self.ML_df.columns.name = "k-mer"
+            self.ML_df.index = self.out_cols + list(Input.samples.keys())
+            self.ML_df = self.ML_df.T
+            self.ML_df[self.out_cols[0]] = self.ML_df[self.out_cols[0]].apply(pd.to_numeric)
+            # Limiting the kmer amount by n_kmers
+            self.ML_df = self.ML_df.sort_values(self.out_cols[0], ascending=False)
+            self.ML_df[self.out_cols].to_csv(f'{self.out_cols[0]}_results_{self.name}.tsv', sep='\t')
+            if self.kmer_limit:
+                self.ML_df = self.ML_df.iloc[:self.kmer_limit, :]
+                if not Input.annotate:
+                    self.ML_df[self.out_cols].to_csv(
+                        f'kmer_metadata_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
+                    )
+            self.model_package['kmers'] = self.ML_df.index
+            self.model_package['LR'] = self.LR
+            self.model_package['pred_scale'] = self.pred_scale
+            self.ML_df.to_csv(f"{self.name}_pre_selection_df.tsv", sep='\t')
 
     def machine_learning_modelling(self):
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
@@ -1215,7 +1221,6 @@ class phenotypes():
                 )
             self.ML_df.index = self.ML_df.index.astype(str)
             self.model_package = joblib.load(self.model_name_short + "_model_" + self.name + ".pkl")
-            print(self.model_package)
         else:
             # Setting up the  dataframe
             self.ML_df.drop(self.out_cols, inplace=True, axis=1)
@@ -2023,17 +2028,18 @@ def modeling(args):
         # Remove phenotypes with no results
         Input.pop_phenos_out_of_kmers()
         sys.stderr.flush()
+        if not Input.jump_to or Input.jump_to == "testing":
         list(map(
             lambda x:  x.set_up_dataframe(), 
             Input.phenotypes_to_analyse.values()
             ))
 
-    if not Input.jump_to or Input.jump_to in ["testing"]:
+    if not Input.jump_to or Input.jump_to in ["testing", "selection"]:
         if phenotypes.LR:
             sys.stderr.write("\x1b[1;32mConducting the likelihood ratio tests for phenotype: \x1b[0m\n")
             list(map(lambda x: x.LR_feature_selection(), Input.phenotypes_to_analyse.values()))
 
-    if not Input.jump_to or Input.jump_to in ["testing", "annotating"]:
+    if not Input.jump_to or Input.jump_to in ["testing", "annotating", "selection"]:
         if args.annotate:
             # Annotation
             sys.stderr.write("\x1b[1;32mAnnotating the kmers for phenotype: \x1b[0m\n")
@@ -2041,13 +2047,13 @@ def modeling(args):
             ref_genomes.get_ref_annos()
             list(map(lambda x: x.get_annotations(), Input.phenotypes_to_analyse.values()))
 
-    if not Input.jump_to or Input.jump_to in ["testing", "annotating", "clustering"]:
+    if not Input.jump_to or Input.jump_to in ["testing", "annotating", "clustering", "selection"]:
         if args.cluster:  
             # Clustering
             sys.stderr.write("\x1b[1;32mClustering the kmers for phenotype: \x1b[0m\n")
             list(map(lambda x: x.get_clusters(), Input.phenotypes_to_analyse.values()))
       
-    if not Input.jump_to or Input.jump_to in ["modeling", "modelling", "testing", "annotating", "clustering"]:
+    if not Input.jump_to or Input.jump_to in ["modeling", "modelling", "testing", "annotating", "clustering", "selection"]:
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
         sys.stderr.flush()
         with Pool(Input.num_threads) as p:
