@@ -1240,10 +1240,10 @@ class phenotypes():
             self.ML_df = self.ML_df[self.ML_df.phenotype != 'NA']
             self.ML_df.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
 
-            if self.LR:
-                self.ML_df = pd.concat(
-                        [self.PCs[['PC_1', 'PC_2']], self.ML_df], axis=1
-                    )
+            # if self.LR:
+            #     self.ML_df = pd.concat(
+            #             [self.PCs[['PC_1', 'PC_2']], self.ML_df], axis=1
+            #         )
             self.ML_df.to_csv(self.name + "_MLdf.csv")
 
     @timer
@@ -1857,7 +1857,8 @@ class phenotypes():
         clusters = clusters.sort_values('lrt_min_pval', ignore_index=True)
         clusters.to_csv(f"kmer_counts_in_genes_{self.name}.tsv", sep='\t')
 
-        clusters4ML = clusters[clusters.lrt_min_pval < (self.pvalue_cutoff/self.kmer_limit)]
+        clusters_by_genes = clusters[clusters.lrt_min_pval < (self.pvalue_cutoff/self.kmer_limit)]['gene']
+        clusters4ML = clusters[clusters['gene'].isin(clusters_by_genes)]
         clusters4ML.to_csv(f"kmer_clusters_selected_for_modelling_{self.name}.tsv", sep='\t')
 
         kmers_to_keep = self.ML_df['product'].isin(clusters4ML['product']) | self.ML_df['gene'].isin(clusters4ML['gene'])
