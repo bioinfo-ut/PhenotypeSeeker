@@ -953,6 +953,7 @@ class phenotypes():
                 self.ML_df[self.out_cols].to_csv(
                     f'kmer_metadata_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
                 )
+        self.model_package['kmers'] = self.ML_df.index
 
     def machine_learning_modelling(self):
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
@@ -1222,7 +1223,6 @@ class phenotypes():
             # Setting up the  dataframe
             self.ML_df.drop(self.out_cols, inplace=True, axis=1)
             self.ML_df = self.ML_df.T
-            self.model_package['kmers'] = self.ML_df.columns
 
             self.ML_df['weights'] = [
                 sample.weight for sample in Input.samples.values()
