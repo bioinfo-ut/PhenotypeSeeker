@@ -936,6 +936,11 @@ class phenotypes():
 
     def set_up_dataframe(self):
         if Input.jump_to == 'selection':
+            if self.pred_scale == "binary":
+                self.out_cols = ['chi2', 'p-value', 'num_samples_w_kmer']
+            else:
+                self.out_cols = ['t-test', 'p-value', '+_group_mean', '-_group_mean', \
+                    'num_samples_w_kmer']
             self.ML_df = pd.read_csv(
                 f"{self.name}_pre_selection_df.tsv", sep='\t'
                 )
@@ -2028,7 +2033,7 @@ def modeling(args):
         # Remove phenotypes with no results
         Input.pop_phenos_out_of_kmers()
         sys.stderr.flush()
-        if not Input.jump_to or Input.jump_to == "testing":
+        if not Input.jump_to or Input.jump_to in ["testing", "selection"]:
             list(map(
                 lambda x:  x.set_up_dataframe(), 
                 Input.phenotypes_to_analyse.values()
