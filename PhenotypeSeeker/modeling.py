@@ -1074,7 +1074,6 @@ class phenotypes():
         self.model_package['pca'] = self.pca
         self.model_package['LR'] = self.LR
         self.model_package['pred_scale'] = self.pred_scale
-        print(self.model_package)
         joblib.dump(self.model_package, self.model_file)
 
         self.write_model_coefficients_to_file()
@@ -1864,6 +1863,8 @@ class phenotypes():
         clusters4ML = clusters[clusters.lrt_min_pval < (self.pvalue_cutoff/self.no_kmers_to_analyse)]
         clusters4ML.to_csv(f"kmer_clusters_selected_for_modelling_{self.name}.tsv", sep='\t')
 
+        print(clusters4ML.product)
+        print(type(clusters4ML.product))
         kmers_to_keep = self.ML_df['product'].isin(clusters4ML.product)
         self.model_package['kmers_to_keep'] = kmers_to_keep
         self.ML_df = self.ML_df[kmers_to_keep]
