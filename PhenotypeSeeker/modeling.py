@@ -936,7 +936,6 @@ class phenotypes():
 
     def set_up_dataframe(self):
         if Input.jump_to == 'selection':
-            print(selection)
             if self.pred_scale == "binary":
                 self.out_cols = ['chi2', 'p-value', 'num_samples_w_kmer']
             else:
