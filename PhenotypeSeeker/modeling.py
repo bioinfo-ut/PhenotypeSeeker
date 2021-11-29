@@ -2029,10 +2029,10 @@ def modeling(args):
         Input.pop_phenos_out_of_kmers()
         sys.stderr.flush()
         if not Input.jump_to or Input.jump_to == "testing":
-        list(map(
-            lambda x:  x.set_up_dataframe(), 
-            Input.phenotypes_to_analyse.values()
-            ))
+            list(map(
+                lambda x:  x.set_up_dataframe(), 
+                Input.phenotypes_to_analyse.values()
+                ))
 
     if not Input.jump_to or Input.jump_to in ["testing", "selection"]:
         if phenotypes.LR:
