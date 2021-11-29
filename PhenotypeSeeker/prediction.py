@@ -162,16 +162,13 @@ class Phenotypes():
             self.matrix[:, idx] = np.array([j.split()[2].strip() for j in line])
         pd.DataFrame(self.matrix, index=Input.samples.keys(), columns=self.kmers).to_csv(
             self.name + "pred_df.csv")
-        if self.pca:
+        if self.lr:
             scaled_matrix = self.scaler.transform(self.matrix)
             PCs = self.pca_model.transform(scaled_matrix)
-            if self.lr:
-                self.matrix = np.concatenate(
-                    [PCs, self.matrix[:, self.kmers_to_keep]], axis=1
-                )
+            self.matrix = np.concatenate(
+                [PCs, self.matrix[:, self.kmers_to_keep]], axis=1
+            )
                 # self.matrix = self.matrix[:, self.kmers_to_keep]
-            else:
-                self.matrix = PCs[:, self.PCs_to_keep]
 
     def predict(self):
 
