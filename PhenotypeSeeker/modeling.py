@@ -738,8 +738,8 @@ class phenotypes():
                 stderr_print.update_percent(
                     self.name, phenotypes.no_kmers_to_analyse, "tests conducted"
                     )
-            # if counter == 15000:
-            #     return kmer_dict
+            if counter == 15000:
+                return kmer_dict
             kmer = line[0].split()[0]
             kmer_vector = [int(j.split()[1].strip()) for j in line]
             if not self.real_counts:
@@ -1839,7 +1839,7 @@ class phenotypes():
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
         sys.stderr.flush()
         # k-mer clustering by genes
-        clusters = self.ML_df.groupby(by="product").agg(
+        clusters = self.ML_df.groupby(by=["product", "gene"]).agg(
             count=('product', 'size'), chi2_min_pval=('p-value', 'min'),
             lrt_min_pval=('lrt_pvalue', 'min')
             ).reset_index()
@@ -1849,7 +1849,7 @@ class phenotypes():
         clusters4ML = clusters[clusters.lrt_min_pval < (self.pvalue_cutoff/self.kmer_limit)]
         clusters4ML.to_csv(f"kmer_clusters_selected_for_modelling_{self.name}.tsv", sep='\t')
 
-        kmers_to_keep = self.ML_df['product'].isin(clusters4ML['product']) or self.ML_df['product'].isin(clusters4ML['product'])
+        kmers_to_keep = self.ML_df['product'].isin(clusters4ML['product']) | self.ML_df['gene'].isin(clusters4ML['gene'])
         self.model_package['kmers_to_keep'] = kmers_to_keep
         self.ML_df = self.ML_df[kmers_to_keep]
         self.ML_df[self.out_cols].to_csv(
