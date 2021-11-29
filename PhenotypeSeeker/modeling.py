@@ -1865,7 +1865,7 @@ class phenotypes():
 
         print(clusters4ML.product)
         print(type(clusters4ML.product))
-        kmers_to_keep = self.ML_df['product'].isin(clusters4ML.product)
+        kmers_to_keep = self.ML_df['product'].isin(clusters4ML.product.tolist())
         self.model_package['kmers_to_keep'] = kmers_to_keep
         self.ML_df = self.ML_df[kmers_to_keep]
         self.ML_df[self.out_cols].to_csv(
