@@ -168,6 +168,7 @@ class Phenotypes():
             self.matrix = np.concatenate(
                 [PCs, self.matrix[:, self.kmers_to_keep]], axis=1
             )
+            print(self.matrix)
                 # self.matrix = self.matrix[:, self.kmers_to_keep]
 
     def predict(self):
