@@ -738,8 +738,8 @@ class phenotypes():
                 stderr_print.update_percent(
                     self.name, phenotypes.no_kmers_to_analyse, "tests conducted"
                     )
-            # if counter == 15000:
-            #     return kmer_dict
+            if counter == 15000:
+                return kmer_dict
             kmer = line[0].split()[0]
             kmer_vector = [int(j.split()[1].strip()) for j in line]
             if not self.real_counts:
@@ -1240,10 +1240,10 @@ class phenotypes():
             self.ML_df = self.ML_df[self.ML_df.phenotype != 'NA']
             self.ML_df.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
 
-            # if self.LR:
-            #     self.ML_df = pd.concat(
-            #             [self.PCs[['PC_1', 'PC_2']], self.ML_df], axis=1
-            #         )
+            if self.LR:
+                self.ML_df = pd.concat(
+                        [self.PCs[['PC_1', 'PC_2']], self.ML_df], axis=1
+                    )
             self.ML_df.to_csv(self.name + "_MLdf.csv")
 
     @timer
@@ -1857,13 +1857,13 @@ class phenotypes():
         clusters = clusters.sort_values('lrt_min_pval', ignore_index=True)
         clusters.to_csv(f"kmer_counts_in_genes_{self.name}.tsv", sep='\t')
 
-        genes_selected = clusters[clusters.lrt_min_pval < (self.pvalue_cutoff/self.kmer_limit)]['gene']
-        clusters4ML = clusters[clusters['gene'].isin(genes_selected)]
+        clusters_by_genes = clusters[clusters.lrt_min_pval < (self.pvalue_cutoff/self.kmer_limit)]['gene']
+        clusters4ML = clusters[clusters['gene'].isin(clusters_by_genes)]
         clusters4ML.to_csv(f"kmer_clusters_selected_for_modelling_{self.name}.tsv", sep='\t')
 
         kmers_to_keep = self.ML_df['product'].isin(clusters4ML['product']) | self.ML_df['gene'].isin(clusters4ML['gene'])
+        self.model_package['kmers_to_keep'] = kmers_to_keep
         self.ML_df = self.ML_df[kmers_to_keep]
-        self.model_package['kmers'] = self.ML_df.index
         self.ML_df[self.out_cols].to_csv(
             f'kmers_selected_for_modelling_metadata_{self.name}_.tsv', sep='\t'
             )
