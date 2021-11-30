@@ -127,19 +127,19 @@ class Phenotypes():
         model_pkg = joblib.load(model_adre)
         model = model_pkg['model']
         kmers = model_pkg['kmers']
-        # pred_scale = model_pkg['pred_scale']
+        pred_scale = model_pkg['pred_scale']
 
-        # pca = False
-        # lr = False
-        # pca_model = None
-        # scaler = None
-        # PCs_to_keep = None
-        # kmers_to_keep = None
-        # if model_pkg['LR']:
-        #     pca_model = model_pkg['pca_model']
-        #     scaler = model_pkg['scaler']
-        #     kmers_to_keep = model_pkg['kmers_to_keep']
-        #     lr = True
+        pca = False
+        lr = False
+        pca_model = None
+        scaler = None
+        PCs_to_keep = None
+        kmers_to_keep = None
+        if model_pkg['LR']:
+            pca_model = model_pkg['pca_model']
+            scaler = model_pkg['scaler']
+            kmers_to_keep = model_pkg['kmers_to_keep']
+            lr = True
         return cls(
                 name, model, kmers, pca, lr, pca_model, scaler, PCs_to_keep, pred_scale,
                 kmers_to_keep
@@ -162,12 +162,12 @@ class Phenotypes():
             self.matrix[:, idx] = np.array([j.split()[2].strip() for j in line])
         pd.DataFrame(self.matrix, index=Input.samples.keys(), columns=self.kmers).to_csv(
             self.name + "pred_df.csv")
-        # if self.lr:
-        #     scaled_matrix = self.scaler.transform(self.matrix)
-        #     PCs = self.pca_model.transform(scaled_matrix)
-        #     self.matrix = np.concatenate(
-        #         [PCs, self.matrix[:, self.kmers_to_keep]], axis=1
-        #     )
+        if self.lr:
+            scaled_matrix = self.scaler.transform(self.matrix)
+            PCs = self.pca_model.transform(scaled_matrix)
+            self.matrix = np.concatenate(
+                [PCs, self.matrix[:, self.kmers_to_keep]], axis=1
+            )
                 # self.matrix = self.matrix[:, self.kmers_to_keep]
 
     def predict(self):
