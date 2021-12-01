@@ -963,6 +963,7 @@ class phenotypes():
                     self.ML_df[self.out_cols].to_csv(
                         f'kmer_metadata_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
                     )
+            print(self.ML_df.index)
             self.model_package['kmers'] = self.ML_df.index
             self.model_package['LR'] = self.LR
             self.model_package['pred_scale'] = self.pred_scale
