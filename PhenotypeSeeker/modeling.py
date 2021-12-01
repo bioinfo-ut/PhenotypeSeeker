@@ -1848,6 +1848,8 @@ class phenotypes():
         sys.stderr.flush()
 
     def get_clusters(self):
+        print("Clusters")
+        print(self.ML_df.index)
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
         sys.stderr.flush()
         # k-mer clustering by genes
