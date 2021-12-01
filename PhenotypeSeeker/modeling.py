@@ -1361,7 +1361,7 @@ class phenotypes():
 
         self.ML_df['likelihood_ratio_test'] = LRs
         self.ML_df['lrt_pvalue'] = LR_pvals
-        print(ML_df.index)
+        print(self.ML_df.index)
 
 
     def fit_model(self):
