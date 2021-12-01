@@ -164,6 +164,7 @@ class Phenotypes():
             self.name + "pred_df.csv")
         pd.DataFrame(self.matrix, index=Input.samples.keys(), columns=self.kmers)
         if self.lr:
+            print(self.kmers_to_keep)
             scaled_matrix = self.scaler.transform(self.matrix)
             PCs = self.pca_model.transform(scaled_matrix)
             self.matrix = np.concatenate(
