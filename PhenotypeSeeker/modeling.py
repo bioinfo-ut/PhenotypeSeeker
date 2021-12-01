@@ -1840,8 +1840,7 @@ class phenotypes():
         self.get_kmer_annotations(self.ML_df.index[:-2])
         self.ML_df = pd.concat([self.ML_df, self.kmer_annotations.T], axis=1)
         self.out_cols = self.out_cols + ["gene", "relative_pos", "product", "protein_id"]
-        self.ML_df = self.ML_df.sort_values(["chi2", "product"])
-        self.ML_df[self.out_cols].to_csv(
+        self.ML_df.sort_values(["chi2", "product"])[self.out_cols].to_csv(
             f'kmer_metadata_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
             )
         sys.stderr.write("\n")
