@@ -1865,6 +1865,7 @@ class phenotypes():
         self.model_package['kmers_to_keep'] = kmers_to_keep
         print(self.ML_df.index)
         print(kmers_to_keep)
+        print(self.model_package['kmers'])
         self.ML_df = self.ML_df[kmers_to_keep]
         self.ML_df[self.out_cols].to_csv(
             f'kmers_selected_for_modelling_metadata_{self.name}_.tsv', sep='\t'
