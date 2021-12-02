@@ -964,6 +964,7 @@ class phenotypes():
             if self.kmer_limit:
                 # self.ML_df = self.ML_df.iloc[:self.kmer_limit, :]
                 ML_df2 = self.ML_df.iloc[:self.kmer_limit, :]
+                print(ML_df3.index)
                 ML_df3 = self.ML_df.loc[special_mers]
                 print(ML_df3)
                 self.ML_df = pd.concatenate([ML_df2, ML_df3])
