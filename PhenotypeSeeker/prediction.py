@@ -74,14 +74,12 @@ class Samples():
         # k-mer lists to that feature space. A vector of k-mers frequency 
         # information is created for every sample.
         from time import sleep
-        print("mapping")
-        print(self.name)
         call(
             ["gmer_counter -db K-mer_lists/k-mer_db_" + pheno
             + ".txt " + self.address + " > K-mer_lists/" + self.name 
             + "_k-mer_counts_" + pheno  + ".txt"], shell=True
             )
-        sleep(0.1)
+        sleep(0.2)
 
     def kmer_counts(self, pheno):
         print("kmer counts")
@@ -170,7 +168,7 @@ class Phenotypes():
             self.matrix[:, idx] = np.array([j.split()[2].strip() for j in line])
         pd.DataFrame(self.matrix, index=Input.samples.keys(), columns=self.kmers).to_csv(
             self.name + "pred_df.csv")
-        print(pd.DataFrame(self.matrix, index=Input.samples.keys(), columns=self.kmers))
+        pd.DataFrame(self.matrix, index=Input.samples.keys(), columns=self.kmers).to_csv()
         if self.lr:
             scaled_matrix = self.scaler.transform(self.matrix)
             PCs = self.pca_model.transform(scaled_matrix)

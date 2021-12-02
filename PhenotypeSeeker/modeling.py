@@ -1222,6 +1222,7 @@ class phenotypes():
     @timer
     def get_ML_df(self):
         if Input.jump_to == "modelling":
+            print("1")
             self.ML_df = pd.read_csv(
                 self.name + "_MLdf.csv", index_col=0
                 )
@@ -2062,6 +2063,7 @@ def modeling(args):
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
         sys.stderr.flush()
         with Pool(Input.num_threads) as p:
+            print("Here!!!")
             p.map(
                 lambda x: x.machine_learning_modelling(),
                 Input.phenotypes_to_analyse.values()
