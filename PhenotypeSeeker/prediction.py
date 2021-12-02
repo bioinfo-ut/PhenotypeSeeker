@@ -80,6 +80,7 @@ class Samples():
             )
 
     def kmer_counts(self, pheno):
+        print("kmer counts")
         with open(
                 "K-mer_lists/" + self.name +
                 "_k-mer_counts_"+ pheno  + ".txt"
