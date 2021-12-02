@@ -163,7 +163,7 @@ class Input():
         Input.num_threads = num_threads
         Input.jump_to = jump_to
         Input.annotate = annotate
-        Input.cluster = cluster
+        phenotypes.cluster = cluster
         phenotypes.pvalue_cutoff = pvalue_cutoff
         phenotypes.kmer_limit = kmer_limit
         phenotypes.penalty = penalty.upper()
@@ -963,9 +963,9 @@ class phenotypes():
                     self.ML_df[self.out_cols].to_csv(
                         f'kmer_metadata_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
                     )
-            print(self.ML_df.index)
             self.model_package['kmers'] = self.ML_df.index
             self.model_package['LR'] = self.LR
+            self.model_package['selection'] = self.cluster
             self.model_package['pred_scale'] = self.pred_scale
             self.ML_df.to_csv(f"{self.name}_pre_selection_df.tsv", sep='\t')
 
@@ -1361,8 +1361,6 @@ class phenotypes():
 
         self.ML_df['likelihood_ratio_test'] = LRs
         self.ML_df['lrt_pvalue'] = LR_pvals
-        print(self.ML_df.index)
-
 
     def fit_model(self):
         if self.pred_scale == "continuous":
@@ -1847,8 +1845,6 @@ class phenotypes():
         sys.stderr.flush()
 
     def get_clusters(self):
-        print("Clusters")
-        print(self.ML_df.index)
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
         sys.stderr.flush()
         # k-mer clustering by genes
@@ -1866,9 +1862,6 @@ class phenotypes():
 
         kmers_to_keep = self.ML_df['product'].isin(clusters4ML['product']) | self.ML_df['gene'].isin(clusters4ML['gene'])
         self.model_package['kmers_to_keep'] = kmers_to_keep
-        print(self.ML_df.index)
-        print(kmers_to_keep)
-        print(self.model_package['kmers'])
         self.ML_df = self.ML_df[kmers_to_keep]
         self.ML_df[self.out_cols].to_csv(
             f'kmers_selected_for_modelling_metadata_{self.name}_.tsv', sep='\t'

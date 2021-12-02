@@ -127,6 +127,7 @@ class Phenotypes():
         model_pkg = joblib.load(model_adre)
         model = model_pkg['model']
         kmers = model_pkg['kmers']
+        kmers = ['CTTCATGGTTGAC', 'GGGTCAACCATGA', 'GGTCAACCATGAA', 'TGCCTTTCAAGAA', 'CCTTTCAAGAAAA', 'GAGAAGTCTTCAA', 'GGAGAAGTCTTCA', 'GCCTTTCAAGAAA', 'AGGAGAAGTCTTC', 'ACTACTATTGAAG', 'CTACTATTGAAGA', 'GTCTTCAATAGTA', 'CTGGAAGTTGACC', 'CTGGAAGTTGACC', 'GCTGGAAGTTGAC', 'AGACTTCTCCTCC', 'AGGAGGAGAAGTC']
         print(kmers)
         pred_scale = model_pkg['pred_scale']
 
@@ -163,16 +164,13 @@ class Phenotypes():
             self.matrix[:, idx] = np.array([j.split()[2].strip() for j in line])
         pd.DataFrame(self.matrix, index=Input.samples.keys(), columns=self.kmers).to_csv(
             self.name + "pred_df.csv")
-        pd.DataFrame(self.matrix, index=Input.samples.keys(), columns=self.kmers)
+        print(pd.DataFrame(self.matrix, index=Input.samples.keys(), columns=self.kmers))
         if self.lr:
-            print(self.kmers)
-            print(self.kmers_to_keep)
             scaled_matrix = self.scaler.transform(self.matrix)
             PCs = self.pca_model.transform(scaled_matrix)
             self.matrix = np.concatenate(
                 [PCs, self.matrix[:, self.kmers_to_keep]], axis=1
             )
-            print(self.matrix)
                 # self.matrix = self.matrix[:, self.kmers_to_keep]
 
     def predict(self):
