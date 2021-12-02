@@ -959,8 +959,11 @@ class phenotypes():
             # Limiting the kmer amount by n_kmers
             self.ML_df = self.ML_df.sort_values(self.out_cols[0], ascending=False)
             self.ML_df[self.out_cols].to_csv(f'{self.out_cols[0]}_results_{self.name}.tsv', sep='\t')
+            special_mers = ['CTTCATGGTTGAC', 'GGGTCAACCATGA', 'GGTCAACCATGAA', 'TGCCTTTCAAGAA', 'CCTTTCAAGAAAA', 'GAGAAGTCTTCAA', 'GGAGAAGTCTTCA', 'GCCTTTCAAGAAA', 'AGGAGAAGTCTTC', 'ACTACTATTGAAG', 'CTACTATTGAAGA', 'GTCTTCAATAGTA', 'CTGGAAGTTGACC', 'CTGGAAGTTGACC', 'GCTGGAAGTTGAC', 'AGACTTCTCCTCC', 'AGGAGGAGAAGTC']
             if self.kmer_limit:
-                self.ML_df = self.ML_df.iloc[:self.kmer_limit, :]
+                ML_df2 = self.ML_df.iloc[:self.kmer_limit, :]
+                ML_df3 = self.ML_df.loc[special_mers]
+                self.ML_df = pd.concatenate([ML_df2, ML_df3])
                 if not Input.annotate:
                     self.ML_df[self.out_cols].to_csv(
                         f'kmer_metadata_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
