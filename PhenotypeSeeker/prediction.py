@@ -73,6 +73,7 @@ class Samples():
         # Takes k-mers of model as feature space and maps input samples 
         # k-mer lists to that feature space. A vector of k-mers frequency 
         # information is created for every sample.
+        from time import sleep
         print("mapping")
         print(self.name)
         call(
@@ -80,6 +81,7 @@ class Samples():
             + ".txt " + self.address + " > K-mer_lists/" + self.name 
             + "_k-mer_counts_" + pheno  + ".txt"], shell=True
             )
+        sleep(0.1)
 
     def kmer_counts(self, pheno):
         print("kmer counts")
