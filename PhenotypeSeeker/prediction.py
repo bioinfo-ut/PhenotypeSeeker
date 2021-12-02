@@ -156,6 +156,7 @@ class Phenotypes():
         # Takes all vectors with k-mer frequency information and inserts 
         # them into matrix of dimensions "number of samples" x "number of 
         # k-mers (features).
+        print("get_inp_matrix")
         kmer_counts = [
             "K-mer_lists/" + sample + "_k-mer_counts_filtered_" + self.name
             + ".txt" for sample in Input.samples.keys()
