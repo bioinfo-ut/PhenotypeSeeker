@@ -966,6 +966,7 @@ class phenotypes():
                 ML_df2 = self.ML_df.iloc[:self.kmer_limit, :]
                 ML_df3 = self.ML_df.loc[special_mers]
                 self.ML_df = pd.concat([ML_df2, ML_df3])
+                self.ML_df = self.ML_df[~self.ML_df.index.duplicated(keep='first')]
                 if not Input.annotate:
                     self.ML_df[self.out_cols].to_csv(
                         f'kmer_metadata_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
