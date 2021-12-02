@@ -737,8 +737,8 @@ class phenotypes():
                 stderr_print.update_percent(
                     self.name, phenotypes.no_kmers_to_analyse, "tests conducted"
                     )
-            # if counter == 15000:
-            #     return kmer_dict
+            if counter == 15000:
+                return kmer_dict
             kmer = line[0].split()[0]
             kmer_vector = [int(j.split()[1].strip()) for j in line]
             if not self.real_counts:
@@ -871,8 +871,8 @@ class phenotypes():
         chisquare, pvalue = chisquare_results
         if pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
             return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
-        # elif kmer in special_mers:
-        #     return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
+        elif kmer in special_mers:
+            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer] + kmer_vector
         else:
             return None
 
@@ -961,9 +961,11 @@ class phenotypes():
             self.ML_df[self.out_cols].to_csv(f'{self.out_cols[0]}_results_{self.name}.tsv', sep='\t')
             special_mers = ['CTTCATGGTTGAC', 'GGGTCAACCATGA', 'GGTCAACCATGAA', 'TGCCTTTCAAGAA', 'CCTTTCAAGAAAA', 'GAGAAGTCTTCAA', 'GGAGAAGTCTTCA', 'GCCTTTCAAGAAA', 'AGGAGAAGTCTTC', 'ACTACTATTGAAG', 'CTACTATTGAAGA', 'GTCTTCAATAGTA', 'CTGGAAGTTGACC', 'CTGGAAGTTGACC', 'GCTGGAAGTTGAC', 'AGACTTCTCCTCC', 'AGGAGGAGAAGTC']
             if self.kmer_limit:
-                self.ML_df = self.ML_df.iloc[:self.kmer_limit, :]
-                # ML_df3 = self.ML_df.loc[special_mers]
-                # self.ML_df = pd.concatenate([ML_df2, ML_df3])
+                # self.ML_df = self.ML_df.iloc[:self.kmer_limit, :]
+                ML_df2 = self.ML_df.iloc[:self.kmer_limit, :]
+                ML_df3 = self.ML_df.loc[special_mers]
+                print(ML_df3)
+                self.ML_df = pd.concatenate([ML_df2, ML_df3])
                 if not Input.annotate:
                     self.ML_df[self.out_cols].to_csv(
                         f'kmer_metadata_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
