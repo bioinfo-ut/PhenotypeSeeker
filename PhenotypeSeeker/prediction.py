@@ -79,8 +79,8 @@ class Samples():
             + "_k-mer_counts_" + pheno  + ".txt"], shell=True
             )
 
+
     def kmer_counts(self, pheno):
-        print("kmer counts")
         with open(
                 "K-mer_lists/" + self.name +
                 "_k-mer_counts_"+ pheno  + ".txt"
@@ -128,8 +128,7 @@ class Phenotypes():
         model_pkg = joblib.load(model_adre)
         model = model_pkg['model']
         kmers = model_pkg['kmers']
-        kmers = pd.Series(['CTTCATGGTTGAC', 'GGGTCAACCATGA', 'GGTCAACCATGAA', 'TGCCTTTCAAGAA', 'CCTTTCAAGAAAA', 'GAGAAGTCTTCAA', 'GGAGAAGTCTTCA', 'GCCTTTCAAGAAA', 'AGGAGAAGTCTTC', 'ACTACTATTGAAG', 'CTACTATTGAAGA', 'GTCTTCAATAGTA', 'CTGGAAGTTGACC', 'CTGGAAGTTGACC', 'GCTGGAAGTTGAC', 'AGACTTCTCCTCC', 'AGGAGGAGAAGTC'])
-        print(kmers)
+        kmer = kmers = pd.Series(['CTTCATGGTTGAC', 'GGGTCAACCATGA', 'GGTCAACCATGAA', 'TGCCTTTCAAGAA', 'CCTTTCAAGAAAA', 'GAGAAGTCTTCAA', 'GGAGAAGTCTTCA', 'GCCTTTCAAGAAA', 'AGGAGAAGTCTTC', 'ACTACTATTGAAG', 'CTACTATTGAAGA', 'GTCTTCAATAGTA', 'CTGGAAGTTGACC', 'CTGGAAGTTGACC', 'GCTGGAAGTTGAC', 'AGACTTCTCCTCC', 'AGGAGGAGAAGTC'])
         pred_scale = model_pkg['pred_scale']
 
         pca = False
@@ -138,11 +137,11 @@ class Phenotypes():
         scaler = None
         PCs_to_keep = None
         kmers_to_keep = None
-        if model_pkg['LR']:
-            pca_model = model_pkg['pca_model']
-            scaler = model_pkg['scaler']
-            kmers_to_keep = model_pkg['kmers_to_keep']
-            lr = True
+        # if model_pkg['LR']:
+        #     pca_model = model_pkg['pca_model']
+        #     scaler = model_pkg['scaler']
+        #     kmers_to_keep = model_pkg['kmers_to_keep']
+        #     lr = True
         return cls(
                 name, model, kmers, pca, lr, pca_model, scaler, PCs_to_keep, pred_scale,
                 kmers_to_keep
@@ -157,7 +156,6 @@ class Phenotypes():
         # Takes all vectors with k-mer frequency information and inserts 
         # them into matrix of dimensions "number of samples" x "number of 
         # k-mers (features).
-        print("get_inp_matrix")
         kmer_counts = [
             "K-mer_lists/" + sample + "_k-mer_counts_filtered_" + self.name
             + ".txt" for sample in Input.samples.keys()
@@ -166,7 +164,6 @@ class Phenotypes():
             self.matrix[:, idx] = np.array([j.split()[2].strip() for j in line])
         pd.DataFrame(self.matrix, index=Input.samples.keys(), columns=self.kmers).to_csv(
             self.name + "pred_df.csv")
-        print(pd.DataFrame(self.matrix, index=Input.samples.keys(), columns=self.kmers))
         if self.lr:
             scaled_matrix = self.scaler.transform(self.matrix)
             PCs = self.pca_model.transform(scaled_matrix)
@@ -209,9 +206,10 @@ def prediction(args):
         sys.stderr.write(f"\x1b[1;32mPredicting the phenotypes for {pheno.name}.\x1b[0m\n")
         pheno.set_kmer_db()
         with Pool(args.num_threads) as p:
+            print('start')
             p.map(lambda x: x.map_samples(pheno.name), Input.samples.values())
-            p.map(lambda x: x.kmer_counts(pheno.name), Input.samples.values())
-        pheno.get_inp_matrix()
-        pheno.predict()
+        #     p.map(lambda x: x.kmer_counts(pheno.name), Input.samples.values())
+        # pheno.get_inp_matrix()
+        # pheno.predict()
 
     sys.stderr.write("\n\x1b[1;1;101m######          PhenotypeSeeker prediction finished          ######\x1b[0m\n")         

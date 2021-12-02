@@ -661,7 +661,6 @@ class phenotypes():
         sys.stderr.write("\n")
         sys.stderr.flush()
         kmers4pca = np.concatenate([np.array(x).T for x in kmers4pca], axis=1)
-        print(kmers4pca.shape)
         self.getPCA(kmers4pca)
 
     def sample4pca(self, split_of_kmer_lists):
@@ -2062,7 +2061,6 @@ def modeling(args):
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
         sys.stderr.flush()
         with Pool(Input.num_threads) as p:
-            print(Input.phenotypes_to_analyse.values())
             p.map(
                 lambda x: x.machine_learning_modelling(),
                 Input.phenotypes_to_analyse.values()
