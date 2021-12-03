@@ -206,8 +206,8 @@ def prediction(args):
         pheno.set_kmer_db()
         with Pool(args.num_threads) as p:
             p.map(lambda x: x.map_samples(pheno.name), Input.samples.values())
-        #     p.map(lambda x: x.kmer_counts(pheno.name), Input.samples.values())
-        # pheno.get_inp_matrix()
-        # pheno.predict()
+            p.map(lambda x: x.kmer_counts(pheno.name), Input.samples.values())
+        pheno.get_inp_matrix()
+        pheno.predict()
 
     sys.stderr.write("\n\x1b[1;1;101m######          PhenotypeSeeker prediction finished          ######\x1b[0m\n")         
