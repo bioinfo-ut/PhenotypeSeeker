@@ -1898,8 +1898,9 @@ class ref_genomes():
 
     @classmethod
     def get_refs(cls):
-        cls.db_base = "/storage8/erkia/"
-        cls.specie = "Streptococcus_pneumoniae"
+        cls.db_base = "/storage8/erkia/refDB"
+        # cls.specie = "Streptococcus_pneumoniae"
+        cls.specie = 'Enterococcus'
         cls.index_path = os.path.join(cls.db_base, cls.specie, f"locations_{Samples.kmer_length}.index")
         with open(os.path.join(cls.db_base, cls.specie, "file_indexes.txt")) as file_idx:
             for line in file_idx:
