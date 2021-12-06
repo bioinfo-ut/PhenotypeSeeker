@@ -1904,7 +1904,7 @@ class ref_genomes():
                 if "write_kmers" in line:
                     break
                 else:
-                    ref_queue, ref_id, _, _ = line.split()
+                    ref_queue, ref_id = line.split()[:2]
                     ref_queue = ref_queue.strip(":")
                     ref_id = "_".join(os.path.basename(ref_id).split("_")[0:-1])
                 gff_path = os.path.join(cls.db_base, cls.specie, "GFF", ref_id + "_genomic.gff")
