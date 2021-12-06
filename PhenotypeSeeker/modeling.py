@@ -1901,22 +1901,16 @@ class ref_genomes():
         cls.index_path = os.path.join(cls.db_base, cls.specie, f"locations_{Samples.kmer_length}.index")
         with open(os.path.join(cls.db_base, cls.specie, "file_indexes.txt")) as file_idx:
             for line in file_idx:
-                if "write_kmers" in line:
-                    break
-                else:
-                    ref_queue, ref_id = line.split()[:2]
-                    ref_queue = ref_queue.strip(":")
-                    ref_id = "_".join(os.path.basename(ref_id).split("_")[0:-1])
+                ref_queue, ref_id, _, _ = line.split()
+                ref_id = "_".join(os.path.basename(ref_id).split("_")[0:-1])
                 gff_path = os.path.join(cls.db_base, cls.specie, "GFF", ref_id + "_genomic.gff")
                 contig_mapper = {}
-                query_seqs = run(
-                    ["glistquery", "--sequences", cls.index_path], capture_output=True, text=True
-                    )
-                for line in query_seqs.stdout.strip().split("\n"):
-                    ref_index, contig_index, contig_name  =  line.split()[:3]
-                    if ref_queue == ref_index:
-                        contig_name = contig_name.split()[0]
-                        contig_mapper[contig_index] = contig_name
+                with open("seq_indexes.txt") as seq_idx:
+                    for line in seq_idx:
+                        ref_index, contig_index, contig_name  =  line.split()[:3]
+                        if ref_queue == ref_index:
+                            contig_name = contig_name.split()[0]
+                            contig_mapper[contig_index] = contig_name
                 cls.instances[ref_queue] = cls(ref_id, gff_path, contig_mapper)
 
     @classmethod
