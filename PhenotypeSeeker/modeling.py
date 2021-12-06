@@ -866,7 +866,7 @@ class phenotypes():
             ],
             1
             )
-        special_mers = set(['CTTCATGGTTGAC', 'GGGTCAACCATGA', 'GGTCAACCATGAA', 'TGCCTTTCAAGAA', 'CCTTTCAAGAAAA', 'GAGAAGTCTTCAA', 'GGAGAAGTCTTCA', 'GCCTTTCAAGAAA', 'AGGAGAAGTCTTC', 'ACTACTATTGAAG', 'CTACTATTGAAGA', 'GTCTTCAATAGTA', 'CTGGAAGTTGACC', 'CTGGAAGTTGACC', 'GCTGGAAGTTGAC', 'AGACTTCTCCTCC', 'AGGAGGAGAAGTC'])
+        # special_mers = set(['CTTCATGGTTGAC', 'GGGTCAACCATGA', 'GGTCAACCATGAA', 'TGCCTTTCAAGAA', 'CCTTTCAAGAAAA', 'GAGAAGTCTTCAA', 'GGAGAAGTCTTCA', 'GCCTTTCAAGAAA', 'AGGAGAAGTCTTC', 'ACTACTATTGAAG', 'CTACTATTGAAGA', 'GTCTTCAATAGTA', 'CTGGAAGTTGACC', 'CTGGAAGTTGACC', 'GCTGGAAGTTGAC', 'AGACTTCTCCTCC', 'AGGAGGAGAAGTC'])
 
         chisquare, pvalue = chisquare_results
         if pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
@@ -957,7 +957,7 @@ class phenotypes():
             # Limiting the kmer amount by n_kmers
             self.ML_df = self.ML_df.sort_values(self.out_cols[0], ascending=False)
             self.ML_df[self.out_cols].to_csv(f'{self.out_cols[0]}_results_{self.name}.tsv', sep='\t')
-            special_mers = ['CTTCATGGTTGAC', 'GGGTCAACCATGA', 'GGTCAACCATGAA', 'TGCCTTTCAAGAA', 'CCTTTCAAGAAAA', 'GAGAAGTCTTCAA', 'GGAGAAGTCTTCA', 'GCCTTTCAAGAAA', 'AGGAGAAGTCTTC', 'ACTACTATTGAAG', 'CTACTATTGAAGA', 'GTCTTCAATAGTA', 'CTGGAAGTTGACC', 'CTGGAAGTTGACC', 'GCTGGAAGTTGAC', 'AGACTTCTCCTCC', 'AGGAGGAGAAGTC']
+            # special_mers = ['CTTCATGGTTGAC', 'GGGTCAACCATGA', 'GGTCAACCATGAA', 'TGCCTTTCAAGAA', 'CCTTTCAAGAAAA', 'GAGAAGTCTTCAA', 'GGAGAAGTCTTCA', 'GCCTTTCAAGAAA', 'AGGAGAAGTCTTC', 'ACTACTATTGAAG', 'CTACTATTGAAGA', 'GTCTTCAATAGTA', 'CTGGAAGTTGACC', 'CTGGAAGTTGACC', 'GCTGGAAGTTGAC', 'AGACTTCTCCTCC', 'AGGAGGAGAAGTC']
             if self.kmer_limit:
                 self.ML_df = self.ML_df.iloc[:self.kmer_limit, :]
                 # ML_df2 = self.ML_df.iloc[:self.kmer_limit, :]
