@@ -179,7 +179,7 @@ class Input():
         phenotypes.n_splits_cv_inner = n_splits_cv_inner
         phenotypes.logreg_solver = cls.get_logreg_solver(
             logreg_solver)
-        phenotypes.pca = pca or LR
+        phenotypes.pca = pca
         phenotypes.real_counts = real_counts
         phenotypes.LR = LR
 
