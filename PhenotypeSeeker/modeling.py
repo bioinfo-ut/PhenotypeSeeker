@@ -1861,10 +1861,8 @@ class phenotypes():
         clusters = clusters.sort_values('lrt_min_pval', ignore_index=True)
         clusters.to_csv(f"kmer_counts_in_genes_{self.name}.tsv", sep='\t')
 
-        clusters_by_genes = clusters[clusters.lrt_min_pval < (self.pvalue_cutoff)]['gene']
-        # clusters_by_genes = clusters[clusters.lrt_min_pval < (self.pvalue_cutoff/self.kmer_limit)]['gene']
-        print(clusters_by_genes)
-        print(clusters)
+        # clusters_by_genes = clusters[clusters.lrt_min_pval < (self.pvalue_cutoff)]['gene']
+        clusters_by_genes = clusters[(clusters.lrt_min_pval < (self.pvalue_cutoff)) & (clusters.count >= (self.kmer_limit/100))]['gene']
         clusters4ML = clusters[clusters['gene'].isin(clusters_by_genes)]
         clusters4ML.to_csv(f"kmer_clusters_selected_for_modelling_{self.name}.tsv", sep='\t')
 
