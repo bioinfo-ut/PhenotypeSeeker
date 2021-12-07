@@ -1903,7 +1903,7 @@ class ref_genomes():
                 ref_id = "_".join(os.path.basename(ref_id).split("_")[0:-1])
                 gff_path = os.path.join(cls.db_base, cls.specie, "GFF", ref_id + "_genomic.gff")
                 contig_mapper = {}
-                with open("seq_indexes.txt") as seq_idx:
+                with open(os.path.join(cls.db_base, cls.specie, "seq_indexes.txt")) as seq_idx:
                     for line in seq_idx:
                         ref_index, contig_index, contig_name  =  line.split()[:3]
                         if ref_queue == ref_index:
