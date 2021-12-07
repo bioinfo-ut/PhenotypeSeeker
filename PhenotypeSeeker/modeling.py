@@ -1853,16 +1853,26 @@ class phenotypes():
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
         sys.stderr.flush()
         # k-mer clustering by genes
-        clusters = self.ML_df.groupby(by=["product"]).agg(
-            gene=('gene', lambda x: x.mode()),
-            counts=('product', 'size'), chi2_min_pval=('p-value', 'min'),
-            lrt_min_pval=('lrt_pvalue', 'min')
-            ).reset_index()
-        clusters = clusters.sort_values('lrt_min_pval', ignore_index=True)
+        if self.LR:
+            clusters = self.ML_df.groupby(by=["product"]).agg(
+                gene=('gene', lambda x: x.mode()),
+                count=('product', 'size'), chi2_min_pval=('p-value', 'min'),
+                lrt_min_pval=('lrt_pvalue', 'min')
+                ).reset_index()
+            clusters = clusters.sort_values('lrt_min_pval', ignore_index=True)
+        else:
+            clusters = self.ML_df.groupby(by=["product"]).agg(
+                gene=('gene', lambda x: x.mode()),
+                count=('product', 'size'), chi2_min_pval=('p-value', 'min')
+                ).reset_index()
+            clusters = clusters.sort_values('count', ignore_index=True)
         clusters.to_csv(f"kmer_counts_in_genes_{self.name}.tsv", sep='\t')
 
         # clusters_by_genes = clusters[clusters.lrt_min_pval < (self.pvalue_cutoff)]['gene']
-        clusters_by_genes = clusters[(clusters.lrt_min_pval < (self.pvalue_cutoff)) & (clusters.counts >= (self.kmer_limit/100))]['gene']
+        if self.LR:
+            clusters_by_genes = clusters[(clusters.lrt_min_pval < (self.pvalue_cutoff)) & (clusters['count'] >= (self.kmer_limit/100))]['gene']
+        else:
+            clusters_by_genes = clusters[clusters['count'] >= (self.kmer_limit/100)]['gene']
         clusters4ML = clusters[clusters['gene'].isin(clusters_by_genes)]
         clusters4ML.to_csv(f"kmer_clusters_selected_for_modelling_{self.name}.tsv", sep='\t')
 
