@@ -1246,7 +1246,7 @@ class phenotypes():
             self.ML_df = self.ML_df[self.ML_df.phenotype != 'NA']
             self.ML_df.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
 
-            if self.LR:
+            if self.pca:
                 self.ML_df = pd.concat(
                         [self.PCs[['PC_1', 'PC_2']], self.ML_df], axis=1
                     )
