@@ -1870,7 +1870,7 @@ class phenotypes():
 
         # clusters_by_genes = clusters[clusters.lrt_min_pval < (self.pvalue_cutoff)]['gene']
         if self.LR:
-            clusters_by_genes = clusters[(clusters.lrt_min_pval < (self.pvalue_cutoff)) & (clusters['count'] >= (self.kmer_limit/100))]['gene']
+            clusters_by_genes = clusters[(clusters.lrt_min_pval < (self.pvalue_cutoff/10)) & (clusters['count'] >= (self.kmer_limit/100))]['gene']
         else:
             clusters_by_genes = clusters[clusters['count'] >= (self.kmer_limit/100)]['gene']
             print(clusters_by_genes)
