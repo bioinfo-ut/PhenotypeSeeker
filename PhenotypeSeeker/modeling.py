@@ -1853,6 +1853,8 @@ class phenotypes():
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
         sys.stderr.flush()
         # k-mer clustering by genes
+        self.ML_df['p-value'] = self.ML_df['p-value'].astype(float)
+        self.ML_df['lrt_pvalue'] = self.ML_df['lrt_pvalue'].astype(float)
         if self.LR:
             clusters = self.ML_df.groupby(by=["product"]).agg(
                 gene=('gene', lambda x: x.mode()),
@@ -1863,7 +1865,7 @@ class phenotypes():
         else:
             clusters = self.ML_df.groupby(by=["product"]).agg(
                 gene=('gene', lambda x: x.mode()),
-                count=('product', 'size'), chi2_mean_pval=('p-value', 'min')
+                count=('product', 'size'), chi2_mean_pval=('p-value', 'mean')
                 ).reset_index()
             clusters = clusters.sort_values('count', ignore_index=True)
         clusters.to_csv(f"kmer_counts_in_genes_{self.name}.tsv", sep='\t')
