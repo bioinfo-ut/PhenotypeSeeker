@@ -1856,8 +1856,8 @@ class phenotypes():
         if self.LR:
             clusters = self.ML_df.groupby(by=["product"]).agg(
                 gene=('gene', lambda x: x.mode()),
-                count=('product', 'size'), chi2_min_pval=('p-value', 'min'),
-                lrt_min_pval=('lrt_pvalue', 'min')
+                count=('product', 'size'), chi2_mean_pval=('p-value', 'mean'),
+                lrt_mean_pval=('lrt_pvalue', 'mean')
                 ).reset_index()
             clusters = clusters.sort_values('lrt_min_pval', ignore_index=True)
         else:
@@ -1870,7 +1870,7 @@ class phenotypes():
 
         # clusters_by_genes = clusters[clusters.lrt_min_pval < (self.pvalue_cutoff)]['gene']
         if self.LR:
-            clusters_by_genes = clusters[(clusters.lrt_min_pval < (self.pvalue_cutoff/10)) & (clusters['count'] >= (self.kmer_limit/100))]['gene']
+            clusters_by_genes = clusters[(clusters.lrt_min_pval < (self.pvalue_cutoff)) & (clusters['count'] >= (self.kmer_limit/100))]['gene']
         else:
             clusters_by_genes = clusters[clusters['count'] >= (self.kmer_limit/100)]['gene']
             print(clusters_by_genes)
