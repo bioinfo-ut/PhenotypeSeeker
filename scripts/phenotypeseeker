@@ -247,6 +247,11 @@ def Main():
         )
 
     other.add_argument(
+        '--omit_B_correction', action="store_true",
+        help="Omit the Bonferroni multiple testing correction in k-mer \
+        filtering"
+        )
+    other.add_argument(
     	'--mpheno', metavar='INT', type=int, nargs='+',
     	help='Ordinal numbers of columns of phenotypes to analyze \
     	(default = all phenotype columns)'
