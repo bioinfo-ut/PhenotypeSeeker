@@ -1856,13 +1856,13 @@ class phenotypes():
         sys.stderr.flush()
         # k-mer clustering by genes
         self.ML_df['p-value'] = self.ML_df['p-value'].astype(float)
-        self.ML_df['lrt_pvalue'] = self.ML_df['lrt_pvalue'].astype(float)
         if self.LR:
+            self.ML_df['lrt_pvalue'] = self.ML_df['lrt_pvalue'].astype(float)
             clusters = self.ML_df.groupby(by=["product"]).agg(
                 gene=('gene', lambda x: x.mode()),
                 count=('product', 'size'), chi2_mean_pval=('p-value', 'mean'),
                 lrt_mean_pval=('lrt_pvalue', 'mean')
-                ).reset_index()
+                    ).reset_index()
             clusters = clusters.sort_values('lrt_mean_pval', ignore_index=True)
         else:
             clusters = self.ML_df.groupby(by=["product"]).agg(
