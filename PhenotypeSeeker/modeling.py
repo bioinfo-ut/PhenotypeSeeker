@@ -182,6 +182,7 @@ class Input():
         phenotypes.pca = pca
         phenotypes.real_counts = real_counts
         phenotypes.LR = LR
+        phenotypes.omit_B = omit_B
         
 
     @staticmethod
