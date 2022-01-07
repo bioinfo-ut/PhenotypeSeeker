@@ -106,7 +106,7 @@ class Phenotypes():
 
     def __init__(
                 self, name, model, kmers, lr, pca_model, scaler,
-                pred_scale, kmers_to_keep
+                pred_scale, kmers4pca
             ):
         self.name = name
         self.model = model
