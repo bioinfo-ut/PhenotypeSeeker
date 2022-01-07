@@ -708,11 +708,10 @@ class phenotypes():
         pheno = [
                 sample.phenotypes[self.name] for sample in Input.samples.values()
                 ]
-        self.PCA_df['pheno'] = ['sens' if x == 0 else 'res' for x in pheno]
-        print(self.PCA_df)
+        self.PCA_df['phenotype'] = pheno
         fig = px.scatter(
             self.PCA_df, x='PC 1', y='PC 2',
-            color='pheno'
+            color='phenotype'
             )
 
         self.model_package['scaler'] = scaler
@@ -1327,33 +1326,9 @@ class phenotypes():
     def LR_feature_selection(self):
 
         LR_out = open('likelihood_tests.txt' , "w")
-
-        df_to_scale = self.ML_df.drop(self.out_cols, axis=1).T
         kmers_to_test = self.ML_df.shape[1]
         self.out_cols += ['likelihood_ratio_test', 'lrt_pvalue']
-        kmers_to_keep = []
 
-        # Strandardization
-        scaler = StandardScaler()
-        scaler.fit(df_to_scale)
-        scaled_data = scaler.transform(df_to_scale)
-
-        # PCA transformation
-        pca = PCA(n_components=2)
-        pca.fit(scaled_data)
-
-        # PCA transformation
-        self.PCs = pd.DataFrame(
-            pca.transform(scaled_data),
-            index=df_to_scale.index,
-            columns=['PC_1', 'PC_2']
-            )
-        self.model_package['scaler'] = scaler
-        self.model_package['pca_model'] = pca
-
-        self.PCs['phenotype'] = [
-            sample.phenotypes[self.name] for sample in Input.samples.values()
-            ]
         self.PCs = self.PCs[self.PCs.phenotype != 'NA']
         self.PCs.phenotype = self.PCs.phenotype.apply(pd.to_numeric)
 
@@ -2059,11 +2034,12 @@ def modeling(args):
             lambda x:  x.set_up_dataframe(), 
             Input.phenotypes_to_analyse.values()
             ))
-        list(map(
-            lambda x:  x.getPCAmatrix(), 
-            Input.phenotypes_to_analyse.values()
-            ))
         if phenotypes.LR:
+            sys.stderr.write("\x1b[1;32mConducting the pca analysis for population structure correction \x1b[0m\n")
+            list(map(
+                lambda x:  x.getPCAmatrix(), 
+                Input.phenotypes_to_analyse.values()
+                ))
             sys.stderr.write("\x1b[1;32mConducting the likelihood ratio tests for phenotype: \x1b[0m\n")
             list(map(lambda x: x.LR_feature_selection(), Input.phenotypes_to_analyse.values()))
 
