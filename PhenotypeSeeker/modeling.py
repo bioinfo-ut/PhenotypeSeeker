@@ -716,7 +716,6 @@ class phenotypes():
         self.model_package['scaler'] = scaler
         self.model_package['pca_model'] = pca_model
         self.model_package['kmers4pca'] = kmers4pca.columns
-        print(kmers4pca.columns)
         fig.write_html(f"PCA_{self.name}.html")
 
     @timer
@@ -1863,14 +1862,17 @@ class phenotypes():
         else:
             clusters_by_genes = clusters[clusters['count'] >= (self.kmer_limit/100)]['gene']
         print(clusters_by_genes)
-        print(dtype(clusters_by_genes))
-        clusters4ML = clusters[clusters['gene'].isin(clusters_by_genes)]
-        clusters4ML.to_csv(f"kmer_clusters_selected_for_modelling_{self.name}.tsv", sep='\t')
-        kmers_to_keep = self.ML_df['product'].isin(clusters4ML['product']) | self.ML_df['gene'].isin(clusters4ML['gene'])
-        self.ML_df = self.ML_df[kmers_to_keep]
-        self.ML_df[self.out_cols].to_csv(
-            f'kmers_selected_for_modelling_metadata_{self.name}_.tsv', sep='\t'
-            )
+        print(type(clusters_by_genes))
+        if len(clusters_by_genes) > 0:
+            clusters4ML = clusters[clusters['gene'].isin(clusters_by_genes)]
+            clusters4ML.to_csv(f"kmer_clusters_selected_for_modelling_{self.name}.tsv", sep='\t')
+            kmers_to_keep = self.ML_df['product'].isin(clusters4ML['product']) | self.ML_df['gene'].isin(clusters4ML['gene'])
+            self.ML_df = self.ML_df[kmers_to_keep]
+            self.ML_df[self.out_cols].to_csv(
+                f'kmers_selected_for_modelling_metadata_{self.name}_.tsv', sep='\t'
+                )
+        else:
+            self.no_results.append(self.name)
 
 class ref_genomes():
 
@@ -2037,10 +2039,7 @@ def modeling(args):
             ))
         if phenotypes.LR:
             sys.stderr.write("\x1b[1;32mConducting the pca analysis for population structure correction \x1b[0m\n")
-            list(map(
-                lambda x:  x.getPCAmatrix(), 
-                Input.phenotypes_to_analyse.values()
-                ))
+            getPCAmatrix()
             sys.stderr.write("\x1b[1;32mConducting the likelihood ratio tests for phenotype: \x1b[0m\n")
             list(map(lambda x: x.LR_feature_selection(), Input.phenotypes_to_analyse.values()))
 
@@ -2057,6 +2056,8 @@ def modeling(args):
             # Clustering
             sys.stderr.write("\x1b[1;32mClustering the kmers for phenotype: \x1b[0m\n")
             list(map(lambda x: x.get_clusters(), Input.phenotypes_to_analyse.values()))
+            Input.pop_phenos_out_of_kmers()
+            sys.stderr.flush()
       
     if not Input.jump_to or Input.jump_to in ["modeling", "modelling", "testing", "annotating", "clustering", "selection"]:
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
