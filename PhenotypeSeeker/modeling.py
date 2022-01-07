@@ -1326,7 +1326,6 @@ class phenotypes():
 
         LR_out = open('likelihood_tests.txt' , "w")
         kmers_to_test = self.ML_df.shape[1]
-        self.out_cols += ['likelihood_ratio_test', 'lrt_pvalue']
 
         self.PCA_df = self.PCA_df[self.PCA_df.phenotype != 'NA']
         self.PCA_df.phenotype = self.PCA_df.phenotype.apply(pd.to_numeric)
@@ -1339,7 +1338,8 @@ class phenotypes():
         LRs = []
         LR_pvals = []
         for kmer in self.ML_df.drop(self.out_cols, axis=1).T:
-            alt_df = pd.merge(self.PCA_df[['PC_1', 'PC_2']], self.ML_df[kmer], left_index=True, right_index=True)
+            print(self.ML_df)
+            alt_df = pd.merge(self.PCA_df[['PC_1', 'PC_2']], self.ML_df.iloc[kmer], left_index=True, right_index=True)
             model.fit(alt_df, self.PCA_df['phenotype'])
             probs_alt = model.predict_proba(alt_df)
             logloss_alt = log_loss(self.PCA_df['phenotype'].values, probs_alt, normalize=False)
@@ -1349,6 +1349,7 @@ class phenotypes():
             LR_pval = stats.chi2.sf(LR, 1)
             LR_pvals.append(LR_pval)
 
+        self.out_cols += ['likelihood_ratio_test', 'lrt_pvalue']
         self.ML_df['likelihood_ratio_test'] = LRs
         self.ML_df['lrt_pvalue'] = LR_pvals
 
