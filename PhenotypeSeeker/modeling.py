@@ -657,9 +657,9 @@ class phenotypes():
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
         with Pool(Input.num_threads) as p:
-            kmers4pca = zip(*p.map(
+            kmers4pca = p.map(
                self.sample4pca, zip(*self.vectors_as_multiple_input)
-            ))
+            )
         sys.stderr.write("\n")
         sys.stderr.flush()
         print(kmers4pca)
