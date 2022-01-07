@@ -144,6 +144,8 @@ class Phenotypes():
     def set_kmer_db(self):
         with open("K-mer_lists/k-mer_db_" + self.name + ".txt", "w+") as db:
             if self.lr:
+                print(self.kmers)
+                print(self.kmers4pca)
                 kmers = pd.concat(self.kmers, self.kmers4pca)
             else:
                 kmers = self.kmers
