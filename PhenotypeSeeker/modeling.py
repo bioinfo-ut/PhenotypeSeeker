@@ -656,6 +656,12 @@ class phenotypes():
     def getPCAmatrix(self):
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
+        # Set up split up vectors as multiple input list
+        for sample in Input.samples:
+            cls.vectors_as_multiple_input.append(
+                ["K-mer_lists/" + sample + "_mapped_%05d" % i \
+                for i in range(Input.num_threads)
+                ])
         with Pool(Input.num_threads) as p:
             kmers4pca = p.map(
                self.sample4pca, zip(*self.vectors_as_multiple_input)
