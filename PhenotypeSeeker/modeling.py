@@ -716,6 +716,7 @@ class phenotypes():
         self.model_package['scaler'] = scaler
         self.model_package['pca_model'] = pca_model
         self.model_package['kmers4pca'] = kmers4pca.columns
+        print(kmers4pca.columns)
         fig.write_html(f"PCA_{self.name}.html")
 
     @timer
@@ -2039,9 +2040,15 @@ def modeling(args):
             ))
         if phenotypes.LR:
             sys.stderr.write("\x1b[1;32mConducting the pca analysis for population structure correction \x1b[0m\n")
-            getPCAmatrix()
+            list(map(
+                lambda x:  x.getPCAmatrix(),
+                Input.phenotypes_to_analyse.values()
+                ))
             sys.stderr.write("\x1b[1;32mConducting the likelihood ratio tests for phenotype: \x1b[0m\n")
-            list(map(lambda x: x.LR_feature_selection(), Input.phenotypes_to_analyse.values()))
+            list(map(
+                lambda x: x.LR_feature_selection(),
+                Input.phenotypes_to_analyse.values()
+                ))
 
     if not Input.jump_to or Input.jump_to in ["testing", "annotating", "selection"]:
         if args.annotate:
