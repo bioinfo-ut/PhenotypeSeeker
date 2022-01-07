@@ -958,7 +958,7 @@ class phenotypes():
             self.ML_df = pd.read_csv(
                 f"{self.name}_pre_selection_df.tsv", sep='\t', index_col=0
                 )
-            self.model_package = joblib.load(self.model_name_short + "_model_" + self.name + ".pkl")
+            self.model_package['kmers'] = self.ML_df.index
         else:
             if self.pred_scale == "binary":
                 self.out_cols = ['chi2', 'p-value', 'num_samples_w_kmer']
