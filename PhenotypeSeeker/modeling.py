@@ -705,7 +705,7 @@ class phenotypes():
 
         import plotly.express as px
         pheno = [
-                sample.phenotypes[self.name] for sample in Input.samples.values()
+                str(sample.phenotypes[self.name]) for sample in Input.samples.values()
                 ]
         self.PCA_df['phenotype'] = pheno
         fig = px.scatter(
@@ -1324,7 +1324,6 @@ class phenotypes():
 
     def LR_feature_selection(self):
 
-        LR_out = open('likelihood_tests.txt' , "w")
         kmers_to_test = self.ML_df.shape[1]
 
         self.PCA_df = self.PCA_df[self.PCA_df.phenotype != 'NA']
@@ -1865,7 +1864,6 @@ class phenotypes():
         clusters4ML.to_csv(f"kmer_clusters_selected_for_modelling_{self.name}.tsv", sep='\t')
 
         kmers_to_keep = self.ML_df['product'].isin(clusters4ML['product']) | self.ML_df['gene'].isin(clusters4ML['gene'])
-        self.model_package['kmers_to_keep'] = kmers_to_keep
         self.ML_df = self.ML_df[kmers_to_keep]
         self.ML_df[self.out_cols].to_csv(
             f'kmers_selected_for_modelling_metadata_{self.name}_.tsv', sep='\t'
