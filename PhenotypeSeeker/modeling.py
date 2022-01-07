@@ -1337,9 +1337,9 @@ class phenotypes():
 
         LRs = []
         LR_pvals = []
-        for kmer in self.ML_df.drop(self.out_cols, axis=1).T:
-            print(self.ML_df)
-            alt_df = pd.merge(self.PCA_df[['PC_1', 'PC_2']], self.ML_df.iloc[kmer], left_index=True, right_index=True)
+        LRdf = self.ML_df.drop(self.out_cols, axis=1).T
+        for kmer in LRdf:
+            alt_df = pd.merge(self.PCA_df[['PC_1', 'PC_2']], LRdf[kmer], left_index=True, right_index=True)
             model.fit(alt_df, self.PCA_df['phenotype'])
             probs_alt = model.predict_proba(alt_df)
             logloss_alt = log_loss(self.PCA_df['phenotype'].values, probs_alt, normalize=False)
