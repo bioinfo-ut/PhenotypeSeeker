@@ -959,6 +959,8 @@ class phenotypes():
                 f"{self.name}_pre_selection_df.tsv", sep='\t', index_col=0
                 )
             self.model_package['kmers'] = self.ML_df.index
+            self.model_package['LR'] = self.LR
+            self.model_package['pred_scale'] = self.pred_scale
         else:
             if self.pred_scale == "binary":
                 self.out_cols = ['chi2', 'p-value', 'num_samples_w_kmer']
