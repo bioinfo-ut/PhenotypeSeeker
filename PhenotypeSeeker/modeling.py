@@ -671,7 +671,6 @@ class phenotypes():
         kmers4pca = pd.concat(
             [pd.DataFrame.from_dict(x) for x in kmers4pca],
             axis=1)
-        print(kmers4pca)
         self.getPCA(kmers4pca)
 
     def sample4pca(self, split_of_kmer_lists):
@@ -1329,8 +1328,8 @@ class phenotypes():
         kmers_to_test = self.ML_df.shape[1]
         self.out_cols += ['likelihood_ratio_test', 'lrt_pvalue']
 
-        self.PCs = self.PCs[self.PCs.phenotype != 'NA']
-        self.PCs.phenotype = self.PCs.phenotype.apply(pd.to_numeric)
+        self.PCA_df = self.PCA_df[self.PCA_df.phenotype != 'NA']
+        self.PCA_df.phenotype = self.PCA_df.phenotype.apply(pd.to_numeric)
 
         model = LogisticRegression()  
         model.fit(self.PCs[['PC_1', 'PC_2']], self.PCs['phenotype'])
@@ -1339,11 +1338,11 @@ class phenotypes():
 
         LRs = []
         LR_pvals = []
-        for kmer in df_to_scale:
-            alt_df = pd.merge(self.PCs[['PC_1', 'PC_2']], df_to_scale[kmer], left_index=True, right_index=True)
-            model.fit(alt_df, self.PCs['phenotype'])
+        for kmer in self.ML_df.drop(self.out_cols, axis=1).T:
+            alt_df = pd.merge(self.PCA_df[['PC_1', 'PC_2']], df_to_scale[kmer], left_index=True, right_index=True)
+            model.fit(alt_df, self.PCA_df['phenotype'])
             probs_alt = model.predict_proba(alt_df)
-            logloss_alt = log_loss(self.PCs['phenotype'].values, probs_alt, normalize=False)
+            logloss_alt = log_loss(self.PCA_df['phenotype'].values, probs_alt, normalize=False)
 
             LR = 2*(logloss_base - logloss_alt)
             LRs.append(LR)
