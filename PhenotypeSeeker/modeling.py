@@ -661,7 +661,7 @@ class phenotypes():
             self.vectors_as_multiple_input.append(
                 ["K-mer_lists/" + sample + "_mapped_%05d" % i \
                 for i in range(Input.num_threads)
-                ])c
+                ])
         with Pool(Input.num_threads) as p:
             kmers4pca = p.map(
                self.sample4pca, zip(*self.vectors_as_multiple_input)
@@ -692,7 +692,6 @@ class phenotypes():
         scaler = StandardScaler()
         scaler.fit(kmers4pca)
         scaled_data = scaler.transform(kmers4pca)
-        print(scaled_data)
 
         n_compo = 2
         labels = [f"PC {i+1}" for i in range(n_compo)]
@@ -708,7 +707,8 @@ class phenotypes():
         pheno = [
                 sample.phenotypes[self.name] for sample in Input.samples.values()
                 ]
-        PCA_df['pheno'] = ['sens' if x == 0 else 'res' for x in pheno]
+        self.PCA_df['pheno'] = ['sens' if x == 0 else 'res' for x in pheno]
+        print(self.PCA_df)
         fig = px.scatter(
             PCA_df, x='PC 1', y='PC 2',
             color='pheno'
