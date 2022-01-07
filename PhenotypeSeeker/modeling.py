@@ -1332,14 +1332,14 @@ class phenotypes():
         self.PCA_df.phenotype = self.PCA_df.phenotype.apply(pd.to_numeric)
 
         model = LogisticRegression()  
-        model.fit(self.PCs[['PC_1', 'PC_2']], self.PCs['phenotype'])
-        probs_base = model.predict_proba(self.PCs[['PC_1', 'PC_2']])
-        logloss_base = log_loss(self.PCs['phenotype'], probs_base, normalize=False)
+        model.fit(self.PCA_df[['PC_1', 'PC_2']], self.PCA_df['phenotype'])
+        probs_base = model.predict_proba(self.PCA_df[['PC_1', 'PC_2']])
+        logloss_base = log_loss(self.PCA_df['phenotype'], probs_base, normalize=False)
 
         LRs = []
         LR_pvals = []
         for kmer in self.ML_df.drop(self.out_cols, axis=1).T:
-            alt_df = pd.merge(self.PCA_df[['PC_1', 'PC_2']], df_to_scale[kmer], left_index=True, right_index=True)
+            alt_df = pd.merge(self.PCA_df[['PC_1', 'PC_2']], self.ML_df[kmer], left_index=True, right_index=True)
             model.fit(alt_df, self.PCA_df['phenotype'])
             probs_alt = model.predict_proba(alt_df)
             logloss_alt = log_loss(self.PCA_df['phenotype'].values, probs_alt, normalize=False)
