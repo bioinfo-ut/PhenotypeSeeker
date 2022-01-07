@@ -694,7 +694,7 @@ class phenotypes():
         scaled_data = scaler.transform(kmers4pca)
 
         n_compo = 2
-        labels = [f"PC {i+1}" for i in range(n_compo)]
+        labels = [f"PC_{i+1}" for i in range(n_compo)]
         pca_model = PCA(n_components=n_compo)
         pca_model.fit(scaled_data)
         self.PCA_df = pd.DataFrame(
@@ -709,7 +709,7 @@ class phenotypes():
                 ]
         self.PCA_df['phenotype'] = pheno
         fig = px.scatter(
-            self.PCA_df, x='PC 1', y='PC 2',
+            self.PCA_df, x='PC_1', y='PC_2',
             color='phenotype'
             )
 
