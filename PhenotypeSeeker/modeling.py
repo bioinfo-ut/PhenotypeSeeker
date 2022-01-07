@@ -662,6 +662,7 @@ class phenotypes():
             ))
         sys.stderr.write("\n")
         sys.stderr.flush()
+        print(kmers4pca)
         kmers4pca = np.concatenate([np.array(x).T for x in kmers4pca], axis=1)
         print(kmers4pca)
         self.getPCA(kmers4pca)
