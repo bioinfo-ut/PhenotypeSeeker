@@ -671,6 +671,7 @@ class phenotypes():
         kmers4pca = pd.concat(
             [pd.DataFrame.from_dict(x) for x in kmers4pca],
             axis=1)
+        print(kmers4pca)
         self.getPCA(kmers4pca)
 
     def sample4pca(self, split_of_kmer_lists):
@@ -710,13 +711,13 @@ class phenotypes():
         self.PCA_df['pheno'] = ['sens' if x == 0 else 'res' for x in pheno]
         print(self.PCA_df)
         fig = px.scatter(
-            PCA_df, x='PC 1', y='PC 2',
+            self.PCA_df, x='PC 1', y='PC 2',
             color='pheno'
             )
 
         self.model_package['scaler'] = scaler
         self.model_package['pca_model'] = pca_model
-        fig.write_html("PC_pheno_species_kmers.html")
+        fig.write_html(f"PCA_{self.name}.html")
 
     @timer
     def test_kmer_association_with_phenotype(self):
