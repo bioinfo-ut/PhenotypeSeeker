@@ -692,7 +692,8 @@ class phenotypes():
         pca_model.fit(scaled_data)
         self.PCA_df = pd.DataFrame(
             pca_model.transform(scaled_data),
-            index=self.ML_df.index, columns=labels
+            columns=labels,
+            index=[sample.name for sample in Input.samples.values()]
             )
 
         import plotly.express as px
@@ -962,6 +963,7 @@ class phenotypes():
             # Limiting the kmer amount by n_kmers
             self.ML_df = self.ML_df.sort_values(self.out_cols[0], ascending=False)
             self.ML_df[self.out_cols].to_csv(f'{self.out_cols[0]}_results_{self.name}.tsv', sep='\t')
+            # special_mers = ['CTTCATGGTTGAC', 'GGGTCAACCATGA', 'GGTCAACCATGAA', 'TGCCTTTCAAGAA', 'CCTTTCAAGAAAA', 'GAGAAGTCTTCAA', 'GGAGAAGTCTTCA', 'GCCTTTCAAGAAA', 'AGGAGAAGTCTTC', 'ACTACTATTGAAG', 'CTACTATTGAAGA', 'GTCTTCAATAGTA', 'CTGGAAGTTGACC', 'CTGGAAGTTGACC', 'GCTGGAAGTTGAC', 'AGACTTCTCCTCC', 'AGGAGGAGAAGTC']
             if self.kmer_limit:
                 self.ML_df = self.ML_df.iloc[:self.kmer_limit, :]
                 if not Input.annotate:
