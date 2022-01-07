@@ -671,8 +671,6 @@ class phenotypes():
         kmers4pca = pd.concat(
             [pd.DataFrame.from_dict(x) for x in kmers4pca],
             axis=1)
-        print(kmers4pca)
-        print(kmers4pca.shape)
         self.getPCA(kmers4pca)
 
     def sample4pca(self, split_of_kmer_lists):
@@ -718,7 +716,6 @@ class phenotypes():
         self.model_package['scaler'] = scaler
         self.model_package['pca_model'] = pca_model
         self.model_package['kmers4pca'] = kmers4pca.columns
-        print(kmers4pca.columns)
         fig.write_html(f"PCA_{self.name}.html")
 
     @timer
@@ -961,6 +958,7 @@ class phenotypes():
             self.ML_df = pd.read_csv(
                 f"{self.name}_pre_selection_df.tsv", sep='\t', index_col=0
                 )
+            self.model_package = joblib.load(self.model_name_short + "_model_" + self.name + ".pkl")
         else:
             if self.pred_scale == "binary":
                 self.out_cols = ['chi2', 'p-value', 'num_samples_w_kmer']
