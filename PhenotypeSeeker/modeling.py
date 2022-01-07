@@ -658,21 +658,19 @@ class phenotypes():
         stderr_print.previousPercent.value = 0
         # Set up split up vectors as multiple input list
         for sample in Input.samples:
-            cls.vectors_as_multiple_input.append(
+            self.vectors_as_multiple_input.append(
                 ["K-mer_lists/" + sample + "_mapped_%05d" % i \
                 for i in range(Input.num_threads)
-                ])
+                ])c
         with Pool(Input.num_threads) as p:
             kmers4pca = p.map(
                self.sample4pca, zip(*self.vectors_as_multiple_input)
             )
         sys.stderr.write("\n")
         sys.stderr.flush()
-        print(kmers4pca)
         kmers4pca = pd.concat(
             [pd.DataFrame.from_dict(x) for x in kmers4pca],
             axis=1)
-        print(kmers4pca)
         self.getPCA(kmers4pca)
 
     def sample4pca(self, split_of_kmer_lists):
@@ -694,6 +692,7 @@ class phenotypes():
         scaler = StandardScaler()
         scaler.fit(kmers4pca)
         scaled_data = scaler.transform(kmers4pca)
+        print(scaled_data)
 
         n_compo = 2
         labels = [f"PC {i+1}" for i in range(n_compo)]
