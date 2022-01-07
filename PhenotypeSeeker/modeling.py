@@ -663,30 +663,36 @@ class phenotypes():
         sys.stderr.write("\n")
         sys.stderr.flush()
         kmers4pca = np.concatenate([np.array(x).T for x in kmers4pca], axis=1)
+        print(kmers4pca)
         self.getPCA(kmers4pca)
 
     def sample4pca(self, split_of_kmer_lists):
-        kmers4pca = list()
+        kmers4pca = dict()
         counter = 0
 
         for line in zip(*[open(item) for item in split_of_kmer_lists]):
             counter += 1
-            if counter%100 == 0:
+            if counter%1000 == 0:
                 kmer = line[0].split()[0]
                 kmer_vector = [int(j.split()[1].strip()) for j in line]
                 if not self.real_counts:
                     kmer_vector = [1 if count > 0 else 0 for count in kmer_vector]
-                kmers4pca.append(kmer_vector)
+                kmers4pca[kmer] = kmer_vector
         return kmers4pca
 
     def getPCA(self, kmers4pca):
-        scaled_data = StandardScaler().fit_transform(kmers4pca)
+
+        scaler = StandardScaler()
+        scaler.fit(kmers4pca)
+        scaled_data = scaler.transform(kmers4pca)
 
         n_compo = 2
         labels = [f"PC {i+1}" for i in range(n_compo)]
-        PCA_df = pd.DataFrame(
-            PCA(n_components=n_compo).fit_transform(scaled_data),
-            columns=labels,
+        pca_model = PCA(n_components=n_compo)
+        pca_model.fit(scaled_data)
+        self.PCA_df = pd.DataFrame(
+            pca_model.transform(scaled_data),
+            index=self.ML_df.index, columns=labels
             )
 
         import plotly.express as px
@@ -694,15 +700,13 @@ class phenotypes():
                 sample.phenotypes[self.name] for sample in Input.samples.values()
                 ]
         PCA_df['pheno'] = ['sens' if x == 0 else 'res' for x in pheno]
-        strainID = list(Input.samples.keys())
-        PCA_df['country'] = [x.split("_")[-1] for x in strainID]
-        PCA_df['species'] = [x.split("_")[-2] for x in strainID]
         fig = px.scatter(
             PCA_df, x='PC 1', y='PC 2',
-            symbol='country', symbol_sequence=[50,100,150],
-            color='pheno', hover_data=['species']
+            color='pheno'
             )
-        fig.show()
+
+        self.model_package['scaler'] = scaler
+        self.model_package['pca_model'] = pca_model
         fig.write_html("PC_pheno_species_kmers.html")
 
     @timer
@@ -727,7 +731,6 @@ class phenotypes():
     def get_kmers_tested(self, split_of_kmer_lists):
 
         kmer_dict = dict()
-        kmers4pca = list()
         counter = 0
 
         for line in zip(*[open(item) for item in split_of_kmer_lists]):
@@ -959,13 +962,8 @@ class phenotypes():
             # Limiting the kmer amount by n_kmers
             self.ML_df = self.ML_df.sort_values(self.out_cols[0], ascending=False)
             self.ML_df[self.out_cols].to_csv(f'{self.out_cols[0]}_results_{self.name}.tsv', sep='\t')
-            # special_mers = ['CTTCATGGTTGAC', 'GGGTCAACCATGA', 'GGTCAACCATGAA', 'TGCCTTTCAAGAA', 'CCTTTCAAGAAAA', 'GAGAAGTCTTCAA', 'GGAGAAGTCTTCA', 'GCCTTTCAAGAAA', 'AGGAGAAGTCTTC', 'ACTACTATTGAAG', 'CTACTATTGAAGA', 'GTCTTCAATAGTA', 'CTGGAAGTTGACC', 'CTGGAAGTTGACC', 'GCTGGAAGTTGAC', 'AGACTTCTCCTCC', 'AGGAGGAGAAGTC']
             if self.kmer_limit:
                 self.ML_df = self.ML_df.iloc[:self.kmer_limit, :]
-                # ML_df2 = self.ML_df.iloc[:self.kmer_limit, :]
-                # ML_df3 = self.ML_df.loc[special_mers]
-                # self.ML_df = pd.concat([ML_df2, ML_df3])
-                # self.ML_df = self.ML_df[~self.ML_df.index.duplicated(keep='first')]
                 if not Input.annotate:
                     self.ML_df[self.out_cols].to_csv(
                         f'kmer_metadata_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
@@ -1877,8 +1875,6 @@ class phenotypes():
             clusters_by_genes = clusters[(clusters.lrt_mean_pval < (self.pvalue_cutoff)) & (clusters['count'] >= (self.kmer_limit/100))]['gene']
         else:
             clusters_by_genes = clusters[clusters['count'] >= (self.kmer_limit/100)]['gene']
-        print(clusters)
-        print(clusters_by_genes)
         clusters4ML = clusters[clusters['gene'].isin(clusters_by_genes)]
         clusters4ML.to_csv(f"kmer_clusters_selected_for_modelling_{self.name}.tsv", sep='\t')
 
@@ -2040,10 +2036,6 @@ def modeling(args):
     if not Input.jump_to or Input.jump_to == "testing":
         # Analyses of phenotypes
         phenotypes.kmer_testing_setup()
-        # list(map(
-        #     lambda x:  x.getPCAmatrix(), 
-        #     Input.phenotypes_to_analyse.values()
-        #     ))
         list(map(
             lambda x:  x.test_kmer_association_with_phenotype(), 
             Input.phenotypes_to_analyse.values()
@@ -2056,7 +2048,10 @@ def modeling(args):
             lambda x:  x.set_up_dataframe(), 
             Input.phenotypes_to_analyse.values()
             ))
-
+        list(map(
+            lambda x:  x.getPCAmatrix(), 
+            Input.phenotypes_to_analyse.values()
+            ))
         if phenotypes.LR:
             sys.stderr.write("\x1b[1;32mConducting the likelihood ratio tests for phenotype: \x1b[0m\n")
             list(map(lambda x: x.LR_feature_selection(), Input.phenotypes_to_analyse.values()))
