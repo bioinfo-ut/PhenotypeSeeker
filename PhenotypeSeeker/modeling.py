@@ -671,6 +671,8 @@ class phenotypes():
         kmers4pca = pd.concat(
             [pd.DataFrame.from_dict(x) for x in kmers4pca],
             axis=1)
+        print(kmers4pca)
+        print(kmers4pca.shape)
         self.getPCA(kmers4pca)
 
     def sample4pca(self, split_of_kmer_lists):
@@ -972,7 +974,6 @@ class phenotypes():
             # Limiting the kmer amount by n_kmers
             self.ML_df = self.ML_df.sort_values(self.out_cols[0], ascending=False)
             self.ML_df[self.out_cols].to_csv(f'{self.out_cols[0]}_results_{self.name}.tsv', sep='\t')
-            # special_mers = ['CTTCATGGTTGAC', 'GGGTCAACCATGA', 'GGTCAACCATGAA', 'TGCCTTTCAAGAA', 'CCTTTCAAGAAAA', 'GAGAAGTCTTCAA', 'GGAGAAGTCTTCA', 'GCCTTTCAAGAAA', 'AGGAGAAGTCTTC', 'ACTACTATTGAAG', 'CTACTATTGAAGA', 'GTCTTCAATAGTA', 'CTGGAAGTTGACC', 'CTGGAAGTTGACC', 'GCTGGAAGTTGAC', 'AGACTTCTCCTCC', 'AGGAGGAGAAGTC']
             if self.kmer_limit:
                 self.ML_df = self.ML_df.iloc[:self.kmer_limit, :]
                 if not Input.annotate:
@@ -981,7 +982,6 @@ class phenotypes():
                     )
             self.model_package['kmers'] = self.ML_df.index
             self.model_package['LR'] = self.LR
-            self.model_package['selection'] = self.cluster
             self.model_package['pred_scale'] = self.pred_scale
             self.ML_df.to_csv(f"{self.name}_pre_selection_df.tsv", sep='\t')
 
@@ -1857,13 +1857,10 @@ class phenotypes():
             clusters = clusters.sort_values('count', ignore_index=True)
         clusters.to_csv(f"kmer_counts_in_genes_{self.name}.tsv", sep='\t')
 
-        # clusters_by_genes = clusters[clusters.lrt_min_pval < (self.pvalue_cutoff)]['gene']
         if self.LR:
             clusters_by_genes = clusters[(clusters.lrt_mean_pval < (self.pvalue_cutoff)) & (clusters['count'] >= (self.kmer_limit/100))]['gene']
         else:
             clusters_by_genes = clusters[clusters['count'] >= (self.kmer_limit/100)]['gene']
-        print(clusters_by_genes)
-        print(type(clusters_by_genes))
         if len(clusters_by_genes) > 0:
             clusters4ML = clusters[clusters['gene'].isin(clusters_by_genes)]
             clusters4ML.to_csv(f"kmer_clusters_selected_for_modelling_{self.name}.tsv", sep='\t')

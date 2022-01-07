@@ -105,20 +105,18 @@ class Phenotypes():
     no_phenotypes = 0
 
     def __init__(
-                self, name, model, kmers, pca, lr, pca_model, scaler,
-                PCs_to_keep, pred_scale, kmers_to_keep
+                self, name, model, kmers, lr, pca_model, scaler,
+                pred_scale, kmers_to_keep
             ):
         self.name = name
         self.model = model
         self.kmers = kmers
-        self.pca = pca
         self.lr = lr
         self.pca_model = pca_model
         self.scaler = scaler
-        self.PCs_to_keep = PCs_to_keep
         self.pred_scale = pred_scale
         self.matrix = np.empty(shape=(Samples.no_samples, kmers.shape[0]))
-        self.kmers_to_keep = kmers_to_keep
+        self.kmers4pca = kmers4pca
 
         Phenotypes.no_phenotypes += 1
 
@@ -130,7 +128,6 @@ class Phenotypes():
         kmers = model_pkg['kmers']
         pred_scale = model_pkg['pred_scale']
 
-        pca = False
         lr = False
         pca_model = None
         scaler = None
@@ -140,14 +137,18 @@ class Phenotypes():
             kmers4pca = model_pkg['kmers4pca']
             lr = True
         return cls(
-                name, model, kmers, pca, lr, pca_model, scaler, PCs_to_keep, pred_scale,
-                kmers_to_keep
+                name, model, kmers, lr, pca_model, scaler, pred_scale,
+                kmers4pca
             )
 
     def set_kmer_db(self):
         with open("K-mer_lists/k-mer_db_" + self.name + ".txt", "w+") as db:
-            for kmer in self.kmers:
-                db.write(f"{kmer}\t1\t{kmer}\n")
+            if self.lr:
+                kmers = pd.concat(self.kmers, self.kmers4pca)
+            else:
+                kmers = self.kmers
+            for kmer in kmers:
+                db.write(f"{kmer}\t1\t{kmer}\n")                
 
     def get_inp_matrix(self):
         # Takes all vectors with k-mer frequency information and inserts 
@@ -159,15 +160,20 @@ class Phenotypes():
             ]
         for idx, line in enumerate(zip(*[open(counts) for counts in kmer_counts])):
             self.matrix[:, idx] = np.array([j.split()[2].strip() for j in line])
-        pd.DataFrame(self.matrix, index=Input.samples.keys(), columns=self.kmers).to_csv(
-            self.name + "pred_df.csv")
         if self.lr:
-            scaled_matrix = self.scaler.transform(self.matrix)
-            PCs = self.pca_model.transform(scaled_matrix)
+            columns = pd.concat(self.kmers, self.kmers4pca)
+        else:
+            columns = self.kmers
+        self.matrix = pd.DataFrame(self.matrix, index=Input.samples.keys(), columns=columns)
+        self.matrix.to_csv(self.name + "pred_df.csv")
+        if self.lr:
+            matrix4pca = self.matrix[self.kmers4pca].drop_duplicates(keep="last")
+            matrix4pca = self.scaler.transform(matrix4pca)
+            PCs = self.pca_model.transform(matrix4pca)
             self.matrix = np.concatenate(
-                [PCs, self.matrix[:, self.kmers_to_keep]], axis=1
+                [PCs, self.matrix[:, self.kmers].drop_duplicates()], axis=1
             )
-                # self.matrix = self.matrix[:, self.kmers_to_keep]
+            # self.matrix = self.matrix[:, self.kmers_to_keep]
 
     def predict(self):
 
@@ -197,7 +203,6 @@ def prediction(args):
     call(["mkdir", "-p", "K-mer_lists"])
     Input.get_samples(args.inputfile1)
     Input.get_phenos(args.inputfile2)
-
     
     for pheno in Input.phenos.values():
         sys.stderr.write(f"\x1b[1;32mPredicting the phenotypes for {pheno.name}.\x1b[0m\n")
