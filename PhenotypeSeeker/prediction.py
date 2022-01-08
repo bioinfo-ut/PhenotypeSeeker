@@ -162,6 +162,7 @@ class Phenotypes():
             ]
         for idx, line in enumerate(zip(*[open(counts) for counts in kmer_counts])):
             self.matrix[:, idx] = np.array([j.split()[2].strip() for j in line])
+            print(self.matrix)
         if self.lr:
             columns = pd.concat(self.kmers, self.kmers4pca)
         else:
