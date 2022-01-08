@@ -171,16 +171,13 @@ class Phenotypes():
         else:
             columns = self.kmers
         self.matrix = pd.DataFrame(self.matrix, index=Input.samples.keys(), columns=columns)
-        print(self.matrix)
         self.matrix.to_csv(self.name + "pred_df.csv")
         if self.lr:
-            matrix4pca = self.matrix[self.kmers4pca].drop_duplicates(keep="last")
-            print(self.kmers4pca)
-            print(matrix4pca.columns)
+            matrix4pca = self.matrix[self.kmers4pca].T.drop_duplicates(keep="last").T
             matrix4pca = self.scaler.transform(matrix4pca)
             PCs = self.pca_model.transform(matrix4pca)
             self.matrix = np.concatenate(
-                [PCs, self.matrix[:, self.kmers].drop_duplicates()], axis=1
+                [PCs, self.matrix[:, self.kmers].T.drop_duplicates().T], axis=1
             )
             # self.matrix = self.matrix[:, self.kmers_to_keep]
 
