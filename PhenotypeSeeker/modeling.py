@@ -716,6 +716,8 @@ class phenotypes():
         self.model_package['scaler'] = scaler
         self.model_package['pca_model'] = pca_model
         self.model_package['kmers4pca'] = kmers4pca.columns
+        print(kmers4pca.columns)
+        print(scaler.scale_)
         fig.write_html(f"PCA_{self.name}.html")
 
     @timer
