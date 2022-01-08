@@ -172,7 +172,7 @@ class Phenotypes():
         self.matrix.to_csv(self.name + "pred_df.csv")
         if self.lr:
             matrix4pca = self.matrix[self.kmers4pca].drop_duplicates(keep="last")
-            print(kmers4pca)
+            print(self.kmers4pca)
             print(matrix4pca.columns)
             matrix4pca = self.scaler.transform(matrix4pca)
             PCs = self.pca_model.transform(matrix4pca)
