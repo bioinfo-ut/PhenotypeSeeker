@@ -127,6 +127,7 @@ class Phenotypes():
         model_pkg = joblib.load(model_adre)
         model = model_pkg['model']
         kmers = model_pkg['kmers']
+        print(f'len kmers: {len(kmers)}')
         pred_scale = model_pkg['pred_scale']
         nr_kmers = kmers.shape[0]
 
@@ -138,6 +139,7 @@ class Phenotypes():
             pca_model = model_pkg['pca_model']
             scaler = model_pkg['scaler']
             kmers4pca = model_pkg['kmers4pca']
+            print(f'len kmers: {len(kmers4pca)}')
             lr = True
             nr_kmers += kmers4pca.shape[0]
         return cls(
@@ -169,6 +171,7 @@ class Phenotypes():
         else:
             columns = self.kmers
         self.matrix = pd.DataFrame(self.matrix, index=Input.samples.keys(), columns=columns)
+        print(self.matrix)
         self.matrix.to_csv(self.name + "pred_df.csv")
         if self.lr:
             matrix4pca = self.matrix[self.kmers4pca].drop_duplicates(keep="last")
@@ -212,10 +215,10 @@ def prediction(args):
     
     for pheno in Input.phenos.values():
         sys.stderr.write(f"\x1b[1;32mPredicting the phenotypes for {pheno.name}.\x1b[0m\n")
-        pheno.set_kmer_db()
-        with Pool(args.num_threads) as p:
-            p.map(lambda x: x.map_samples(pheno.name), Input.samples.values())
-            p.map(lambda x: x.kmer_counts(pheno.name), Input.samples.values())
+        # pheno.set_kmer_db()
+        # with Pool(args.num_threads) as p:
+        #     p.map(lambda x: x.map_samples(pheno.name), Input.samples.values())
+        #     p.map(lambda x: x.kmer_counts(pheno.name), Input.samples.values())
         pheno.get_inp_matrix()
         pheno.predict()
 
