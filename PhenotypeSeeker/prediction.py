@@ -138,6 +138,7 @@ class Phenotypes():
             pca_model = model_pkg['pca_model']
             scaler = model_pkg['scaler']
             kmers4pca = model_pkg['kmers4pca']
+            print(kmers4pca.duplicated())
             lr = True
             nr_kmers += kmers4pca.shape[0]
         return cls(
