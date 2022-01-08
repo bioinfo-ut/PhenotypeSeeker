@@ -716,8 +716,6 @@ class phenotypes():
         self.model_package['scaler'] = scaler
         self.model_package['pca_model'] = pca_model
         self.model_package['kmers4pca'] = kmers4pca.columns
-        print(kmers4pca.columns)
-        print(scaler.scale_)
         fig.write_html(f"PCA_{self.name}.html")
 
     @timer
@@ -1871,6 +1869,7 @@ class phenotypes():
             self.ML_df[self.out_cols].to_csv(
                 f'kmers_selected_for_modelling_metadata_{self.name}_.tsv', sep='\t'
                 )
+            self.model_package['kmers'] = self.ML_df.index
         else:
             self.no_results.append(self.name)
 

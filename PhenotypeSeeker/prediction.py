@@ -172,11 +172,11 @@ class Phenotypes():
         self.matrix.to_csv(self.name + "pred_df.csv")
         print(self.matrix)
         if self.lr:
-            matrix4pca = self.matrix.iloc[:,-self.kmer4pca.shape:]
+            matrix4pca = self.matrix.iloc[:,-self.kmers4pca.shape[0]:]
             matrix4pca = self.scaler.transform(matrix4pca)
             PCs = self.pca_model.transform(matrix4pca)
             self.matrix = np.concatenate(
-                [PCs, self.matrix.iloc[:, :self.kmers.shape]], axis=1
+                [PCs, self.matrix.iloc[:, :self.kmers.shape[0]]], axis=1
             )
             # self.matrix = self.matrix[:, self.kmers_to_keep]
 
