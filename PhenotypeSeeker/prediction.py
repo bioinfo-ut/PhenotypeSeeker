@@ -138,7 +138,6 @@ class Phenotypes():
             pca_model = model_pkg['pca_model']
             scaler = model_pkg['scaler']
             kmers4pca = model_pkg['kmers4pca']
-            print(kmers4pca.duplicated())
             lr = True
             nr_kmers += kmers4pca.shape[0]
         return cls(
@@ -173,12 +172,11 @@ class Phenotypes():
         self.matrix.to_csv(self.name + "pred_df.csv")
         print(self.matrix)
         if self.lr:
-            matrix4pca = self.matrix[self.kmers4pca].T.drop_duplicates(keep="last").T
-            print(matrix4pca)
+            matrix4pca = self.matrix.iloc[:,-self.kmer4pca.shape:]
             matrix4pca = self.scaler.transform(matrix4pca)
             PCs = self.pca_model.transform(matrix4pca)
             self.matrix = np.concatenate(
-                [PCs, self.matrix[:, self.kmers].T.drop_duplicates().T], axis=1
+                [PCs, self.matrix.iloc[:, :self.kmers.shape]], axis=1
             )
             # self.matrix = self.matrix[:, self.kmers_to_keep]
 
