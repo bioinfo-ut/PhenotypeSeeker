@@ -127,7 +127,6 @@ class Phenotypes():
         model_pkg = joblib.load(model_adre)
         model = model_pkg['model']
         kmers = model_pkg['kmers']
-        print(f'len kmers: {len(kmers)}')
         pred_scale = model_pkg['pred_scale']
         nr_kmers = kmers.shape[0]
 
@@ -139,7 +138,6 @@ class Phenotypes():
             pca_model = model_pkg['pca_model']
             scaler = model_pkg['scaler']
             kmers4pca = model_pkg['kmers4pca']
-            print(f'len kmers: {len(kmers4pca)}')
             lr = True
             nr_kmers += kmers4pca.shape[0]
         return cls(
@@ -172,8 +170,10 @@ class Phenotypes():
             columns = self.kmers
         self.matrix = pd.DataFrame(self.matrix, index=Input.samples.keys(), columns=columns)
         self.matrix.to_csv(self.name + "pred_df.csv")
+        print(self.matrix)
         if self.lr:
             matrix4pca = self.matrix[self.kmers4pca].T.drop_duplicates(keep="last").T
+            print(matrix4pca)
             matrix4pca = self.scaler.transform(matrix4pca)
             PCs = self.pca_model.transform(matrix4pca)
             self.matrix = np.concatenate(
