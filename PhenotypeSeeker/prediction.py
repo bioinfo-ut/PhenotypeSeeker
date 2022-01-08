@@ -106,7 +106,7 @@ class Phenotypes():
 
     def __init__(
                 self, name, model, kmers, lr, pca_model, scaler,
-                pred_scale, kmers4pca
+                pred_scale, kmers4pca, nr_kmers
             ):
         self.name = name
         self.model = model
@@ -115,8 +115,9 @@ class Phenotypes():
         self.pca_model = pca_model
         self.scaler = scaler
         self.pred_scale = pred_scale
-        self.matrix = np.empty(shape=(Samples.no_samples, kmers.shape[0]))
         self.kmers4pca = kmers4pca
+        self.matrix = np.empty(shape=(Samples.no_samples, nr_kmers))
+
 
         Phenotypes.no_phenotypes += 1
 
@@ -127,18 +128,21 @@ class Phenotypes():
         model = model_pkg['model']
         kmers = model_pkg['kmers']
         pred_scale = model_pkg['pred_scale']
+        nr_kmers = kmers.shape[0]
 
         lr = False
         pca_model = None
         scaler = None
+        kmers4pca = None
         if model_pkg['LR']:
             pca_model = model_pkg['pca_model']
             scaler = model_pkg['scaler']
             kmers4pca = model_pkg['kmers4pca']
             lr = True
+            nr_kmers += kmers4pca.shape[0]
         return cls(
                 name, model, kmers, lr, pca_model, scaler, pred_scale,
-                kmers4pca
+                kmers4pca, nr_kmers
             )
 
     def set_kmer_db(self):
@@ -160,7 +164,6 @@ class Phenotypes():
             ]
         for idx, line in enumerate(zip(*[open(counts) for counts in kmer_counts])):
             self.matrix[:, idx] = np.array([j.split()[2].strip() for j in line])
-            print(self.matrix)
         if self.lr:
             columns = pd.concat(self.kmers, self.kmers4pca)
         else:
