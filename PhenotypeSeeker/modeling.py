@@ -689,10 +689,12 @@ class phenotypes():
 
     def getPCA(self, kmers4pca):
 
+        print(kmers4pca)
         scaler = StandardScaler()
         scaler.fit(kmers4pca)
         scaled_data = scaler.transform(kmers4pca)
 
+        print(scaled_data)
         n_compo = 2
         labels = [f"PC_{i+1}" for i in range(n_compo)]
         pca_model = PCA(n_components=n_compo)
@@ -1854,7 +1856,7 @@ class phenotypes():
                 gene=('gene', lambda x: x.mode()),
                 count=('product', 'size'), chi2_mean_pval=('p-value', 'mean')
                 ).reset_index()
-            clusters = clusters.sort_values('count', ignore_index=True)
+            clusters = clusters.sort_values('count', ascending=False, ignore_index=True)
         clusters.to_csv(f"kmer_counts_in_genes_{self.name}.tsv", sep='\t')
 
         if self.LR:
