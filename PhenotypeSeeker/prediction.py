@@ -127,7 +127,6 @@ class Phenotypes():
         model_pkg = joblib.load(model_adre)
         model = model_pkg['model']
         kmers = model_pkg['kmers']
-        print(kmers)
         pred_scale = model_pkg['pred_scale']
         nr_kmers = kmers.shape[0]
 
@@ -135,12 +134,12 @@ class Phenotypes():
         pca_model = None
         scaler = None
         kmers4pca = None
-        if model_pkg['LR']:
-            pca_model = model_pkg['pca_model']
-            scaler = model_pkg['scaler']
-            kmers4pca = model_pkg['kmers4pca']
-            lr = True
-            nr_kmers += kmers4pca.shape[0]
+        # if model_pkg['LR']:
+        #     pca_model = model_pkg['pca_model']
+        #     scaler = model_pkg['scaler']
+        #     kmers4pca = model_pkg['kmers4pca']
+        #     lr = True
+        #     nr_kmers += kmers4pca.shape[0]
         return cls(
                 name, model, kmers, lr, pca_model, scaler, pred_scale,
                 kmers4pca, nr_kmers
@@ -171,7 +170,6 @@ class Phenotypes():
             columns = self.kmers
         self.matrix = pd.DataFrame(self.matrix, index=Input.samples.keys(), columns=columns)
         self.matrix.to_csv(self.name + "pred_df.csv")
-        print(self.matrix)
         if self.lr:
             matrix4pca = self.matrix.iloc[:,-self.kmers4pca.shape[0]:]
             matrix4pca = self.scaler.transform(matrix4pca)
