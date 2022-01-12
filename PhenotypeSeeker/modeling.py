@@ -657,7 +657,7 @@ class phenotypes():
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
         # Set up split up vectors as multiple input list
-        if Input.jump_to:
+        if Input.jump_to == "selection":
             for sample in Input.samples:
                 self.vectors_as_multiple_input.append(
                     ["K-mer_lists/" + sample + "_mapped_%05d" % i \
