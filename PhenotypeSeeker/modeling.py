@@ -687,6 +687,7 @@ class phenotypes():
                 if not self.real_counts:
                     kmer_vector = [1 if count > 0 else 0 for count in kmer_vector]
                 kmers4pca[kmer] = kmer_vector
+        print(kmers4pca)
         return kmers4pca
 
     def getPCA(self, kmers4pca):
