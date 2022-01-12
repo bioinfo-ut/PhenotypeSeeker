@@ -1867,7 +1867,7 @@ class phenotypes():
             clusters4ML = clusters[clusters['gene'].isin(clusters_by_genes)]
             clusters4ML.to_csv(f"kmer_clusters_selected_for_modelling_{self.name}.tsv", sep='\t')
             kmers_to_keep = self.ML_df['product'].isin(clusters4ML['product']) | self.ML_df['gene'].isin(clusters4ML['gene'])
-            self.ML_df = self.ML_df[kmers_to_keep]
+            #  self.ML_df = self.ML_df[kmers_to_keep]
             self.ML_df[self.out_cols].to_csv(
                 f'kmers_selected_for_modelling_metadata_{self.name}_.tsv', sep='\t'
                 )
@@ -1896,8 +1896,8 @@ class ref_genomes():
     @classmethod
     def get_refs(cls):
         cls.db_base = "/storage8/erkia/refDB"
-        # cls.specie = "Streptococcus_pneumoniae"
-        cls.specie = 'Klebsiella_pneumoniae'
+        cls.specie = "Streptococcus_pneumoniae"
+        # cls.specie = 'Klebsiella_pneumoniae'
         cls.index_path = os.path.join(cls.db_base, cls.specie, f"locations_{Samples.kmer_length}.index")
         with open(os.path.join(cls.db_base, cls.specie, "file_indexes.txt")) as file_idx:
             for line in file_idx:
