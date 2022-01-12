@@ -679,6 +679,8 @@ class phenotypes():
 
         for line in zip(*[open(item) for item in split_of_kmer_lists]):
             counter += 1
+            if counter==30000:
+                break
             if counter%1000 == 0:
                 kmer = line[0].split()[0]
                 kmer_vector = [int(j.split()[1].strip()) for j in line]
