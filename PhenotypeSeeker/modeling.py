@@ -1846,8 +1846,8 @@ class phenotypes():
             self.ML_df['lrt_pvalue'] = self.ML_df['lrt_pvalue'].astype(float)
             clusters = self.ML_df.groupby(by=["product"]).agg(
                 gene=('gene', lambda x: x.mode()),
-                count=('product', 'size'), chi2_mean_pval=('p-value', 'mean'),
-                lrt_mean_pval=('lrt_pvalue', 'mean')
+                count=('product', 'size'), chi2_min_pval=('p-value', 'min'),
+                lrt_min_pval=('lrt_pvalue', 'min')
                     ).reset_index()
             clusters = clusters.sort_values('lrt_mean_pval', ignore_index=True)
         else:
