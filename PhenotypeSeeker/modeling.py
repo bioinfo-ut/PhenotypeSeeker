@@ -657,11 +657,12 @@ class phenotypes():
         stderr_print.currentKmerNum.value = 0
         stderr_print.previousPercent.value = 0
         # Set up split up vectors as multiple input list
-        for sample in Input.samples:
-            self.vectors_as_multiple_input.append(
-                ["K-mer_lists/" + sample + "_mapped_%05d" % i \
-                for i in range(Input.num_threads)
-                ])
+        if Input.jump_to:
+            for sample in Input.samples:
+                self.vectors_as_multiple_input.append(
+                    ["K-mer_lists/" + sample + "_mapped_%05d" % i \
+                    for i in range(Input.num_threads)
+                    ])
         with Pool(Input.num_threads) as p:
             kmers4pca = p.map(
                self.sample4pca, zip(*self.vectors_as_multiple_input)
@@ -679,12 +680,9 @@ class phenotypes():
 
         for line in zip(*[open(item) for item in split_of_kmer_lists]):
             counter += 1
-            if counter==30000:
-                break
             if counter%1000 == 0:
                 kmer = line[0].split()[0]
                 kmer_vector = [int(j.split()[1].strip()) for j in line]
-                print(kmer_vector)
                 if not self.real_counts:
                     kmer_vector = [1 if count > 0 else 0 for count in kmer_vector]
                 kmers4pca[kmer] = kmer_vector
@@ -692,12 +690,10 @@ class phenotypes():
 
     def getPCA(self, kmers4pca):
 
-        print(kmers4pca)
         scaler = StandardScaler()
         scaler.fit(kmers4pca)
         scaled_data = scaler.transform(kmers4pca)
 
-        print(scaled_data)
         n_compo = 2
         labels = [f"PC_{i+1}" for i in range(n_compo)]
         pca_model = PCA(n_components=n_compo)
@@ -1262,10 +1258,10 @@ class phenotypes():
             self.ML_df = self.ML_df[self.ML_df.phenotype != 'NA']
             self.ML_df.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
 
-            if self.LR:
-                self.ML_df = pd.concat(
-                        [self.PCA_df[['PC_1', 'PC_2']], self.ML_df], axis=1
-                    )
+            # if self.LR:
+            #     self.ML_df = pd.concat(
+            #             [self.PCA_df[['PC_1', 'PC_2']], self.ML_df], axis=1
+            #         )
             self.ML_df.to_csv(self.name + "_MLdf.csv")
 
     @timer
