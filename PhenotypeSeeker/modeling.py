@@ -1868,7 +1868,7 @@ class phenotypes():
             kmers_to_keep = self.ML_df['product'].isin(clusters4ML['product']) | self.ML_df['gene'].isin(clusters4ML['gene'])
 
             self.ML_df = self.ML_df[kmers_to_keep]
-            self.ML_df = self.ML_df.iloc[0]
+            self.ML_df = self.ML_df.iloc[0:1]
             self.ML_df[self.out_cols].to_csv(
                 f'kmers_selected_for_modelling_metadata_{self.name}_.tsv', sep='\t'
                 )
