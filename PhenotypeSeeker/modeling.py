@@ -1859,14 +1859,15 @@ class phenotypes():
         clusters.to_csv(f"kmer_counts_in_genes_{self.name}.tsv", sep='\t')
 
         if self.LR:
-            clusters_by_genes = clusters[(clusters.lrt_median_pval < (self.pvalue_cutoff)) & (clusters['count'] >= (self.kmer_limit/100))]['gene']
+            clusters_by_genes = clusters[(clusters.lrt_median_pval < (self.pvalue_cutoff)) & (clusters['count'] >= (self.kmer_length))]['gene']
         else:
             clusters_by_genes = clusters[clusters['count'] >= (self.kmer_limit/100)]['gene']
         if len(clusters_by_genes) > 0:
             clusters4ML = clusters.loc[clusters_by_genes.index]
             clusters4ML.to_csv(f"kmer_clusters_selected_for_modelling_{self.name}.tsv", sep='\t')
-            kmers_to_keep = self.ML_df['product'].isin(list(clusters4ML['product'])) | self.ML_df['gene'].isin(list(clusters4ML['gene']))
-            #  self.ML_df = self.ML_df[kmers_to_keep]
+            kmers_to_keep = self.ML_df['product'].isin(clusters4ML['product']) | self.ML_df['gene'].isin(clusters4ML['gene'])
+            self.ML_df = self.ML_df[kmers_to_keep]
+            self.ML_df.iloc[0]
             self.ML_df[self.out_cols].to_csv(
                 f'kmers_selected_for_modelling_metadata_{self.name}_.tsv', sep='\t'
                 )
