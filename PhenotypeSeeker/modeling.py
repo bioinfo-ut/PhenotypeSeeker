@@ -1261,8 +1261,8 @@ class phenotypes():
 
             if self.LR:
                 self.ML_df = pd.concat(
-                        # [self.PCA_df[['PC_1', 'PC_2']], self.ML_df], axis=1
-                        [self.PCA_df[['PC_1']], self.ML_df], axis=1
+                        [self.PCA_df[['PC_1', 'PC_2']], self.ML_df], axis=1
+                        # [self.PCA_df[['PC_1']], self.ML_df], axis=1
                     )
             self.ML_df.to_csv(self.name + "_MLdf.csv")
 
@@ -1335,18 +1335,18 @@ class phenotypes():
         self.PCA_df.phenotype = self.PCA_df.phenotype.apply(pd.to_numeric)
 
         model = LogisticRegression()  
-        # model.fit(self.PCA_df[['PC_1', 'PC_2']], self.PCA_df['phenotype'])
-        model.fit(self.PCA_df[['PC_1']], self.PCA_df['phenotype'])
-        # probs_base = model.predict_proba(self.PCA_df[['PC_1', 'PC_2']])
-        probs_base = model.predict_proba(self.PCA_df[['PC_1']])
+        model.fit(self.PCA_df[['PC_1', 'PC_2']], self.PCA_df['phenotype'])
+        # model.fit(self.PCA_df[['PC_1']], self.PCA_df['phenotype'])
+        probs_base = model.predict_proba(self.PCA_df[['PC_1', 'PC_2']])
+        # probs_base = model.predict_proba(self.PCA_df[['PC_1']])
         logloss_base = log_loss(self.PCA_df['phenotype'], probs_base, normalize=False)
 
         LRs = []
         LR_pvals = []
         LRdf = self.ML_df.drop(self.out_cols, axis=1).T
         for kmer in LRdf:
-            # alt_df = pd.merge(self.PCA_df[['PC_1', 'PC_2']], LRdf[kmer], left_index=True, right_index=True)
-            alt_df = pd.merge(self.PCA_df[['PC_1']], LRdf[kmer], left_index=True, right_index=True)
+            alt_df = pd.merge(self.PCA_df[['PC_1', 'PC_2']], LRdf[kmer], left_index=True, right_index=True)
+            # alt_df = pd.merge(self.PCA_df[['PC_1']], LRdf[kmer], left_index=True, right_index=True)
             model.fit(alt_df, self.PCA_df['phenotype'])
             probs_alt = model.predict_proba(alt_df)
             logloss_alt = log_loss(self.PCA_df['phenotype'].values, probs_alt, normalize=False)
