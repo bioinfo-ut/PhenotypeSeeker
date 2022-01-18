@@ -134,12 +134,12 @@ class Phenotypes():
         pca_model = None
         scaler = None
         kmers4pca = None
-        # if model_pkg['LR']:
-        #     pca_model = model_pkg['pca_model']
-        #     scaler = model_pkg['scaler']
-        #     kmers4pca = model_pkg['kmers4pca']
-        #     lr = True
-        #     nr_kmers += kmers4pca.shape[0]
+        if model_pkg['LR']:
+            pca_model = model_pkg['pca_model']
+            scaler = model_pkg['scaler']
+            kmers4pca = model_pkg['kmers4pca']
+            lr = True
+            nr_kmers += kmers4pca.shape[0]
         return cls(
                 name, model, kmers, lr, pca_model, scaler, pred_scale,
                 kmers4pca, nr_kmers
