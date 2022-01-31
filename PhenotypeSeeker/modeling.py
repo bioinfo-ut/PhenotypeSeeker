@@ -694,7 +694,7 @@ class phenotypes():
         scaler.fit(kmers4pca)
         scaled_data = scaler.transform(kmers4pca)
 
-        n_compo = 4
+        n_compo = 5
         labels = [f"PC_{i+1}" for i in range(n_compo)]
         pca_model = PCA(n_components=n_compo)
         pca_model.fit(scaled_data)
@@ -1261,7 +1261,7 @@ class phenotypes():
 
             if self.LR:
                 self.ML_df = pd.concat(
-                        [self.PCA_df[['PC_1', 'PC_2', 'PC_3', 'PC_4']], self.ML_df], axis=1
+                        [self.PCA_df[['PC_1', 'PC_2', 'PC_3', 'PC_4', 'PC_5']], self.ML_df], axis=1
                         # [self.PCA_df[['PC_1']], self.ML_df], axis=1
                     )
             self.ML_df.to_csv(self.name + "_MLdf.csv")
