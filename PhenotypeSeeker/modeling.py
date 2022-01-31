@@ -694,7 +694,7 @@ class phenotypes():
         scaler.fit(kmers4pca)
         scaled_data = scaler.transform(kmers4pca)
 
-        n_compo = 4
+        n_compo = 5
         labels = [f"PC_{i+1}" for i in range(n_compo)]
         pca_model = PCA(n_components=n_compo)
         pca_model.fit(scaled_data)
@@ -718,7 +718,7 @@ class phenotypes():
         self.model_package['scaler'] = scaler
         self.model_package['pca_model'] = pca_model
         self.model_package['kmers4pca'] = kmers4pca.columns
-        fig.write_html(f"PCA_{self.name}.html")
+        # fig.write_html(f"PCA_{self.name}.html")
 
     @timer
     def test_kmer_association_with_phenotype(self):
