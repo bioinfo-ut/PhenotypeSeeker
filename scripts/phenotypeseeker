@@ -178,7 +178,7 @@ def Main():
     	Must be at least 2. Default min(10, no. samples in training set).'
     	)
     regression_models.add_argument(
-    	'--penalty', metavar='', type=str, default='l1',
+    	'--penalty', metavar='', type=str, default='l2',
     	help='The norm used in the penalization. Must be L1 (default), L2 \
         or L1+L2 (elastic net)'
     	)
