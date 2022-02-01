@@ -46,10 +46,10 @@ from functools import partial
 
 matplotlib.use('agg')
 warnings.showwarning = lambda *args, **kwargs: None
-pkg_resources.require(
-    "numpy==1.18.1", "Biopython==1.76", "pandas==1.0.1", "scipy==1.4.1",
-    "scikit-learn==0.22.1", "ete3==3.1.1", "multiprocess==0.70.9"
-    )
+# pkg_resources.require(
+#     "numpy==1.18.1", "Biopython==1.76", "pandas==1.0.1", "scipy==1.4.1",
+#     "scikit-learn==0.22.1", "ete3==3.1.1", "multiprocess==0.70.9"
+#     )
 
 import time
 def timer(f):
