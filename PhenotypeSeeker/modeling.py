@@ -1377,7 +1377,9 @@ class phenotypes():
                 elif self.penalty == "L2":
                     self.model_fitted = self.best_model.fit(self.X_train.values, self.y_train.values.flatten())
         elif self.pred_scale == "binary":
-            self.model_fitted = self.best_model.fit(self.X_train, self.y_train.values.flatten(), self.weights_train.values.flatten())
+            self.model_fitted = self.best_model.fit(
+                self.X_train, self.y_train.values.flatten(), **{sample_weight=self.weights_train.values.flatten()}
+                )
 
 
     def cross_validation_results(self):
