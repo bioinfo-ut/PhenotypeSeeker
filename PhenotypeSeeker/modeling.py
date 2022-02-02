@@ -1364,6 +1364,7 @@ class phenotypes():
 
         self.ML_df['likelihood_ratio_test'] = LRs
         self.ML_df['lrt_pvalue'] = LR_pvals
+        self.PCs.to_csv(f'PCs_{self.name}_.tsv', sep='\t')
 
     def fit_model(self):
         if self.pred_scale == "continuous":
@@ -1863,6 +1864,7 @@ class phenotypes():
                     'num_samples_w_kmer', "gene", "relative_pos", "product", "protein_id"]
             if self.LR:
                 self.out_cols += ['likelihood_ratio_test', 'lrt_pvalue']
+                self.PCs = pd.read_csv(f'PCs_{self.name}_.tsv', sep='\t')
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
         sys.stderr.flush()
         # k-mer clustering by genes
@@ -1922,8 +1924,8 @@ class ref_genomes():
     @classmethod
     def get_refs(cls):
         cls.db_base = "/storage8/erkia/refDB"
-        # cls.specie = "Streptococcus_pneumoniae"
-        cls.specie = 'Klebsiella_pneumoniae'
+        cls.specie = "Streptococcus_pneumoniae"
+        #cls.specie = 'Klebsiella_pneumoniae'
         cls.index_path = os.path.join(cls.db_base, cls.specie, f"locations_{Samples.kmer_length}.index")
         with open(os.path.join(cls.db_base, cls.specie, "file_indexes.txt")) as file_idx:
             for line in file_idx:
