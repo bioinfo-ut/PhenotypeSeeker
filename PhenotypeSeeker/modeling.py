@@ -1232,7 +1232,6 @@ class phenotypes():
             self.model_package = joblib.load(self.model_name_short + "_model_" + self.name + ".pkl")
         else:
             # Setting up the  dataframe
-            print(self.out_cols)
             self.ML_df.drop(self.out_cols, inplace=True, axis=1)
             self.ML_df = self.ML_df.T
 
@@ -1862,6 +1861,8 @@ class phenotypes():
             else:
                 self.out_cols = ['t-test', 'p-value', '+_group_mean', '-_group_mean', \
                     'num_samples_w_kmer', "gene", "relative_pos", "product", "protein_id"]
+            if self.LR:
+                self.out_cols += ['likelihood_ratio_test', 'lrt_pvalue']
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
         sys.stderr.flush()
         # k-mer clustering by genes
@@ -1875,7 +1876,6 @@ class phenotypes():
                     ).reset_index()
             clusters = clusters.sort_values('lrt_mean_pval', ignore_index=True)
         else:
-            print(self.ML_df)
             clusters = self.ML_df.groupby(by=["product"]).agg(
                 gene=('gene', lambda x: x.mode()),
                 count=('product', 'size'), chi2_mean_pval=('p-value', 'mean')
