@@ -1859,6 +1859,7 @@ class phenotypes():
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
         sys.stderr.flush()
         # k-mer clustering by genes
+        print(self.ML_df.columns)
         self.ML_df['p-value'] = self.ML_df['p-value'].astype(float)
         if self.LR:
             self.ML_df['lrt_pvalue'] = self.ML_df['lrt_pvalue'].astype(float)
