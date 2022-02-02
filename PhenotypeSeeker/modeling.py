@@ -1852,9 +1852,9 @@ class phenotypes():
     def get_clusters(self):
         if Input.jump_to == 'clustering':
             self.ML_df = pd.read_csv(f"{self.name}_pre_selection_df.tsv", sep='\t', index_col=0)
-            print(self.ML_df)
-            self.kmer_annotations = pd.read_csv(f'kmer_metadata_{self.name}_top{self.kmer_limit}.tsv', sep='\t')
+            self.kmer_annotations = pd.read_csv(f'kmer_metadata_{self.name}_top{self.kmer_limit}.tsv', sep='\t', index_col=0)
             self.ML_df = pd.merge(self.ML_df, self.kmer_annotations, left_index=True, right_index=True)
+            print(self.ML_df)
             print(self.kmer_annotations)
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
         sys.stderr.flush()
