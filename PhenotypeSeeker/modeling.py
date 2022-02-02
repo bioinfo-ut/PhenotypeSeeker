@@ -1858,6 +1858,7 @@ class phenotypes():
             self.ML_df = pd.read_csv(f"{self.name}_pre_selection_df.tsv", sep='\t', index_col=0)
             self.kmer_annotations = pd.read_csv(f'kmer_metadata_{self.name}_top{self.kmer_limit}.tsv', sep='\t')
             self.ML_df = pd.concat([self.ML_df, self.kmer_annotations], axis=1)
+        print(self.ML_df)
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
         sys.stderr.flush()
         # k-mer clustering by genes
