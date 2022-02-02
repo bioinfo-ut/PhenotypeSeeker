@@ -1854,6 +1854,13 @@ class phenotypes():
             self.ML_df = pd.read_csv(f"{self.name}_pre_selection_df.tsv", sep='\t', index_col=0)
             self.kmer_annotations = pd.read_csv(f'kmer_metadata_{self.name}_top{self.kmer_limit}.tsv', sep='\t', index_col=0)
             self.ML_df = pd.concat([self.ML_df, self.kmer_annotations], axis=1)
+            self.ML_df = self.ML_df.loc[:,~self.ML_df.columns.duplicated()]
+            if self.pred_scale == "binary":
+                self.out_cols = ['chi2', 'p-value', 'num_samples_w_kmer', "gene", \
+                    "relative_pos", "product", "protein_id"]
+            else:
+                self.out_cols = ['t-test', 'p-value', '+_group_mean', '-_group_mean', \
+                    'num_samples_w_kmer', "gene", "relative_pos", "product", "protein_id"]
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
         sys.stderr.flush()
         # k-mer clustering by genes
@@ -1880,8 +1887,6 @@ class phenotypes():
             clusters_by_genes = clusters[(clusters.lrt_mean_pval < (self.pvalue_cutoff)) & (clusters['count'] >= (self.kmer_limit/100))]['gene']
         else:
             clusters_by_genes = clusters[clusters['count'] >= (self.kmer_limit/100)]['gene']
-        print(clusters)
-        print(clusters_by_genes)
         clusters4ML = clusters[clusters['gene'].isin(clusters_by_genes)]
         clusters4ML.to_csv(f"kmer_clusters_selected_for_modelling_{self.name}.tsv", sep='\t')
 
