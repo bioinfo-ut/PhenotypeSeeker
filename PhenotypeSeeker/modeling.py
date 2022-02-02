@@ -1898,6 +1898,30 @@ class phenotypes():
             f'kmers_selected_for_modelling_metadata_{self.name}_.tsv', sep='\t'
             )
 
+        if self.LR:
+            df_to_scale = self.ML_df.drop(self.out_cols, axis=1).T
+            kmers_to_test = self.ML_df.shape[1]
+            self.out_cols += ['likelihood_ratio_test', 'lrt_pvalue']
+            kmers_to_keep = []
+
+            # Strandardization
+            scaler = StandardScaler()
+            scaler.fit(df_to_scale)
+            scaled_data = scaler.transform(df_to_scale)
+
+            # PCA transformation
+            pca = PCA(n_components=2)
+            pca.fit(scaled_data)
+
+            # PCA transformation
+            self.PCs = pd.DataFrame(
+                pca.transform(scaled_data),
+                index=df_to_scale.index,
+                columns=['PC_1', 'PC_2']
+                )
+            self.model_package['scaler'] = scaler
+            self.model_package['pca_model'] = pca
+
 class ref_genomes():
 
     instances = OrderedDict()
