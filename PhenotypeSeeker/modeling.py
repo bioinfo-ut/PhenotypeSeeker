@@ -959,13 +959,9 @@ class phenotypes():
             # Limiting the kmer amount by n_kmers
             self.ML_df = self.ML_df.sort_values(self.out_cols[0], ascending=False)
             self.ML_df[self.out_cols].to_csv(f'{self.out_cols[0]}_results_{self.name}.tsv', sep='\t')
-            # special_mers = ['CTTCATGGTTGAC', 'GGGTCAACCATGA', 'GGTCAACCATGAA', 'TGCCTTTCAAGAA', 'CCTTTCAAGAAAA', 'GAGAAGTCTTCAA', 'GGAGAAGTCTTCA', 'GCCTTTCAAGAAA', 'AGGAGAAGTCTTC', 'ACTACTATTGAAG', 'CTACTATTGAAGA', 'GTCTTCAATAGTA', 'CTGGAAGTTGACC', 'CTGGAAGTTGACC', 'GCTGGAAGTTGAC', 'AGACTTCTCCTCC', 'AGGAGGAGAAGTC']
+
             if self.kmer_limit:
                 self.ML_df = self.ML_df.iloc[:self.kmer_limit, :]
-                # ML_df2 = self.ML_df.iloc[:self.kmer_limit, :]
-                # ML_df3 = self.ML_df.loc[special_mers]
-                # self.ML_df = pd.concat([ML_df2, ML_df3])
-                # self.ML_df = self.ML_df[~self.ML_df.index.duplicated(keep='first')]
                 if not Input.annotate:
                     self.ML_df[self.out_cols].to_csv(
                         f'kmer_metadata_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
@@ -1857,7 +1853,7 @@ class phenotypes():
         if Input.jump_to == 'clustering':
             self.ML_df = pd.read_csv(f"{self.name}_pre_selection_df.tsv", sep='\t', index_col=0)
             self.kmer_annotations = pd.read_csv(f'kmer_metadata_{self.name}_top{self.kmer_limit}.tsv', sep='\t')
-            self.ML_df = pd.concat([self.ML_df, self.kmer_annotations], axis=1)
+            self.ML_df = self.ML_df.join(self.kmer_annotations)
         print(self.ML_df)
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
         sys.stderr.flush()
