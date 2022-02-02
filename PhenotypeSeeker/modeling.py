@@ -1241,7 +1241,7 @@ class phenotypes():
             self.ML_df['phenotype'] = [
                 sample.phenotypes[self.name] for sample in Input.samples.values()
                 ]
-            self.ML_df = self.ML_df[self.ML_df.phenotype not in ['NA', None]]
+            self.ML_df = self.ML_df[self.ML_df.phenotype != 'NA']
             self.ML_df.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
 
             if self.LR:
@@ -1885,9 +1885,12 @@ class phenotypes():
 
         # clusters_by_genes = clusters[clusters.lrt_min_pval < (self.pvalue_cutoff)]['gene']
         if self.LR:
-            clusters_by_genes = clusters[(clusters.lrt_mean_pval < (self.pvalue_cutoff)) & (clusters['count'] >= (self.kmer_limit/100))]['gene']
+            clusters_by_genes = clusters[(clusters.lrt_mean_pval < (self.pvalue_cutoff)) & (clusters['count'] >= (200))]['gene']
         else:
             clusters_by_genes = clusters[clusters['count'] >= (self.kmer_limit/100)]['gene']
+
+        if clusters_by_genes.empty:
+            self.no_results.append(self.name)
         clusters4ML = clusters[clusters['gene'].isin(clusters_by_genes)]
         clusters4ML.to_csv(f"kmer_clusters_selected_for_modelling_{self.name}.tsv", sep='\t')
 
@@ -1897,30 +1900,6 @@ class phenotypes():
         self.ML_df[self.out_cols].to_csv(
             f'kmers_selected_for_modelling_metadata_{self.name}_.tsv', sep='\t'
             )
-
-        if self.LR:
-            df_to_scale = self.ML_df.drop(self.out_cols, axis=1).T
-            kmers_to_test = self.ML_df.shape[1]
-            self.out_cols += ['likelihood_ratio_test', 'lrt_pvalue']
-            kmers_to_keep = []
-
-            # Strandardization
-            scaler = StandardScaler()
-            scaler.fit(df_to_scale)
-            scaled_data = scaler.transform(df_to_scale)
-
-            # PCA transformation
-            pca = PCA(n_components=2)
-            pca.fit(scaled_data)
-
-            # PCA transformation
-            self.PCs = pd.DataFrame(
-                pca.transform(scaled_data),
-                index=df_to_scale.index,
-                columns=['PC_1', 'PC_2']
-                )
-            self.model_package['scaler'] = scaler
-            self.model_package['pca_model'] = pca
 
 class ref_genomes():
 
@@ -2107,6 +2086,7 @@ def modeling(args):
             # Clustering
             sys.stderr.write("\x1b[1;32mClustering the kmers for phenotype: \x1b[0m\n")
             list(map(lambda x: x.get_clusters(), Input.phenotypes_to_analyse.values()))
+            Input.pop_phenos_out_of_kmers()
       
     if not Input.jump_to or Input.jump_to in ["modeling", "modelling", "testing", "annotating", "clustering", "selection"]:
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
