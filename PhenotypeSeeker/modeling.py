@@ -1232,6 +1232,7 @@ class phenotypes():
             self.model_package = joblib.load(self.model_name_short + "_model_" + self.name + ".pkl")
         else:
             # Setting up the  dataframe
+            print(self.out_cols)
             self.ML_df.drop(self.out_cols, inplace=True, axis=1)
             self.ML_df = self.ML_df.T
 
