@@ -1355,7 +1355,7 @@ class phenotypes():
         self.out_cols += ['likelihood_ratio_test', 'lrt_pvalue']
         self.ML_df['likelihood_ratio_test'] = LRs
         self.ML_df['lrt_pvalue'] = LR_pvals
-        self.PCs.to_csv(f'PCs_{self.name}_.tsv', sep='\t')
+        self.PCA_df.to_csv(f'PCA_df_{self.name}_.tsv', sep='\t')
 
     def fit_model(self):
         if self.pred_scale == "continuous":
