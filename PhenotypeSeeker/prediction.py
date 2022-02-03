@@ -17,7 +17,7 @@ import sys
 import warnings
 import pandas as pd
 
-pkg_resources.require("numpy==1.18.1", "scikit-learn==0.22.1")
+# pkg_resources.require("numpy==1.18.1", "scikit-learn==0.22.1")
 warnings.showwarning = lambda *args, **kwargs: None
 
 import time

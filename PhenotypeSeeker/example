@@ -1,0 +1,45 @@
+import sys
+print(sys.executable)
+
+import numpy as np
+from numpy import random
+from sklearn.linear_model import LogisticRegression
+
+import sklearn
+print(sklearn.__version__)
+
+# example label values
+index = [0,1,3,1,1,1,0,0]
+weights = [6,5,4,3,2,1,9,8]
+
+# example sample arrays
+data = []
+for i in range(len(index)):
+    d = []
+    for i in range(6):
+        d.append(random.randint(50,200))
+    data.append(d)
+
+data = np.random.rand(8,5)
+
+clf1 = LogisticRegression()
+from sklearn.model_selection import (
+    RandomizedSearchCV, GridSearchCV)
+best_model = GridSearchCV(
+                    clf1, {'C': [1,10,100]}, cv=2, 
+                    scoring='balanced_accuracy'
+                    
+                    )
+fit_params={'sample_weight': weights}
+best_model.fit(data,index, **{'sample_weight': weights})
+#**fit_params)
+
+print(data)
+print(index)
+print(weights)
+print(clf1)
+
+data2 = np.random.rand(8,5)
+
+#preds = clf1.predict(data2)
+#print(preds)
