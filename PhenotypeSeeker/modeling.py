@@ -1328,34 +1328,55 @@ class phenotypes():
 
     def LR_feature_selection(self):
 
-        kmers_to_test = self.ML_df.shape[1]
+        LR_out = open('likelihood_tests.txt' , "w")
 
-        self.PCA_df = self.PCA_df[self.PCA_df.phenotype != 'NA']
-        self.PCA_df.phenotype = self.PCA_df.phenotype.apply(pd.to_numeric)
+        df_to_scale = self.ML_df.drop(self.out_cols, axis=1).T
+        kmers_to_test = self.ML_df.shape[1]
+        self.out_cols += ['likelihood_ratio_test', 'lrt_pvalue']
+        kmers_to_keep = []
+
+        # Strandardization
+        scaler = StandardScaler()
+        scaler.fit(df_to_scale)
+        scaled_data = scaler.transform(df_to_scale)
+
+        # PCA transformation
+        pca = PCA(n_components=2)
+        pca.fit(scaled_data)
+
+        # PCA transformation
+        self.PCs = pd.DataFrame(
+            pca.transform(scaled_data),
+            index=df_to_scale.index,
+            columns=['PC_1', 'PC_2']
+            )
+        self.model_package['scaler'] = scaler
+        self.model_package['pca_model'] = pca
+
+        self.PCs['phenotype'] = [
+            sample.phenotypes[self.name] for sample in Input.samples.values()
+            ]
+        self.PCs = self.PCs[self.PCs.phenotype != 'NA']
+        self.PCs.phenotype = self.PCs.phenotype.apply(pd.to_numeric)
 
         model = LogisticRegression()  
-        model.fit(self.PCA_df[['PC_1', 'PC_2', 'PC_3', 'PC_4']], self.PCA_df['phenotype'])
-        # model.fit(self.PCA_df[['PC_1']], self.PCA_df['phenotype'])
-        probs_base = model.predict_proba(self.PCA_df[['PC_1', 'PC_2', 'PC_3', 'PC_4']])
-        # probs_base = model.predict_proba(self.PCA_df[['PC_1']])
-        logloss_base = log_loss(self.PCA_df['phenotype'], probs_base, normalize=False)
+        model.fit(self.PCs[['PC_1', 'PC_2']], self.PCs['phenotype'])
+        probs_base = model.predict_proba(self.PCs[['PC_1', 'PC_2']])
+        logloss_base = log_loss(self.PCs['phenotype'], probs_base, normalize=False)
 
         LRs = []
         LR_pvals = []
-        LRdf = self.ML_df.drop(self.out_cols, axis=1).T
-        for kmer in LRdf:
-            alt_df = pd.merge(self.PCA_df[['PC_1', 'PC_2', 'PC_3', 'PC_4']], LRdf[kmer], left_index=True, right_index=True)
-            # alt_df = pd.merge(self.PCA_df[['PC_1']], LRdf[kmer], left_index=True, right_index=True)
-            model.fit(alt_df, self.PCA_df['phenotype'])
+        for kmer in df_to_scale:
+            alt_df = pd.merge(self.PCs[['PC_1', 'PC_2']], df_to_scale[kmer], left_index=True, right_index=True)
+            model.fit(alt_df, self.PCs['phenotype'])
             probs_alt = model.predict_proba(alt_df)
-            logloss_alt = log_loss(self.PCA_df['phenotype'].values, probs_alt, normalize=False)
+            logloss_alt = log_loss(self.PCs['phenotype'].values, probs_alt, normalize=False)
 
             LR = 2*(logloss_base - logloss_alt)
             LRs.append(LR)
             LR_pval = stats.chi2.sf(LR, 1)
             LR_pvals.append(LR_pval)
 
-        self.out_cols += ['likelihood_ratio_test', 'lrt_pvalue']
         self.ML_df['likelihood_ratio_test'] = LRs
         self.ML_df['lrt_pvalue'] = LR_pvals
         self.PCs.to_csv(f'PCs_{self.name}_.tsv', sep='\t')
