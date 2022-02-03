@@ -1674,7 +1674,6 @@ class phenotypes():
                 min_class = np.min(np.bincount(ML_df['phenotype'].values))
                 min_cv_inner = (min_class - math.ceil(min_class / self.n_splits_cv_outer))
             else:
-                print(y_train)
                 min_cv_inner = np.min(np.bincount(y_train))
         self.n_splits_cv_inner = np.min([min_cv_inner, n_splits_cv_inner])
 
@@ -1856,7 +1855,7 @@ class phenotypes():
                     'num_samples_w_kmer', "gene", "relative_pos", "product", "protein_id"]
             if self.LR:
                 self.out_cols += ['likelihood_ratio_test', 'lrt_pvalue']
-                self.PCA_df = pd.read_csv(f'PCs_{self.name}_.tsv', sep='\t')
+                self.PCA_df = pd.read_csv(f'PCs_{self.name}_.tsv', sep='\t', index_col=0)
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
         sys.stderr.flush()
         # k-mer clustering by genes
