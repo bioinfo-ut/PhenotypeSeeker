@@ -1261,7 +1261,7 @@ class phenotypes():
 
             if self.LR:
                 self.ML_df = pd.concat(
-                        [self.PCs[['PC_1', 'PC_2']], self.ML_df], axis=1
+                        [self.PCA_df[['PC_1', 'PC_2']], self.ML_df], axis=1
                     )
             self.ML_df.to_csv(self.name + "_MLdf.csv")
 
@@ -1855,7 +1855,7 @@ class phenotypes():
                     'num_samples_w_kmer', "gene", "relative_pos", "product", "protein_id"]
             if self.LR:
                 self.out_cols += ['likelihood_ratio_test', 'lrt_pvalue']
-                self.PCs = pd.read_csv(f'PCs_{self.name}_.tsv', sep='\t')
+                self.PCA_df = pd.read_csv(f'PCs_{self.name}_.tsv', sep='\t')
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
         sys.stderr.flush()
         # k-mer clustering by genes
