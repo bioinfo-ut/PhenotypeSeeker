@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 __author__ = "Erki Aun"
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
@@ -1460,7 +1460,7 @@ class phenotypes():
                     f"\t{self.ttest_statistics[idx]}\t{self.ttest_pvalues[idx]}\n"
                     )
             else:
-                samples_with_kmer = self.ML_df.index[:-1][self.ML_df[predictor][:-1] != "0"].tolist()
+                samples_with_kmer = self.ML_df.index[:-1][self.ML_df[predictor][:-1] != 0].tolist()
                 self.coeff_file.write(
                     f"{predictor}\t{coef}\t{len(samples_with_kmer)}\t| {' '.join(samples_with_kmer)}\n"
                     )
