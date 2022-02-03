@@ -1674,6 +1674,7 @@ class phenotypes():
                 min_class = np.min(np.bincount(ML_df['phenotype'].values))
                 min_cv_inner = (min_class - math.ceil(min_class / self.n_splits_cv_outer))
             else:
+                print(y_train)
                 min_cv_inner = np.min(np.bincount(y_train))
         self.n_splits_cv_inner = np.min([min_cv_inner, n_splits_cv_inner])
 
