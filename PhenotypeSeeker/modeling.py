@@ -1892,7 +1892,8 @@ class phenotypes():
         clusters.to_csv(f"kmers_clustered_by_genes_{self.name}.tsv", sep='\t')
 
         if self.LR:
-            clusters_by_genes = clusters[(clusters.lrt_median_pval < (self.pvalue_cutoff)) & (clusters['count'] >= int(Samples.kmer_length))]['gene']
+            #clusters_by_genes = clusters[(clusters.lrt_median_pval < (self.pvalue_cutoff)) & (clusters['count'] >= int(Samples.kmer_length))]['gene']
+            clusters_by_genes = clusters[(clusters.lrt_median_pval < (0.99)) & (clusters['count'] >= 1)]['gene']
         else:
             clusters_by_genes = clusters[clusters['count'] >= int(Samples.kmer_length)]['gene']
         if len(clusters_by_genes) > 0:
@@ -1903,7 +1904,7 @@ class phenotypes():
 
             self.ML_df = self.ML_df[kmers_to_keep]
             self.ML_df.drop(['samples_with_kmer'] + list(Input.samples.keys())).to_csv(
-                f'kmers_selected_for_modelling{self.name}_.tsv', sep='\t'
+                f'kmers_selected_for_modelling_{self.name}.tsv', sep='\t'
                 )
             self.model_package['kmers'] = self.ML_df.index
         else:
