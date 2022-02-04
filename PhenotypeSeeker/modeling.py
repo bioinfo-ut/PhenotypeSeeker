@@ -1364,7 +1364,7 @@ class phenotypes():
         self.ML_df['lrt_pvalue'] = LR_pvals
 
         self.ML_df.to_csv(f'intrmed_files/{self.name}_selection_df_2.tsv', sep='\t')
-        self.ML_df['likelihood_ratio_test', 'lrt_pvalue'].to_csv(
+        self.ML_df[['likelihood_ratio_test', 'lrt_pvalue']].to_csv(
             f'likelihood_ratio_tests_{self.name}.tsv', sep='\t'
             )
 
