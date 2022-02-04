@@ -1903,7 +1903,7 @@ class phenotypes():
             kmers_to_keep = self.ML_df['product'].isin(clusters4ML['product']) | self.ML_df['gene'].isin(clusters4ML['gene'])
 
             self.ML_df = self.ML_df[kmers_to_keep]
-            self.ML_df.drop(['samples_with_kmer'] + list(Input.samples.keys())).to_csv(
+            self.ML_df.drop(['samples_with_kmer'] + list(Input.samples.keys()), axis=1).to_csv(
                 f'kmers_selected_for_modelling_{self.name}.tsv', sep='\t'
                 )
             self.model_package['kmers'] = self.ML_df.index
