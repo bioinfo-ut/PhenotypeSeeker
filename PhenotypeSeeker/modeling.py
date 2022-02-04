@@ -967,10 +967,14 @@ class phenotypes():
         else:            
             if self.pred_scale == "binary":
                 assoc_test = 'chi2'
+                self.ML_df.index = [assoc_test, 'p-value', 'num_samples_w_kmer'] \
+                    + ['samples_with_kmer'] + list(Input.samples.keys())
             else:
                 assoc_test = 't-test'
+                self.ML_df.index = [assoc_test, 'p-value', 'num_samples_w_kmer', 
+                    '+_group_mean', '-_group_mean'] + ['samples_with_kmer'] \
+                    + list(Input.samples.keys())
             self.ML_df.columns.name = "k-mer"
-            self.ML_df.index = self.test_cols + ['samples_with_kmer'] + list(Input.samples.keys())
             self.ML_df = self.ML_df.T
             self.ML_df[assoc_test] = self.ML_df[assoc_test].apply(pd.to_numeric)
             # Limiting the kmer amount by n_kmers
