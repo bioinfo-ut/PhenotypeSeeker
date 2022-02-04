@@ -982,7 +982,7 @@ class phenotypes():
             self.model_package['pred_scale'] = self.pred_scale
 
             run(["mkdir", "-p", "intrmed_files"])
-            self.ML_df.loc[:,~['samples_with_kmers'+list(Input.samples.keys())]].to_csv(
+            self.ML_df.loc[:,~['samples_with_kmers']+list(Input.samples.keys())].to_csv(
                 f'{assoc_test}_results_{self.name}_top{self.ML_df.shape[0]}.tsv', sep='\t'
             )
             self.ML_df['samples_with_kmer'].to_csv(
