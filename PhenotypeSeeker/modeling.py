@@ -1238,7 +1238,7 @@ class phenotypes():
     def get_outputfile_names(self):
         self.summary_file = open("summary_of_" + self.model_name_short + "_analysis_" \
             + self.name + ".txt", "w")
-        self.coeff_file = open(f"Coefficients_in_" + self.model_name_short \
+        self.coeff_file = open(f"coefficients_in_" + self.model_name_short \
             + "_model_" + self.name + ".txt", "w")
         self.model_file = open(self.model_name_short + "_model_" + self.name + ".pkl", "wb")
 
@@ -1833,7 +1833,7 @@ class phenotypes():
             }
 
     def get_annotations(self):
-        if Input.jump_to == 'annotation':
+        if Input.jump_to == 'annotating':
             if self.LR:
                 self.ML_df = pd.read_csv(f"intrmed_files/{self.name}_selection_df_2.tsv", sep='\t', index_col=0)
             else:
