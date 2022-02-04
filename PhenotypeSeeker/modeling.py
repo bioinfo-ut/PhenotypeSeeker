@@ -720,6 +720,8 @@ class phenotypes():
         self.model_package['kmers4pca'] = kmers4pca.columns
         # fig.write_html(f"PCA_{self.name}.html")
 
+        self.PCA_df.to_csv(f'PCA_df_{self.name}.tsv', sep='\t')
+
     @timer
     def test_kmer_association_with_phenotype(self):
         stderr_print.currentKmerNum.value = 0
@@ -753,8 +755,8 @@ class phenotypes():
                 stderr_print.update_percent(
                     self.name, phenotypes.no_kmers_to_analyse, "tests conducted"
                     )
-            # if counter == 30000:
-            #     return kmer_dict
+            if counter == 30000:
+                return kmer_dict
             kmer = line[0].split()[0]
             kmer_vector = [int(j.split()[1].strip()) for j in line]
             if not self.real_counts:
@@ -952,12 +954,12 @@ class phenotypes():
     def set_up_dataframe(self):
         if Input.jump_to == 'selection':
             if self.pred_scale == "binary":
-                self.out_cols = ['chi2', 'p-value', 'num_samples_w_kmer']
+                self.test_cols = ['chi2', 'p-value', 'num_samples_w_kmer']
             else:
-                self.out_cols = ['t-test', 'p-value', '+_group_mean', '-_group_mean', \
+                self.test_cols = ['t-test', 'p-value', '+_group_mean', '-_group_mean', \
                     'num_samples_w_kmer']
             self.ML_df = pd.read_csv(
-                f"intrmed_files/{self.name}_pre_selection_df.tsv", sep='\t', index_col=0
+                f"intrmed_files/{self.name}_selection_df_1.tsv", sep='\t', index_col=0
                 )
             self.model_package['kmers'] = self.ML_df.index
             self.model_package['LR'] = self.LR
@@ -991,7 +993,7 @@ class phenotypes():
             self.ML_df['samples_with_kmer'].to_csv(
                 f'samples_with_kmers_{self.name}.tsv', sep='\t'
             )
-            self.ML_df.to_csv(f"intrmed_files/{self.name}_pre_selection_df.tsv", sep='\t')
+            self.ML_df.to_csv(f"intrmed_files/{self.name}_selection_df_1.tsv", sep='\t')
 
     def machine_learning_modelling(self):
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
@@ -1358,11 +1360,11 @@ class phenotypes():
             LR_pval = stats.chi2.sf(LR, 1)
             LR_pvals.append(LR_pval)
 
-        self.out_cols += ['likelihood_ratio_test', 'lrt_pvalue']
+        self.test_cols += ['likelihood_ratio_test', 'lrt_pvalue']
         self.ML_df['likelihood_ratio_test'] = LRs
         self.ML_df['lrt_pvalue'] = LR_pvals
 
-        self.ML_df.to_csv(f'intrmed_files/LR_results_{self.name}_.tsv', sep='\t')
+        self.ML_df.to_csv(f'intrmed_files/{self.name}_selection_df_2.tsv', sep='\t')
 
     def fit_model(self):
         if self.pred_scale == "continuous":
@@ -1790,6 +1792,8 @@ class phenotypes():
         checkpoint = math.ceil(total/100)
         for kmer in kmers:
             counter += 1
+            if counter == 50:
+                break
             if counter % checkpoint == 0:
                 Input.lock.acquire()
                 stderr_print.currentKmerNum.value += checkpoint
@@ -1843,26 +1847,28 @@ class phenotypes():
         self.ML_df = pd.concat([self.ML_df, self.kmer_annotations.T], axis=1)
         self.annot_cols = ["gene", "relative_pos", "product", "protein_id"]
         self.ML_df.sort_values(["chi2", "product"])[self.annot_cols].to_csv(
-            f'kmer_annotations_{self.name}_top.tsv', sep='\t'
+            f'kmer_annotations_{self.name}.tsv', sep='\t'
             )
         sys.stderr.write("\n")
         sys.stderr.flush()
 
     def get_clusters(self):
         if Input.jump_to == 'clustering':
-            self.ML_df = pd.read_csv( f"intrmed_files/{self.name}_pre_selection_df.tsv", sep='\t', index_col=0)
-            self.kmer_annotations = pd.read_csv(f'kmer_metadata_{self.name}_top{self.kmer_limit}.tsv', sep='\t', index_col=0)
+            if self.LR:
+                self.ML_df = pd.read_csv(f"intrmed_files/{self.name}_selection_df_2.tsv", sep='\t', index_col=0)
+            else:
+                self.ML_df = pd.read_csv(f"intrmed_files/{self.name}_selection_df_1.tsv", sep='\t', index_col=0)
+            self.kmer_annotations = pd.read_csv(f'intrmed_files/kmer_annotations_{self.name}.tsv', sep='\t', index_col=0)
             self.ML_df = pd.concat([self.ML_df, self.kmer_annotations], axis=1)
             self.ML_df = self.ML_df.loc[:,~self.ML_df.columns.duplicated()]
-            if self.pred_scale == "binary":
-                self.out_cols = ['chi2', 'p-value', 'num_samples_w_kmer', "gene", \
-                    "relative_pos", "product", "protein_id"]
-            else:
-                self.out_cols = ['t-test', 'p-value', '+_group_mean', '-_group_mean', \
-                    'num_samples_w_kmer', "gene", "relative_pos", "product", "protein_id"]
+            # if self.pred_scale == "binary":
+            #     self.out_cols = ['chi2', 'p-value', 'num_samples_w_kmer', "gene", \
+            #         "relative_pos", "product", "protein_id"]
+            # else:
+            #     self.out_cols = ['t-test', 'p-value', '+_group_mean', '-_group_mean', \
+            #         'num_samples_w_kmer', "gene", "relative_pos", "product", "protein_id"]
             if self.LR:
                 self.out_cols += ['likelihood_ratio_test', 'lrt_pvalue']
-                self.PCA_df = pd.read_csv(f'PCs_{self.name}_.tsv', sep='\t', index_col=0)
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
         sys.stderr.flush()
         # k-mer clustering by genes
@@ -1881,7 +1887,7 @@ class phenotypes():
                 count=('product', 'size'), chi2_mean_pval=('p-value', 'median')
                 ).reset_index()
             clusters = clusters.sort_values('count', ascending=False, ignore_index=True)
-        clusters.to_csv(f"kmer_counts_in_genes_{self.name}.tsv", sep='\t')
+        clusters.to_csv(f"kmers_clustered_by_genes_{self.name}.tsv", sep='\t')
 
         if self.LR:
             clusters_by_genes = clusters[(clusters.lrt_median_pval < (self.pvalue_cutoff)) & (clusters['count'] >= int(Samples.kmer_length))]['gene']
@@ -1895,7 +1901,7 @@ class phenotypes():
 
             self.ML_df = self.ML_df[kmers_to_keep]
             self.ML_df[self.out_cols].to_csv(
-                f'kmers_selected_for_modelling_metadata_{self.name}_.tsv', sep='\t'
+                f'kmers_selected_for_modelling{self.name}_.tsv', sep='\t'
                 )
             self.model_package['kmers'] = self.ML_df.index
         else:
