@@ -989,7 +989,7 @@ class phenotypes():
                 f'{assoc_test}_results_{self.name}_top{self.ML_df.shape[0]}.tsv', sep='\t'
             )
             self.ML_df['samples_with_kmer'].to_csv(
-                f'kmers_presence_in_samples_{self.name}.tsv', sep='\t'
+                f'samples_with_kmers_{self.name}.tsv', sep='\t'
             )
             self.ML_df.to_csv(f"intrmed_files/{self.name}_pre_selection_df.tsv", sep='\t')
 
@@ -1362,8 +1362,7 @@ class phenotypes():
         self.ML_df['likelihood_ratio_test'] = LRs
         self.ML_df['lrt_pvalue'] = LR_pvals
 
-        self.ML_df.to_csv(f'PCA_df_{self.name}_.tsv', sep='\t')
-        self.PCA_df.to_csv(f'PCA_df_{self.name}_.tsv', sep='\t')
+        self.ML_df.to_csv(f'intrmed_files/LR_results_{self.name}_.tsv', sep='\t')
 
     def fit_model(self):
         if self.pred_scale == "continuous":
@@ -1842,9 +1841,9 @@ class phenotypes():
         # Annotation
         self.get_kmer_annotations(self.ML_df.index[:-2])
         self.ML_df = pd.concat([self.ML_df, self.kmer_annotations.T], axis=1)
-        self.out_cols = self.out_cols + ["gene", "relative_pos", "product", "protein_id"]
-        self.ML_df.sort_values(["chi2", "product"])[self.out_cols].to_csv(
-            f'kmer_metadata_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
+        self.annot_cols = ["gene", "relative_pos", "product", "protein_id"]
+        self.ML_df.sort_values(["chi2", "product"])[self.annot_cols].to_csv(
+            f'kmer_annotations_{self.name}_top.tsv', sep='\t'
             )
         sys.stderr.write("\n")
         sys.stderr.flush()
