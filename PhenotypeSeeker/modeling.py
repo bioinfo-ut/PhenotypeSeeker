@@ -996,11 +996,10 @@ class phenotypes():
     def machine_learning_modelling(self):
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
         sys.stderr.flush()
-        features='k-mers'
         self.set_model()
         self.set_hyperparameters()
         self.get_ML_df()
-        self.get_outputfile_names(features)
+        self.get_outputfile_names()
         if phenotypes.n_splits_cv_outer:
             self.assert_n_splits_cv_outer(phenotypes.n_splits_cv_outer, self.ML_df)
             self.assert_n_splits_cv_inner(phenotypes.n_splits_cv_inner, self.ML_df)
@@ -1236,10 +1235,10 @@ class phenotypes():
                     self.model, self.hyper_parameters, cv=self.n_splits_cv_inner
                     )
 
-    def get_outputfile_names(self, features):
+    def get_outputfile_names(self):
         self.summary_file = open("summary_of_" + self.model_name_short + "_analysis_" \
             + self.name + ".txt", "w")
-        self.coeff_file = open(f"{features}_and_coefficients_in_" + self.model_name_short \
+        self.coeff_file = open(f"Coefficients_in_" + self.model_name_short \
             + "_model_" + self.name + ".txt", "w")
         self.model_file = open(self.model_name_short + "_model_" + self.name + ".pkl", "wb")
 
@@ -1580,11 +1579,10 @@ class phenotypes():
         self.summary_file.write("Major error rate: %s\n" % ME)           
 
     def write_model_coefficients_to_file(self):
-        if self.pca and not self.LR:
+        if self.LR:
             self.coeff_file.write(
-                "PC\tcoef._in_" + self.model_name_short + \
-                "_model\texplained_variance\texplained_variance_ratio" + \
-                "\tt-test_statistic\tt-test_pvalue\n"
+                "K-mer/PC\tcoef._in_" + self.model_name_short + \
+                "_model\tNo._of_samples_with_k-mer\tSamples_with_k-mer\n"
                 )
         else:
             self.coeff_file.write(
@@ -1605,22 +1603,9 @@ class phenotypes():
 
         for idx, predictor in enumerate(self.ML_df):
             # Get coefficients
-            if self.kernel == "rbf" or self.model_name_short == "NB":
-                coef = "NA"
-            else:
-                coef = self.ML_df.loc['coefficient', predictor]
-
-            if self.pca and not self.LR:
-                self.coeff_file.write(
-                    f"{predictor}\t{coef}\t{self.pca_explained_variance_[idx]}" + \
-                    f"\t{self.pca_explained_variance_ratio_[idx]}" + \
-                    f"\t{self.ttest_statistics[idx]}\t{self.ttest_pvalues[idx]}\n"
-                    )
-            else:
-                samples_with_kmer = self.ML_df.index[:-1][self.ML_df[predictor][:-1] != 0].tolist()
-                self.coeff_file.write(
-                    f"{predictor}\t{coef}\t{len(samples_with_kmer)}\t| {' '.join(samples_with_kmer)}\n"
-                    )
+            self.coeff_file.write(
+                f"{predictor}\t{coef}\n"
+                )
 
     def visualize_model(self):
         plt.figure(figsize=(15,10))
