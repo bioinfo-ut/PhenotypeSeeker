@@ -1256,7 +1256,7 @@ class phenotypes():
             self.ML_df = self.ML_df.T
 
             if self.LR:
-                if Input.jump_to == "clustering":
+                if Input.jump_to in ["clustering", "annotating"]:
                     self.PCA_df = pd.read_csv(f'intrmed_files/PCA_df_{self.name}.tsv', sep='\t', index_col=0)
                     self.PCA_df.index = self.PCA_df.index.map(str)
             self.ML_df['weights'] = [
