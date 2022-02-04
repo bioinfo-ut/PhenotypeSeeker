@@ -753,8 +753,8 @@ class phenotypes():
                 stderr_print.update_percent(
                     self.name, phenotypes.no_kmers_to_analyse, "tests conducted"
                     )
-            if counter == 30000:
-                return kmer_dict
+            # if counter == 30000:
+            #     return kmer_dict
             kmer = line[0].split()[0]
             kmer_vector = [int(j.split()[1].strip()) for j in line]
             if not self.real_counts:
@@ -988,7 +988,7 @@ class phenotypes():
             self.ML_df.drop(['samples_with_kmer'] + list(Input.samples.keys()), axis=1).to_csv(
                 f'{assoc_test}_results_{self.name}_top{self.ML_df.shape[0]}.tsv', sep='\t'
             )
-            self.ML_df['samples_with_kmer'].to_csv(
+            self.ML_df[['num_samples_w_kmer', 'samples_with_kmer']].to_csv(
                 f'kmers_in_samples_{self.name}.tsv', sep='\t'
             )
             self.ML_df.to_csv(f"intrmed_files/{self.name}_selection_df_1.tsv", sep='\t')
@@ -1783,8 +1783,6 @@ class phenotypes():
         checkpoint = math.ceil(total/100)
         for kmer in kmers:
             counter += 1
-            if counter == 100:
-                break
             if counter % checkpoint == 0:
                 Input.lock.acquire()
                 stderr_print.currentKmerNum.value += checkpoint
@@ -1802,6 +1800,9 @@ class phenotypes():
                 self.annotate_kmers(
                     kmer, ref_genome.name, ref_genome.contig_mapper[contig], int(pos)+1)
                 break
+        print(f'Total: {total}')
+        print(f'Checkpoint: {checkpoint}')
+        print(f'Counter: {counter}')
         self.kmer_annotations = pd.DataFrame.from_dict(self.kmer_annotations)
 
     def annotate_kmers(self, kmer, strain, contig, pos):
