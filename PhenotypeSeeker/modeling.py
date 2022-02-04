@@ -1258,7 +1258,7 @@ class phenotypes():
 
             if self.LR:
                 if Input.jump_to == "clustering":
-                    self.PCA_df = pd.read_csv(f'intrmed_files/PCA_df_{self.name}.tsv', sep='\t')
+                    self.PCA_df = pd.read_csv(f'intrmed_files/PCA_df_{self.name}.tsv', sep='\t', index_col=0)
             self.ML_df['weights'] = [
                 sample.weight for sample in Input.samples.values()
                 ]
