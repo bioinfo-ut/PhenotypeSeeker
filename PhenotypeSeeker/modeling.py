@@ -882,7 +882,6 @@ class phenotypes():
             ],
             1
             )
-        # special_mers = set(['CTTCATGGTTGAC', 'GGGTCAACCATGA', 'GGTCAACCATGAA', 'TGCCTTTCAAGAA', 'CCTTTCAAGAAAA', 'GAGAAGTCTTCAA', 'GGAGAAGTCTTCA', 'GCCTTTCAAGAAA', 'AGGAGAAGTCTTC', 'ACTACTATTGAAG', 'CTACTATTGAAGA', 'GTCTTCAATAGTA', 'CTGGAAGTTGACC', 'CTGGAAGTTGACC', 'GCTGGAAGTTGAC', 'AGACTTCTCCTCC', 'AGGAGGAGAAGTC'])
 
         chisquare, pvalue = chisquare_results
         if (self.omit_B and pvalue < self.pvalue_cutoff) or pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
@@ -953,39 +952,46 @@ class phenotypes():
     def set_up_dataframe(self):
         if Input.jump_to == 'selection':
             if self.pred_scale == "binary":
-                self.out_cols = ['chi2', 'p-value', 'num_samples_w_kmer', 'samples_with_kmer']
+                self.out_cols = ['chi2', 'p-value', 'num_samples_w_kmer']
             else:
                 self.out_cols = ['t-test', 'p-value', '+_group_mean', '-_group_mean', \
-                    'num_samples_w_kmer', 'samples_with_kmer']
+                    'num_samples_w_kmer']
             self.ML_df = pd.read_csv(
-                f"{self.name}_pre_selection_df.tsv", sep='\t', index_col=0
+                f"intrmed_files/{self.name}_pre_selection_df.tsv", sep='\t', index_col=0
                 )
             self.model_package['kmers'] = self.ML_df.index
             self.model_package['LR'] = self.LR
             self.model_package['pred_scale'] = self.pred_scale
         else:
             if self.pred_scale == "binary":
-                self.out_cols = ['chi2', 'p-value', 'num_samples_w_kmer', 'samples_with_kmer']
+                assoc_test = 'chi2'
+                self.test_cols = [assoc_test, 'p-value', 'num_samples_w_kmer']
             else:
-                self.out_cols = ['t-test', 'p-value', '+_group_mean', '-_group_mean', \
-                    'num_samples_w_kmer', 'samples_with_kmer']
+                assoc_test = 't-test'
+                self.test_cols = [assoc_test, 'p-value', '+_group_mean', '-_group_mean', \
+                    'num_samples_w_kmer']
             self.ML_df.columns.name = "k-mer"
-            self.ML_df.index = self.out_cols + list(Input.samples.keys())
+            self.ML_df.index = self.test_cols + ['samples_with_kmer'] + list(Input.samples.keys())
             self.ML_df = self.ML_df.T
-            self.ML_df[self.out_cols[0]] = self.ML_df[self.out_cols[0]].apply(pd.to_numeric)
+            self.ML_df[assoc_test] = self.ML_df[assoc_test].apply(pd.to_numeric)
             # Limiting the kmer amount by n_kmers
-            self.ML_df = self.ML_df.sort_values(self.out_cols[0], ascending=False)
-            self.ML_df[self.out_cols].to_csv(f'{self.out_cols[0]}_results_{self.name}.tsv', sep='\t')
+            self.ML_df = self.ML_df.sort_values(assoc_test, ascending=False)
+            #self.ML_df[self.test_cols].to_csv(f'{self.out_cols[0]}_results_{self.name}.tsv', sep='\t')
             if self.kmer_limit:
                 self.ML_df = self.ML_df.iloc[:self.kmer_limit, :]
-                if not Input.annotate:
-                    self.ML_df[self.out_cols].to_csv(
-                        f'kmer_metadata_{self.name}_top{self.kmer_limit}.tsv', sep='\t'
-                    )
+
             self.model_package['kmers'] = self.ML_df.index
             self.model_package['LR'] = self.LR
             self.model_package['pred_scale'] = self.pred_scale
-            self.ML_df.to_csv(f"{self.name}_pre_selection_df.tsv", sep='\t')
+
+            run(["mkdir", "-p", "intrmed_files"])
+            self.ML_df[self.test_cols].to_csv(
+                f'{assoc_test}_results_{self.name}_top{self.ML_df.shape[0]}.tsv', sep='\t'
+            )
+            self.ML_df['samples_with_kmer'].to_csv(
+                f'kmers_presence_in_samples_{self.name}.tsv', sep='\t'
+            )
+            self.ML_df.to_csv(f"intrmed_files/{self.name}_pre_selection_df.tsv", sep='\t')
 
     def machine_learning_modelling(self):
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
@@ -1241,7 +1247,7 @@ class phenotypes():
     def get_ML_df(self):
         if Input.jump_to == "modelling":
             self.ML_df = pd.read_csv(
-                self.name + "_MLdf.csv", index_col=0
+                f'intrmed_files/{self.name}_MLdf.csv', index_col=0
                 )
             self.ML_df.index = self.ML_df.index.astype(str)
             self.model_package = joblib.load(self.model_name_short + "_model_" + self.name + ".pkl")
@@ -1263,7 +1269,7 @@ class phenotypes():
                 self.ML_df = pd.concat(
                         [self.PCA_df[['PC_1', 'PC_2']], self.ML_df], axis=1
                     )
-            self.ML_df.to_csv(self.name + "_MLdf.csv")
+            self.ML_df.to_csv(f'intrmed_files/{self.name}_MLdf.csv')
 
     @timer
     def PCA_analysis(self):
@@ -1355,6 +1361,8 @@ class phenotypes():
         self.out_cols += ['likelihood_ratio_test', 'lrt_pvalue']
         self.ML_df['likelihood_ratio_test'] = LRs
         self.ML_df['lrt_pvalue'] = LR_pvals
+
+        self.ML_df.to_csv(f'PCA_df_{self.name}_.tsv', sep='\t')
         self.PCA_df.to_csv(f'PCA_df_{self.name}_.tsv', sep='\t')
 
     def fit_model(self):
@@ -1843,7 +1851,7 @@ class phenotypes():
 
     def get_clusters(self):
         if Input.jump_to == 'clustering':
-            self.ML_df = pd.read_csv(f"{self.name}_pre_selection_df.tsv", sep='\t', index_col=0)
+            self.ML_df = pd.read_csv( f"intrmed_files/{self.name}_pre_selection_df.tsv", sep='\t', index_col=0)
             self.kmer_annotations = pd.read_csv(f'kmer_metadata_{self.name}_top{self.kmer_limit}.tsv', sep='\t', index_col=0)
             self.ML_df = pd.concat([self.ML_df, self.kmer_annotations], axis=1)
             self.ML_df = self.ML_df.loc[:,~self.ML_df.columns.duplicated()]
