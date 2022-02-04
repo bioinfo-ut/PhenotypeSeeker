@@ -1255,7 +1255,7 @@ class phenotypes():
             self.model_package = joblib.load(self.model_name_short + "_model_" + self.name + ".pkl")
         else:
             # Setting up the  dataframe
-            self.ML_df.drop(self.out_cols, inplace=True, axis=1)
+            self.ML_df = self.ML_df[list(Input.samples.keys())]
             self.ML_df = self.ML_df.T
 
             self.ML_df['weights'] = [
@@ -1863,14 +1863,6 @@ class phenotypes():
             self.kmer_annotations = pd.read_csv(f'intrmed_files/kmer_annotations_{self.name}.tsv', sep='\t', index_col=0)
             self.ML_df = pd.concat([self.ML_df, self.kmer_annotations], axis=1)
             self.ML_df = self.ML_df.loc[:,~self.ML_df.columns.duplicated()]
-            # if self.pred_scale == "binary":
-            #     self.out_cols = ['chi2', 'p-value', 'num_samples_w_kmer', "gene", \
-            #         "relative_pos", "product", "protein_id"]
-            # else:
-            #     self.out_cols = ['t-test', 'p-value', '+_group_mean', '-_group_mean', \
-            #         'num_samples_w_kmer', "gene", "relative_pos", "product", "protein_id"]
-            if self.LR:
-                self.out_cols += ['likelihood_ratio_test', 'lrt_pvalue']
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
         sys.stderr.flush()
         # k-mer clustering by genes
