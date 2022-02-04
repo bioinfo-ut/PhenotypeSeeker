@@ -953,11 +953,6 @@ class phenotypes():
 
     def set_up_dataframe(self):
         if Input.jump_to == 'selection':
-            if self.pred_scale == "binary":
-                self.test_cols = ['chi2', 'p-value', 'num_samples_w_kmer']
-            else:
-                self.test_cols = ['t-test', 'p-value', '+_group_mean', '-_group_mean', \
-                    'num_samples_w_kmer']
             self.ML_df = pd.read_csv(
                 f"intrmed_files/{self.name}_selection_df_1.tsv", sep='\t', index_col=0
                 )
@@ -967,13 +962,13 @@ class phenotypes():
         else:
             if self.pred_scale == "binary":
                 assoc_test = 'chi2'
-                self.test_cols = [assoc_test, 'p-value', 'num_samples_w_kmer']
+                self.ML_df.index = [assoc_test, 'p-value', 'num_samples_w_kmer', \
+                'samples_with_kmer'] + list(Input.samples.keys())
             else:
                 assoc_test = 't-test'
-                self.test_cols = [assoc_test, 'p-value', '+_group_mean', '-_group_mean', \
-                    'num_samples_w_kmer']
+                self.ML_df.index = [assoc_test, 'p-value', '+_group_mean', '-_group_mean', \
+                    'num_samples_w_kmer', 'samples_with_kmer'] + list(Input.samples.keys())
             self.ML_df.columns.name = "k-mer"
-            self.ML_df.index = self.test_cols + ['samples_with_kmer'] + list(Input.samples.keys())
             self.ML_df = self.ML_df.T
             self.ML_df[assoc_test] = self.ML_df[assoc_test].apply(pd.to_numeric)
             # Limiting the kmer amount by n_kmers
@@ -987,7 +982,7 @@ class phenotypes():
             self.model_package['pred_scale'] = self.pred_scale
 
             run(["mkdir", "-p", "intrmed_files"])
-            self.ML_df[self.test_cols].to_csv(
+            self.ML_df.loc[:,~['samples_with_kmers'+list(Input.samples.keys())]].to_csv(
                 f'{assoc_test}_results_{self.name}_top{self.ML_df.shape[0]}.tsv', sep='\t'
             )
             self.ML_df['samples_with_kmer'].to_csv(
@@ -1792,7 +1787,7 @@ class phenotypes():
         checkpoint = math.ceil(total/100)
         for kmer in kmers:
             counter += 1
-            if counter == 50:
+            if counter == 100:
                 break
             if counter % checkpoint == 0:
                 Input.lock.acquire()
