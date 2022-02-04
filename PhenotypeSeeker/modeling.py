@@ -989,7 +989,7 @@ class phenotypes():
                 f'{assoc_test}_results_{self.name}_top{self.ML_df.shape[0]}.tsv', sep='\t'
             )
             self.ML_df['samples_with_kmer'].to_csv(
-                f'samples_with_kmers_{self.name}.tsv', sep='\t'
+                f'kmers_in_samples_{self.name}.tsv', sep='\t'
             )
             self.ML_df.to_csv(f"intrmed_files/{self.name}_selection_df_1.tsv", sep='\t')
 
@@ -1894,6 +1894,7 @@ class phenotypes():
             clusters_by_genes = clusters[(clusters.lrt_median_pval < (0.99)) & (clusters['count'] >= 1)]['gene']
         else:
             clusters_by_genes = clusters[clusters['count'] >= int(Samples.kmer_length)]['gene']
+        print(clusters_by_genes)
         if len(clusters_by_genes) > 0:
             clusters4ML = clusters.loc[clusters_by_genes.index]
             clusters4ML = clusters4ML.iloc[0:2]
