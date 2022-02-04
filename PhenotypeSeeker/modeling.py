@@ -1897,7 +1897,7 @@ class phenotypes():
         print(clusters_by_genes)
         if len(clusters_by_genes) > 0:
             clusters4ML = clusters.loc[clusters_by_genes.index]
-            clusters4ML = clusters4ML.iloc[0:2]
+            #clusters4ML = clusters4ML.iloc[0:2]
             clusters4ML.to_csv(f"kmer_clusters_selected_for_modelling_{self.name}.tsv", sep='\t')
             kmers_to_keep = self.ML_df['product'].isin(clusters4ML['product']) | self.ML_df['gene'].isin(clusters4ML['gene'])
 
