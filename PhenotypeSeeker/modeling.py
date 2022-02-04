@@ -720,7 +720,7 @@ class phenotypes():
         self.model_package['kmers4pca'] = kmers4pca.columns
         # fig.write_html(f"PCA_{self.name}.html")
 
-        self.PCA_df.to_csv(f'PCA_df_{self.name}.tsv', sep='\t')
+        self.PCA_df.to_csv(f'intrmed_files/PCA_df_{self.name}.tsv', sep='\t')
 
     @timer
     def test_kmer_association_with_phenotype(self):
@@ -953,6 +953,11 @@ class phenotypes():
 
     def set_up_dataframe(self):
         if Input.jump_to == 'selection':
+            # if self.pred_scale == "binary":
+            #     self.test_cols = ['chi2', 'p-value', 'num_samples_w_kmer']
+            # else:
+            #     self.test_cols = ['t-test', 'p-value', '+_group_mean', '-_group_mean', \
+            #         'num_samples_w_kmer']
             self.ML_df = pd.read_csv(
                 f"intrmed_files/{self.name}_selection_df_1.tsv", sep='\t', index_col=0
                 )
@@ -962,13 +967,13 @@ class phenotypes():
         else:
             if self.pred_scale == "binary":
                 assoc_test = 'chi2'
-                self.ML_df.index = [assoc_test, 'p-value', 'num_samples_w_kmer', \
-                'samples_with_kmer'] + list(Input.samples.keys())
+                self.test_cols = [assoc_test, 'p-value', 'num_samples_w_kmer']
             else:
                 assoc_test = 't-test'
-                self.ML_df.index = [assoc_test, 'p-value', '+_group_mean', '-_group_mean', \
-                    'num_samples_w_kmer', 'samples_with_kmer'] + list(Input.samples.keys())
+                self.test_cols = [assoc_test, 'p-value', '+_group_mean', '-_group_mean', \
+                    'num_samples_w_kmer']
             self.ML_df.columns.name = "k-mer"
+            self.ML_df.index = self.test_cols + ['samples_with_kmer'] + list(Input.samples.keys())
             self.ML_df = self.ML_df.T
             self.ML_df[assoc_test] = self.ML_df[assoc_test].apply(pd.to_numeric)
             # Limiting the kmer amount by n_kmers
@@ -982,8 +987,7 @@ class phenotypes():
             self.model_package['pred_scale'] = self.pred_scale
 
             run(["mkdir", "-p", "intrmed_files"])
-            drop_cols = ['samples_with_kmers']+list(Input.samples.keys())
-            self.ML_df.loc[:,~drop_cols].to_csv(
+            self.ML_df[self.test_cols].to_csv(
                 f'{assoc_test}_results_{self.name}_top{self.ML_df.shape[0]}.tsv', sep='\t'
             )
             self.ML_df['samples_with_kmer'].to_csv(
