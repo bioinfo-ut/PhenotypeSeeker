@@ -1603,6 +1603,7 @@ class phenotypes():
 
         for idx, predictor in enumerate(self.ML_df):
             # Get coefficients
+            coef = self.ML_df.loc['coefficient', predictor]
             self.coeff_file.write(
                 f"{predictor}\t{coef}\n"
                 )
