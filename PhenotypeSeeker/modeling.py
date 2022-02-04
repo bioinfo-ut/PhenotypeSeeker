@@ -1348,7 +1348,7 @@ class phenotypes():
 
         LRs = []
         LR_pvals = []
-        LRdf = self.ML_df.drop(self.out_cols, axis=1).T
+        LRdf = self.ML_df[list(Input.samples.keys())].T
         for kmer in LRdf:
             alt_df = pd.merge(self.PCA_df[['PC_1', 'PC_2']], LRdf[kmer], left_index=True, right_index=True)
             model.fit(alt_df, self.PCA_df['phenotype'])
