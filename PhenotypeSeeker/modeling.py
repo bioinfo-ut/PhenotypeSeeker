@@ -1274,6 +1274,7 @@ class phenotypes():
                 self.ML_df = pd.concat(
                         [self.PCA_df[['PC_1', 'PC_2']], self.ML_df], axis=1
                     )
+                print(self.ML_df)
             self.ML_df.to_csv(f'intrmed_files/{self.name}_MLdf.csv')
 
     # @timer
