@@ -965,7 +965,10 @@ class phenotypes():
             self.model_package['LR'] = self.LR
             self.model_package['pred_scale'] = self.pred_scale
         else:            
-            assoc_test = 'chi2' if self.pred_scale == "binary" else assoc_test = 't-test'
+            if self.pred_scale == "binary":
+                assoc_test = 'chi2'
+            else:
+                assoc_test = 't-test'
             self.ML_df.columns.name = "k-mer"
             self.ML_df.index = self.test_cols + ['samples_with_kmer'] + list(Input.samples.keys())
             self.ML_df = self.ML_df.T
