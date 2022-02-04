@@ -964,14 +964,8 @@ class phenotypes():
             self.model_package['kmers'] = self.ML_df.index
             self.model_package['LR'] = self.LR
             self.model_package['pred_scale'] = self.pred_scale
-        else:
-            if self.pred_scale == "binary":
-                assoc_test = 'chi2'
-                self.test_cols = [assoc_test, 'p-value', 'num_samples_w_kmer']
-            else:
-                assoc_test = 't-test'
-                self.test_cols = [assoc_test, 'p-value', '+_group_mean', '-_group_mean', \
-                    'num_samples_w_kmer']
+        else:            
+            assoc_test = 'chi2' if self.pred_scale == "binary" else assoc_test = 't-test'
             self.ML_df.columns.name = "k-mer"
             self.ML_df.index = self.test_cols + ['samples_with_kmer'] + list(Input.samples.keys())
             self.ML_df = self.ML_df.T
@@ -981,13 +975,12 @@ class phenotypes():
             #self.ML_df[self.test_cols].to_csv(f'{self.out_cols[0]}_results_{self.name}.tsv', sep='\t')
             if self.kmer_limit:
                 self.ML_df = self.ML_df.iloc[:self.kmer_limit, :]
-
             self.model_package['kmers'] = self.ML_df.index
             self.model_package['LR'] = self.LR
             self.model_package['pred_scale'] = self.pred_scale
 
             run(["mkdir", "-p", "intrmed_files"])
-            self.ML_df[self.test_cols].to_csv(
+            self.ML_df.drop(['samples_with_kmer'] + list(Input.samples.keys())).to_csv(
                 f'{assoc_test}_results_{self.name}_top{self.ML_df.shape[0]}.tsv', sep='\t'
             )
             self.ML_df['samples_with_kmer'].to_csv(
@@ -1902,7 +1895,7 @@ class phenotypes():
             kmers_to_keep = self.ML_df['product'].isin(clusters4ML['product']) | self.ML_df['gene'].isin(clusters4ML['gene'])
 
             self.ML_df = self.ML_df[kmers_to_keep]
-            self.ML_df[self.out_cols].to_csv(
+            self.ML_df.drop(['samples_with_kmer'] + list(Input.samples.keys())).to_csv(
                 f'kmers_selected_for_modelling{self.name}_.tsv', sep='\t'
                 )
             self.model_package['kmers'] = self.ML_df.index
