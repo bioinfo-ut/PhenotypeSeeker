@@ -1894,7 +1894,6 @@ class phenotypes():
             clusters_by_genes = clusters[(clusters.lrt_median_pval < (0.99)) & (clusters['count'] >= 1)]['gene']
         else:
             clusters_by_genes = clusters[clusters['count'] >= int(Samples.kmer_length)]['gene']
-        print(clusters_by_genes)
         if len(clusters_by_genes) > 0:
             clusters4ML = clusters.loc[clusters_by_genes.index]
             #clusters4ML = clusters4ML.iloc[0:2]
