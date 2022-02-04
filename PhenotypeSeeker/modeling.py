@@ -720,8 +720,6 @@ class phenotypes():
         self.model_package['kmers4pca'] = kmers4pca.columns
         # fig.write_html(f"PCA_{self.name}.html")
 
-        self.PCA_df.to_csv(f'intrmed_files/PCA_df_{self.name}.tsv', sep='\t')
-
     @timer
     def test_kmer_association_with_phenotype(self):
         stderr_print.currentKmerNum.value = 0
@@ -1258,6 +1256,9 @@ class phenotypes():
             self.ML_df = self.ML_df[list(Input.samples.keys())]
             self.ML_df = self.ML_df.T
 
+            if self.LR:
+                if Input.jump_to == "clustering":
+                    self.PCA_df = pd.read_csv(f'intrmed_files/PCA_df_{self.name}.tsv', sep='\t')
             self.ML_df['weights'] = [
                 sample.weight for sample in Input.samples.values()
                 ]
@@ -1273,66 +1274,66 @@ class phenotypes():
                     )
             self.ML_df.to_csv(f'intrmed_files/{self.name}_MLdf.csv')
 
-    @timer
-    def PCA_analysis(self):
+    # @timer
+    # def PCA_analysis(self):
 
-        # Strandardization
-        df_to_scale = self.ML_df.drop(['phenotype', 'weights'], axis=1)
-        scaler = StandardScaler()
-        scaler.fit(df_to_scale)
-        scaled_data = scaler.transform(df_to_scale)
+    #     # Strandardization
+    #     df_to_scale = self.ML_df.drop(['phenotype', 'weights'], axis=1)
+    #     scaler = StandardScaler()
+    #     scaler.fit(df_to_scale)
+    #     scaled_data = scaler.transform(df_to_scale)
 
-        # PCA transformation
-        pca = PCA()
-        pca.fit(scaled_data)
-        self.PCA_df = pd.DataFrame(
-            pca.transform(scaled_data),
-            index=self.ML_df.index,
-            )
-        self.PCA_df.columns = [
-            'PC_' + str(i) for i in  range(1, 1 + self.PCA_df.shape[1])
-            ]
+    #     # PCA transformation
+    #     pca = PCA()
+    #     pca.fit(scaled_data)
+    #     self.PCA_df = pd.DataFrame(
+    #         pca.transform(scaled_data),
+    #         index=self.ML_df.index,
+    #         )
+    #     self.PCA_df.columns = [
+    #         'PC_' + str(i) for i in  range(1, 1 + self.PCA_df.shape[1])
+    #         ]
 
-        del scaled_data
-        np.set_printoptions(threshold=sys.maxsize)
-        pd.set_option('display.max_rows', 1000)
+    #     del scaled_data
+    #     np.set_printoptions(threshold=sys.maxsize)
+    #     pd.set_option('display.max_rows', 1000)
 
-        # Filter PCs by explained variance
-        PCs_to_keep = pca.explained_variance_ > 0.9
-        self.PCA_df = self.PCA_df.loc[:, PCs_to_keep]
-        self.pca_components_ = pca.components_[PCs_to_keep]
-        self.pca_explained_variance_ = pca.explained_variance_[PCs_to_keep]
-        self.pca_explained_variance_ratio_ = pca.explained_variance_ratio_[PCs_to_keep]
+    #     # Filter PCs by explained variance
+    #     PCs_to_keep = pca.explained_variance_ > 0.9
+    #     self.PCA_df = self.PCA_df.loc[:, PCs_to_keep]
+    #     self.pca_components_ = pca.components_[PCs_to_keep]
+    #     self.pca_explained_variance_ = pca.explained_variance_[PCs_to_keep]
+    #     self.pca_explained_variance_ratio_ = pca.explained_variance_ratio_[PCs_to_keep]
 
-        # Conduct the t-test analysis between PCs and phenotypes
-        for idx, column in enumerate(self.PCA_df):
-            x = self.PCA_df[column][self.ML_df.phenotype == 1].values
-            y = self.PCA_df[column][self.ML_df.phenotype == 0].values
-            x_weights = self.ML_df['weights'][self.ML_df.phenotype == 1].values
-            y_weights = self.ML_df['weights'][self.ML_df.phenotype == 0].values
-            t_statistic, pvalue, mean_x, mean_y = self.t_test(
-                    x, y, x_weights, y_weights
-                )
-            # if pvalue < 0.05/self.PCA_df.shape[1]:
-            if pvalue < 0.05:
-                PCs_to_keep[idx] = True
-                self.ttest_statistics.append(t_statistic)
-                self.ttest_pvalues.append(pvalue)
-            else:
-                PCs_to_keep[idx] = False
-        self.model_package['PCs_to_keep'] = PCs_to_keep
+    #     # Conduct the t-test analysis between PCs and phenotypes
+    #     for idx, column in enumerate(self.PCA_df):
+    #         x = self.PCA_df[column][self.ML_df.phenotype == 1].values
+    #         y = self.PCA_df[column][self.ML_df.phenotype == 0].values
+    #         x_weights = self.ML_df['weights'][self.ML_df.phenotype == 1].values
+    #         y_weights = self.ML_df['weights'][self.ML_df.phenotype == 0].values
+    #         t_statistic, pvalue, mean_x, mean_y = self.t_test(
+    #                 x, y, x_weights, y_weights
+    #             )
+    #         # if pvalue < 0.05/self.PCA_df.shape[1]:
+    #         if pvalue < 0.05:
+    #             PCs_to_keep[idx] = True
+    #             self.ttest_statistics.append(t_statistic)
+    #             self.ttest_pvalues.append(pvalue)
+    #         else:
+    #             PCs_to_keep[idx] = False
+    #     self.model_package['PCs_to_keep'] = PCs_to_keep
 
-        # Filter PCs by association with phenotype
-        PCs_to_keep = PCs_to_keep[:self.PCA_df.shape[1]]
-        self.PCA_df = self.PCA_df.loc[:, PCs_to_keep]
-        self.pca_components_ = self.pca_components_[PCs_to_keep]
-        self.pca_explained_variance_ = self.pca_explained_variance_[PCs_to_keep]
-        self.pca_explained_variance_ratio_ = self.pca_explained_variance_ratio_[PCs_to_keep]        
+    #     # Filter PCs by association with phenotype
+    #     PCs_to_keep = PCs_to_keep[:self.PCA_df.shape[1]]
+    #     self.PCA_df = self.PCA_df.loc[:, PCs_to_keep]
+    #     self.pca_components_ = self.pca_components_[PCs_to_keep]
+    #     self.pca_explained_variance_ = self.pca_explained_variance_[PCs_to_keep]
+    #     self.pca_explained_variance_ratio_ = self.pca_explained_variance_ratio_[PCs_to_keep]        
 
-        # Set up the outputs
-        self.ML_df = pd.concat([self.PCA_df, self.ML_df.iloc[:,-2:]], axis=1)
-        self.model_package['scaler'] = scaler
-        self.model_package['pca_model'] = pca
+    #     # Set up the outputs
+    #     self.ML_df = pd.concat([self.PCA_df, self.ML_df.iloc[:,-2:]], axis=1)
+    #     self.model_package['scaler'] = scaler
+    #     self.model_package['pca_model'] = pca
 
     def LR_feature_selection(self):
 
@@ -1367,6 +1368,7 @@ class phenotypes():
         self.ML_df[['likelihood_ratio_test', 'lrt_pvalue']].to_csv(
             f'likelihood_ratio_tests_{self.name}.tsv', sep='\t'
             )
+        self.PCA_df.to_csv(f'intrmed_files/PCA_df_{self.name}.tsv', sep='\t')
 
     def fit_model(self):
         if self.pred_scale == "continuous":
@@ -1844,6 +1846,11 @@ class phenotypes():
             }
 
     def get_annotations(self):
+        if Input.jump_to == 'annotation':
+            if self.LR:
+                self.ML_df = pd.read_csv(f"intrmed_files/{self.name}_selection_df_2.tsv", sep='\t', index_col=0)
+            else:
+                self.ML_df = pd.read_csv(f"intrmed_files/{self.name}_selection_df_1.tsv", sep='\t', index_col=0)            
         # Annotation
         self.get_kmer_annotations(self.ML_df.index[:-2])
         self.ML_df = pd.concat([self.ML_df, self.kmer_annotations.T], axis=1)
@@ -1860,9 +1867,8 @@ class phenotypes():
                 self.ML_df = pd.read_csv(f"intrmed_files/{self.name}_selection_df_2.tsv", sep='\t', index_col=0)
             else:
                 self.ML_df = pd.read_csv(f"intrmed_files/{self.name}_selection_df_1.tsv", sep='\t', index_col=0)
-            self.kmer_annotations = pd.read_csv(f'intrmed_files/kmer_annotations_{self.name}.tsv', sep='\t', index_col=0)
+            self.kmer_annotations = pd.read_csv(f'kmer_annotations_{self.name}.tsv', sep='\t', index_col=0)
             self.ML_df = pd.concat([self.ML_df, self.kmer_annotations], axis=1)
-            self.ML_df = self.ML_df.loc[:,~self.ML_df.columns.duplicated()]
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
         sys.stderr.flush()
         # k-mer clustering by genes
