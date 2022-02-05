@@ -1800,6 +1800,10 @@ class phenotypes():
                 self.annotate_kmers(
                     kmer, ref_genome.name, ref_genome.contig_mapper[contig], int(pos)+1)
                 break
+        Input.lock.acquire()
+        stderr_print.currentKmerNum.value += counter%checkpoint
+        Input.lock.release()
+        stderr_print.update_percent(self.name, total, "kmers annotated")
         self.kmer_annotations = pd.DataFrame.from_dict(self.kmer_annotations)
 
     def annotate_kmers(self, kmer, strain, contig, pos):
