@@ -1885,15 +1885,15 @@ class phenotypes():
         clusters.to_csv(f"kmers_clustered_by_genes_{self.name}.tsv", sep='\t')
 
         if self.LR:
-            #clusters_by_genes = clusters[(clusters.lrt_median_pval < (self.pvalue_cutoff)) & (clusters['count'] >= int(Samples.kmer_length))]['gene']
-            clusters_by_genes = clusters[(clusters.lrt_median_pval < (0.99)) & (clusters['count'] >= 1)]['gene']
+            clusters_by_genes = clusters[(clusters.lrt_median_pval < (self.pvalue_cutoff)) & (clusters['count'] >= int(Samples.kmer_length))]['gene']
         else:
             clusters_by_genes = clusters[clusters['count'] >= int(Samples.kmer_length)]['gene']
         if len(clusters_by_genes) > 0:
             clusters4ML = clusters.loc[clusters_by_genes.index]
             #clusters4ML = clusters4ML.iloc[0:2]
             clusters4ML.to_csv(f"kmer_clusters_selected_for_modelling_{self.name}.tsv", sep='\t')
-            kmers_to_keep = self.ML_df['product'].isin(clusters4ML['product']) | self.ML_df['gene'].isin(clusters4ML['gene'])
+            kmers_to_keep = self.ML_df['product'].isin(clusters4ML['product'])
+            kmers_to_keep = self.ML_df.groupby('product').head(int(Samples.kmer_length))
 
             self.ML_df = self.ML_df[kmers_to_keep]
             self.ML_df.drop(['samples_with_kmer'] + list(Input.samples.keys()), axis=1).to_csv(
