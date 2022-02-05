@@ -1840,6 +1840,9 @@ class phenotypes():
                 self.ML_df = pd.read_csv(f"intrmed_files/{self.name}_selection_df_2.tsv", sep='\t', index_col=0)
             else:
                 self.ML_df = pd.read_csv(f"intrmed_files/{self.name}_selection_df_1.tsv", sep='\t', index_col=0)            
+            self.model_package['kmers'] = self.ML_df.index
+            self.model_package['LR'] = self.LR
+            self.model_package['pred_scale'] = self.pred_scale
         # Annotation
         self.get_kmer_annotations(self.ML_df.index)
         self.ML_df = pd.concat([self.ML_df, self.kmer_annotations.T], axis=1)
@@ -1858,7 +1861,9 @@ class phenotypes():
                 self.ML_df = pd.read_csv(f"intrmed_files/{self.name}_selection_df_1.tsv", sep='\t', index_col=0)
             self.kmer_annotations = pd.read_csv(f'kmer_annotations_{self.name}.tsv', sep='\t', index_col=0)
             self.ML_df = pd.concat([self.ML_df, self.kmer_annotations], axis=1)
-            print(self.ML_df)
+            self.model_package['kmers'] = self.ML_df.index
+            self.model_package['LR'] = self.LR
+            self.model_package['pred_scale'] = self.pred_scale
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
         sys.stderr.flush()
         # k-mer clustering by genes
