@@ -2089,6 +2089,8 @@ def modeling(args):
             list(map(lambda x: x.get_clusters(), Input.phenotypes_to_analyse.values()))
             Input.pop_phenos_out_of_kmers()
             sys.stderr.flush()
+        else:
+            'puudub'
       
     if not Input.jump_to or Input.jump_to in ["modeling", "modelling", "testing", "annotating", "clustering", "selection"]:
         sys.stderr.write("\x1b[1;32mGenerating the " + phenotypes.model_name_long + " model for phenotype: \x1b[0m\n")
