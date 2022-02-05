@@ -1800,9 +1800,6 @@ class phenotypes():
                 self.annotate_kmers(
                     kmer, ref_genome.name, ref_genome.contig_mapper[contig], int(pos)+1)
                 break
-        print(f'Total: {total}')
-        print(f'Checkpoint: {checkpoint}')
-        print(f'Counter: {counter}')
         self.kmer_annotations = pd.DataFrame.from_dict(self.kmer_annotations)
 
     def annotate_kmers(self, kmer, strain, contig, pos):
@@ -1840,7 +1837,7 @@ class phenotypes():
             else:
                 self.ML_df = pd.read_csv(f"intrmed_files/{self.name}_selection_df_1.tsv", sep='\t', index_col=0)            
         # Annotation
-        self.get_kmer_annotations(self.ML_df.index[:-2])
+        self.get_kmer_annotations(self.ML_df.index)
         self.ML_df = pd.concat([self.ML_df, self.kmer_annotations.T], axis=1)
         self.annot_cols = ["gene", "relative_pos", "product", "protein_id"]
         self.ML_df.dropna().sort_values(["chi2", "product"])[self.annot_cols].to_csv(
