@@ -307,6 +307,8 @@ class Samples():
         # Generates k-mer lists for every sample in names_of_samples variable 
         # (list or dict).
         run(["mkdir", "-p", "K-mer_lists"])
+        with open('myfile', "w") as outfile:
+            subprocess.run(my_cmd, stdout=outfile)
         process = run(
             ["glistmaker " + self.address + " -o K-mer_lists/" + 
             self.name + "_0" + " -w " + self.kmer_length + " -c " + self.cutoff], shell=True

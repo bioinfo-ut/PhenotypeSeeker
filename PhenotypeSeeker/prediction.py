@@ -6,7 +6,7 @@ __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
 from functools import partial
-from subprocess import call
+from subprocess import run
 from collections import OrderedDict
 from multiprocess import Pool
 import math
@@ -73,11 +73,10 @@ class Samples():
         # Takes k-mers of model as feature space and maps input samples 
         # k-mer lists to that feature space. A vector of k-mers frequency 
         # information is created for every sample.
-        call(
-            ["gmer_counter -db K-mer_lists/k-mer_db_" + pheno
-            + ".txt " + self.address + " > K-mer_lists/" + self.name 
-            + "_k-mer_counts_" + pheno  + ".txt"], shell=True
-            )
+        with open("K-mer_lists/" + self.name + "_k-mer_counts_" + pheno  + ".txt", "w") as outfile:
+            run(
+                ["gmer_counter -db K-mer_lists/k-mer_db_" + pheno
+                + ".txt " + self.address +], shell=True, stdout=outfile)
 
 
     def kmer_counts(self, pheno):
@@ -204,7 +203,7 @@ def prediction(args):
     sys.stderr.write("\x1b[1;1;101m######                     prediction                      ######\x1b[0m\n\n")
 
     Phenotypes.cufoff = args.c
-    call(["mkdir", "-p", "K-mer_lists"])
+    run(["mkdir", "-p", "K-mer_lists"])
     Input.get_samples(args.inputfile1)
     Input.get_phenos(args.inputfile2)
     
