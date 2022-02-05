@@ -76,7 +76,7 @@ class Samples():
         with open("K-mer_lists/" + self.name + "_k-mer_counts_" + pheno  + ".txt", "w") as outfile:
             run(
                 ["gmer_counter -db K-mer_lists/k-mer_db_" + pheno
-                + ".txt " + self.address +], shell=True, stdout=outfile)
+                + ".txt " + self.address], shell=True, stdout=outfile)
 
 
     def kmer_counts(self, pheno):
