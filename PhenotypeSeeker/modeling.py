@@ -307,8 +307,6 @@ class Samples():
         # Generates k-mer lists for every sample in names_of_samples variable 
         # (list or dict).
         run(["mkdir", "-p", "K-mer_lists"])
-        with open('myfile', "w") as outfile:
-            subprocess.run(my_cmd, stdout=outfile)
         process = run(
             ["glistmaker " + self.address + " -o K-mer_lists/" + 
             self.name + "_0" + " -w " + self.kmer_length + " -c " + self.cutoff], shell=True
@@ -1860,6 +1858,7 @@ class phenotypes():
                 self.ML_df = pd.read_csv(f"intrmed_files/{self.name}_selection_df_1.tsv", sep='\t', index_col=0)
             self.kmer_annotations = pd.read_csv(f'kmer_annotations_{self.name}.tsv', sep='\t', index_col=0)
             self.ML_df = pd.concat([self.ML_df, self.kmer_annotations], axis=1)
+            print(self.ML_df)
         sys.stderr.write("\x1b[1;32m\t" + self.name + ".\x1b[0m\n")
         sys.stderr.flush()
         # k-mer clustering by genes
