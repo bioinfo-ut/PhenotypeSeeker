@@ -2104,7 +2104,7 @@ def modeling(args):
                 Input.phenotypes_to_analyse.values()
             )
 
-    # call(['rm', '-rf', 'K-mer_lists'])
+    call(['rm', '-rf', 'K-mer_lists'])
 
     if args.assembly:
         sys.stderr.write("\x1b[1;32mAssembling the k-mers used in modeling of: \x1b[0m\n")
