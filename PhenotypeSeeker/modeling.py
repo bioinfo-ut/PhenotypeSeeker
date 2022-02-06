@@ -147,7 +147,7 @@ class Input():
             tol, l1_ratio, n_splits_cv_outer, kernel, n_iter,
             n_splits_cv_inner, testset_size, train_on_whole,
             logreg_solver, jump_to, pca, real_counts, LR,
-            annotate, cluster, omit_B
+            annotate, cluster, omit_B, nr_pcs
             ):
         phenotypes.alphas = cls._get_alphas(
             alphas, alpha_min, alpha_max, n_alphas
@@ -183,6 +183,7 @@ class Input():
         phenotypes.real_counts = real_counts
         phenotypes.LR = LR
         phenotypes.omit_B = omit_B
+        phenotypes.nr_pcs = nr_pcs
         
 
     @staticmethod
@@ -694,9 +695,8 @@ class phenotypes():
         scaler.fit(kmers4pca)
         scaled_data = scaler.transform(kmers4pca)
 
-        n_compo = 2
-        labels = [f"PC_{i+1}" for i in range(n_compo)]
-        pca_model = PCA(n_components=n_compo)
+        labels = [f"PC_{i+1}" for i in range(self.nr_pcs)]
+        pca_model = PCA(n_components=self.nr_pcs)
         pca_model.fit(scaled_data)
         self.PCA_df = pd.DataFrame(
             pca_model.transform(scaled_data),
@@ -1270,7 +1270,8 @@ class phenotypes():
 
             if self.LR:
                 self.ML_df = pd.concat(
-                        [self.PCA_df[['PC_1', 'PC_2']], self.ML_df], axis=1
+                        labels = [f"PC_{i+1}" for i in range(self.nr_pcs)]
+                        [self.PCA_df[labels], self.ML_df], axis=1
                     )
             self.ML_df.to_csv(f'intrmed_files/{self.name}_MLdf.csv')
 
@@ -2014,8 +2015,8 @@ def modeling(args):
         args.penalty, args.max_iter, args.tolerance, args.l1_ratio,
         args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner,
         args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to,
-        args.pca, args.real_counts, args.LR, args.annotate, args.cluster,
-        args.omit_B_correction
+        args.pca, args.real_counts, args.pop_struct, args.annotate, args.cluster,
+        args.omit_B_correction, args.nr_pcs
         )
 
     if not Input.jump_to:

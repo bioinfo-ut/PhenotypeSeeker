@@ -115,12 +115,16 @@ def Main():
         )
 
     regression_models.add_argument(
-        "--pca", action="store_true",
-        help="Apply PCA to k-mer features before fitting the model."
+        "--nr_pcs", metavar='', type=int, default=2,
+        help="Number of principal componets to use for population structure correction.\
+        Has effect only if population structure correction is specified with \
+        '--pop_struct' parameter."
         )
     regression_models.add_argument(
-        "-LR", action="store_true",
-        help="Use likelihood ratio to adjust for p-values."
+        "--pop_struct", action="store_true",
+        help="Conduct PCA and use PCs to calculate population structure adjusted p-values \
+        for k-mers (likelihood ratio tests). Top PCs are included in the final prediction \
+        model."
         )
     regression_models.add_argument(
     	"--alphas", metavar='FLOAT', type=float, nargs='+',
