@@ -4,3 +4,6 @@ mydf = pd.DataFrame().from_dict({'A': ['aa','aa','aa','bb','bb','bb','cc','cc','
 print(mydf)
 
 print(mydf.groupby('A').head(2))
+
+labels = [f"PC_{i+1}" for i in range(3)]
+print(labels)

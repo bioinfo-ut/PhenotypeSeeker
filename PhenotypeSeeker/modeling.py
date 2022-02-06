@@ -1269,8 +1269,7 @@ class phenotypes():
 
             if self.LR:
                 self.ML_df = pd.concat(
-                        labels = [f"PC_{i+1}" for i in range(self.nr_pcs)]
-                        [self.PCA_df[labels], self.ML_df], axis=1
+                        [self.PCA_df[[f"PC_{i+1}" for i in range(self.nr_pcs)]], self.ML_df], axis=1
                     )
             self.ML_df.to_csv(f'intrmed_files/{self.name}_MLdf.csv')
 
@@ -1343,7 +1342,7 @@ class phenotypes():
         self.PCA_df.phenotype = self.PCA_df.phenotype.apply(pd.to_numeric)
 
         model = LogisticRegression()  
-        model.fit(self.PCA_df[['PC_1', 'PC_2']], self.PCA_df['phenotype'])
+        model.fit(self.PCA_df[[f"PC_{i+1}" for i in range(self.nr_pcs)]], self.PCA_df['phenotype'])
         probs_base = model.predict_proba(self.PCA_df[['PC_1', 'PC_2']])
         logloss_base = log_loss(self.PCA_df['phenotype'], probs_base, normalize=False)
 
