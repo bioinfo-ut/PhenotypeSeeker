@@ -146,7 +146,7 @@ class Input():
             binary_classifier, regressor, penalty, max_iter,
             tol, l1_ratio, n_splits_cv_outer, kernel, n_iter,
             n_splits_cv_inner, testset_size, train_on_whole,
-            logreg_solver, jump_to, pca, real_counts, LR,
+            logreg_solver, jump_to, real_counts, LR,
             annotate, cluster, omit_B, nr_pcs
             ):
         phenotypes.alphas = cls._get_alphas(
@@ -179,7 +179,6 @@ class Input():
         phenotypes.n_splits_cv_inner = n_splits_cv_inner
         phenotypes.logreg_solver = cls.get_logreg_solver(
             logreg_solver)
-        phenotypes.pca = pca
         phenotypes.real_counts = real_counts
         phenotypes.LR = LR
         phenotypes.omit_B = omit_B
@@ -2015,7 +2014,7 @@ def modeling(args):
         args.penalty, args.max_iter, args.tolerance, args.l1_ratio,
         args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner,
         args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to,
-        args.pca, args.real_counts, args.pop_struct, args.annotate, args.cluster,
+        args.real_counts, args.pop_struct, args.annotate, args.cluster,
         args.omit_B_correction, args.nr_pcs
         )
 
