@@ -1884,7 +1884,7 @@ class phenotypes():
         clusters.to_csv(f"kmers_clustered_by_genes_{self.name}.tsv", sep='\t')
 
         if self.LR:
-            clusters_by_genes = clusters[(clusters.lrt_median_pval < (self.pvalue_cutoff/self.no_kmers_to_analyse)) & (clusters['count'] >= int(Samples.kmer_length))]['gene']
+            clusters_by_genes = clusters[(clusters.lrt_median_pval < (self.pvalue_cutoff/self.no_kmers_to_analyse)) & (clusters['count'] >= 8)]['gene']
         else:
             clusters_by_genes = clusters[clusters['count'] >= int(Samples.kmer_length)]['gene']
         if len(clusters_by_genes) > 0:
