@@ -74,9 +74,12 @@ class Samples():
         # k-mer lists to that feature space. A vector of k-mers frequency 
         # information is created for every sample.
         with open("K-mer_lists/" + self.name + "_k-mer_counts_" + pheno  + ".txt", "w") as outfile:
-            run(
-                ["gmer_counter -db K-mer_lists/k-mer_db_" + pheno
-                + ".txt " + self.address], shell=True, stdout=outfile)
+            while returncode != 0:
+                gmer_call = run(
+                    ["gmer_counter -db K-mer_lists/k-mer_db_" + pheno
+                    + ".txt " + self.address], shell=True, stdout=outfile)
+                returncode = gmer_call.returncode
+
 
 
     def kmer_counts(self, pheno):
