@@ -250,7 +250,7 @@ class Input():
             if phenotypes.model_name_short == "log_reg":
                 if phenotypes.penalty == "L1":
                     if logreg_solver == None:
-                        return "liblinear"
+                        return "saga"
                     elif logreg_solver in ("liblinear", "saga"):
                         return logreg_solver
                     else:
@@ -258,7 +258,7 @@ class Input():
                             "solvers in ['liblinear', 'saga'], got {}.".format(logreg_solver))
                 elif phenotypes.penalty == "L2":
                     if logreg_solver == None:
-                        return "lbfgs"
+                        return "saga"
                     elif logreg_solver in ('liblinear', 'newton-cg', 'lbfgs', 'sag', 'saga'):
                         return logreg_solver
                     else:
@@ -530,8 +530,6 @@ class stderr_print():
 
 class phenotypes():
 
-    model_package = {}
-
     pred_scale = "binary"
     real_counts = False
     LR = None
@@ -622,6 +620,8 @@ class phenotypes():
         self.model_file = None
 
         self.out_cols = None
+
+        self.model_package = {}
 
     # -------------------------------------------------------------------
     # Functions for calculating the association test results for kmers.
@@ -1193,7 +1193,7 @@ class phenotypes():
                     'min_samples_leaf': [1, 2, 4],
                     'min_samples_split': [2, 5, 10],
                     'n_estimators': [
-                        10, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200
+                        5, 10, 20, 30, 40, 50
                         ],
                     'criterion' :['gini', 'entropy']
                     }
@@ -1267,10 +1267,10 @@ class phenotypes():
             self.ML_df = self.ML_df[self.ML_df.phenotype != 'NA']
             self.ML_df.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
 
-            if self.LR:
-                self.ML_df = pd.concat(
-                        [self.PCA_df[[f"PC_{i+1}" for i in range(self.nr_pcs)]], self.ML_df], axis=1
-                    )
+            # if self.LR:
+            #     self.ML_df = pd.concat(
+            #             [self.PCA_df[[f"PC_{i+1}" for i in range(self.nr_pcs)]], self.ML_df], axis=1
+            #         )
             self.ML_df.to_csv(f'intrmed_files/{self.name}_MLdf.csv')
 
     # @timer
@@ -1884,7 +1884,7 @@ class phenotypes():
         clusters.to_csv(f"kmers_clustered_by_genes_{self.name}.tsv", sep='\t')
 
         if self.LR:
-            clusters_by_genes = clusters[(clusters.lrt_median_pval < (self.pvalue_cutoff/self.no_kmers_to_analyse)) & (clusters['count'] >= 8)]['gene']
+            clusters_by_genes = clusters[(clusters.lrt_median_pval < (self.pvalue_cutoff/self.ML_df.shape[0]/100)) & (clusters['count'] >= np.max([self.ML_df.shape[0]/100, 10]))]['gene']
         else:
             clusters_by_genes = clusters[clusters['count'] >= int(Samples.kmer_length)]['gene']
         if len(clusters_by_genes) > 0:
@@ -1924,7 +1924,6 @@ class ref_genomes():
     @classmethod
     def get_refs(cls):
         cls.db_base = "/storage8/erkia/refDB"
-        #cls.specie = "Streptococcus_pneumoniae"
         cls.specie = 'Klebsiella_pneumoniae'
         cls.index_path = os.path.join(cls.db_base, cls.specie, f"locations_{Samples.kmer_length}.index")
         with open(os.path.join(cls.db_base, cls.specie, "file_indexes.txt")) as file_idx:

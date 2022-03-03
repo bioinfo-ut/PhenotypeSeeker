@@ -74,13 +74,12 @@ class Samples():
         # k-mer lists to that feature space. A vector of k-mers frequency 
         # information is created for every sample.
         with open("K-mer_lists/" + self.name + "_k-mer_counts_" + pheno  + ".txt", "w") as outfile:
+            returncode = -1
             while returncode != 0:
                 gmer_call = run(
                     ["gmer_counter -db K-mer_lists/k-mer_db_" + pheno
                     + ".txt " + self.address], shell=True, stdout=outfile)
                 returncode = gmer_call.returncode
-
-
 
     def kmer_counts(self, pheno):
         with open(
@@ -136,12 +135,12 @@ class Phenotypes():
         pca_model = None
         scaler = None
         kmers4pca = None
-        if model_pkg['LR']:
-            pca_model = model_pkg['pca_model']
-            scaler = model_pkg['scaler']
-            kmers4pca = model_pkg['kmers4pca']
-            lr = True
-            nr_kmers += kmers4pca.shape[0]
+        # if model_pkg['LR']:
+        #     pca_model = model_pkg['pca_model']
+        #     scaler = model_pkg['scaler']
+        #     kmers4pca = model_pkg['kmers4pca']
+        #     lr = True
+        #     nr_kmers += kmers4pca.shape[0]
         return cls(
                 name, model, kmers, lr, pca_model, scaler, pred_scale,
                 kmers4pca, nr_kmers
@@ -172,14 +171,13 @@ class Phenotypes():
             columns = self.kmers
         self.matrix = pd.DataFrame(self.matrix, index=Input.samples.keys(), columns=columns)
         self.matrix.to_csv(self.name + "pred_df.csv")
-        if self.lr:
-            matrix4pca = self.matrix.iloc[:,-self.kmers4pca.shape[0]:]
-            matrix4pca = self.scaler.transform(matrix4pca)
-            PCs = self.pca_model.transform(matrix4pca)
-            self.matrix = np.concatenate(
-                [PCs, self.matrix.iloc[:, :self.kmers.shape[0]]], axis=1
-            )
-            # self.matrix = self.matrix[:, self.kmers_to_keep]
+        # if self.lr:
+        #     matrix4pca = self.matrix.iloc[:,-self.kmers4pca.shape[0]:]
+        #     matrix4pca = self.scaler.transform(matrix4pca)
+        #     PCs = self.pca_model.transform(matrix4pca)
+        #     self.matrix = np.concatenate(
+        #         [PCs, self.matrix.iloc[:, :self.kmers.shape[0]]], axis=1
+        #     )
 
     def predict(self):
 
