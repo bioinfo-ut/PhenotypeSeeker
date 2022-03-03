@@ -249,17 +249,13 @@ class Input():
         if phenotypes.pred_scale == "binary":
             if phenotypes.model_name_short == "log_reg":
                 if phenotypes.penalty == "L1":
-                    if logreg_solver == None:
-                        return "saga"
-                    elif logreg_solver in ("liblinear", "saga"):
+                    if logreg_solver in ("liblinear", "saga"):
                         return logreg_solver
                     else:
                         raise SystemExit("Logistic Regression with L1 penalty supports only " +
                             "solvers in ['liblinear', 'saga'], got {}.".format(logreg_solver))
                 elif phenotypes.penalty == "L2":
-                    if logreg_solver == None:
-                        return "saga"
-                    elif logreg_solver in ('liblinear', 'newton-cg', 'lbfgs', 'sag', 'saga'):
+                    if logreg_solver in ('liblinear', 'newton-cg', 'lbfgs', 'sag', 'saga'):
                         return logreg_solver
                     else:
                         raise SystemExit("Logistic Regression with L2 penalty supports only " +

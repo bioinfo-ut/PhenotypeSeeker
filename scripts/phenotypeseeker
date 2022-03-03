@@ -208,9 +208,9 @@ def Main():
         default) and "rbf" (Gaussian kernel)'
         )
     regression_models.add_argument(
-        "--logreg_solver", "-ls", metavar="", type=str, default=None,
+        "--logreg_solver", "-ls", metavar="", type=str, default='saga',
         help='''Algorithm to use in the logistic regression optimization problem.
-        For L2 penalty - 'liblinear', 'newton-cg', 'lbfgs' (default), 'sag' or 'saga' solvers.
+        For L2 penalty - 'saga' (default), 'liblinear', 'newton-cg', 'lbfgs', or 'sag' solvers.
         For L1 penalty - 'saga' (default) or 'liblinear' solvers.'''
         )
     regression_models.add_argument(
