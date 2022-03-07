@@ -717,22 +717,24 @@ class phenotypes():
 
     @timer
     def test_kmer_association_with_phenotype(self):
-        stderr_print.currentKmerNum.value = 0
-        stderr_print.previousPercent.value = 0
-        with Pool(Input.num_threads) as p:
-            results_from_threads = p.map(
-               self.get_kmers_tested, zip(*self.vectors_as_multiple_input)
-            )
-        sys.stderr.write("\n")
-        sys.stderr.flush()
+        if not Input.jump_to or Input.jump_to == "testing":
+            stderr_print.currentKmerNum.value = 0
+            stderr_print.previousPercent.value = 0
+            with Pool(Input.num_threads) as p:
+                results_from_threads = p.map(
+                   self.get_kmers_tested, zip(*self.vectors_as_multiple_input)
+                )
+            sys.stderr.write("\n")
+            sys.stderr.flush()
 
-        # Collecting the results and setting up the dataframe for ML
-        self.ML_df = pd.concat(
-            [pd.DataFrame.from_dict(x) for x in results_from_threads],
-            axis=1)
-        del results_from_threads
-        if self.ML_df.shape[0] == 0:
-            self.no_results.append(self.name)    
+            # Collecting the results and setting up the dataframe for ML
+            self.ML_df = pd.concat(
+                [pd.DataFrame.from_dict(x) for x in results_from_threads],
+                axis=1)
+            del results_from_threads
+            if self.ML_df.shape[0] == 0:
+                self.no_results.append(self.name)
+        x.set_up_dataframe()
 
     def get_kmers_tested(self, split_of_kmer_lists):
 
@@ -2046,7 +2048,7 @@ def modeling(args):
                 )
             Samples.get_weights()
 
-    if not Input.jump_to or Input.jump_to == "testing":
+    if not Input.jump_to or Input.jump_to in ["testing", "selection"]:
         # Analyses of phenotypes
         phenotypes.kmer_testing_setup()
         list(map(
@@ -2056,11 +2058,6 @@ def modeling(args):
         # Remove phenotypes with no results
         Input.pop_phenos_out_of_kmers()
         sys.stderr.flush()
-    if not Input.jump_to or Input.jump_to in ["testing", "selection"]:
-        list(map(
-            lambda x:  x.set_up_dataframe(), 
-            Input.phenotypes_to_analyse.values()
-            ))
         if phenotypes.LR:
             sys.stderr.write("\x1b[1;32mConducting the pca analysis for population structure correction \x1b[0m\n")
             list(map(
