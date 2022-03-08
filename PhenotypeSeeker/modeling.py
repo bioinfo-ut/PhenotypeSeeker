@@ -350,7 +350,7 @@ class Samples():
         # Feature vector loop
         lists_to_operate = [[x] for x in list(Input.samples.values())]
         for i in range(math.log(cls.no_samples, 2).__trunc__()):
-            lists_to_operate = [x[0] for x in iter_list]
+            lists_to_operate = [x[0] for x in lists_to_operate]
             lists_to_operate = [
                 lists_to_operate[j: j + 4 if len(lists_to_operate) < j + 4 else j + 2] for j in range(0, len(lists_to_operate), 2) if j + 2 <= len(lists_to_operate)
                 ]
@@ -364,7 +364,7 @@ class Samples():
 
     @classmethod
     def set_operations(cls, lists_to_operate, round, op):
-        glistcompare_args = f"glistcompare -{op} -o K-mer_lists/{lists_to_operate[0].name}_{str(round + 1)}" + 
+        glistcompare_args = f"glistcompare -{op} -o K-mer_lists/{lists_to_operate[0].name}_{str(round + 1)}" + \
             "".join([ f" K-mer_lists/{sample.name}_{str(round)}_{Samples.kmer_length}{op_code if round > 0 else ''}.list"
                 for sample in lists_to_operate])
         call(glistcompare_args, shell=True)
