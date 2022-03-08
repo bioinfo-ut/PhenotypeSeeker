@@ -355,8 +355,8 @@ class Samples():
                 lists_to_operate[j: j + 4 if len(lists_to_operate) < j + 4 else j + 2] for j in range(0, len(lists_to_operate), 2) if j + 2 <= len(lists_to_operate)
                 ]
             with Pool(Input.num_threads) as p:
-                p.map(partial(cls.lists_to_operate, round=i, op='u'), lists_to_operate)
-                p.map(partial(cls.lists_to_operate, round=i, op='i'), lists_to_operate)
+                p.map(partial(cls.set_operations, round=i, op='u'), lists_to_operate)
+                p.map(partial(cls.set_operations, round=i, op='i'), lists_to_operate)
         call([f"glistcompare -d {cls.union_output[-1]} {cls.intersec_output[-1]} -o K-mer_lists/feature_vector"], shell=True)
         call([f"mv K-mer_lists/feature_vector_13_0_diff1.list K-mer_lists/feature_vector.list"], shell=True)
         [(lambda x: call([f"rm -f {x}"], shell=True))(union) for union in cls.union_output[:-1]]
