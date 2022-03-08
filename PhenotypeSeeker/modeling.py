@@ -348,24 +348,30 @@ class Samples():
     @classmethod
     def get_feature_vector(cls):
         # Feature vector loop
-        iterate_to_union = [[x] for x in list(Input.samples.values())]
+        lists_to_operate = [[x] for x in list(Input.samples.values())]
         for i in range(math.log(cls.no_samples, 2).__trunc__()):
-            iterate_to_union = [x[0] for x in iterate_to_union]
-            iterate_to_union = [
-                iterate_to_union[j: j + 4 if len(iterate_to_union) < j + 4 else j + 2] for j in range(0, len(iterate_to_union), 2) if j + 2 <= len(iterate_to_union)
+            lists_to_operate = [x[0] for x in iter_list]
+            lists_to_operate = [
+                lists_to_operate[j: j + 4 if len(lists_to_operate) < j + 4 else j + 2] for j in range(0, len(lists_to_operate), 2) if j + 2 <= len(lists_to_operate)
                 ]
             with Pool(Input.num_threads) as p:
-                p.map(partial(cls.get_union, round=i), iterate_to_union)
-        call(["mv %s K-mer_lists/feature_vector.list" % cls.union_output[-1]], shell=True)
-        [(lambda x: call(["rm -f {}".format(x)], shell=True))(union) for union in cls.union_output[:-1]]
+                p.map(partial(cls.lists_to_operate, round=i, op='u'), lists_to_operate)
+                p.map(partial(cls.lists_to_operate, round=i, op='i'), lists_to_operate)
+        call([f"glistcompare -d {cls.union_output[-1]} {cls.intersec_output[-1]} -o K-mer_lists/feature_vector"], shell=True)
+        call([f"mv K-mer_lists/feature_vector_13_0_diff1.list K-mer_lists/feature_vector.list"], shell=True)
+        [(lambda x: call([f"rm -f {x}"], shell=True))(union) for union in cls.union_output[:-1]]
+        [(lambda x: call([f"rm -f {x}"], shell=True))(union) for union in cls.intersec_output]
 
     @classmethod
-    def get_union(cls, lists_to_unite, round):
-        glistcompare_args = "glistcompare -u -o K-mer_lists/" + lists_to_unite[0].name + "_" + str(round + 1) + \
-            "".join([ " K-mer_lists/" + sample.name + "_" + str(round) + "_" + Samples.kmer_length + ("_union" if round > 0 else "") + ".list" \
-                for sample in lists_to_unite])
+    def set_operations(cls, lists_to_operate, round, op):
+        glistcompare_args = f"glistcompare -{op} -o K-mer_lists/{lists_to_operate[0].name}_{str(round + 1)}" + 
+            "".join([ f" K-mer_lists/{sample.name}_{str(round)}_{Samples.kmer_length}{op_code if round > 0 else ''}.list"
+                for sample in lists_to_operate])
         call(glistcompare_args, shell=True)
-        cls.union_output.append("K-mer_lists/%s_%s_%s_union.list" % (lists_to_unite[0].name, str(round + 1), Samples.kmer_length))
+        if op == 'u':
+            cls.union_output.append(f"K-mer_lists/{lists_to_operate[0].name}_{str(round + 1)}_{Samples.kmer_length}{op_code}.list")
+        elif op == 'i':
+            cls.intersec_output.append(f"K-mer_lists/{lists_to_operate[0].name}_{str(round + 1)}_{Samples.kmer_length}{op_code}.list")
 
     # -------------------------------------------------------------------
     # Functions for calculating the mash distances and GSC weights for
@@ -734,7 +740,7 @@ class phenotypes():
             del results_from_threads
             if self.ML_df.shape[0] == 0:
                 self.no_results.append(self.name)
-        x.set_up_dataframe()
+        self.set_up_dataframe()
 
     def get_kmers_tested(self, split_of_kmer_lists):
 
