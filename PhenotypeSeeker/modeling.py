@@ -278,6 +278,7 @@ class Samples():
 
     mash_distances_args = []
     union_output = Manager().list()
+    intersec_output = Manager().list()
 
     def __init__(self, name, address, phenotypes, weight=1):
         self.name = name
