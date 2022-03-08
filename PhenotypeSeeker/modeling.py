@@ -278,7 +278,7 @@ class Samples():
 
     mash_distances_args = []
     union_output = Manager().list()
-    intersec_output = Manager().list()
+    intrsec_output = Manager().list()
 
     def __init__(self, name, address, phenotypes, weight=1):
         self.name = name
@@ -358,14 +358,14 @@ class Samples():
             with Pool(Input.num_threads) as p:
                 p.map(partial(cls.set_operations, round=i, op='u'), lists_to_operate)
                 p.map(partial(cls.set_operations, round=i, op='i'), lists_to_operate)
-        call([f"glistcompare -d {cls.union_output[-1]} {cls.intersec_output[-1]} -o K-mer_lists/feature_vector"], shell=True)
+        call([f"glistcompare -d {cls.union_output[-1]} {cls.intrsec_output[-1]} -o K-mer_lists/feature_vector"], shell=True)
         call([f"mv K-mer_lists/feature_vector_13_0_diff1.list K-mer_lists/feature_vector.list"], shell=True)
         [(lambda x: call([f"rm -f {x}"], shell=True))(union) for union in cls.union_output[:-1]]
-        [(lambda x: call([f"rm -f {x}"], shell=True))(union) for union in cls.intersec_output]
+        [(lambda x: call([f"rm -f {x}"], shell=True))(union) for union in cls.intrsec_output]
 
     @classmethod
     def set_operations(cls, lists_to_operate, round, op):
-        op_code = "_union" if op == 'u' else "_intersec"
+        op_code = "_union" if op == 'u' else "_intrsec"
         glistcompare_args = f"glistcompare -{op} -o K-mer_lists/{lists_to_operate[0].name}_{str(round + 1)}" + \
             "".join([ f" K-mer_lists/{sample.name}_{str(round)}_{Samples.kmer_length}{op_code if round > 0 else ''}.list"
                 for sample in lists_to_operate])
@@ -373,7 +373,7 @@ class Samples():
         if op == 'u':
             cls.union_output.append(f"K-mer_lists/{lists_to_operate[0].name}_{str(round + 1)}_{Samples.kmer_length}{op_code}.list")
         elif op == 'i':
-            cls.intersec_output.append(f"K-mer_lists/{lists_to_operate[0].name}_{str(round + 1)}_{Samples.kmer_length}{op_code}.list")
+            cls.intrsec_output.append(f"K-mer_lists/{lists_to_operate[0].name}_{str(round + 1)}_{Samples.kmer_length}{op_code}.list")
 
     # -------------------------------------------------------------------
     # Functions for calculating the mash distances and GSC weights for
