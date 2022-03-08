@@ -364,7 +364,7 @@ class Samples():
 
     @classmethod
     def set_operations(cls, lists_to_operate, round, op):
-        op_code = "_union" if op == 'u' else "_intersec" if op == 'i'
+        op_code = "_union" if op == 'u' else "_intersec"
         glistcompare_args = f"glistcompare -{op} -o K-mer_lists/{lists_to_operate[0].name}_{str(round + 1)}" + \
             "".join([ f" K-mer_lists/{sample.name}_{str(round)}_{Samples.kmer_length}{op_code if round > 0 else ''}.list"
                 for sample in lists_to_operate])
