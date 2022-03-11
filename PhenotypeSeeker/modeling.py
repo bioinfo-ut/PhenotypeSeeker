@@ -294,10 +294,10 @@ class Samples():
         sample_phenotypes = {}
         name, address, cluster, phenotype_list = \
             line.split()[0], line.split()[1], line.split()[2], line.split()[3:]
+        print(phenotype_list)
         if not all(x == "0" or x == "1" or x == "NA" for x in phenotype_list):
             phenotypes.pred_scale = "continuous"
         for i,j in zip(cls.phenotypes, phenotype_list):
-            print(i, j)
             sample_phenotypes[i] = j
         return cls(name, address, sample_phenotypes, cluster)
 
