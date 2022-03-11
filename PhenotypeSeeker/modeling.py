@@ -1032,7 +1032,7 @@ class phenotypes():
                 print(self.kmer_coefs_in_splits.sort_values())
         maxocc = np.max(self.kmer_coefs_in_splits)
         print(maxocc)
-        print(self.kmer_coefs_in_splits.loc[maxocc])
+        print(self.kmer_coefs_in_splits[self.kmer_coefs_in_splits == maxocc].index.values)
 
         
         if phenotypes.n_splits_cv_outer:
