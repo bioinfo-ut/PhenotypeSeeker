@@ -1615,9 +1615,9 @@ class phenotypes():
                 self.ML_df.loc['coefficient'] = \
                     self.model_fitted.best_estimator_.coef_[0]
 
-        for kmer, coef in coefs:
+        for kmer, coef in coefs.items():
             # Get coefficients
-            self.kmer_coefs_in_splits['kmer'] += 1
+            self.kmer_coefs_in_splits[kmer] += 1
             coeff_file.write(
                 f"{predictor}\t{coef}\n"
                 )
