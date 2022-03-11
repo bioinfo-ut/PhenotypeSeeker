@@ -281,12 +281,11 @@ class Samples():
     union_output = Manager().list()
     intrsec_output = Manager().list()
 
-    def __init__(self, name, address, phenotypes, cluster, weight=1):
+    def __init__(self, name, address, phenotypes, weight=1):
         self.name = name
         self.address = address
         self.phenotypes = phenotypes
         self.weight = weight
-        self.cluster = cluster
 
         Samples.no_samples += 1
 
@@ -294,7 +293,7 @@ class Samples():
     def from_inputfile(cls, line):
         sample_phenotypes = {}
         name, address, cluster, phenotype_list = \
-            line.split()[0], line.split()[1], line.split()[2], line.split()[3:]
+            line.split()[0], line.split()[1], line.split()[2:]
         if not all(x == "0" or x == "1" or x == "NA" for x in phenotype_list):
             phenotypes.pred_scale = "continuous"
         for i,j in zip(cls.phenotypes, phenotype_list):
