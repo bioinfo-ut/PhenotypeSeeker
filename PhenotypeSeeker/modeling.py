@@ -1033,6 +1033,9 @@ class phenotypes():
                 self.predict(self.X_train, self.y_train, self.metrics_dict_train)
                 self.summary_file.write('\nTest set:\n')
                 self.predict(self.X_test, self.y_test, self.metrics_dict_test)
+                self.coeff_file = open(f"coefficients_in_{self.model_name_short}" \
+                    + f"_model_{self.name}_split_{fold}.txt", "w")
+                self.write_model_coefficients_to_file()
             
             if not self.train_on_whole:
                 self.summary_file.write(
@@ -1592,7 +1595,7 @@ class phenotypes():
         else:
             self.coeff_file.write(
                 "K-mer\tcoef._in_" + self.model_name_short + \
-                "_model\tNo._of_samples_with_k-mer\tSamples_with_k-mer\n"
+                "_model\n"
                 )
         self.ML_df.drop(['phenotype', 'weights'], axis=1, inplace=True)
         if self.model_name_short == "linreg":
