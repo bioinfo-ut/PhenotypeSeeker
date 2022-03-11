@@ -1009,7 +1009,8 @@ class phenotypes():
         self.get_ML_df()
         self.get_outputfile_names()
         bp_groups = self.ML_df.groupby('cluster')
-        print(bp_groups)
+        for group in bp_groups:
+            print(group)
         self.kmer_coefs_in_splits = pd.Series(np.zeros(self.ML_df.shape[1]-3), index=self.ML_df.columns[:-3])
         if phenotypes.n_splits_cv_outer:
             self.assert_n_splits_cv_outer(phenotypes.n_splits_cv_outer, self.ML_df)
