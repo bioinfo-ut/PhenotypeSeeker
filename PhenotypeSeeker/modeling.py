@@ -1015,14 +1015,20 @@ class phenotypes():
             if group[0] == "NA":
                 continue
             if 0 in group[1]['phenotype'].unique() and 1 in group[1]['phenotype'].unique():
+                print(group[1])
                 groups4feature_selection += 1
                 self.X_train, self.weights_train, self.y_train = self.split_df(group[1])
+
+                min_cv_inner = np.min(np.bincount(self.y_train))
+                self.n_splits_cv_inner = np.min([min_cv_inner, phenotypes.n_splits_cv_inner])
+
                 self.get_best_model()
                 self.fit_model()
+
                 fold_coeffs = open(f"coefficients_in_{self.model_name_short}" \
-                    + f"_model_{self.name}_split_{fold}.txt", "w")
+                    + f"_model_{self.name}_{group[0]}.txt", "w")
                 self.write_model_coefficients_to_file(fold_coeffs)
-                numpy.set_printoptions(threshold=sys.maxsize)
+                np.set_printoptions(threshold=sys.maxsize)
                 print(self.kmer_coefs_in_splits)
 
         
@@ -1626,7 +1632,7 @@ class phenotypes():
         elif self.model_name_short in ("RF", "DT"):
             coefs = pd.Series(
                 self.model_fitted.best_estimator_.feature_importances_,
-                index=self.ML_df.columns[:-2]
+                index=self.ML_df.columns[:-3]
                 )
         elif self.model_name_short in ("SVM", "log_reg"):
             if self.kernel != "rbf":
