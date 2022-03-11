@@ -77,7 +77,7 @@ class Input():
         with open(inputfilename) as inputfile:
             header = inputfile.readline().split()
             Samples.phenotypes = header[3:]
-            Samples.no_phenotypes = len(header)-2
+            Samples.no_phenotypes = len(header)-3
             for pheno in Samples.phenotypes:
                 try:
                     float(pheno)
@@ -292,11 +292,12 @@ class Samples():
     @classmethod
     def from_inputfile(cls, line):
         sample_phenotypes = {}
-        name, address, phenotype_list = \
+        name, address, cluster, phenotype_list = \
             line.split()[0], line.split()[1], line.split()[2], line.split()[3:]
         if not all(x == "0" or x == "1" or x == "NA" for x in phenotype_list):
             phenotypes.pred_scale = "continuous"
         for i,j in zip(cls.phenotypes, phenotype_list):
+            print(i, j)
             sample_phenotypes[i] = j
         return cls(name, address, sample_phenotypes, cluster)
 
