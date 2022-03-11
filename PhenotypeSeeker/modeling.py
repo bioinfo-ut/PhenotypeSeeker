@@ -1008,12 +1008,24 @@ class phenotypes():
         self.set_hyperparameters()
         self.get_ML_df()
         self.get_outputfile_names()
+
+        self.kmer_coefs_in_splits = pd.Series(np.zeros(self.ML_df.shape[1]-3), index=self.ML_df.columns[:-3])
+        groups4feature_selection = 0
         for group in self.ML_df.groupby('cluster'):
             if group[0] == "NA":
                 continue
-            if 0 in group[1]['phenotype'] and 1 in group[1]['phenotype']:
-                print(group)
-        self.kmer_coefs_in_splits = pd.Series(np.zeros(self.ML_df.shape[1]-3), index=self.ML_df.columns[:-3])
+            if 0 in group[1]['phenotype'].unique() and 1 in group[1]['phenotype'].unique():
+                groups4feature_selection += 1
+                self.X_train, self.weights_train, self.y_train = self.split_df(group[1])
+                self.get_best_model()
+                self.fit_model()
+                fold_coeffs = open(f"coefficients_in_{self.model_name_short}" \
+                    + f"_model_{self.name}_split_{fold}.txt", "w")
+                self.write_model_coefficients_to_file(fold_coeffs)
+                numpy.set_printoptions(threshold=sys.maxsize)
+                print(self.kmer_coefs_in_splits)
+
+        
         if phenotypes.n_splits_cv_outer:
             self.assert_n_splits_cv_outer(phenotypes.n_splits_cv_outer, self.ML_df)
             self.assert_n_splits_cv_inner(phenotypes.n_splits_cv_inner, self.ML_df)
@@ -1043,9 +1055,6 @@ class phenotypes():
                 self.predict(self.X_train, self.y_train, self.metrics_dict_train)
                 self.summary_file.write('\nTest set:\n')
                 self.predict(self.X_test, self.y_test, self.metrics_dict_test)
-                fold_coeffs = open(f"coefficients_in_{self.model_name_short}" \
-                    + f"_model_{self.name}_split_{fold}.txt", "w")
-                self.write_model_coefficients_to_file(fold_coeffs)
             
             if not self.train_on_whole:
                 self.summary_file.write(
@@ -1137,7 +1146,7 @@ class phenotypes():
 
     @classmethod
     def split_df(cls, df):
-        return df.iloc[:,0:-2], df.iloc[:,-2], df.iloc[:,-1]
+        return df.iloc[:,0:-3], df.iloc[:,-3], df.iloc[:,-2]
 
     def set_model(self):
         if self.pred_scale == "continuous":
