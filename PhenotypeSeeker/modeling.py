@@ -1031,8 +1031,9 @@ class phenotypes():
                 np.set_printoptions(threshold=sys.maxsize)
                 print(self.kmer_coefs_in_splits.sort_values())
         maxocc = np.max(self.kmer_coefs_in_splits)
-        print(maxocc)
-        print(self.kmer_coefs_in_splits[self.kmer_coefs_in_splits == maxocc].index.values)
+        selected_features = self.kmer_coefs_in_splits[self.kmer_coefs_in_splits == maxocc].index.values
+        print(selected_features)
+        self.ML_df = self.ML_df[selected_features]
 
         
         if phenotypes.n_splits_cv_outer:
