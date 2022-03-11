@@ -1597,23 +1597,24 @@ class phenotypes():
                 "K-mer\tcoef._in_" + self.model_name_short + \
                 "_model\n"
                 )
-        self.ML_df.drop(['phenotype', 'weights'], axis=1, inplace=True)
+        # self.ML_df.drop(['phenotype', 'weights'], axis=1, inplace=True)
         if self.model_name_short == "linreg":
             self.ML_df.loc['coefficient'] = \
                 self.model_fitted.best_estimator_.coef_
         elif self.model_name_short in ("RF", "DT"):
-            self.ML_df.loc['coefficient'] = \
-                self.model_fitted.best_estimator_.feature_importances_
+            coefs = pd.Series(
+                self.model_fitted.best_estimator_.feature_importances_,
+                index=self.ML_df.columns
+                )
         elif self.model_name_short in ("SVM", "log_reg"):
             if self.kernel != "rbf":
                 self.ML_df.loc['coefficient'] = \
                     self.model_fitted.best_estimator_.coef_[0]
 
-        for idx, predictor in enumerate(self.ML_df):
+        for kmer, coef in coefs:
             # Get coefficients
-            coef = self.ML_df.loc['coefficient', predictor]
             self.coeff_file.write(
-                f"{predictor}\t{coef}\n"
+                f"{kmer}\t{coef}\n"
                 )
 
     def visualize_model(self):
