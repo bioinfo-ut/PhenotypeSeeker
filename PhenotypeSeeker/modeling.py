@@ -1007,7 +1007,7 @@ class phenotypes():
         self.set_hyperparameters()
         self.get_ML_df()
         self.get_outputfile_names()
-        self.kmer_coefs_in_splits = pd.Series(np.zeros(self.ML_df.shape[1]), index=self.ML_df.splits)
+        self.kmer_coefs_in_splits = pd.Series(np.zeros(self.ML_df.shape[1]-2), index=self.ML_df.columns[:-2])
         if phenotypes.n_splits_cv_outer:
             self.assert_n_splits_cv_outer(phenotypes.n_splits_cv_outer, self.ML_df)
             self.assert_n_splits_cv_inner(phenotypes.n_splits_cv_inner, self.ML_df)
@@ -1608,7 +1608,7 @@ class phenotypes():
         elif self.model_name_short in ("RF", "DT"):
             coefs = pd.Series(
                 self.model_fitted.best_estimator_.feature_importances_,
-                index=self.ML_df.columns
+                index=self.ML_df.columns[:-2]
                 )
         elif self.model_name_short in ("SVM", "log_reg"):
             if self.kernel != "rbf":
