@@ -76,7 +76,6 @@ class Input():
         Samples.take_logs = take_logs
         with open(inputfilename) as inputfile:
             header = inputfile.readline().split()
-            #Samples.phenotypes = header[2:]
             Samples.phenotypes = header[3:]
             Samples.no_phenotypes = len(header)-2
             for pheno in Samples.phenotypes:
@@ -281,11 +280,12 @@ class Samples():
     union_output = Manager().list()
     intrsec_output = Manager().list()
 
-    def __init__(self, name, address, phenotypes, weight=1):
+    def __init__(self, name, address, phenotypes, cluster, weight=1):
         self.name = name
         self.address = address
         self.phenotypes = phenotypes
         self.weight = weight
+        self.cluster = cluster
 
         Samples.no_samples += 1
 
@@ -293,12 +293,12 @@ class Samples():
     def from_inputfile(cls, line):
         sample_phenotypes = {}
         name, address, phenotype_list = \
-            line.split()[0], line.split()[1], line.split()[2:]
+            line.split()[0], line.split()[1], line.split()[2], line.split()[3:]
         if not all(x == "0" or x == "1" or x == "NA" for x in phenotype_list):
             phenotypes.pred_scale = "continuous"
         for i,j in zip(cls.phenotypes, phenotype_list):
             sample_phenotypes[i] = j
-        return cls(name, address, sample_phenotypes)
+        return cls(name, address, sample_phenotypes, cluster)
 
     def get_kmer_lists(self):
         # Makes "K-mer_lists" directory where all lists are stored.
@@ -1618,7 +1618,8 @@ class phenotypes():
 
         for kmer, coef in coefs.items():
             # Get coefficients
-            self.kmer_coefs_in_splits[kmer] += 1
+            if coef != 0:
+                self.kmer_coefs_in_splits[kmer] += 1
             coeff_file.write(
                 f"{kmer}\t{coef}\n"
                 )
