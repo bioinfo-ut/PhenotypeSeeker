@@ -294,7 +294,6 @@ class Samples():
         sample_phenotypes = {}
         name, address, cluster, phenotype_list = \
             line.split()[0], line.split()[1], line.split()[2], line.split()[3:]
-        print(phenotype_list)
         if not all(x == "0" or x == "1" or x == "NA" for x in phenotype_list):
             phenotypes.pred_scale = "continuous"
         for i,j in zip(cls.phenotypes, phenotype_list):
@@ -1280,7 +1279,7 @@ class phenotypes():
                 sample.phenotypes[self.name] for sample in Input.samples.values()
                 ]
             self.ML_df['cluster'] = [
-                sample.cluster[self.name] for sample in Input.samples.values()
+                sample.cluster for sample in Input.samples.values()
                 ]
             self.ML_df = self.ML_df[self.ML_df.phenotype != 'NA']
             self.ML_df.phenotype = self.ML_df.phenotype.apply(pd.to_numeric)
