@@ -1636,7 +1636,7 @@ class phenotypes():
         elif self.model_name_short in ("RF", "DT"):
             coefs = pd.Series(
                 self.model_fitted.best_estimator_.feature_importances_,
-                index=self.ML_df.columns[:-3]
+                index=self.ML_df.columns[:-2]
                 )
         elif self.model_name_short in ("SVM", "log_reg"):
             if self.kernel != "rbf":
