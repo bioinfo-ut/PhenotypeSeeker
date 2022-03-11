@@ -1014,7 +1014,7 @@ class phenotypes():
         for group in self.ML_df.groupby('cluster'):
             if group[0] == "NA":
                 continue
-            if 0 in group[1]['phenotype'].unique() and 1 in group[1]['phenotype'].unique():
+            if min(np.bincount(group[1]['phenotype'].values)) > 1 and len(np.bincount(group[1]['phenotype'].values) > 1:
                 print(group[1])
                 groups4feature_selection += 1
                 self.X_train, self.weights_train, self.y_train = self.split_df(group[1])
