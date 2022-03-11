@@ -76,7 +76,8 @@ class Input():
         Samples.take_logs = take_logs
         with open(inputfilename) as inputfile:
             header = inputfile.readline().split()
-            Samples.phenotypes = header[2:]
+            #Samples.phenotypes = header[2:]
+            Samples.phenotypes = header[3:]
             Samples.no_phenotypes = len(header)-2
             for pheno in Samples.phenotypes:
                 try:
@@ -1619,7 +1620,7 @@ class phenotypes():
             # Get coefficients
             self.kmer_coefs_in_splits[kmer] += 1
             coeff_file.write(
-                f"{predictor}\t{coef}\n"
+                f"{kmer}\t{coef}\n"
                 )
 
     def visualize_model(self):
