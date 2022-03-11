@@ -1033,7 +1033,7 @@ class phenotypes():
         maxocc = np.max(self.kmer_coefs_in_splits)
         selected_features = self.kmer_coefs_in_splits[self.kmer_coefs_in_splits == maxocc].index.values
         print(selected_features)
-        self.ML_df = self.ML_df[selected_features + ['weights', 'phenotype']]
+        self.ML_df = self.ML_df[selected_features.add(['weights', 'phenotype'])]
         print(self.ML_df)
 
         
