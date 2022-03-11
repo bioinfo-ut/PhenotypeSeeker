@@ -1030,6 +1030,9 @@ class phenotypes():
                 self.write_model_coefficients_to_file(fold_coeffs)
                 np.set_printoptions(threshold=sys.maxsize)
                 print(self.kmer_coefs_in_splits.sort_values())
+        maxocc = np.max(self.kmer_coefs_in_splits)
+        print(maxocc)
+        print(self.kmer_coefs_in_splits.loc[maxocc])
 
         
         if phenotypes.n_splits_cv_outer:
