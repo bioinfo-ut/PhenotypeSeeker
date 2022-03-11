@@ -1017,7 +1017,7 @@ class phenotypes():
             if min(np.bincount(group[1]['phenotype'].values)) > 1 and len(np.bincount(group[1]['phenotype'].values)) > 1:
                 print(group[1])
                 groups4feature_selection += 1
-                self.X_train, self.weights_train, self.y_train = self.split_df(group[1])
+                self.X_train, self.weights_train, self.y_train = self.split_df(group[1].drop('cluster', axis=1))
 
                 min_cv_inner = np.min(np.bincount(self.y_train))
                 self.n_splits_cv_inner = np.min([min_cv_inner, phenotypes.n_splits_cv_inner])
@@ -1033,7 +1033,7 @@ class phenotypes():
         maxocc = np.max(self.kmer_coefs_in_splits)
         selected_features = self.kmer_coefs_in_splits[self.kmer_coefs_in_splits == maxocc].index.values
         print(selected_features)
-        self.ML_df = self.ML_df[selected_features]
+        self.ML_df = self.ML_df[selected_features + ['weights', 'phenotype']]
         print(self.ML_df)
 
         
@@ -1156,7 +1156,7 @@ class phenotypes():
 
     @classmethod
     def split_df(cls, df):
-        return df.iloc[:,0:-3], df.iloc[:,-3], df.iloc[:,-2]
+        return df.iloc[:,0:-2], df.iloc[:,-2], df.iloc[:,-1]
 
     def set_model(self):
         if self.pred_scale == "continuous":
