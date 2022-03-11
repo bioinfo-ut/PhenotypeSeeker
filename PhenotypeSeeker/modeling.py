@@ -627,6 +627,8 @@ class phenotypes():
 
         self.model_package = {}
 
+        self.kmer_coefs_in_splits = pd.Series()
+
     # -------------------------------------------------------------------
     # Functions for calculating the association test results for kmers.
     @classmethod
@@ -1005,6 +1007,7 @@ class phenotypes():
         self.set_hyperparameters()
         self.get_ML_df()
         self.get_outputfile_names()
+        self.kmer_coefs_in_splits = pd.Series(np.zeros(self.ML_df.shape[1]), index=self.ML_df.splits)
         if phenotypes.n_splits_cv_outer:
             self.assert_n_splits_cv_outer(phenotypes.n_splits_cv_outer, self.ML_df)
             self.assert_n_splits_cv_inner(phenotypes.n_splits_cv_inner, self.ML_df)
@@ -1016,6 +1019,7 @@ class phenotypes():
             for train_index, test_index in kf.split(
                     self.ML_df, self.ML_df['phenotype'].values
                 ):
+                print(self.kmer_coefs_in_splits)
                 fold += 1
                 self.ML_df_train, self.ML_df_test = (
                     self.ML_df.iloc[train_index], self.ML_df.iloc[test_index]
@@ -1033,9 +1037,9 @@ class phenotypes():
                 self.predict(self.X_train, self.y_train, self.metrics_dict_train)
                 self.summary_file.write('\nTest set:\n')
                 self.predict(self.X_test, self.y_test, self.metrics_dict_test)
-                self.coeff_file = open(f"coefficients_in_{self.model_name_short}" \
+                fold_coeffs = open(f"coefficients_in_{self.model_name_short}" \
                     + f"_model_{self.name}_split_{fold}.txt", "w")
-                self.write_model_coefficients_to_file()
+                self.write_model_coefficients_to_file(fold_coeffs)
             
             if not self.train_on_whole:
                 self.summary_file.write(
@@ -1116,7 +1120,7 @@ class phenotypes():
         self.model_package['model'] = self.model_fitted
         joblib.dump(self.model_package, self.model_file)
 
-        self.write_model_coefficients_to_file()
+        self.write_model_coefficients_to_file(self.coeff_file)
 
         if phenotypes.model_name_long == "decision tree":
             self.visualize_model()
@@ -1586,7 +1590,7 @@ class phenotypes():
         ME = np.mean(metrics_dict["ME"]).round(2)
         self.summary_file.write("Major error rate: %s\n" % ME)           
 
-    def write_model_coefficients_to_file(self):
+    def write_model_coefficients_to_file(self, coeff_file):
         if self.LR:
             self.coeff_file.write(
                 "K-mer/PC\tcoef._in_" + self.model_name_short + \
@@ -1597,23 +1601,25 @@ class phenotypes():
                 "K-mer\tcoef._in_" + self.model_name_short + \
                 "_model\n"
                 )
+        # self.ML_df.drop(['phenotype', 'weights'], axis=1, inplace=True)
         if self.model_name_short == "linreg":
             self.ML_df.loc['coefficient'] = \
                 self.model_fitted.best_estimator_.coef_
         elif self.model_name_short in ("RF", "DT"):
             coefs = pd.Series(
                 self.model_fitted.best_estimator_.feature_importances_,
-                index=self.ML_df.columns[:-2]
+                index=self.ML_df.columns
                 )
         elif self.model_name_short in ("SVM", "log_reg"):
             if self.kernel != "rbf":
                 self.ML_df.loc['coefficient'] = \
                     self.model_fitted.best_estimator_.coef_[0]
-        print(coefs)
+
         for kmer, coef in coefs:
             # Get coefficients
-            self.coeff_file.write(
-                f"{kmer}\t{coef}\n"
+            self.kmer_coefs_in_splits['kmer'] += 1
+            coeff_file.write(
+                f"{predictor}\t{coef}\n"
                 )
 
     def visualize_model(self):
