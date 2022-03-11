@@ -76,8 +76,7 @@ class Input():
         Samples.take_logs = take_logs
         with open(inputfilename) as inputfile:
             header = inputfile.readline().split()
-            #Samples.phenotypes = header[2:]
-            Samples.phenotypes = header[3:]
+            Samples.phenotypes = header[2:]
             Samples.no_phenotypes = len(header)-2
             for pheno in Samples.phenotypes:
                 try:
