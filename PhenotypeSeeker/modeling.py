@@ -1011,7 +1011,7 @@ class phenotypes():
         for group in self.ML_df.groupby('cluster'):
             if group[0] == "NA":
                 continue
-            if 0 in group[1]['cluster'] and 1 in group[1]['cluster']:
+            if 0 in group[1]['phenotype'] and 1 in group[1]['phenotype']:
                 print(group)
         self.kmer_coefs_in_splits = pd.Series(np.zeros(self.ML_df.shape[1]-3), index=self.ML_df.columns[:-3])
         if phenotypes.n_splits_cv_outer:
