@@ -1014,7 +1014,7 @@ class phenotypes():
         for group in self.ML_df.groupby('cluster'):
             if group[0] == "NA":
                 continue
-            if min(np.bincount(group[1]['phenotype'].values)) > 1 and len(np.bincount(group[1]['phenotype'].values) > 1:
+            if min(np.bincount(group[1]['phenotype'].values)) > 1 and len(np.bincount(group[1]['phenotype'].values)) > 1:
                 print(group[1])
                 groups4feature_selection += 1
                 self.X_train, self.weights_train, self.y_train = self.split_df(group[1])
@@ -1029,7 +1029,7 @@ class phenotypes():
                     + f"_model_{self.name}_{group[0]}.txt", "w")
                 self.write_model_coefficients_to_file(fold_coeffs)
                 np.set_printoptions(threshold=sys.maxsize)
-                print(self.kmer_coefs_in_splits)
+                print(self.kmer_coefs_in_splits.sort_values())
 
         
         if phenotypes.n_splits_cv_outer:
@@ -1043,7 +1043,7 @@ class phenotypes():
             for train_index, test_index in kf.split(
                     self.ML_df, self.ML_df['phenotype'].values
                 ):
-                print(self.kmer_coefs_in_splits)
+                print(self.kmer_coefs_in_splits.sort_values())
                 fold += 1
                 self.ML_df_train, self.ML_df_test = (
                     self.ML_df.iloc[train_index], self.ML_df.iloc[test_index]
