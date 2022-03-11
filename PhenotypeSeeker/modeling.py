@@ -1597,20 +1597,19 @@ class phenotypes():
                 "K-mer\tcoef._in_" + self.model_name_short + \
                 "_model\n"
                 )
-        # self.ML_df.drop(['phenotype', 'weights'], axis=1, inplace=True)
         if self.model_name_short == "linreg":
             self.ML_df.loc['coefficient'] = \
                 self.model_fitted.best_estimator_.coef_
         elif self.model_name_short in ("RF", "DT"):
             coefs = pd.Series(
                 self.model_fitted.best_estimator_.feature_importances_,
-                index=self.ML_df.columns
+                index=self.ML_df.columns[:-2]
                 )
         elif self.model_name_short in ("SVM", "log_reg"):
             if self.kernel != "rbf":
                 self.ML_df.loc['coefficient'] = \
                     self.model_fitted.best_estimator_.coef_[0]
-
+        print(coefs)
         for kmer, coef in coefs:
             # Get coefficients
             self.coeff_file.write(
