@@ -1034,6 +1034,7 @@ class phenotypes():
         selected_features = self.kmer_coefs_in_splits[self.kmer_coefs_in_splits == maxocc].index.values
         print(selected_features)
         self.ML_df = self.ML_df[selected_features]
+        print(self.ML_df)
 
         
         if phenotypes.n_splits_cv_outer:
@@ -1047,7 +1048,6 @@ class phenotypes():
             for train_index, test_index in kf.split(
                     self.ML_df, self.ML_df['phenotype'].values
                 ):
-                print(self.kmer_coefs_in_splits.sort_values())
                 fold += 1
                 self.ML_df_train, self.ML_df_test = (
                     self.ML_df.iloc[train_index], self.ML_df.iloc[test_index]
