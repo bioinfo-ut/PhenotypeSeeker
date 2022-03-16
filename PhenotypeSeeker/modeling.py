@@ -291,13 +291,13 @@ class Samples():
     @classmethod
     def from_inputfile(cls, line):
         sample_phenotypes = {}
-        name, address, cluster, phenotype_list = \
+        name, address, phenotype_list = \
             line.split()[0], line.split()[1], line.split()[2:]
         if not all(x == "0" or x == "1" or x == "NA" for x in phenotype_list):
             phenotypes.pred_scale = "continuous"
         for i,j in zip(cls.phenotypes, phenotype_list):
             sample_phenotypes[i] = j
-        return cls(name, address, sample_phenotypes, cluster)
+        return cls(name, address, sample_phenotypes)
 
     def get_kmer_lists(self):
         # Makes "K-mer_lists" directory where all lists are stored.
