@@ -1606,15 +1606,17 @@ class phenotypes():
             self.ML_df.loc['coefficient'] = \
                 self.model_fitted.best_estimator_.coef_
         elif self.model_name_short in ("RF", "DT"):
+            feat_importances = self.model_fitted.best_estimator_.feature_importances_
             coefs = pd.Series(
-                self.model_fitted.best_estimator_.feature_importances_,
-                index=self.ML_df.columns[:-2]
+                feat_importances,
+                index=self.ML_df.columns[:len(feat_importances)]
                 )
-        elif self.model_name_short in ("SVM", "log_reg"):
-            if self.kernel != "rbf":
-                self.ML_df.loc['coefficient'] = \
-                    self.model_fitted.best_estimator_.coef_[0]
-
+        elif self.model_name_short == "log_reg":
+            feat_importances = self.model_fitted.best_estimator_.coef_[0]
+            coefs = pd.Series(
+                feat_importances,
+                index=self.ML_df.columns[:len(feat_importances)]
+                )
         for kmer, coef in coefs.items():
             # Get coefficients
             if coef != 0:
