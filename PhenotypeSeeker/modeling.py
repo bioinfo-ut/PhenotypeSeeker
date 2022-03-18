@@ -1601,7 +1601,7 @@ class phenotypes():
                 "K-mer\tcoef._in_" + self.model_name_short + \
                 "_model\n"
                 )
-        # self.ML_df.drop(['phenotype', 'weights'], axis=1, inplace=True)
+        self.ML_df.drop(['phenotype', 'weights'], axis=1, inplace=True)
         if self.model_name_short == "linreg":
             self.ML_df.loc['coefficient'] = \
                 self.model_fitted.best_estimator_.coef_
