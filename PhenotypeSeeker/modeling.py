@@ -627,8 +627,6 @@ class phenotypes():
 
         self.model_package = {}
 
-        self.kmer_coefs_in_splits = pd.Series()
-
     # -------------------------------------------------------------------
     # Functions for calculating the association test results for kmers.
     @classmethod
@@ -730,14 +728,21 @@ class phenotypes():
         if not Input.jump_to or Input.jump_to == "testing":
             stderr_print.currentKmerNum.value = 0
             stderr_print.previousPercent.value = 0
+            pvals = np.ones(self.kmer_limit)
             with Pool(Input.num_threads) as p:
                 results_from_threads = p.map(
-                   self.get_kmers_tested, zip(*self.vectors_as_multiple_input)
-                )
+                    partial(
+                        self.get_kmers_tested, pvals
+                        ),
+                        zip(*self.vectors_as_multiple_input)
+                    )
             sys.stderr.write("\n")
             sys.stderr.flush()
 
             # Collecting the results and setting up the dataframe for ML
+            for dict_to_df in results_from_threads:
+                df_to_concat = pd.DataFrame.from_dict(dict_to_df)
+
             self.ML_df = pd.concat(
                 [pd.DataFrame.from_dict(x) for x in results_from_threads],
                 axis=1)
@@ -746,7 +751,7 @@ class phenotypes():
                 self.no_results.append(self.name)
         self.set_up_dataframe()
 
-    def get_kmers_tested(self, split_of_kmer_lists):
+    def get_kmers_tested(self, split_of_kmer_lists, pval_list):
 
         kmer_dict = dict()
         counter = 0
@@ -769,7 +774,7 @@ class phenotypes():
 
             if phenotypes.pred_scale == "binary":
                 test_results = self.conduct_chi_squared_test(
-                        kmer, kmer_vector,
+                        kmer, kmer_vector, pvals
                         Input.samples.values()
                     )
             elif phenotypes.pred_scale == "continuous":
@@ -856,7 +861,7 @@ class phenotypes():
         return t, pvalue, wtd_mean_x, wtd_mean_y
 
     def conduct_chi_squared_test(
-        self, kmer, kmer_vector, samples
+        self, kmer, kmer_vector, pval_list, samples
         ):
         samples_w_kmer = []
         (
@@ -891,7 +896,13 @@ class phenotypes():
             )
 
         chisquare, pvalue = chisquare_results
-        if (self.omit_B and pvalue < self.pvalue_cutoff) or pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
+        if self.kmer_limit and pvalue < pvals[-1]:
+            Input.lock.acquire()
+            pvals = np.insert(np.searchsorted(pvals, pval, side='right'), pvalue)[kmer_limit]
+            Input.lock.release()
+            print(pvals)
+            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
+        elif (self.omit_B and pvalue < self.pvalue_cutoff) or pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
             return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
         else:
             return None
@@ -1007,7 +1018,6 @@ class phenotypes():
         self.set_hyperparameters()
         self.get_ML_df()
         self.get_outputfile_names()
-        self.kmer_coefs_in_splits = pd.Series(np.zeros(self.ML_df.shape[1]-2), index=self.ML_df.columns[:-2])
         if phenotypes.n_splits_cv_outer:
             self.assert_n_splits_cv_outer(phenotypes.n_splits_cv_outer, self.ML_df)
             self.assert_n_splits_cv_inner(phenotypes.n_splits_cv_inner, self.ML_df)
@@ -1019,7 +1029,6 @@ class phenotypes():
             for train_index, test_index in kf.split(
                     self.ML_df, self.ML_df['phenotype'].values
                 ):
-                print(self.kmer_coefs_in_splits)
                 fold += 1
                 self.ML_df_train, self.ML_df_test = (
                     self.ML_df.iloc[train_index], self.ML_df.iloc[test_index]
@@ -1037,9 +1046,6 @@ class phenotypes():
                 self.predict(self.X_train, self.y_train, self.metrics_dict_train)
                 self.summary_file.write('\nTest set:\n')
                 self.predict(self.X_test, self.y_test, self.metrics_dict_test)
-                fold_coeffs = open(f"coefficients_in_{self.model_name_short}" \
-                    + f"_model_{self.name}_split_{fold}.txt", "w")
-                self.write_model_coefficients_to_file(fold_coeffs)
             
             if not self.train_on_whole:
                 self.summary_file.write(
@@ -1590,7 +1596,7 @@ class phenotypes():
         ME = np.mean(metrics_dict["ME"]).round(2)
         self.summary_file.write("Major error rate: %s\n" % ME)           
 
-    def write_model_coefficients_to_file(self, coeff_file):
+    def write_model_coefficients_to_file(self):
         if self.LR:
             self.coeff_file.write(
                 "K-mer/PC\tcoef._in_" + self.model_name_short + \
@@ -1601,7 +1607,6 @@ class phenotypes():
                 "K-mer\tcoef._in_" + self.model_name_short + \
                 "_model\n"
                 )
-        self.ML_df.drop(['phenotype', 'weights'], axis=1, inplace=True)
         if self.model_name_short == "linreg":
             self.ML_df.loc['coefficient'] = \
                 self.model_fitted.best_estimator_.coef_
@@ -1619,8 +1624,6 @@ class phenotypes():
                 )
         for kmer, coef in coefs.items():
             # Get coefficients
-            if coef != 0:
-                self.kmer_coefs_in_splits[kmer] += 1
             coeff_file.write(
                 f"{kmer}\t{coef}\n"
                 )
