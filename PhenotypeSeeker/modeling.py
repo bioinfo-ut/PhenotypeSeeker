@@ -751,7 +751,7 @@ class phenotypes():
                 self.no_results.append(self.name)
         self.set_up_dataframe()
 
-    def get_kmers_tested(self, split_of_kmer_lists, pval_list):
+    def get_kmers_tested(self, split_of_kmer_lists, pvals):
 
         kmer_dict = dict()
         counter = 0
@@ -774,7 +774,7 @@ class phenotypes():
 
             if phenotypes.pred_scale == "binary":
                 test_results = self.conduct_chi_squared_test(
-                        kmer, kmer_vector, pvals
+                        kmer, kmer_vector, pvals,
                         Input.samples.values()
                     )
             elif phenotypes.pred_scale == "continuous":
@@ -861,7 +861,7 @@ class phenotypes():
         return t, pvalue, wtd_mean_x, wtd_mean_y
 
     def conduct_chi_squared_test(
-        self, kmer, kmer_vector, pval_list, samples
+        self, kmer, kmer_vector, pvals, samples
         ):
         samples_w_kmer = []
         (
