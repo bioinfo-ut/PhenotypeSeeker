@@ -625,6 +625,8 @@ class phenotypes():
         self.out_cols = None
 
         self.model_package = {}
+
+        self.shm
         self.shmname = None
 
     # -------------------------------------------------------------------
@@ -657,7 +659,7 @@ class phenotypes():
                 ]
                 )
         pvals_ori = np.ones(self.kmer_limit)
-        shm = shared_memory.SharedMemory(create=True, size=pvals_ori.nbytes)
+        self.shm = shared_memory.SharedMemory(create=True, size=pvals_ori.nbytes)
         pvals = np.ndarray(pvals_ori.shape, dtype=pvals_ori.dtype, buffer=shm.buf)
         pvals[:] = pvals_ori[:]
         self.shmname = shm.name
@@ -749,6 +751,8 @@ class phenotypes():
                 [pd.DataFrame.from_dict(x) for x in results_from_threads],
                 axis=1)
             del results_from_threads
+            self.shm.close()
+            self.shm.unlink()
             if self.ML_df.shape[0] == 0:
                 self.no_results.append(self.name)
         self.set_up_dataframe()
