@@ -732,7 +732,7 @@ class phenotypes():
             shm = shared_memory.SharedMemory(create=True, size=pvals_ori.nbytes)
             pvals = np.ndarray(pvals_ori.shape, dtype=pvals_ori.dtype, buffer=shm.buf)
             pvals[:] = pvals_ori[:]
-            self.shmname = self.shm.name
+            self.shmname = shm.name
 
             stderr_print.currentKmerNum.value = 0
             stderr_print.previousPercent.value = 0
