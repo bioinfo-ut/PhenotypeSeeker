@@ -656,6 +656,11 @@ class phenotypes():
                 for i in range(Input.num_threads)
                 ]
                 )
+        pvals_ori = np.ones(self.kmer_limit)
+        shm = shared_memory.SharedMemory(create=True, size=pvals_ori.nbytes)
+        pvals = np.ndarray(pvals_ori.shape, dtype=pvals_ori.dtype, buffer=shm.buf)
+        pvals[:] = pvals_ori[:]
+        self.shmname = shm.name
 
     def getPCAmatrix(self):
         stderr_print.currentKmerNum.value = 0
@@ -728,10 +733,6 @@ class phenotypes():
         if not Input.jump_to or Input.jump_to == "testing":
             stderr_print.currentKmerNum.value = 0
             stderr_print.previousPercent.value = 0
-            pvals_ori = np.ones(self.kmer_limit)
-            shm = shared_memory.SharedMemory(create=True, size=pvals_ori.nbytes)
-            pvals = np.ndarray(pvals_ori.shape, dtype=pvals_ori.dtype, buffer=shm.buf)
-            pvals[:] = pvals_ori[:]
             with Pool(Input.num_threads) as p:
                 results_from_threads = p.map(partial(
                         self.get_kmers_tested, shmname=shm.name),
@@ -755,6 +756,8 @@ class phenotypes():
     def get_kmers_tested(self, split_of_kmer_lists, shmname=None):
         kmer_dict = dict()
         counter = 0
+        existing_shm = shared_memory.SharedMemory(name=shmname)
+        pvals = np.ndarray((self.kmer_limit,), dtype=np.float, buffer=existing_shm.buf)
 
         for line in zip(*[open(item) for item in split_of_kmer_lists]):
             counter += 1
@@ -771,9 +774,6 @@ class phenotypes():
             kmer_vector = [int(j.split()[1].strip()) for j in line]
             if not self.real_counts:
                 kmer_vector = [1 if count > 0 else 0 for count in kmer_vector]
-
-            existing_shm = shared_memory.SharedMemory(name=shmname)
-            pvals = np.ndarray((self.kmer_limit,), dtype=np.float, buffer=existing_shm.buf)
 
             if phenotypes.pred_scale == "binary":
                 test_results = self.conduct_chi_squared_test(
