@@ -729,10 +729,10 @@ class phenotypes():
     def test_kmer_association_with_phenotype(self):
         if not Input.jump_to or Input.jump_to == "testing":
             pvals_ori = np.ones(self.kmer_limit)
-            self.shm = shared_memory.SharedMemory(create=True, size=pvals_ori.nbytes)
+            shm = shared_memory.SharedMemory(create=True, size=pvals_ori.nbytes)
             pvals = np.ndarray(pvals_ori.shape, dtype=pvals_ori.dtype, buffer=shm.buf)
             pvals[:] = pvals_ori[:]
-            self.shmname = shm.name
+            self.shmname = self.shm.name
 
             stderr_print.currentKmerNum.value = 0
             stderr_print.previousPercent.value = 0
@@ -752,8 +752,8 @@ class phenotypes():
                 [pd.DataFrame.from_dict(x) for x in results_from_threads],
                 axis=1)
             del results_from_threads
-            self.shm.close()
-            self.shm.unlink()
+            shm.close()
+            shm.unlink()
             if self.ML_df.shape[0] == 0:
                 self.no_results.append(self.name)
         self.set_up_dataframe()
