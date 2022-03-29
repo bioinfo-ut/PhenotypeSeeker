@@ -23,7 +23,7 @@ import glob
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor, _DistanceMatrix
 from collections import OrderedDict
 from ete3 import Tree
-from multiprocess import Manager, Pool, Value, Array
+from multiprocess import Manager, Pool, Value, shared_memory
 from scipy import stats
 from sklearn.decomposition import PCA
 from sklearn.ensemble import RandomForestClassifier
@@ -733,7 +733,7 @@ class phenotypes():
             pvals = np.ndarray(pvals_ori.shape, dtype=pvals_ori.dtype, buffer=shm.buf)
             pvals[:] = pvals_ori[:]
             self.shmname = shm.name
-            
+
             stderr_print.currentKmerNum.value = 0
             stderr_print.previousPercent.value = 0
             with Pool(Input.num_threads) as p:
