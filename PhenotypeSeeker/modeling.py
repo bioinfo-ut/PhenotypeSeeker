@@ -732,7 +732,7 @@ class phenotypes():
             with Pool(Input.num_threads) as p:
                 results_from_threads = p.map(
                     partial(
-                        self.get_kmers_tested, pvals
+                        self.get_kmers_tested, pvals=pvals
                         ),
                         zip(*self.vectors_as_multiple_input)
                     )
@@ -752,7 +752,7 @@ class phenotypes():
         self.set_up_dataframe()
 
     def get_kmers_tested(self, split_of_kmer_lists, pvals):
-
+        print(f"ID: {id(pvals)}")
         kmer_dict = dict()
         counter = 0
 
@@ -898,7 +898,7 @@ class phenotypes():
         chisquare, pvalue = chisquare_results
         if self.kmer_limit and pvalue < pvals[-1]:
             Input.lock.acquire()
-            pvals = np.insert(np.searchsorted(pvals, pval, side='right'), pvalue)[kmer_limit]
+            pvals[:] = np.insert(pvals, np.searchsorted(pvals, pvalue, side='right'), pvalue)[:kmer_limit]
             Input.lock.release()
             print(pvals)
             return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
