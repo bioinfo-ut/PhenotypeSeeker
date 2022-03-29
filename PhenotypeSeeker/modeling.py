@@ -568,7 +568,6 @@ class phenotypes():
 
     # PCA
     pca = None
-
     no_results = []
 
     def __init__(self, name):
@@ -626,6 +625,7 @@ class phenotypes():
         self.out_cols = None
 
         self.model_package = {}
+        self.pvals = Array('d', np.ones(self.kmer_limit))
 
     # -------------------------------------------------------------------
     # Functions for calculating the association test results for kmers.
@@ -731,9 +731,7 @@ class phenotypes():
             pvals = np.ones(self.kmer_limit)
             with Pool(Input.num_threads) as p:
                 results_from_threads = p.map(
-                    partial(
-                        self.get_kmers_tested, pvals=pvals
-                        ),
+                        self.get_kmers_tested,
                         zip(*self.vectors_as_multiple_input)
                     )
             sys.stderr.write("\n")
@@ -751,7 +749,7 @@ class phenotypes():
                 self.no_results.append(self.name)
         self.set_up_dataframe()
 
-    def get_kmers_tested(self, split_of_kmer_lists, pvals):
+    def get_kmers_tested(self, split_of_kmer_lists):
         print(f"ID: {id(pvals)}")
         kmer_dict = dict()
         counter = 0
@@ -774,7 +772,7 @@ class phenotypes():
 
             if phenotypes.pred_scale == "binary":
                 test_results = self.conduct_chi_squared_test(
-                        kmer, kmer_vector, pvals,
+                        kmer, kmer_vector,
                         Input.samples.values()
                     )
             elif phenotypes.pred_scale == "continuous":
@@ -861,7 +859,7 @@ class phenotypes():
         return t, pvalue, wtd_mean_x, wtd_mean_y
 
     def conduct_chi_squared_test(
-        self, kmer, kmer_vector, pvals, samples
+        self, kmer, kmer_vector, samples
         ):
         samples_w_kmer = []
         (
@@ -896,11 +894,11 @@ class phenotypes():
             )
 
         chisquare, pvalue = chisquare_results
-        if self.kmer_limit and pvalue < pvals[-1]:
+        if self.kmer_limit and pvalue < self.pvals[-1]:
             Input.lock.acquire()
-            pvals[:] = np.insert(pvals, np.searchsorted(pvals, pvalue, side='right'), pvalue)[:kmer_limit]
+            self.pvals[:] = np.insert(self.pvals, np.searchsorted(self.pvals, pvalue, side='right'), pvalue)[:self.kmer_limit]
             Input.lock.release()
-            print(pvals)
+            print(self.pvals)
             return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
         elif (self.omit_B and pvalue < self.pvalue_cutoff) or pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
             return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
