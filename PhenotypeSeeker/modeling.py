@@ -23,7 +23,7 @@ import glob
 from Bio.Phylo.TreeConstruction import DistanceTreeConstructor, _DistanceMatrix
 from collections import OrderedDict
 from ete3 import Tree
-from multiprocess import Manager, Pool, Value
+from multiprocess import Manager, Pool, Value, Array
 from scipy import stats
 from sklearn.decomposition import PCA
 from sklearn.ensemble import RandomForestClassifier
@@ -625,7 +625,7 @@ class phenotypes():
         self.out_cols = None
 
         self.model_package = {}
-        self.pvals = Array('d', np.ones(self.kmer_limit))
+        self.shmname = None
 
     # -------------------------------------------------------------------
     # Functions for calculating the association test results for kmers.
@@ -728,10 +728,13 @@ class phenotypes():
         if not Input.jump_to or Input.jump_to == "testing":
             stderr_print.currentKmerNum.value = 0
             stderr_print.previousPercent.value = 0
-            pvals = np.ones(self.kmer_limit)
+            pvals_ori = np.ones(self.kmer_limit)
+            shm = shared_memory.SharedMemory(create=True, size=pvals_ori.nbytes)
+            pvals = np.ndarray(pvals_ori.shape, dtype=pvals_ori.dtype, buffer=shm.buf)
+            pvals[:] = pvals_ori[:]
             with Pool(Input.num_threads) as p:
-                results_from_threads = p.map(
-                        self.get_kmers_tested,
+                results_from_threads = p.map(partial(
+                        self.get_kmers_tested, shmname=shm.name),
                         zip(*self.vectors_as_multiple_input)
                     )
             sys.stderr.write("\n")
@@ -749,8 +752,7 @@ class phenotypes():
                 self.no_results.append(self.name)
         self.set_up_dataframe()
 
-    def get_kmers_tested(self, split_of_kmer_lists):
-        print(f"ID: {id(pvals)}")
+    def get_kmers_tested(self, split_of_kmer_lists, shmname=None):
         kmer_dict = dict()
         counter = 0
 
@@ -770,9 +772,12 @@ class phenotypes():
             if not self.real_counts:
                 kmer_vector = [1 if count > 0 else 0 for count in kmer_vector]
 
+            existing_shm = shared_memory.SharedMemory(name=shmname)
+            pvals = np.ndarray((self.kmer_limit,), dtype=np.float, buffer=existing_shm.buf)
+
             if phenotypes.pred_scale == "binary":
                 test_results = self.conduct_chi_squared_test(
-                        kmer, kmer_vector,
+                        kmer, kmer_vector, pvals,
                         Input.samples.values()
                     )
             elif phenotypes.pred_scale == "continuous":
@@ -859,7 +864,7 @@ class phenotypes():
         return t, pvalue, wtd_mean_x, wtd_mean_y
 
     def conduct_chi_squared_test(
-        self, kmer, kmer_vector, samples
+        self, kmer, kmer_vector, pvals, samples
         ):
         samples_w_kmer = []
         (
@@ -894,11 +899,11 @@ class phenotypes():
             )
 
         chisquare, pvalue = chisquare_results
-        if self.kmer_limit and pvalue < self.pvals[-1]:
+        if self.kmer_limit and pvalue < pvals[-1]:
             Input.lock.acquire()
-            self.pvals[:] = np.insert(self.pvals, np.searchsorted(self.pvals, pvalue, side='right'), pvalue)[:self.kmer_limit]
+            pvals[:] = np.insert(pvals, np.searchsorted(pvals, pvalue, side='right'), pvalue)[:self.kmer_limit]
             Input.lock.release()
-            print(self.pvals)
+            print(pvals)
             return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
         elif (self.omit_B and pvalue < self.pvalue_cutoff) or pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
             return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
