@@ -626,7 +626,7 @@ class phenotypes():
 
         self.model_package = {}
 
-        self.shm
+        self.shm = None
         self.shmname = None
 
     # -------------------------------------------------------------------
@@ -658,11 +658,6 @@ class phenotypes():
                 for i in range(Input.num_threads)
                 ]
                 )
-        pvals_ori = np.ones(self.kmer_limit)
-        self.shm = shared_memory.SharedMemory(create=True, size=pvals_ori.nbytes)
-        pvals = np.ndarray(pvals_ori.shape, dtype=pvals_ori.dtype, buffer=shm.buf)
-        pvals[:] = pvals_ori[:]
-        self.shmname = shm.name
 
     def getPCAmatrix(self):
         stderr_print.currentKmerNum.value = 0
@@ -733,6 +728,12 @@ class phenotypes():
     @timer
     def test_kmer_association_with_phenotype(self):
         if not Input.jump_to or Input.jump_to == "testing":
+            pvals_ori = np.ones(self.kmer_limit)
+            self.shm = shared_memory.SharedMemory(create=True, size=pvals_ori.nbytes)
+            pvals = np.ndarray(pvals_ori.shape, dtype=pvals_ori.dtype, buffer=shm.buf)
+            pvals[:] = pvals_ori[:]
+            self.shmname = shm.name
+            
             stderr_print.currentKmerNum.value = 0
             stderr_print.previousPercent.value = 0
             with Pool(Input.num_threads) as p:
