@@ -1133,7 +1133,7 @@ class phenotypes():
         self.model_package['model'] = self.model_fitted
         joblib.dump(self.model_package, self.model_file)
 
-        self.write_model_coefficients_to_file(self.coeff_file)
+        self.write_model_coefficients_to_file()
 
         if phenotypes.model_name_long == "decision tree":
             self.visualize_model()
@@ -1631,7 +1631,7 @@ class phenotypes():
                 )
         for kmer, coef in coefs.items():
             # Get coefficients
-            coeff_file.write(
+            self.coeff_file.write(
                 f"{kmer}\t{coef}\n"
                 )
 
