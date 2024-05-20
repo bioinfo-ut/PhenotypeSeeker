@@ -358,6 +358,10 @@ class Samples():
         [(lambda x: call(["rm -f {}".format(x)], shell=True))(union) for union in cls.union_output[:-1]]
 
     @classmethod
+    def get_phenontype_specific(cls, feature_vector):
+        
+
+    @classmethod
     def get_union(cls, lists_to_unite, round):
         glistcompare_args = "glistcompare -u -o K-mer_lists/" + lists_to_unite[0].name + "_" + str(round + 1) + \
             "".join([ " K-mer_lists/" + sample.name + "_" + str(round) + "_" + Samples.kmer_length + ("_union" if round > 0 else "") + ".list" \
