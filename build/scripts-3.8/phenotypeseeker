@@ -1,0 +1,334 @@
+#!python
+# -*- coding: utf-8 -*-
+
+__author__ = "Erki Aun"
+__version__ = "1.0.2"
+__maintainer__ = "Erki Aun"
+__email__ = "erki.aun@ut.ee"
+
+import argparse
+import sys
+import math
+
+from PhenotypeSeeker import modeling, prediction, annotation
+
+class _HelpAction(argparse._HelpAction):
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        parser.print_help()
+        # retrieve subparsers from parser
+        subparsers_actions = [
+            action for action in parser._actions
+            if isinstance(action, argparse._SubParsersAction)]
+        for subparsers_action in subparsers_actions:
+            for choice, subparser in subparsers_action.choices.items():
+                print("\n\n\n'{}' SPECIFIC USAGE AND OPTIONS:".format(
+                    choice.upper()
+                    ))
+                print(subparser.format_help())      
+        parser.exit()
+
+def Main():
+    parser = argparse.ArgumentParser(
+    	usage="PhenotypeSeeker {modeling,prediction,annotation} <INPUTFILE(S)> [OPTIONS]",
+    	add_help=False
+    	)
+    parser._positionals.title = 'Required option'
+
+    other2 = parser.add_argument_group('Other options')
+    other2.add_argument('--version', action='version', version='%(prog)s 1.0.2')
+    other2.add_argument(
+    	'-h', '--help', action=_HelpAction,
+    	help='Show this help message and exit.'
+    	)
+
+    subparsers = parser.add_subparsers()
+
+    parser_a = subparsers.add_parser(
+    	'modeling', help='Generate phenotype prediction model',
+    	usage='PhenotypeSeeker modeling INPUTFILE [OPTIONS]', add_help=False
+    	)
+    parser_b = subparsers.add_parser(
+    	'prediction',
+    	help='Use the PhenotypeSeeker model to predict phenotypes from genome data',
+    	usage='PhenotypeSeeker prediction INPUTFILE1 INPUTFILE2 [OPTIONS]',
+    	add_help=False
+    	)
+    parser_c = subparsers.add_parser(
+        'annotation',
+        help='Annotate the k-mers in phenotypeseeker outputfile',
+        usage='PhenotypeSeeker annotation INPUTFILE1 [OPTIONS]',
+        add_help=False
+        )
+
+    #Subparser "modeling" options
+    required_options = parser_a.add_argument_group('Required options')
+    kmer_lists = parser_a.add_argument_group('Options for k-mer lists')
+    kmer_selection_by_freq = parser_a.add_argument_group(
+    	'Options for k-mer filtering by frequency'
+    	)
+    kmer_selection_by_pval = parser_a.add_argument_group(
+    	'Options for k-mer filtering by pvalue'
+    	)
+    B_or_FDR = kmer_selection_by_pval.add_mutually_exclusive_group()
+
+    regression_models = parser_a.add_argument_group(
+    	'Options for regression models'
+    	)
+    train_test_split = regression_models.add_mutually_exclusive_group()
+
+    other = parser_a.add_argument_group('Other options')
+
+    required_options.add_argument(
+    	'inputfile', default=sys.stdin,
+    	help='Text file of tab separated list of sample IDs, corresponding \
+    	Fasta/Fastq file addresses and corresponding phenotype values \
+    	(one or more column).'
+    	)
+
+    kmer_lists.add_argument(
+    	"-l", '--kmer_length', type=str, metavar="", default="13", 
+    	help="K-mer length. Must be an integer between (1-32, default = 13)"
+    	)
+    kmer_lists.add_argument(
+    	"-c", '--cutoff', type=str, metavar="INT", default="1",
+    	help="K-mer frequency cut-off. Must be an integer (default = 1)."
+    	)
+
+    kmer_selection_by_freq.add_argument(
+    	"--min", type=str, metavar="INT", default="0",
+    	help="Minimum number of samples with support to report k-mer."
+    	)
+    kmer_selection_by_freq.add_argument(
+    	"--max", type=str, metavar="INT", default="0",
+    	help="Maximum number of samples with support to report k-mer."
+    	)
+
+    kmer_selection_by_pval.add_argument(
+    	'--pvalue', metavar='', type=float, default=0.05,
+    	help='P-value cut-off for k-mer filtering (default = 0.05)'
+    	)
+    kmer_selection_by_pval.add_argument(
+        '--n_kmers', metavar='', type=int, default=1000, 
+        help="The maximum number of (lowest p-valued) k-mers selected for \
+        modelling (default = 1000). Set '0' for no limit"
+        )
+
+    regression_models.add_argument(
+        "--pca", action="store_true",
+        help="Apply PCA to k-mer features before fitting the model."
+        )
+    regression_models.add_argument(
+    	"--alphas", metavar='FLOAT', type=float, nargs='+',
+    	help="List of alphas (regularization strengths) where to compute the \
+    	models. Must be positive floats. Higher values specify stronger \
+    	regularization. If 'None' alphas are set automatically in a \
+    	logarithmic scale along the regularization path (specified by \
+    	parameters --alpha_min, --alpha_max and --n_alphas)."
+    	)
+    regression_models.add_argument(
+    	'--alpha_min', metavar='', type=float, default=1E-3,
+    	help='Specify the start of the regularization path (alpha minimum). \
+    	Must be a positive float (default = 1E-3).'
+    	)
+    regression_models.add_argument(
+    	'--alpha_max', metavar='', type=float, default=1E3,
+    	help='Specify the end of the regularization path (alpha maximum). \
+    	Must be a positive float (default = 1E3).'
+    	)
+    regression_models.add_argument(
+    	'--n_alphas', metavar='', type=int, default=13,
+    	help='Specify the number of alphas along the \
+    	regularization path (default = 13)'
+    	)
+    regression_models.add_argument(
+        "--gammas", metavar='FLOAT', type=float, nargs='+',
+        help="List of gammas (rbf kernel coefficients) where to compute the \
+        models. Must be positive floats. If 'None' gammas are set automatically in a \
+        logarithmic scale along the regularization path (specified by \
+        parameters --gamma_min, --gamma_max and --n_gammas)."
+        )
+    regression_models.add_argument(
+        '--gamma_min', metavar='', type=float, default=1E-3,
+        help='Specify the start of the gamma path (gamma minimum). \
+        Must be a positive float (default = 1E-6).'
+        )
+    regression_models.add_argument(
+        '--gamma_max', metavar='', type=float, default=1E3,
+        help='Specify the end of the gammas path (gamma maximum). \
+        Must be a positive float (default = 1E6).'
+        )
+    regression_models.add_argument(
+        '--n_gammas', metavar='', type=int, default=13,
+        help='Specify the number of gammas along the \
+        regularization path (default = 25)'
+        )
+    regression_models.add_argument(
+        '--n_iter', metavar='', type=int, default=25,
+        help='The number of parameter settings that are sampled while tuning \
+        the hyperparameters for the rbf kernel or random forest models.'
+        )
+    regression_models.add_argument(
+    	'-cv2', '--n_splits_cv_inner', metavar='', type=int, default=10,
+    	help='Number of folds to split training set for cross-validation. \
+    	Must be at least 2. Default min(10, no. samples in training set).'
+    	)
+    regression_models.add_argument(
+    	'--penalty', metavar='', type=str, default='l1',
+    	help='The norm used in the penalization. Must be L1 (default), L2 \
+        or L1+L2 (elastic net)'
+    	)
+    regression_models.add_argument(
+        '-bc', '--binary_classifier', metavar='', type=str, default='log',
+        choices=["log", "SVM", "RF", "NB", "XGBC", "DT"],
+        help='The binary classifier to be used. Possible variants are \
+        "log" (logistic regression; default), "SVM" (support vector \
+        machine), "RF" (random forest), "NB" (naive bayes), \
+        "DT" (decision tree) and XGBC (extreme gradient boost classifier)'
+        )
+    regression_models.add_argument(
+        '-reg', '--regressor', metavar='', type=str, default='lin',
+        choices=["lin", "XGBR"],
+        help='The regressor to be used. Possible variants are \
+        "lin" (linear regression; default), and XGBR (extreme gradient boost \
+        regressor)'
+        )
+    regression_models.add_argument(
+        '--kernel', metavar='', type=str, default='linear',
+        help='The kernel type to be used with the "SVM" (support vector \
+        machine) classifier. Possible variants are "linear" (no kernel; \
+        default) and "rbf" (Gaussian kernel)'
+        )
+    regression_models.add_argument(
+        "--logreg_solver", "-ls", metavar="", type=str, default=None,
+        help='''Algorithm to use in the logistic regression optimization problem.
+        For L2 penalty - 'liblinear', 'newton-cg', 'lbfgs' (default), 'sag' or 'saga' solvers.
+        For L1 penalty - 'liblinear' (default) or 'saga' solvers.'''
+        )
+    regression_models.add_argument(
+        '--l1_ratio', metavar='', type=float, default=0.5,
+        help='The elastic net mixing parameter with. For l1_ratio = 0, it is \
+        an L2 penalty. For l1_ratio = 1, it is an L1 penalty. \
+        For 0 < l1_ratio < 1, the penalty is a combination of L1 and L2.'
+        )
+    train_test_split.add_argument(
+    	'-cv1', "--n_splits_cv_outer", metavar="", type=int, default=None,
+    	help='Number of folds to split dataset into training and test set. \
+        Must be at least 2 (default = None). The sizes of the training and \
+        test set in each fold are ((nr of splits-1)/nr of splits) and \
+        (1/nr of splits) respectively. Conflicts with 1-fold train/test split \
+        specifying method - "-ts", "--testset_size"!'
+    	)
+    train_test_split.add_argument(
+        '-ts', "--testset_size", metavar="", type=float, default=None,
+        help='The size of the test set in 1-fold train/test data splitting. \
+        Represents the proportion of the dataset to include in the test split. \
+        Should be a float between 0.0 and 1.0 (default 0.25). Train set size is \
+        complement of the test set size. Conflicts with multiple-fold train/test \
+        split specifying method - "-cv1"/"--n_splits_cv_outer"!'
+        )
+    regression_models.add_argument(
+        "-tow", "--train_on_whole", action='store_true',
+        help="Train the output model on whole dataset given, including the samples \
+        assigned to test set in model evalution."
+        )
+    regression_models.add_argument(
+        "--max_iter", metavar="", type=float, default=1000,
+        help='Hard limit on iterations within solver, or -1 for no limit \
+        (default = 1000).'
+        )
+    regression_models.add_argument(
+        "--tolerance", "-tol", metavar="", type=float, default=1e-4,
+        help='Tolerance for stopping criterion (default = 1e-4).'
+        )
+
+    other.add_argument(
+        '--omit_B_correction', action="store_true",
+        help="Omit the Bonferroni multiple testing correction in k-mer \
+        filtering"
+        )
+    other.add_argument(
+    	'--mpheno', metavar='INT', type=int, nargs='+',
+    	help='Ordinal numbers of columns of phenotypes to analyze \
+    	(default = all phenotype columns)'
+    	)
+    other.add_argument(
+    	"-w", "--weights", action='store_true',
+    	help='Use samples GSC weights in statistical testing of k-mers (and PCs).'
+    	)
+    other.add_argument(
+        "-rc", "--real_counts", action='store_true',
+        help='Use the real counts of k-mers in the samples instead of \
+        presence=1/absence=0 conversion.'
+        )
+    other.add_argument(
+        "-a", "--assembly", action='store_true',
+        help='Assemble the k-mers used in regression model.'
+        )
+    other.add_argument(
+        "--take_logs", action='store_true',
+        help='Take logarithms of the lognormally distributed phenotypes \
+        (eg. original antibiotic resistance measurements).'
+        )
+    other.add_argument(
+        "-nt", "--num_threads", type=int, metavar='INT', default=8,
+        help='Specify the number of threads the program is run on (default 8).'
+        )
+    other.add_argument(
+        "-jt", "--jump_to", type=str, metavar='', default=None,
+        choices=["modelling", "PCA"],
+        help='Continue a discontinued process and skip the steps, which output \
+        files exist already in the correct paths.'
+        )
+    other.add_argument("-h", "--help", action="help",
+    	help="Show this help message and exit."
+    	)
+
+    parser_a.set_defaults(func=modeling.modeling)
+    
+    #Subparser "prediction" options
+    parser_b.add_argument(
+    	'inputfile1', default=sys.stdin,
+    	help='Text file of tab separated list of sample IDs and corresponding \
+    	Fasta/Fastq file addresses.')
+    parser_b.add_argument(
+    	'inputfile2', default=sys.stdin,
+    	help='Text file of tab separated list of phenotypes to predict, \
+    	corresponding model addresses and corresponding k-mer list \
+    	(k-mers_and_coefficients_in_*_reg_model*.txt) file addresses.'
+    	)
+    parser_b.add_argument(
+    	"-c", type=str, metavar="INT", default="1",
+    	help="K-mer frequency cut-off. Must be an integer (default = 1)."
+    	)
+    parser_b.add_argument(
+        "-nt", "--num_threads", type=int, metavar='INT', default=8,
+        help='Specify the number of threads the program is run on (default 8).'
+        )
+    parser_b.add_argument(
+    	"-h", "--help", action="help",
+    	help="Show this help message and exit."
+    	)
+    parser_b.set_defaults(func=prediction.prediction)
+
+    #Subparser "annotation" options
+    parser_c.add_argument(
+        'inputfile', default=sys.stdin,
+        help='Text file of tab separated list of sample IDs and corresponding \
+        Fasta/Fastq file addresses.')
+    parser_c.set_defaults(func=annotation.annotation)
+
+    args = parser.parse_args()
+    try:
+        func = args.func(args)
+    except AttributeError as e:
+        if str(e) == "'Namespace' object has no attribute 'func'":
+            parser.error("too few arguments")
+            parser.exit()
+        else:
+            print(traceback.format_exc())
+    
+
+
+if __name__ == '__main__':
+    Main()
