@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 __author__ = "Erki Aun"
-__version__ = "1.0.2"
+__version__ = "1.1.0"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
@@ -126,6 +126,7 @@ class Phenotypes():
         model_pkg = joblib.load(model_adre)
         model = model_pkg['model']
         kmers = model_pkg['kmers']
+        pred_scale = model_pkg['pred_scale']
 
         pca = False
         pca_model = None

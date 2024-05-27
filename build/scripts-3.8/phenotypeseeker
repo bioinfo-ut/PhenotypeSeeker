@@ -242,6 +242,9 @@ def Main():
         help='Tolerance for stopping criterion (default = 1e-4).'
         )
 
+    other.add_argument('--kmerDB', metavar='', type=str, default=None,
+        help="Full path to resistance database to be applied for k-mer filtering. \
+        K-mers not present in given database are filtered out.")
     other.add_argument(
         '--omit_B_correction', action="store_true",
         help="Omit the Bonferroni multiple testing correction in k-mer \

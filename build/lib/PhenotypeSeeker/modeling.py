@@ -145,7 +145,8 @@ class Input():
             binary_classifier, regressor, penalty, max_iter,
             tol, l1_ratio, n_splits_cv_outer, kernel, n_iter,
             n_splits_cv_inner, testset_size, train_on_whole,
-            logreg_solver, jump_to, pca, real_counts, omit_B
+            logreg_solver, jump_to, pca, real_counts, omit_B,
+            kmerDB
             ):
         phenotypes.alphas = cls._get_alphas(
             alphas, alpha_min, alpha_max, n_alphas
@@ -178,6 +179,7 @@ class Input():
         phenotypes.pca = pca
         phenotypes.real_counts = real_counts
         phenotypes.omit_B = omit_B
+        Samples.kmerDB = kmerDB
 
     @staticmethod
     def get_model_name(regressor, binary_classifier):
@@ -276,6 +278,7 @@ class Samples():
 
     mash_distances_args = []
     union_output = Manager().list()
+    kmerDB = None
 
     def __init__(self, name, address, phenotypes, weight=1):
         self.name = name
@@ -354,8 +357,18 @@ class Samples():
                 ]
             with Pool(Input.num_threads) as p:
                 p.map(partial(cls.get_union, round=i), iterate_to_union)
-        call(["mv %s K-mer_lists/feature_vector.list" % cls.union_output[-1]], shell=True)
+        if cls.kmerDB:
+            cls.get_db_kmers()
+        else:
+            call(["mv %s K-mer_lists/feature_vector.list" % cls.union_output[-1]], shell=True)
         [(lambda x: call(["rm -f {}".format(x)], shell=True))(union) for union in cls.union_output[:-1]]
+
+    @classmethod
+    def get_db_kmers(cls):
+        outputfile = "K-mer_lists/feature_vector.list"
+        call(["glistmaker " + cls.kmerDB + " -o K-mer_lists/db_kmers -w " + cls.kmer_length], shell=True)
+        call(["glistcompare -i -o K-mer_lists/feature_vector K-mer_lists/db_kmers_" + cls.kmer_length  + ".list " + cls.union_output[-1]], shell=True)
+        call(["mv K-mer_lists/feature_vector_%s_intrsec.list K-mer_lists/feature_vector.list" % cls.kmer_length], shell=True)
 
     @classmethod
     def get_union(cls, lists_to_unite, round):
@@ -1649,7 +1662,7 @@ def modeling(args):
         args.penalty, args.max_iter, args.tolerance, args.l1_ratio,
         args.n_splits_cv_outer, args.kernel, args.n_iter, args.n_splits_cv_inner,
         args.testset_size, args.train_on_whole, args.logreg_solver, args.jump_to,
-        args.pca, args.real_counts, args.omit_B_correction
+        args.pca, args.real_counts, args.omit_B_correction, args.kmerDB
         )
 
     if not Input.jump_to:
