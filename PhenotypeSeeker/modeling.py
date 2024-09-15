@@ -758,6 +758,7 @@ class phenotypes():
 
         #Calculating the weighted Welch's t-test results
         dif = wtd_mean_x-wtd_mean_y
+        print(varx, sumofweightsx, vary, sumofweightsy)
         sxy = math.sqrt((varx/sumofweightsx)+(vary/sumofweightsy))
         df = (((varx/sumofweightsx)+(vary/sumofweightsy))**2) / \
             ((((varx/sumofweightsx)**2)/(sumofweightsx-1)) + \
