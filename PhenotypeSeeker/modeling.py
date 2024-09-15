@@ -718,8 +718,7 @@ class phenotypes():
         if len(x) < Samples.min_samples or len(y) < 2 or len(x) > Samples.max_samples:
             return None
 
-        t_statistic = ttest_ind(x, y, usevar='unequal', weights=(x_weights, y_weights))
-        print(t_statistic)
+        t_statistic, pvalue, df = ttest_ind(x, y, usevar='unequal', weights=(x_weights, y_weights))
         mean_x = np.average(x, weights=x_weights)
         mean_y = np.average(y, weights=y_weights)
 
