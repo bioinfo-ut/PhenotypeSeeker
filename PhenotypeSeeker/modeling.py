@@ -754,9 +754,7 @@ class phenotypes():
         wtd_mean_x = np.average(x, weights=x_weights)
         sumofweightsx = sum(x_weights)
         xbar = np.float64(sum([i*j for i,j in zip(x, x_weights)])/sumofweightsx)
-        print(type(x), x)
-        print(type(xbar), xbar)
-        print((x - xbar)**2)
+        print(x_weights)
         varx = sum([i*j for i,j in zip(x_weights, (x - xbar)**2)])/(sumofweightsx-1)
 
         #Calculating the weighted Welch's t-test results
