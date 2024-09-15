@@ -744,8 +744,6 @@ class phenotypes():
 
     @staticmethod
     def t_test(x, y, x_weights, y_weights):
-        print(x_weights)
-        print(y_weights)
         #Parametes for group containig the k-mer
         wtd_mean_y = np.average(y, weights=y_weights)
         sumofweightsy = sum(y_weights)
@@ -756,6 +754,8 @@ class phenotypes():
         wtd_mean_x = np.average(x, weights=x_weights)
         sumofweightsx = sum(x_weights)
         xbar = np.float64(sum([i*j for i,j in zip(x, x_weights)])/sumofweightsx)
+        print(type(x), x)
+        print(type(xbar), xbar)
         varx = sum([i*j for i,j in zip(x_weights, (x - xbar)**2)])/(sumofweightsx-1)
 
         #Calculating the weighted Welch's t-test results
@@ -765,7 +765,7 @@ class phenotypes():
         df = (((varx/sumofweightsx)+(vary/sumofweightsy))**2) / \
             ((((varx/sumofweightsx)**2)/(sumofweightsx-1)) + \
                 ((vary/sumofweightsy)**2/(sumofweightsy-1)))
-        t= dif/sxy
+        t = dif/sxy
         pvalue = stats.t.sf(abs(t), df)*2
 
         return t, pvalue, wtd_mean_x, wtd_mean_y
