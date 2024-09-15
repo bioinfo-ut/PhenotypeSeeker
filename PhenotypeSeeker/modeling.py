@@ -756,6 +756,7 @@ class phenotypes():
         xbar = np.float64(sum([i*j for i,j in zip(x, x_weights)])/sumofweightsx)
         print(type(x), x)
         print(type(xbar), xbar)
+        print((x - xbar)**2)
         varx = sum([i*j for i,j in zip(x_weights, (x - xbar)**2)])/(sumofweightsx-1)
 
         #Calculating the weighted Welch's t-test results
