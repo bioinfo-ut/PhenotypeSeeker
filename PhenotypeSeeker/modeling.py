@@ -41,6 +41,7 @@ from sklearn.model_selection import (
     RandomizedSearchCV, GridSearchCV, train_test_split, StratifiedKFold,
     KFold
     )
+from statsmodels.stats.weightstats import ttest_ind
 from functools import partial
 
 matplotlib.use('agg')
@@ -730,9 +731,9 @@ class phenotypes():
         if len(x) < Samples.min_samples or len(y) < 2 or len(x) > Samples.max_samples:
             return None
 
-        t_statistic, pvalue, mean_x, mean_y = self.t_test(
-            x, y, x_weights, y_weights
-            )
+        t_statistic, pvalue, df = ttest_ind(x, y, usevar='unequal', weights=(x_weights, y_weights))
+        mean_x = np.average(x, weights=x_weights)
+        mean_y = np.average(y, weights=y_weights)
 
         if pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
             return [kmer, round(t_statistic, 2), "%.2E" % pvalue, round(mean_x, 2), round(mean_y, 2), len(samples_w_kmer), " ".join(["|"] + samples_w_kmer)] + kmer_vector
@@ -754,31 +755,6 @@ class phenotypes():
                     x.append(sample_phenotype)
                     x_weights.append(sample.weight)
                     samples_w_kmer.append(sample.name)
-
-    @staticmethod
-    def t_test(x, y, x_weights, y_weights):
-        #Parametes for group containig the k-mer
-        wtd_mean_y = np.average(y, weights=y_weights)
-        sumofweightsy = sum(y_weights)
-        ybar = np.float64(sum([i*j for i,j in zip(y, y_weights)])/sumofweightsy)
-        vary = sum([i*j for i,j in zip(y_weights, (y - ybar)**2)])/(sumofweightsy-1)
-        
-        #Parameters for group not containig the k-mer
-        wtd_mean_x = np.average(x, weights=x_weights)
-        sumofweightsx = sum(x_weights)
-        xbar = np.float64(sum([i*j for i,j in zip(x, x_weights)])/sumofweightsx)
-        varx = sum([i*j for i,j in zip(x_weights, (x - xbar)**2)])/(sumofweightsx-1)
-
-        #Calculating the weighted Welch's t-test results
-        dif = wtd_mean_x-wtd_mean_y
-        sxy = math.sqrt((varx/sumofweightsx)+(vary/sumofweightsy))
-        df = (((varx/sumofweightsx)+(vary/sumofweightsy))**2) / \
-            ((((varx/sumofweightsx)**2)/(sumofweightsx-1)) + \
-                ((vary/sumofweightsy)**2/(sumofweightsy-1)))
-        t= dif/sxy
-        pvalue = stats.t.sf(abs(t), df)*2
-
-        return t, pvalue, wtd_mean_x, wtd_mean_y
 
     def conduct_chi_squared_test(
         self, kmer, kmer_vector, samples
