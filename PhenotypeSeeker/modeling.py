@@ -718,9 +718,10 @@ class phenotypes():
         if len(x) < Samples.min_samples or len(y) < 2 or len(x) > Samples.max_samples:
             return None
 
-        t_statistic, pvalue = ttest_ind(x, y, usevar='unequal', weights=(x_weights, y_weights))
-            mean_x = np.average(x, weights=x_weights)
-            mean_y = np.average(y, weights=y_weights)
+        t_statistic = ttest_ind(x, y, usevar='unequal', weights=(x_weights, y_weights))
+        print(t_statistic)
+        mean_x = np.average(x, weights=x_weights)
+        mean_y = np.average(y, weights=y_weights)
 
         if pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse):
             return [kmer, round(t_statistic, 2), "%.2E" % pvalue, round(mean_x, 2), round(mean_y, 2), len(samples_w_kmer), " ".join(["|"] + samples_w_kmer)] + kmer_vector
