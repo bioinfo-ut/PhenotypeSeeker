@@ -9,5 +9,5 @@ virtualenv -p python3 .PSenv --system-site-packages
 source .PSenv/bin/activate
 
 cp bin/* ./.PSenv/bin
-python3 -m pip install --upgrade pip
+python3 -m pip install setuptools==58.2.0
 yes | python3 -m pip install -r pkgs_to_inst.txt
