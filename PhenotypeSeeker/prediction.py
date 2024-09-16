@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 __author__ = "Erki Aun"
-__version__ = "1.2.0"
+__version__ = "1.2.1"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
@@ -132,7 +132,6 @@ class Phenotypes():
         pca_model = None
         scaler = None
         PCs_to_keep = None
-        pred_scale = None
         if model_pkg['pca']:
             pca_model = model_pkg['pca_model']
             scaler = model_pkg['scaler']
