@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 __author__ = "Erki Aun"
-__version__ = "1.2.1"
+__version__ = "1.2.2"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
@@ -1568,7 +1568,7 @@ class phenotypes():
         assembled_kmers = []
 
         # Adding the reverse-complement of each k-mer
-        kmer_list = list(self.kmers_for_ML) + list(map(
+        kmer_list = list(self.ML_df.columns[:-2]) + list(map(
             self.ReverseComplement, self.kmers_for_ML
             ))
 
