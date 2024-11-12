@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: PhenotypeSeeker
-Version: 1.2.0
+Version: 1.2.1
 Summary: Identifies phenotype-specific k-mers, creates phenotype           prediction models and using this model predicts phenotype from           sequenced bacterial strains
 Home-page: https://www.bioinfo.ut.ee/PhenotypeSeeker
 Author: Erki Aun
