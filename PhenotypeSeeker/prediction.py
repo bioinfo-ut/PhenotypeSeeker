@@ -186,7 +186,7 @@ def prediction(args):
     sys.stderr.write("\x1b[1;1;101m######                   PhenotypeSeeker                   ######\x1b[0m\n")
     sys.stderr.write("\x1b[1;1;101m######                     prediction                      ######\x1b[0m\n\n")
 
-    Phenotypes.cufoff = args.c
+    Phenotypes.cutoff = args.c
     call(["mkdir", "-p", "K-mer_lists"])
     Input.get_samples(args.inputfile1)
     Input.get_phenos(args.inputfile2)

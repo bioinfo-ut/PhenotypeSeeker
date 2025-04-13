@@ -301,7 +301,7 @@ def Main():
     	(k-mers_and_coefficients_in_*_reg_model*.txt) file addresses.'
     	)
     parser_b.add_argument(
-    	"-c", type=str, metavar="INT", default="1",
+    	"-c", type=int, metavar="INT", default="1",
     	help="K-mer frequency cut-off. Must be an integer (default = 1)."
     	)
     parser_b.add_argument(
