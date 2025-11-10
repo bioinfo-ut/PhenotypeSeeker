@@ -678,9 +678,37 @@ class phenotypes():
 
         kmer_dict = dict()
         counter = 0
+        samples = Input.samples.values()
+        sample_phenotype = np.array([s.phenotypes[self.name] for s in samples], dtype=np.int8)
+        sample_weights = np.array([s.weight for s in samples], dtype=float)
+        sample_names = np.array([s.name for s in samples], dtype=str)
 
-        for line in zip(*[open(item) for item in split_of_kmer_lists]):
-            counter += 1
+        df0 = pd.read_csv(
+            split_of_kmer_lists[0],
+            sep="\t",
+            header=None,
+            names=["kmer", "sample_0"],
+            dtype={0: str, 1: np.uint8}
+            )
+        # Read remaining files (just counts)
+        dfs = [
+            pd.read_csv(
+                path,
+                sep="\t",
+                header=None,
+                usecols=[1],
+                names=[f"sample_{i+1}"],
+                dtype=np.uint8
+            )
+            for i, path in enumerate(split_of_kmer_lists[1:])
+        ]
+
+        # Concatenate counts side by side
+        kmer_matrix = pd.concat([df0] + dfs, axis=1)
+        log_to_file(f"Subsetsize-{kmer_matrix.shape}")
+        kmers = kmer_matrix["kmer"].to_numpy()
+        counts = kmer_matrix.drop(columns="kmer").to_numpy(dtype=np.int8)
+        for counter, (kmer, kmer_vector) in enumerate(zip(kmers, counts), start=1):
             if counter%self.progress_checkpoint == 0:
                 Input.lock.acquire()
                 stderr_print.currentKmerNum.value += self.progress_checkpoint
@@ -688,9 +716,7 @@ class phenotypes():
                 stderr_print.check_progress(
                     self.no_kmers_to_analyse, "tests conducted.", self.name + ": "
                 )
-            kmer = line[0].split()[0]
 
-            kmer_vector = [int(j.split()[1].strip()) for j in line]
             if not self.real_counts:
                 kmer_vector = [1 if count > 0 else 0 for count in kmer_vector]
             if phenotypes.pred_scale == "binary":
@@ -757,41 +783,66 @@ class phenotypes():
                     samples_w_kmer.append(sample.name)
 
     def conduct_chi_squared_test(
-        self, kmer, kmer_vector, samples
+        self, kmer, kmer_vector_orig, samples
         ):
-        samples_w_kmer = []
-        (
-        w_pheno_w_kmer, w_pheno_wo_kmer, wo_pheno_w_kmer, wo_pheno_wo_kmer,
-        no_samples_wo_kmer
-        ) = self.get_samples_distribution_for_chisquared(
-            kmer_vector, samples_w_kmer, samples
-            )
+        
+        kmer_vector = np.asarray(kmer_vector_orig, dtype=bool)
+        samples_w_kmer = names[kmer_vector]
+        no_samples_wo_kmer = np.sum(~kmer_vector)
         no_samples_w_kmer = len(samples_w_kmer)
-        if no_samples_w_kmer < Samples.min_samples or no_samples_wo_kmer < 2 \
-            or no_samples_w_kmer > Samples.max_samples:
+
+        if no_samples_w_kmer < Samples.min_samples or no_samples_wo_kmer < 2 or no_samples_w_kmer > Samples.max_samples:
             return None
-        (w_pheno, wo_pheno, w_kmer, wo_kmer, total) = self.get_totals_in_classes(
-            w_pheno_w_kmer, w_pheno_wo_kmer, wo_pheno_w_kmer, wo_pheno_wo_kmer
-            )
 
-        (
-        w_pheno_w_kmer_expected, w_pheno_wo_kmer_expected,
-        wo_pheno_w_kmer_expected, wo_pheno_wo_kmer_expected
-        ) = self.get_expected_distribution(
-            w_pheno, wo_pheno, w_kmer, wo_kmer, total)
-        chisquare_results = stats.chisquare(
-            [
-            w_pheno_w_kmer, w_pheno_wo_kmer,
-            wo_pheno_w_kmer, wo_pheno_wo_kmer
-            ],
-            [
-            w_pheno_w_kmer_expected, w_pheno_wo_kmer_expected, 
-            wo_pheno_w_kmer_expected, wo_pheno_wo_kmer_expected
-            ],
-            1
-            )
+        pheno_mask = (phenotypes == 1)
+        no_pheno_mask = ~pheno_mask
 
-        chisquare, pvalue = chisquare_results
+        pheno_kmer = pheno_mask & kmer_vector
+        pheno_no_kmer = pheno_mask & ~kmer_vector
+        nopheno_kmer = no_pheno_mask & kmer_vector
+        nopheno_no_kmer = no_pheno_mask & ~kmer_vector
+
+        contingency_table = [
+            [np.sum(weights[pheno_kmer]),    np.sum(weights[pheno_no_kmer])],
+            [np.sum(weights[nopheno_kmer]),  np.sum(weights[nopheno_no_kmer])]
+        ]
+
+        chisquare, pvalue, _, _ = chi2_contingency(contingency_table, correction=False)
+
+        # samples_w_kmer = []
+        # (
+        # w_pheno_w_kmer, w_pheno_wo_kmer, wo_pheno_w_kmer, wo_pheno_wo_kmer,
+        # no_samples_wo_kmer
+        # ) = self.get_samples_distribution_for_chisquared(
+        #     kmer_vector, samples_w_kmer, samples
+        #     )
+        # no_samples_w_kmer = len(samples_w_kmer)
+        # if no_samples_w_kmer < Samples.min_samples or no_samples_wo_kmer < 2 \
+        #     or no_samples_w_kmer > Samples.max_samples:
+        #     return None
+        # (w_pheno, wo_pheno, w_kmer, wo_kmer, total) = self.get_totals_in_classes(
+        #     w_pheno_w_kmer, w_pheno_wo_kmer, wo_pheno_w_kmer, wo_pheno_wo_kmer
+        #     )
+
+        # (
+        # w_pheno_w_kmer_expected, w_pheno_wo_kmer_expected,
+        # wo_pheno_w_kmer_expected, wo_pheno_wo_kmer_expected
+        # ) = self.get_expected_distribution(
+        #     w_pheno, wo_pheno, w_kmer, wo_kmer, total)
+        # chisquare_results = stats.chisquare(
+        #     [
+        #     w_pheno_w_kmer, w_pheno_wo_kmer,
+        #     wo_pheno_w_kmer, wo_pheno_wo_kmer
+        #     ],
+        #     [
+        #     w_pheno_w_kmer_expected, w_pheno_wo_kmer_expected, 
+        #     wo_pheno_w_kmer_expected, wo_pheno_wo_kmer_expected
+        #     ],
+        #     1
+        #     )
+
+        # chisquare, pvalue = chisquare_results
+        
         if (self.omit_B and pvalue < self.pvalue_cutoff) or (pvalue < (self.pvalue_cutoff/self.no_kmers_to_analyse)):
            return [kmer, round(chisquare,2), "%.2E" % pvalue, no_samples_w_kmer, " ".join(["|"] + samples_w_kmer)] + kmer_vector
         else:
