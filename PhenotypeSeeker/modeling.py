@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 __author__ = "Erki Aun"
-__version__ = "1.2.4"
+__version__ = "1.2.5"
 __maintainer__ = "Erki Aun"
 __email__ = "erki.aun@ut.ee"
 
@@ -721,7 +721,8 @@ class phenotypes():
             if phenotypes.pred_scale == "binary":
                 test_results = self.conduct_chi_squared_test(
                         kmer, kmer_vector,
-                        Input.samples.values()
+                        sample_phenotype, sample_weights,
+                        sample_names
                     )
             elif phenotypes.pred_scale == "continuous":
                 test_results = self.conduct_t_test(
@@ -782,7 +783,7 @@ class phenotypes():
                     samples_w_kmer.append(sample.name)
 
     def conduct_chi_squared_test(
-        self, kmer, kmer_vector_orig, samples
+        self, kmer, kmer_vector_orig, phenotypes, weights, names
         ):
         
         kmer_vector = np.asarray(kmer_vector_orig, dtype=bool)
