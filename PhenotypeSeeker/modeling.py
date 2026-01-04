@@ -705,7 +705,6 @@ class phenotypes():
 
         # Concatenate counts side by side
         kmer_matrix = pd.concat([df0] + dfs, axis=1)
-        log_to_file(f"Subsetsize-{kmer_matrix.shape}")
         kmers = kmer_matrix["kmer"].to_numpy()
         counts = kmer_matrix.drop(columns="kmer").to_numpy(dtype=np.int8)
         for counter, (kmer, kmer_vector) in enumerate(zip(kmers, counts), start=1):
