@@ -807,7 +807,7 @@ class phenotypes():
             [np.sum(weights[nopheno_kmer]),  np.sum(weights[nopheno_no_kmer])]
         ]
 
-        chisquare, pvalue, _, _ = chi2_contingency(contingency_table, correction=False)
+        chisquare, pvalue, _, _ = stats.chi2_contingency(contingency_table, correction=False)
 
         # samples_w_kmer = []
         # (
